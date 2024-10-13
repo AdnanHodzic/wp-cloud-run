@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>WP Super Page Cache Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            text-align: center;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        #headers {
+            background-color: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .highlight {
+            background-color: #ffff00;
+            font-weight: bold;
+            padding: 5px 0px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <h1>Test Cloudflare for WP Super Page Cache</h1>
+        <p>This is a test page to verify the Cloudflare caching.</p>
+        <p>This page has the following HTTP headers present: </p>
+        <div id="headers">Loading headers...</div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            fetch(window.location.href)
+                .then(response => {
+                    const headers = {};
+                    for (const [key, value] of response.headers) {
+                        headers[key] = value;
+                    }
+                    return headers;
+                })
+                .then(headers => {
+                    const headersList = Object.entries(headers)
+                        .map(([key, value]) => {
+                            if (key.toLowerCase().startsWith('cf-')) {
+                                return `<span class="highlight">${key}: ${value}</span>`;
+                            }
+                            return `${key}: ${value}`;
+                        })
+                        .join('\n');
+                    
+                    document.getElementById('headers').innerHTML = headersList;
+                })
+                .catch(error => {
+                    console.error('Error fetching headers:', error);
+                    document.getElementById('headers').textContent = 'Error loading headers. Please check the console for details.';
+                });
+        };
+    </script>
+</body>
+</html>

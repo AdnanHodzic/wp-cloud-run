@@ -1,0 +1,31 @@
+.#{$namespace}-ui-switch {
+	@apply inline-flex relative items-center cursor-pointer;
+
+	&-list {
+		@apply space-y-5;
+	}
+
+	input {
+		@apply sr-only;
+
+		&:checked ~ div {
+			@apply bg-primary after:left-auto after:right-[2px] after:border-white;
+		}
+
+		&:disabled ~ div {
+			@apply after:bg-gray-100 after:border-gray-200;
+		}
+	}
+
+	div {
+		@apply relative w-11 h-6 bg-gray-200 rounded-full border;
+
+		&::after {
+			@apply content-[""] absolute top-0.5 left-[2px] bg-white border-gray-300 border rounded-full h-5 w-5 transition-all;
+		}
+	}
+
+	span {
+		@apply ml-3 text-sm font-medium;
+	}
+}

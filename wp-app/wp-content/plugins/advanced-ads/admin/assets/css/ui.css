@@ -1,0 +1,70 @@
+.advads-buttonset .advads-button {
+	margin-left: 0;
+	margin-right: -.3em;
+}
+.advads-buttonset .advads-button.advads-ui-state-active {
+	/*border-color: #0074a2 !important;*/
+	border-color: #2ea2cc !important;
+	background: #2ea2cc !important;
+	color: #fff !important;
+	box-shadow: none;
+	border-width: 1px;
+}
+.advads-button {
+	text-decoration: none;
+	display: inline-block;
+	position: relative;
+	padding: 0;
+	line-height: normal;
+	margin-right: .1em;
+	cursor: pointer;
+	vertical-align: middle;
+	text-align: center;
+	overflow: visible;
+	color: #555;
+	border: 1px solid #d3d3d3;
+	background: #e6e6e6;
+	font-weight: normal;
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 1.1em;
+}
+.advads-button .advads-button-text {
+	display: block;
+	line-height: normal;
+	padding: .4em 1em;
+}
+.advads-accessible {
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+.advads-tooltip {
+	padding: 8px;
+	position: absolute;
+	z-index: 9999;
+	max-width: 300px;
+	box-shadow: 0 0 5px #aaa;
+	border-radius: 4px;
+	border: 2px solid #aaa;
+	background: #fff;
+	color: #222;
+	font-family: Verdana,Arial,sans-serif;
+	font-size: 14px;
+	font-weight: normal;
+}
+
+.advads-tooltip h4 {
+	margin: 0;
+}
+
+/* jQueryUI autocomplete */
+.ui-menu-item:hover {
+	border: 1px solid #999;
+	background: #dadada;
+	color: #212121;
+}

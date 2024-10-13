@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => 'codeinwp/wp-cloudflare-super-page-cache',
+        'pretty_version' => 'v5.0.4',
+        'version' => '5.0.4.0',
+        'reference' => '2696bc5f473a59b259e11573774e8b2bb7aa1b5e',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => false,
+    ),
+    'versions' => array(
+        'codeinwp/themeisle-sdk' => array(
+            'pretty_version' => '3.3.29',
+            'version' => '3.3.29.0',
+            'reference' => '4d63bc81ec0357c8675dac1e35511fd81104605d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../codeinwp/themeisle-sdk',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'codeinwp/wp-cloudflare-super-page-cache' => array(
+            'pretty_version' => 'v5.0.4',
+            'version' => '5.0.4.0',
+            'reference' => '2696bc5f473a59b259e11573774e8b2bb7aa1b5e',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'deliciousbrains/wp-background-processing' => array(
+            'pretty_version' => '1.0.2',
+            'version' => '1.0.2.0',
+            'reference' => '2cbee1abd1b49e1133cd8f611df4d4fc5a8b9800',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../deliciousbrains/wp-background-processing',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);

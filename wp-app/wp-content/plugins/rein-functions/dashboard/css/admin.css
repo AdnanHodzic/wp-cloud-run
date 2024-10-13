@@ -1,0 +1,104 @@
+
+/* Welcome Page */
+
+.about-wrap .wp-badge{
+    padding-top: 0;
+    height: 140px;
+    border-radius: 3px;
+    background-image: url('../images/thumb-280.jpg');
+    background-size: 140px;
+    background-position: center;
+}
+.epcl-system{
+    background: #fff;
+    padding: 10px 30px 50px;
+    border-radius: 3px;
+    margin-top: 20px;
+    color: #000;
+    webkit-box-shadow: 0 5px 40px 0 rgba(10,10,25,.1);
+    -moz-box-shadow: 0 5px 40px 0 rgba(10,10,25,.1);
+    box-shadow: 0 5px 40px 0 rgba(10,10,25,.1);
+    width: 47%;
+    float: left;
+    box-sizing: border-box;
+    /* font-size: 13px; */
+}
+.epcl-system table{
+    border: 0;
+    box-shadow: none;
+}
+.epcl-system table td{
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    vertical-align: middle;
+}
+.epcl-system table td a{ text-decoration: underline; }
+.epcl-system table td:first-child:not(.changelog){
+    font-weight: 500;
+    padding-right: 10px;
+}
+.epcl-system table td.changelog .tag{
+    font-weight: 500;
+}
+.epcl-system mark.error{
+    background-color: rgba(230,30,31,.1);
+    color: #e61e1f;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+.epcl-system mark.green{
+    background-color: rgba(30,170,0,.1);
+    color: #1eaa00;
+}
+
+/* License Page */
+
+.epcl-form-wrapper td{
+    padding-bottom: 0;
+}
+.epcl-check-updates h2, .epcl-check-updates form{
+    display: inline-block;
+    vertical-align: middle;
+    padding-top: 20px;
+}
+.epcl-check-updates h2{ margin-right: 10px; }
+.epcl-changelog{
+    background: #fff;
+    padding: 20px;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+.epcl-changelog ul{
+    list-style: inside;
+    margin-left: 15px;
+}
+.epcl-changelog p{
+    line-height: 1.6;
+    margin: 0 0 0.5em;
+}
+
+.epcl-changelog p{
+    clear: both;
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 75px;
+
+}
+.epcl-changelog .tag{
+    padding: 5px 10px;
+    width: 45px;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.75px;
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.epcl-changelog .add{ background-color: #56C681; }
+.epcl-changelog .fix{ background-color: #29A3EE; }
+.epcl-changelog .improve{ background-color: #995EC8; }
+.epcl-changelog .removed{ background-color: #E75C54; }

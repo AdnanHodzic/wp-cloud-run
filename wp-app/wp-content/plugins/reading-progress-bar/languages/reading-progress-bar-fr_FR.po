@@ -1,0 +1,148 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Reading Progress Bar\n"
+"POT-Creation-Date: 2016-12-28 15:07+0100\n"
+"PO-Revision-Date: 2016-12-28 15:11+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.11\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-WPHeader: reading-progressbar.php\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: admin/rp-admin.php:56
+msgid "Reading progressbar options"
+msgstr "Reading Progress bar : options de l’extension"
+
+#: admin/rp-admin.php:63
+msgid "Progressbar height (pixels)"
+msgstr "Hauteur de la barre de progression (pixels)"
+
+#: admin/rp-admin.php:71
+msgid "Foreground color"
+msgstr "Couleur de premier plan"
+
+#: admin/rp-admin.php:79
+msgid "Background color"
+msgstr "Couleur d’arrière-plan"
+
+#: admin/rp-admin.php:87
+msgid "Progressbar position"
+msgstr "Position de la barre"
+
+#: admin/rp-admin.php:95
+msgid "Target fixed HTML element class/id to stick the bar on it’s bottom"
+msgstr ""
+"Cibler la classe/id d’un élément HTML fixe pour coller la barre au base de "
+"cet élément"
+
+#: admin/rp-admin.php:103
+msgid "Select templates to apply progressbar"
+msgstr ""
+"Sélectionner les modèles de pages sur lesquels appliquer la barre de "
+"progression"
+
+#: admin/rp-admin.php:111
+msgid "Select post types to apply progressbar"
+msgstr ""
+"Sélectionner des types de contenus sur lesquels appliquer la barre de "
+"progression"
+
+#: admin/rp-admin.php:174
+msgid "Top"
+msgstr "Haut"
+
+#: admin/rp-admin.php:175
+msgid "Bottom"
+msgstr "Bas"
+
+#: admin/rp-admin.php:176
+msgid "Custom"
+msgstr "Personnalisé"
+
+#: admin/rp-admin.php:178
+msgid ""
+"Note: custom position is not ok with all WordPress themes. It needs a fixed "
+"element to stick the progressbar on it. <br />You may need some custom CSS "
+"to put the progressbar on the right place as it uses absolute positionning."
+msgstr ""
+"À noter : le positionnement personnalisé ne fonctionne pas avec tous les "
+"thèmes WordPress. Cela nécessite un élément fixe sur lequel coller la barre "
+"de progression. <br />Vous pourrez avoir besoin d’un peu de CSS personnalisé "
+"pour mettre la barre au bon endroit car cette fonctionnalité utilise un "
+"positionnement absolu par rapport à l’élément parent."
+
+#: admin/rp-admin.php:191
+msgid ""
+"Note: use it only if you have selected <b>custom</b> position before, "
+"instead of <b>top</b> or <b>bottom</b>"
+msgstr ""
+"À noter : à n’utiliser que si vous avez sélectionné le positionnement "
+"<b>personnalisé</b> ci-avant, à la place de <b>haut</b> ou <b>bas</b>"
+
+#: admin/rp-admin.php:211
+msgid "Front-page"
+msgstr "Page d’accueil"
+
+#: admin/rp-admin.php:212 admin/rp-admin.php:214
+msgid "(as set in Settings &gt; Reading)"
+msgstr "(Comme défini dans Réglages &gt; Lecture)"
+
+#: admin/rp-admin.php:213
+msgid "Blog page"
+msgstr "Page du blog"
+
+#: admin/rp-admin.php:215
+msgid "Archives and categories / taxonomies for posts or custom post types"
+msgstr ""
+"Pages d’archives, de catégories, de taxonomies pour les articles et types de "
+"contenus personnalisés"
+
+#: admin/rp-admin.php:216 admin/rp-admin.php:218
+msgid "(you need to include concerned post types below)"
+msgstr "(vous devez inclure les types de contenus concernés ci-après)"
+
+#: admin/rp-admin.php:217
+msgid "Single post / page / custom post type"
+msgstr "Articles seuls / pages et types de contenus personnalisés"
+
+#: admin/rp-admin.php:262
+msgid "Check out the plugin options below."
+msgstr "Paramétrez les options de l’extension ici."
+
+#. Plugin Name of the plugin/theme
+msgid "Reading Progress Bar"
+msgstr "Reading Progress Bar"
+
+#. Plugin URI of the plugin/theme
+msgid ""
+"http://jeanbaptisteaudras.com/portfolio/wordpress-reading-progressbar-"
+"indicator-plugin/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"A reading position indicator that you can use where you want: top, bottom or "
+"custom position in differents templates or post types."
+msgstr ""
+"Un indicateur de position de lecture sous la forme d’une barre de "
+"progression à afficher où vous voulez : haut, bas ou position personnalisée, "
+"sur différents modèles de pages et types de contenus."
+
+#. Author of the plugin/theme
+msgid "Jean-Baptiste Audras, project manager @ Whodunit"
+msgstr "Jean-Baptiste Audras, chef de projet technique chez Whodunit"
+
+#. Author URI of the plugin/theme
+msgid "http://jeanbaptisteaudras.com"
+msgstr ""

@@ -1,0 +1,12 @@
+@import "partials/tailwind";
+@import "variables";
+@import "partials/spinner";
+@import "ui/index";
+
+#advads-m2-connect {
+	@apply hidden;
+
+	a {
+		@apply text-primary;
+	}
+}

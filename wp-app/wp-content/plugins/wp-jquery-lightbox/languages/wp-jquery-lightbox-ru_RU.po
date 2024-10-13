@@ -1,0 +1,102 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-02-20 15:05+0100\n"
+"PO-Revision-Date: 2011-02-20 15:10+0100\n"
+"Last-Translator: ArtPrima.cz <ask@artprima.cz>\n"
+"Language-Team: ArtPrima.cz <ask@artprima.cz>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_c;__ngettext:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)\n"
+"X-Poedit-SearchPath-0: C:\\_work\\svn\\artprima\\trunk\\wp-content\\plugins\\wp-jquery-lightbox\n"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:44
+msgid "Settings"
+msgstr "Настройки"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:80
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:81
+msgid "previous image"
+msgstr "предыдущее изображение"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:80
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:82
+msgid "next image"
+msgstr "следующее изображение"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:80
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:85
+msgid "close image gallery"
+msgstr "закрыть галерею"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:83
+msgid "&laquo; Previous"
+msgstr "&laquo; Предыдущее"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:84
+msgid "Next &raquo;"
+msgstr "Следующее &raquo;"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:86
+msgid "Image "
+msgstr "Изображение "
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:87
+msgid " of "
+msgstr " из "
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:107
+msgid "Cheatin&#8217; uh?"
+msgstr "Жульничаем?"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:117
+msgid "Auto-lightbox image links"
+msgstr "Использовать lightbox автоматически"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:121
+msgid "Let the plugin add necessary html to image links"
+msgstr "Позволить плагину добавлять необходимый html к ссылкам на изображения"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:125
+msgid "Shrink large images to fit smaller screens"
+msgstr "Подгонять размер изображения под экран"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:129
+msgid "Note: <u>Excessively large images</u> waste bandwidth!"
+msgstr "Внимание: <u>Слишком большие изображения</u> впустую забивают канал!"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:133
+msgid "Animation speed (in milliseconds)"
+msgstr "Скорость анимации (в милисекундах)"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:140
+msgid "Save Changes"
+msgstr "Сохранить изменения"
+
+#~ msgid "(more...)"
+#~ msgstr "(далее...)"
+
+#~ msgid "Contacts"
+#~ msgstr "Контакты"
+
+#~ msgid "Contact Us"
+#~ msgstr "Связаться с нами"
+
+#~ msgid "Read more..."
+#~ msgstr "Читать далее..."
+
+#~ msgid "Contact Us..."
+#~ msgstr "Связаться с нами..."
+
+#~ msgid "Order..."
+#~ msgstr "Заказать..."
+
+#~ msgid "Search..."
+#~ msgstr "Поиск..."

@@ -1,0 +1,165 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: wp-jquery-lightbox v1.3.4.2\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-04 15:30+0100\n"
+"PO-Revision-Date: 2013-02-04 15:32+0100\n"
+"Last-Translator: Carl Rozema <carl.rozema@axcint.nl>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Textdomain-Support: yes\n"
+"X-Generator: Poedit 1.5.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "Instellingen"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:112
+msgid "previous image"
+msgstr "vorige afbeelding"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:113
+msgid "next image"
+msgstr "volgende afbeelding"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:114
+msgid "close image gallery"
+msgstr "gallerij sluiten"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:115
+msgid "Image "
+msgstr "Afbeelding "
+
+# @ jqlb
+#: wp-jquery-lightbox.php:116
+msgid " of "
+msgstr " van "
+
+# @ jqlb
+#: wp-jquery-lightbox.php:117
+msgid "Download"
+msgstr "Download"
+
+#: wp-jquery-lightbox.php:118
+msgid "(pause slideshow)"
+msgstr "(pauzeer diashow)"
+
+#: wp-jquery-lightbox.php:119
+msgid "(play slideshow)"
+msgstr "(diashow)"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:182
+msgid "Cheatin&#8217; uh?"
+msgstr "Valsspelen&#8217; hm?"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:197
+msgid "Let the plugin add necessary html to image links"
+msgstr "Laat de plugin zelf benodigde HTML in afbeedlingslinks invoegen"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:197
+msgid "Auto-lightbox image links"
+msgstr "Auto-Lightbox Afbeelding links"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:204
+msgid ""
+"Note: this will disable the nofollow-attribute of comment links, that "
+"otherwise interfere with the lightbox."
+msgstr ""
+"Let op: Dit zal het nofollow atribuut van reacties deactiveren, die anders "
+"interfereren met de lightbox."
+
+# @ jqlb
+#: wp-jquery-lightbox.php:204
+msgid ""
+"Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/"
+"Nofollow\">the nofollow attribute!</a>)"
+msgstr ""
+"Aktiveer lightbox in reacties (deactiveert <a href=\"http://codex.wordpress."
+"org/Nofollow\">het nofollow attribuut!</a>)"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:211
+msgid "Show download link"
+msgstr "Toon download link"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:215
+msgid ""
+"_blank: open the image in a new window or tab\n"
+"_self: open the image in the same frame as it was clicked (default)\n"
+"_parent: open the image in the parent frameset\n"
+"_top: open the image in the full body of the window"
+msgstr ""
+"_blank: open de afbeelding in een nieuw window of tab\n"
+"_self: open de afbeelding in het zelfde window (standaard)\n"
+"_parent: open de afbeelding in de parent frameset\n"
+"_top: open de afbeelding in het volledige window"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:218
+msgid "Target for download link:"
+msgstr "Download link doel:"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:232
+msgid "Show image info on top"
+msgstr "Toon afbeelding info over de afbeelding"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:240
+msgid "Shrink large images to fit smaller screens"
+msgstr "Maak grote afbeeldingen passend in kleinere schermen"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:245
+msgid "Keep a distance between the image and the screen edges."
+msgstr "Hou een afstand tussen de afbeelding en de schermranden."
+
+# @ jqlb
+#: wp-jquery-lightbox.php:245
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr "Minimum marge tot de schermrand (standaard: 0)"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:252
+msgid "Animation duration (in milliseconds) "
+msgstr "Animatieduur (in milliseconden) "
+
+#: wp-jquery-lightbox.php:258
+msgid "Slideshow speed (in milliseconds). 0 to disable."
+msgstr "Diashow snelheid (in milliseconden). 0 om te deactiveren"
+
+# @ jqlb
+#: wp-jquery-lightbox.php:264
+msgid "Help text (default: none) "
+msgstr "Help tekst (standaard: geen) "
+
+# @ jqlb
+#: wp-jquery-lightbox.php:268
+msgid ""
+"Browse images with your keyboard: Arrows or P(revious)/N(ext) and X/C/ESC "
+"for close."
+msgstr ""
+"Wissel de afbeeldingen met je toetsenbord: Cursortoetsen of P(revious voor "
+"vorige)/N(ext voor volgende) en X/C/Esc om te sluiten."
+
+# @ jqlb
+#: wp-jquery-lightbox.php:270
+msgid "Save Changes"
+msgstr "Wijzigingen opslaan"

@@ -1,0 +1,9 @@
+<wpml-config>
+    <admin-texts>
+        <key name="advanced-ads">
+            <key name="custom-label">
+                <key name="text" />
+          	</key>
+        </key>
+    </admin-texts>
+</wpml-config>

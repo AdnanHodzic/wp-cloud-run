@@ -1,0 +1,33 @@
+.lightpress-settings {
+	h2,
+	h2:hover {
+		border-left: 2px solid #5cbc67 !important;
+	}
+	.lightpress-active-lightbox {
+		font-weight: bold;
+	}
+	.components-toggle-control {
+		margin-top: 20px;
+		margin-bottom: 4px;
+	}
+	.lightpress-upgrade-notice {
+		font-style: italic;
+		margin-bottom: 8px;
+	}
+	.lightpress-button-container {
+		margin-bottom: 30px;
+	}
+	.lightpress-button {
+		background: #5cbc67 !important;
+		font-weight: bold;
+		&:hover,
+		&:active,
+		&:focus {
+			background: #4fa959 !important;
+		}
+	}
+	.lightpress-settings-link {
+		margin-top: -10px;
+	}
+}
+

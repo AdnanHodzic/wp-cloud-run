@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox Hebrew\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-17 16:35+0900\n"
+"PO-Revision-Date: 2011-10-16 00:49+0200\n"
+"Last-Translator: שגיב SEO <info@sagive.co.il>\n"
+"Language-Team: Sagive SEO <info@sagive.co.il>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_c;__ngettext:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Hebrew\n"
+"X-Poedit-Country: ISRAEL\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: C:\\_work\\svn\\artprima\\trunk\\wp-content\\plugins\\wp-jquery-lightbox\n"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "הגדרות"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:98
+msgid " \\u2190 / P - previous image\\u00a0\\u00a0\\u00a0\\u00a0\\u2192 / N - next image\\u00a0\\u00a0\\u00a0\\u00a0ESC / X - close image gallery"
+msgstr " \\u2190 / P - תמונה קודמת\\u00a0\\u00a0\\u00a0\\u00a0\\u2192 / N - תמונה הבאה\\u00a0\\u00a0\\u00a0\\u00a0ESC / X - סגור את גלריית התמונות"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:99
+msgid "previous image"
+msgstr "לתמונה הקודמת"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:100
+msgid "next image"
+msgstr "לתמונה הבאה"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:101
+msgid "&laquo; Previous"
+msgstr "&laquo;קודם"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:102
+msgid "Next &raquo;"
+msgstr " הבא &raquo;"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:103
+msgid "close image gallery"
+msgstr "סגור גלריית תמונות"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:104
+msgid "Image "
+msgstr "תמונה"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:105
+msgid " of "
+msgstr "של"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:106
+msgid "Download"
+msgstr "הורדה"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:152
+msgid "Cheatin&#8217; uh?"
+msgstr "מרמה&#8217; אה?"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:165
+msgid "Let the plugin add necessary html to image links"
+msgstr "תן לתוסף להוסיף את הקוד HTML עבור קישורי התמונות"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:165
+msgid "Auto-lightbox image links"
+msgstr "Auto-lightbox קישורי תמונה"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:172
+msgid "Disables the nofollow-attribute of comment links, that otherwise interfere with the lightbox."
+msgstr "בטל את הגדרת No-Follow של קישורי תגובות, אחרת זה עשוי להפריע לLightBox"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:172
+msgid "Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/Nofollow\">the nofollow attribute!</a>)"
+msgstr "הפעל lightbox בתגובות (מכבה את <a href=\"http://codex.wordpress.org/Nofollow\">את התכונה No-Follow</a>)"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:179
+msgid "Show download link"
+msgstr "הצג קישור הורדה"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:186
+msgid "Shrink large images to fit smaller screens"
+msgstr "כווץ תמונות גדולות כדי שיתאימו למסכים קטנים יותר"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:192
+msgid "Animation duration (in milliseconds)"
+msgstr "אורך האנימציה (במילי-שניות)"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:197
+msgid "Save Changes"
+msgstr "שמור שינויים"
+

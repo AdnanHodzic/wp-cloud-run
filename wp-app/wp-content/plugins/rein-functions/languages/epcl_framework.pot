@@ -1,0 +1,2159 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Breek Theme Options\n"
+"POT-Creation-Date: 2019-09-24 17:33-0300\n"
+"PO-Revision-Date: 2019-07-15 13:48-0400\n"
+"Last-Translator: \n"
+"Language-Team: EstudioPatagon\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"X-Poedit-Basepath: ..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e;esc_html__;esc_html_e;esc_attr__;esc_attr_e\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: widgets\n"
+
+#: admin/config.php:37
+msgid "Theme Options Panel"
+msgstr ""
+
+#: admin/config.php:45 admin/config.php:46
+msgid "Theme Options"
+msgstr ""
+
+#: admin/config.php:150
+msgid "Support"
+msgstr ""
+
+#: admin/config.php:151
+msgid ""
+"<p>If you have any kind of problem with our theme options panel don't "
+"hesitate on contact us via our <a href=\"https://estudiopatagon.ticksy.com/"
+"\" target=\"_blank\">Ticket System.</a></p>"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:10
+msgid "Advanced Settings"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:16
+msgid "Display ACF menu on the sidebar."
+msgstr ""
+
+#: admin/sections/advanced-settings.php:17
+msgid ""
+"If you are a developer, this will let you access to the ACF (Custom Fields "
+"menu) and create custom fields. After activated, you must reload."
+msgstr ""
+
+#: admin/sections/advanced-settings.php:23
+msgid "Enable Gutenberg Custom Styles"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:24
+msgid ""
+"By default the Gutenberg editor will display same background and styles from "
+"the front-end, you can disable them if you want to show the Gutenberg "
+"default styles."
+msgstr ""
+
+#: admin/sections/advanced-settings.php:30
+msgid "Enable Open Graph"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:31
+msgid ""
+"Enable Open Graph basic support, if you are using Yoast SEO, it is "
+"recommended to disable this option."
+msgstr ""
+
+#: admin/sections/advanced-settings.php:37
+msgid "Custom CSS Code"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:38
+msgid "e.g. #header{ background: #000; } Dont use &lt;style&gt; tags"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:39
+msgid "Paste your CSS code here."
+msgstr ""
+
+#: admin/sections/advanced-settings.php:46
+msgid "Custom Scripts Below <head>"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:47
+msgid ""
+"Here you can paste your Google Analytics code (not your id) or Adsense code. "
+"If you dont have it or you are already using one, just leave blank."
+msgstr ""
+
+#: admin/sections/advanced-settings.php:52
+msgid "Custom Scripts on Footer before closing </body>"
+msgstr ""
+
+#: admin/sections/advanced-settings.php:53
+msgid ""
+"Here you can paste your any custom script that will be included on Footer "
+"with less priority."
+msgstr ""
+
+#: admin/sections/advertising.php:10 metaboxes/page-home.php:341
+msgid "Advertising"
+msgstr ""
+
+#: admin/sections/advertising.php:17
+msgid "Header section"
+msgstr ""
+
+#: admin/sections/advertising.php:23
+msgid "Top Header"
+msgstr ""
+
+#: admin/sections/advertising.php:24
+msgid ""
+"This section is only visible when header layout is equal to advertising "
+"area. Size: 728x90px"
+msgstr ""
+
+#: admin/sections/advertising.php:30
+msgid "Header Advertising Type"
+msgstr ""
+
+#: admin/sections/advertising.php:44
+msgid "Header Advertising Image"
+msgstr ""
+
+#: admin/sections/advertising.php:45 admin/sections/advertising.php:104
+msgid "Recommended sizes - width: 728px, height: 90px."
+msgstr ""
+
+#: admin/sections/advertising.php:52
+msgid "Header Advertising URL"
+msgstr ""
+
+#: admin/sections/advertising.php:53 admin/sections/advertising.php:113
+#: admin/sections/advertising.php:204 admin/sections/advertising.php:287
+#: admin/sections/advertising.php:385 admin/sections/advertising.php:475
+#: admin/sections/advertising.php:578
+msgid "e.g. http://www.ads.com/myurl"
+msgstr ""
+
+#: admin/sections/advertising.php:59
+msgid "Header Custom Code"
+msgstr ""
+
+#: admin/sections/advertising.php:60 admin/sections/advertising.php:120
+#: admin/sections/advertising.php:211 admin/sections/advertising.php:294
+#: admin/sections/advertising.php:392 admin/sections/advertising.php:482
+#: admin/sections/advertising.php:585
+msgid "Here you can paste your custom advertising code."
+msgstr ""
+
+#: admin/sections/advertising.php:66
+msgid "Below Header"
+msgstr ""
+
+#: admin/sections/advertising.php:67
+msgid ""
+"This section will show a global ads (pages, single posts, archives, etc). "
+"Size: 970x90 (or ad-format=\"horizontal\" for adsense)"
+msgstr ""
+
+#: admin/sections/advertising.php:73 admin/sections/advertising.php:165
+#: admin/sections/advertising.php:248 admin/sections/advertising.php:346
+#: admin/sections/advertising.php:436 admin/sections/advertising.php:527
+msgid "Display Advertise"
+msgstr ""
+
+#: admin/sections/advertising.php:74 admin/sections/advertising.php:166
+#: admin/sections/advertising.php:249 admin/sections/advertising.php:347
+#: admin/sections/advertising.php:437 admin/sections/advertising.php:528
+msgid "Enable or disable this particular ads section."
+msgstr ""
+
+#: admin/sections/advertising.php:80 admin/sections/advertising.php:180
+#: admin/sections/advertising.php:263 admin/sections/advertising.php:361
+#: admin/sections/advertising.php:451 admin/sections/advertising.php:554
+#: metaboxes/page-home.php:347
+msgid "Advertising Type"
+msgstr ""
+
+#: admin/sections/advertising.php:92 admin/sections/advertising.php:172
+#: admin/sections/advertising.php:255 admin/sections/advertising.php:353
+#: admin/sections/advertising.php:443 admin/sections/advertising.php:534
+msgid "Display Advertise on Mobile"
+msgstr ""
+
+#: admin/sections/advertising.php:93 admin/sections/advertising.php:173
+#: admin/sections/advertising.php:256 admin/sections/advertising.php:354
+#: admin/sections/advertising.php:444 admin/sections/advertising.php:535
+msgid "Disabling ads on mobile can improve your website speed on cellphones."
+msgstr ""
+
+#: admin/sections/advertising.php:103 admin/sections/advertising.php:195
+#: admin/sections/advertising.php:278 admin/sections/advertising.php:376
+#: admin/sections/advertising.php:466 admin/sections/advertising.php:569
+msgid "Advertising Image"
+msgstr ""
+
+#: admin/sections/advertising.php:112 admin/sections/advertising.php:203
+#: admin/sections/advertising.php:286 admin/sections/advertising.php:384
+#: admin/sections/advertising.php:474 admin/sections/advertising.php:577
+msgid "Advertising URL"
+msgstr ""
+
+#: admin/sections/advertising.php:119 admin/sections/advertising.php:210
+#: admin/sections/advertising.php:293 admin/sections/advertising.php:391
+#: admin/sections/advertising.php:481 admin/sections/advertising.php:584
+msgid "Custom Code"
+msgstr ""
+
+#: admin/sections/advertising.php:125 admin/sections/advertising.php:216
+#: admin/sections/advertising.php:299 admin/sections/advertising.php:397
+#: admin/sections/advertising.php:487 admin/sections/advertising.php:590
+msgid "Spacing Top"
+msgstr ""
+
+#: admin/sections/advertising.php:127 admin/sections/advertising.php:139
+msgid "Default: 50 pixels."
+msgstr ""
+
+#: admin/sections/advertising.php:137 admin/sections/advertising.php:228
+#: admin/sections/advertising.php:311 admin/sections/advertising.php:409
+#: admin/sections/advertising.php:499 admin/sections/advertising.php:602
+msgid "Spacing Bottom"
+msgstr ""
+
+#: admin/sections/advertising.php:152
+msgid "Single Post section"
+msgstr ""
+
+#: admin/sections/advertising.php:158
+msgid "Before Post Content"
+msgstr ""
+
+#: admin/sections/advertising.php:159
+msgid "This section will show an advertise only on single post content."
+msgstr ""
+
+#: admin/sections/advertising.php:218 admin/sections/advertising.php:230
+#: admin/sections/advertising.php:301 admin/sections/advertising.php:313
+#: admin/sections/advertising.php:399 admin/sections/advertising.php:411
+#: admin/sections/advertising.php:489 admin/sections/advertising.php:501
+#: admin/sections/advertising.php:592 admin/sections/advertising.php:604
+msgid "Default: 25 pixels."
+msgstr ""
+
+#: admin/sections/advertising.php:241
+msgid "After Post content"
+msgstr ""
+
+#: admin/sections/advertising.php:242
+msgid "This section will show an advertise at the of the single post content."
+msgstr ""
+
+#: admin/sections/advertising.php:326
+msgid "Custom Ads (shortcode)"
+msgstr ""
+
+#: admin/sections/advertising.php:332
+msgid "Shortcode nº 1"
+msgstr ""
+
+#: admin/sections/advertising.php:333 admin/sections/advertising.php:423
+msgid ""
+"This section can be displayed anywhere on the website, just copy and paste "
+"the shortcode below."
+msgstr ""
+
+#: admin/sections/advertising.php:339 admin/sections/advertising.php:429
+msgid "Shortcode"
+msgstr ""
+
+#: admin/sections/advertising.php:422
+msgid "Shortcode nº 2"
+msgstr ""
+
+#: admin/sections/advertising.php:514
+msgid "Ads on grid loop"
+msgstr ""
+
+#: admin/sections/advertising.php:521
+msgid ""
+"This section will be displayed between posts, specifically on grids articles "
+"loop."
+msgstr ""
+
+#: admin/sections/advertising.php:542
+msgid "Ads position"
+msgstr ""
+
+#: admin/sections/advertising.php:543
+msgid "Recommended: 5"
+msgstr ""
+
+#: admin/sections/advertising.php:544
+msgid "Set the position that will use this ads on the main loop."
+msgstr ""
+
+#: admin/sections/blog.php:10
+msgid "Blog"
+msgstr ""
+
+#: admin/sections/blog.php:17
+msgid "Global Options"
+msgstr ""
+
+#: admin/sections/blog.php:24
+msgid "Display Date"
+msgstr ""
+
+#: admin/sections/blog.php:25
+msgid ""
+"If is OFF, it will disable dates on posts, lists, carousel, widgets, etc."
+msgstr ""
+
+#: admin/sections/blog.php:31
+msgid "Display Comments Counter"
+msgstr ""
+
+#: admin/sections/blog.php:32
+msgid "If is OFF, it will disable comments on posts, lists, etc."
+msgstr ""
+
+#: admin/sections/blog.php:38
+msgid "Display Views Counter"
+msgstr ""
+
+#: admin/sections/blog.php:39
+msgid "If is ON, it will enable views counter on posts, lists, etc."
+msgstr ""
+
+#: admin/sections/blog.php:45
+msgid "Display Categories"
+msgstr ""
+
+#: admin/sections/blog.php:46
+msgid ""
+"If is OFF, it will disable categories on posts, lists, carousel, widgets, "
+"etc."
+msgstr ""
+
+#: admin/sections/blog.php:52
+msgid "Number of visible categories"
+msgstr ""
+
+#: admin/sections/blog.php:53
+msgid ""
+"By default there is a max amount of 2 category buttons displayed, you can "
+"increase/reduce this amount."
+msgstr ""
+
+#: admin/sections/blog.php:62
+msgid "Comments Support"
+msgstr ""
+
+#: admin/sections/blog.php:63 admin/sections/blog.php:71
+msgid "This option affects posts and pages."
+msgstr ""
+
+#: admin/sections/blog.php:70
+msgid "Disqus ID"
+msgstr ""
+
+#: admin/sections/blog.php:77
+msgid "Facebook Language Code"
+msgstr ""
+
+#: admin/sections/blog.php:78
+msgid ""
+"<b>es_ES</b> = spanish, <b>en_US</b> = English, <b>fr_FR</b> = French."
+"<br>You can search for your <a href=\"https://gist.github.com/"
+"mechastorm/3626739\">code here.</a>."
+msgstr ""
+
+#: admin/sections/blog.php:84
+msgid "Facebook Moderation APP ID"
+msgstr ""
+
+#: admin/sections/blog.php:85
+msgid ""
+"It is recommended to create an APP and link to your FB comments to moderate "
+"it, <a href=\"https://developers.facebook.com/docs/plugins/comments/"
+"#moderation\">check all information here.</a>"
+msgstr ""
+
+#: admin/sections/blog.php:94 metaboxes/page-home.php:31
+msgid "Grid Posts"
+msgstr ""
+
+#: admin/sections/blog.php:103 admin/sections/styling.php:433
+msgid "Important:"
+msgstr ""
+
+#: admin/sections/blog.php:104
+msgid ""
+"All these options affects grid post with 3 columns and grid with sidebar (2 "
+"columns)"
+msgstr ""
+
+#: admin/sections/blog.php:109 admin/sections/blog.php:155
+msgid "Display Author"
+msgstr ""
+
+#: admin/sections/blog.php:110
+msgid "If disabled, this option will hide author and resources counter."
+msgstr ""
+
+#: admin/sections/blog.php:116 admin/sections/blog.php:162
+msgid "Display Excerpt"
+msgstr ""
+
+#: admin/sections/blog.php:117 admin/sections/blog.php:163
+msgid "If disabled, all words after your posts titles."
+msgstr ""
+
+#: admin/sections/blog.php:123 admin/sections/blog.php:169
+msgid "Excerpt length"
+msgstr ""
+
+#: admin/sections/blog.php:124
+msgid "The max number of words to show after post titles. Recommended: 17"
+msgstr ""
+
+#: admin/sections/blog.php:131 admin/sections/blog.php:177
+msgid "Display Reading Button"
+msgstr ""
+
+#: admin/sections/blog.php:132 admin/sections/blog.php:178
+msgid "Enable continue reading button."
+msgstr ""
+
+#: admin/sections/blog.php:148 admin/sections/blog.php:204
+#: admin/sections/blog.php:217 admin/sections/blog.php:230
+#: metaboxes/page-home.php:164
+msgid "Classic Posts"
+msgstr ""
+
+#: admin/sections/blog.php:156
+msgid "If disabled, this option will hide author."
+msgstr ""
+
+#: admin/sections/blog.php:170
+msgid "The max number of words to show after post titles. Recommended: 19"
+msgstr ""
+
+#: admin/sections/blog.php:194
+msgid "Layouts"
+msgstr ""
+
+#: admin/sections/blog.php:201
+msgid "Articles layout on posts page (homepage without modules)."
+msgstr ""
+
+#: admin/sections/blog.php:202
+msgid ""
+"By default is used classic posts, some customers uses 1 page as homepage and "
+"another one for Blog."
+msgstr ""
+
+#: admin/sections/blog.php:205 admin/sections/blog.php:218
+#: admin/sections/blog.php:231
+msgid "Grid 3 columns"
+msgstr ""
+
+#: admin/sections/blog.php:206 admin/sections/blog.php:219
+#: admin/sections/blog.php:232
+msgid "Grid 4 columns"
+msgstr ""
+
+#: admin/sections/blog.php:207 admin/sections/blog.php:220
+#: admin/sections/blog.php:233
+msgid "Grid with sidebar"
+msgstr ""
+
+#: admin/sections/blog.php:214
+msgid "Articles layout on archives page."
+msgstr ""
+
+#: admin/sections/blog.php:215 admin/sections/blog.php:228
+msgid "By default is used classic posts."
+msgstr ""
+
+#: admin/sections/blog.php:227
+msgid "Articles layout on search results page."
+msgstr ""
+
+#: admin/sections/blog.php:243
+msgid "Single Post Content"
+msgstr ""
+
+#: admin/sections/blog.php:250
+msgid "Post Layout"
+msgstr ""
+
+#: admin/sections/blog.php:252
+msgid ""
+"This option will override any post setting, it is useful if you want to show "
+"all your post with the same layout.<br><b>Important:</b> this option only "
+"affects standard posts with images, not video or galleries."
+msgstr ""
+
+#: admin/sections/blog.php:259
+msgid "Display Featured image globally"
+msgstr ""
+
+#: admin/sections/blog.php:260
+msgid "If is OFF, all featured images from all posts will be hidden."
+msgstr ""
+
+#: admin/sections/blog.php:266
+msgid "Display Meta data on Single Post"
+msgstr ""
+
+#: admin/sections/blog.php:267
+msgid "Enable the date, comments and views counter."
+msgstr ""
+
+#: admin/sections/blog.php:273
+msgid "Display Author information (next to the date)"
+msgstr ""
+
+#: admin/sections/blog.php:274 admin/sections/blog.php:288
+msgid "This option only affects posts."
+msgstr ""
+
+#: admin/sections/blog.php:280
+msgid "Display Category"
+msgstr ""
+
+#: admin/sections/blog.php:281
+msgid "If is OFF, it will disable categories only for single post."
+msgstr ""
+
+#: admin/sections/blog.php:287
+msgid "Display Author Box (below post content)"
+msgstr ""
+
+#: admin/sections/blog.php:294
+msgid "Display related posts"
+msgstr ""
+
+#: admin/sections/blog.php:295
+msgid "This option will enable related posts after the author information."
+msgstr ""
+
+#: admin/sections/blog.php:301
+msgid "Display next/prev posts"
+msgstr ""
+
+#: admin/sections/blog.php:302
+msgid "This option will enable siblings posts after the author information."
+msgstr ""
+
+#: admin/sections/blog.php:311
+msgid "Share Buttons"
+msgstr ""
+
+#: admin/sections/blog.php:318
+msgid "Display Share Buttons"
+msgstr ""
+
+#: admin/sections/blog.php:319
+msgid "Show share buttons on the bottom of the post."
+msgstr ""
+
+#: admin/sections/blog.php:325
+msgid "Display Share Buttons on Pages"
+msgstr ""
+
+#: admin/sections/blog.php:326
+msgid "Show share buttons on the bottom of the page."
+msgstr ""
+
+#: admin/sections/blog.php:332
+msgid "Display Sticky Share Buttons"
+msgstr ""
+
+#: admin/sections/blog.php:333
+msgid "Show floating share buttons at the left of the post."
+msgstr ""
+
+#: admin/sections/blog.php:339
+msgid "Display Sticky Share Buttons on Pages"
+msgstr ""
+
+#: admin/sections/blog.php:340
+msgid "Show floating share buttons at the left of all pages."
+msgstr ""
+
+#: admin/sections/blog.php:346
+msgid "Display Facebook"
+msgstr ""
+
+#: admin/sections/blog.php:347 admin/sections/blog.php:354
+#: admin/sections/blog.php:375 admin/sections/blog.php:382
+#: admin/sections/blog.php:389
+msgid "Enable or disable this specific network."
+msgstr ""
+
+#: admin/sections/blog.php:353
+msgid "Display Twitter"
+msgstr ""
+
+#: admin/sections/blog.php:360
+msgid "Display Whatsapp"
+msgstr ""
+
+#: admin/sections/blog.php:361
+msgid "Enable or disable this specific network (only visible on mobile)."
+msgstr ""
+
+#: admin/sections/blog.php:367
+msgid "Display Email"
+msgstr ""
+
+#: admin/sections/blog.php:368
+msgid "Enable or disable share by email."
+msgstr ""
+
+#: admin/sections/blog.php:374
+msgid "Display Pinterest"
+msgstr ""
+
+#: admin/sections/blog.php:381
+msgid "Display Linkedin"
+msgstr ""
+
+#: admin/sections/blog.php:388
+msgid "Display Telegram"
+msgstr ""
+
+#: admin/sections/blog.php:395
+msgid "Display VKontakte"
+msgstr ""
+
+#: admin/sections/blog.php:396
+msgid "Enable or disable this specific network (popular on Russia)."
+msgstr ""
+
+#: admin/sections/footer.php:10 admin/sections/styling.php:525
+msgid "Footer"
+msgstr ""
+
+#: admin/sections/footer.php:16
+msgid "Enable Footer Social box"
+msgstr ""
+
+#: admin/sections/footer.php:18 admin/sections/header.php:42
+msgid "Don't forget to fill your social profiles"
+msgstr ""
+
+#: admin/sections/footer.php:18 admin/sections/header.php:42
+msgid "here"
+msgstr ""
+
+#: admin/sections/footer.php:25
+msgid "Title Social Box"
+msgstr ""
+
+#: admin/sections/footer.php:26
+msgid "e.g. Follow me!"
+msgstr ""
+
+#: admin/sections/footer.php:31
+msgid "Enable Footer Instagram Images"
+msgstr ""
+
+#: admin/sections/footer.php:40
+msgid "Instagram User ID"
+msgstr ""
+
+#: admin/sections/footer.php:41
+msgid "e.g. estudiopatagon"
+msgstr ""
+
+#: admin/sections/footer.php:47
+msgid "Instagram Access Token"
+msgstr ""
+
+#: admin/sections/footer.php:48
+msgid ""
+"You can follow <a href=\"https://elfsight.com/blog/2016/05/how-to-get-"
+"instagram-access-token/\">this guide</a> to create your own access token."
+"<br><br>e.g: <b>18432875969.f88701c.66a2ebcac14b41b78e81a5b99e48b651</b>"
+msgstr ""
+
+#: admin/sections/footer.php:54
+msgid "Enable Footer Widgets"
+msgstr ""
+
+#: admin/sections/footer.php:55
+msgid "Display a set of 3 columns widget on Footer"
+msgstr ""
+
+#: admin/sections/footer.php:61
+msgid "Footer copyright text (optional)"
+msgstr ""
+
+#: admin/sections/footer.php:62 admin/sections/header.php:197
+msgid "HTML and Shortcodes are allowed"
+msgstr ""
+
+#: admin/sections/footer.php:72
+msgid "Enable back to top button"
+msgstr ""
+
+#: admin/sections/footer.php:79
+msgid "Enable Logo on Footer"
+msgstr ""
+
+#: admin/sections/footer.php:80
+msgid ""
+"By default is used your from the header, you can upload a custom logo below."
+msgstr ""
+
+#: admin/sections/footer.php:86
+msgid "Enable custom Logo on Footer"
+msgstr ""
+
+#: admin/sections/footer.php:87
+msgid ""
+"By default is used the same one from the header, you can activate this "
+"option to upload a custom logo."
+msgstr ""
+
+#: admin/sections/footer.php:93
+msgid "Footer Logo Type"
+msgstr ""
+
+#: admin/sections/footer.php:95 admin/sections/header.php:68
+msgid "Select image if you want to upload a custom logo."
+msgstr ""
+
+#: admin/sections/footer.php:105 admin/sections/header.php:77
+msgid "Logo icon (optional)"
+msgstr ""
+
+#: admin/sections/footer.php:106 admin/sections/header.php:78
+msgid "e.g. fa-shield"
+msgstr ""
+
+#: admin/sections/footer.php:112 admin/sections/header.php:91
+msgid "Logo Icon Color"
+msgstr ""
+
+#: admin/sections/footer.php:121 admin/sections/header.php:100
+msgid "Logo Text Color"
+msgstr ""
+
+#: admin/sections/footer.php:132 admin/sections/header.php:111
+msgid "Logo Uploader"
+msgstr ""
+
+#: admin/sections/footer.php:133
+msgid "Recommended sizes - width: 200px, height: 50px."
+msgstr ""
+
+#: admin/sections/footer.php:140 admin/sections/header.php:129
+msgid "Logo width (Optional)"
+msgstr ""
+
+#: admin/sections/footer.php:141
+msgid "Default: 200 (pixels)"
+msgstr ""
+
+#: admin/sections/general-settings.php:10
+msgid "General Settings"
+msgstr ""
+
+#: admin/sections/general-settings.php:16 admin/sections/styling.php:38
+msgid "Background Type"
+msgstr ""
+
+#: admin/sections/general-settings.php:31 admin/sections/styling.php:53
+msgid "Body Background Color"
+msgstr ""
+
+#: admin/sections/general-settings.php:32 admin/sections/styling.php:54
+msgid "Pick a background color for the theme."
+msgstr ""
+
+#: admin/sections/general-settings.php:43 admin/sections/styling.php:65
+msgid "Pattern Uploader"
+msgstr ""
+
+#: admin/sections/general-settings.php:44 admin/sections/styling.php:66
+msgid "You can get a lot of free patterns on http://subtlepatterns.com"
+msgstr ""
+
+#: admin/sections/general-settings.php:52 admin/sections/styling.php:74
+msgid "Fullscreen Image"
+msgstr ""
+
+#: admin/sections/general-settings.php:53 admin/sections/styling.php:75
+msgid "Recommended size: 1920x1080 pixels"
+msgstr ""
+
+#: admin/sections/general-settings.php:59 admin/sections/styling.php:81
+msgid "Gradient Color"
+msgstr ""
+
+#: admin/sections/general-settings.php:60 admin/sections/styling.php:82
+msgid "Pick 2 different colors for the gradient."
+msgstr ""
+
+#: admin/sections/header.php:10 admin/sections/styling.php:156
+msgid "Header"
+msgstr ""
+
+#: admin/sections/header.php:16
+msgid "<strong style=\"font-size: 16px;\">Headers</strong>"
+msgstr ""
+
+#: admin/sections/header.php:21
+msgid "Header Layout"
+msgstr ""
+
+#: admin/sections/header.php:29
+msgid ""
+"Important: if advertising area is selected, you must add your banner on "
+"advertising section -> header."
+msgstr ""
+
+#: admin/sections/header.php:34
+msgid "Enable sticky header"
+msgstr ""
+
+#: admin/sections/header.php:41
+msgid "Enable Share Buttons on Header"
+msgstr ""
+
+#: admin/sections/header.php:48
+msgid "Enable Search Button on main menu"
+msgstr ""
+
+#: admin/sections/header.php:54
+msgid "Enable Scroll on Sub Menus"
+msgstr ""
+
+#: admin/sections/header.php:55
+msgid ""
+"If you have large sub menus, it is recommendable to enable this option, but "
+"you can't use 2nd level menus <a href=\"http://prntscr.com/lal72g\" target="
+"\"_blank\">Example Here</a>"
+msgstr ""
+
+#: admin/sections/header.php:61
+msgid "<strong style=\"font-size: 16px;\">Logo</strong>"
+msgstr ""
+
+#: admin/sections/header.php:66
+msgid "Logo Type"
+msgstr ""
+
+#: admin/sections/header.php:112
+msgid "Recommended sizes - width: 160px, height: 60px."
+msgstr ""
+
+#: admin/sections/header.php:130 admin/sections/header.php:149
+msgid "Default: 160 (pixels)"
+msgstr ""
+
+#: admin/sections/header.php:140
+msgid "Sticky Logo Uploader (Optional)"
+msgstr ""
+
+#: admin/sections/header.php:141
+msgid ""
+"If blank, logo image will be used. Recommended size - width: 160px, height: "
+"40px."
+msgstr ""
+
+#: admin/sections/header.php:148
+msgid "Sticky Logo width (Optional)"
+msgstr ""
+
+#: admin/sections/header.php:176
+msgid "<strong style=\"font-size: 16px;\">Notice / Advertise</strong>"
+msgstr ""
+
+#: admin/sections/header.php:181
+msgid "Display Header Notice"
+msgstr ""
+
+#: admin/sections/header.php:188
+msgid "Display Notice close button"
+msgstr ""
+
+#: admin/sections/header.php:189
+msgid ""
+"If an user click the close button, the notice will be removed for 5 days."
+msgstr ""
+
+#: admin/sections/header.php:196
+msgid "Notice text"
+msgstr ""
+
+#: admin/sections/optimization.php:10
+msgid "Optimization"
+msgstr ""
+
+#: admin/sections/optimization.php:16
+msgid "Enable Speed Optimization"
+msgstr ""
+
+#: admin/sections/optimization.php:18
+msgid ""
+"This will move the main theme styles to the footer and load minified CSS and "
+"JS libraries. If you are not comfortable with website load (some jumps when "
+"loading), just disable this option."
+msgstr ""
+
+#: admin/sections/optimization.php:24
+msgid "Move jQuery to Footer"
+msgstr ""
+
+#: admin/sections/optimization.php:26
+msgid ""
+"This will the main javascript framework to the footer and will increase "
+"Google Page Score. If you are experiencing any error on the console, just "
+"disable this option."
+msgstr ""
+
+#: admin/sections/optimization.php:32
+msgid "Remove Gutenberg Styles"
+msgstr ""
+
+#: admin/sections/optimization.php:34
+msgid ""
+"This will remove Gutenberg styles from the <head> only activate it if you "
+"and all your website users (writers) are using the Classic Editor, use with "
+"caution."
+msgstr ""
+
+#: admin/sections/optimization.php:40
+msgid "Remove Gutenberg Styles on Home"
+msgstr ""
+
+#: admin/sections/optimization.php:42
+msgid ""
+"You can safely remove Gutenberg Styles if your home is not using any custom "
+"text."
+msgstr ""
+
+#: admin/sections/optimization.php:48
+msgid "Enable Lazy Load (Lists)"
+msgstr ""
+
+#: admin/sections/optimization.php:49
+msgid "For loops: home pages, archives and categories."
+msgstr ""
+
+#: admin/sections/optimization.php:50
+msgid ""
+"This will load your images when scrolling (this option can improve your "
+"website overall speed)."
+msgstr ""
+
+#: admin/sections/optimization.php:56
+msgid "Enable Lazy Load (Post)"
+msgstr ""
+
+#: admin/sections/optimization.php:57
+msgid "For single post content."
+msgstr ""
+
+#: admin/sections/optimization.php:58
+msgid "This will load your images when scrolling only for articles content."
+msgstr ""
+
+#: admin/sections/optimization.php:64
+msgid "Enable Lazy Load (Embeds)"
+msgstr ""
+
+#: admin/sections/optimization.php:66
+msgid ""
+"This will load your videos/embeds when scrolling only works for Vimeo/"
+"Youtube and iframes in general."
+msgstr ""
+
+#: admin/sections/optimization.php:72
+msgid "Enable Lazy Load (Adsense)"
+msgstr ""
+
+#: admin/sections/optimization.php:73
+msgid "Beta feature use with caution."
+msgstr ""
+
+#: admin/sections/optimization.php:74
+msgid ""
+"This will load your adsense blocks when scrolling.<br><b>Important:</b> "
+"don't include any kind of <br>&lt;script async src=\"//pagead2."
+"googlesyndication.com/pagead/js/adsbygoogle.js\"> tag to maximize your "
+"website speed.<br>This option will load that script dynamically."
+msgstr ""
+
+#: admin/sections/shop.php:10
+msgid "Shop"
+msgstr ""
+
+#: admin/sections/shop.php:17
+msgid "Display Search Box on Filters"
+msgstr ""
+
+#: admin/sections/shop.php:18 admin/sections/shop.php:33
+msgid "This option affects the global articles list with filters (red one)."
+msgstr ""
+
+#: admin/sections/shop.php:24
+msgid "Search box Text"
+msgstr ""
+
+#: admin/sections/shop.php:26
+msgid "By default: Search in the shop..."
+msgstr ""
+
+#: admin/sections/shop.php:32
+msgid "Display Sort Select Box on Filters"
+msgstr ""
+
+#: admin/sections/sidebars.php:10
+msgid "Sidebars"
+msgstr ""
+
+#: admin/sections/sidebars.php:21
+msgid "Enable Sticky Sidebar"
+msgstr ""
+
+#: admin/sections/sidebars.php:22
+msgid ""
+"When an user scroll down your website, the sidebar will stick until he reach "
+"the bottom."
+msgstr ""
+
+#: admin/sections/sidebars.php:28
+msgid "Enable Sidebar on Posts"
+msgstr ""
+
+#: admin/sections/sidebars.php:30
+msgid ""
+"This option will override any post setting, it is useful if you want to "
+"disable all sidebars inside your posts."
+msgstr ""
+
+#: admin/sections/sidebars.php:37
+msgid "Enable Sidebar on Pages"
+msgstr ""
+
+#: admin/sections/sidebars.php:39
+msgid ""
+"This option will override any post setting, it is useful if you want to "
+"disable all sidebars inside your pages."
+msgstr ""
+
+#: admin/sections/sidebars.php:47
+msgid "Custom Sidebar for pages and posts"
+msgstr ""
+
+#: admin/sections/sidebars.php:48
+msgid "Enter an unique name"
+msgstr ""
+
+#: admin/sections/sidebars.php:49
+msgid ""
+"You must enter an unique name for every added sidebar (duplicated sidebars "
+"will be removed)."
+msgstr ""
+
+#: admin/sections/sidebars.php:55
+msgid ""
+"<strong style=\"font-size: 16px;\">Mobile Settings</strong>.<br>All devices "
+"below 768px of width (cellphones and small tablets)."
+msgstr ""
+
+#: admin/sections/sidebars.php:60
+msgid "Display page sidebar on mobile devices"
+msgstr ""
+
+#: admin/sections/sidebars.php:61
+msgid ""
+"If disabled, right sidebar (home, page, post, etc) will not be displayed. "
+"Useful if you want to display only your content on these devices."
+msgstr ""
+
+#: admin/sections/sidebars.php:67
+msgid "Mobile Page Sidebar"
+msgstr ""
+
+#: admin/sections/sidebars.php:68
+msgid ""
+"Leave blank to use the default page sidebar.<br>You can add a new custom "
+"sidebar at the top of this page, then click save to see it here."
+msgstr ""
+
+#: admin/sections/sidebars.php:74
+msgid "Display footer sidebar on mobile devices"
+msgstr ""
+
+#: admin/sections/sidebars.php:75
+msgid ""
+"If disabled, all widgets on tablet and mobile devices will be disabled. "
+"Useful if you want to display only the content on these devices."
+msgstr ""
+
+#: admin/sections/sidebars.php:81
+msgid "Mobile Footer Sidebar"
+msgstr ""
+
+#: admin/sections/sidebars.php:82
+msgid ""
+"Leave blank to use the default footer sidebar.<br>You can add a new custom "
+"sidebar at the top of this page, then click save to see it here."
+msgstr ""
+
+#: admin/sections/social-profiles.php:10
+msgid "Social Profiles"
+msgstr ""
+
+#: admin/sections/social-profiles.php:25 metaboxes/user.php:21
+msgid "Twitter URL"
+msgstr ""
+
+#: admin/sections/social-profiles.php:26
+msgid "e.g. https://twitter.com/estudiopatagon"
+msgstr ""
+
+#: admin/sections/social-profiles.php:32 metaboxes/user.php:14
+msgid "Facebook URL"
+msgstr ""
+
+#: admin/sections/social-profiles.php:33 metaboxes/user.php:15
+msgid "e.g. http://www.facebook.com/estudiopatagon"
+msgstr ""
+
+#: admin/sections/social-profiles.php:39
+msgid "Instagram url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:40
+msgid "e.g. https://instagram.com/wordpress"
+msgstr ""
+
+#: admin/sections/social-profiles.php:46
+msgid "Linkedin url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:47
+msgid "e.g. https://www.linkedin.com/in/my-name/"
+msgstr ""
+
+#: admin/sections/social-profiles.php:53
+msgid "Pinterest url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:54
+msgid "e.g. https://www.pinterest.com/envato"
+msgstr ""
+
+#: admin/sections/social-profiles.php:60
+msgid "Dribbble url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:61
+msgid "e.g. http://dribbble.com/wordpress"
+msgstr ""
+
+#: admin/sections/social-profiles.php:67
+msgid "Tumblr URL"
+msgstr ""
+
+#: admin/sections/social-profiles.php:68
+msgid "e.g. http://iamcollis.tumblr.com"
+msgstr ""
+
+#: admin/sections/social-profiles.php:74
+msgid "Youtube url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:75
+msgid "e.g. https://www.youtube.com/user/wordpress"
+msgstr ""
+
+#: admin/sections/social-profiles.php:81
+msgid "Flickr url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:82
+msgid "e.g. http://www.flickr.com/photos/wordpress"
+msgstr ""
+
+#: admin/sections/social-profiles.php:88
+msgid "Twitch url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:89
+msgid "e.g. https://www.twitch.tv/name"
+msgstr ""
+
+#: admin/sections/social-profiles.php:95
+msgid "Vkontakte url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:96
+msgid "e.g. https://www.vk.com/name"
+msgstr ""
+
+#: admin/sections/social-profiles.php:102
+msgid "Telegram url"
+msgstr ""
+
+#: admin/sections/social-profiles.php:103
+msgid "e.g. https://t.me/username"
+msgstr ""
+
+#: admin/sections/social-profiles.php:109
+msgid "RSS URL"
+msgstr ""
+
+#: admin/sections/social-profiles.php:110
+msgid "e.g. http://estudiopatagon.com/feed"
+msgstr ""
+
+#: admin/sections/styling.php:24
+msgid "Styling"
+msgstr ""
+
+#: admin/sections/styling.php:31
+msgid "Body Background"
+msgstr ""
+
+#: admin/sections/styling.php:97
+msgid "Basic Styling"
+msgstr ""
+
+#: admin/sections/styling.php:104
+msgid "Primary color "
+msgstr ""
+
+#: admin/sections/styling.php:106 admin/sections/styling.php:115
+#: admin/sections/styling.php:124 admin/sections/styling.php:133
+#: admin/sections/styling.php:200 admin/sections/styling.php:209
+#: admin/sections/styling.php:218 admin/sections/styling.php:238
+#: admin/sections/styling.php:248 admin/sections/styling.php:258
+#: admin/sections/styling.php:285 admin/sections/styling.php:392
+#: admin/sections/styling.php:405 admin/sections/styling.php:414
+#: admin/sections/styling.php:441 admin/sections/styling.php:450
+#: admin/sections/styling.php:466 admin/sections/styling.php:475
+#: admin/sections/styling.php:515 admin/sections/styling.php:544
+#: admin/sections/styling.php:552 admin/sections/styling.php:573
+#: admin/sections/styling.php:582 admin/sections/styling.php:590
+msgid "Default: "
+msgstr ""
+
+#: admin/sections/styling.php:113
+msgid "Secondary color "
+msgstr ""
+
+#: admin/sections/styling.php:122
+msgid "Text Color "
+msgstr ""
+
+#: admin/sections/styling.php:131
+msgid "Main boxes background color"
+msgstr ""
+
+#: admin/sections/styling.php:134
+msgid ""
+"This background apply on main content list, pages and also as background on "
+"footer menu and social section."
+msgstr ""
+
+#: admin/sections/styling.php:141
+msgid "Main gradient effect color"
+msgstr ""
+
+#: admin/sections/styling.php:142
+msgid "Hover color for post titles, header active menu item, etc."
+msgstr ""
+
+#: admin/sections/styling.php:163
+msgid "Header Background color"
+msgstr ""
+
+#: admin/sections/styling.php:165 admin/sections/styling.php:534
+msgid "Default: transparent"
+msgstr ""
+
+#: admin/sections/styling.php:172
+msgid "Menu links color"
+msgstr ""
+
+#: admin/sections/styling.php:185
+msgid "Submenu links color"
+msgstr ""
+
+#: admin/sections/styling.php:198
+msgid "Header Submenu Background color"
+msgstr ""
+
+#: admin/sections/styling.php:207
+msgid "Header Sticky Background color"
+msgstr ""
+
+#: admin/sections/styling.php:216
+msgid "Header Mobile Icon color"
+msgstr ""
+
+#: admin/sections/styling.php:219
+msgid ""
+"This is the menu bar icon, only appears on mobile to show/hide the main menu."
+msgstr ""
+
+#: admin/sections/styling.php:229
+msgid "Content"
+msgstr ""
+
+#: admin/sections/styling.php:236
+msgid "Selection background color"
+msgstr ""
+
+#: admin/sections/styling.php:239 admin/sections/styling.php:249
+msgid "You will see this event whenever a user make a text selection."
+msgstr ""
+
+#: admin/sections/styling.php:246
+msgid "Selection text color"
+msgstr ""
+
+#: admin/sections/styling.php:256
+msgid "Main container background color"
+msgstr ""
+
+#: admin/sections/styling.php:259
+msgid ""
+"This is the main container is used for post list and single post content. By "
+"default is the same color as \"Boxes background color\""
+msgstr ""
+
+#: admin/sections/styling.php:266
+msgid "Content border color"
+msgstr ""
+
+#: admin/sections/styling.php:269
+msgid "Border between some article elements and used on the main sidebar."
+msgstr ""
+
+#: admin/sections/styling.php:283
+msgid "Main titles color"
+msgstr ""
+
+#: admin/sections/styling.php:295
+msgid "Buttons/Links"
+msgstr ""
+
+#: admin/sections/styling.php:302
+msgid "General link color"
+msgstr ""
+
+#: admin/sections/styling.php:303
+msgid "Default: #DADEED, Hover: #ffffff"
+msgstr ""
+
+#: admin/sections/styling.php:314
+msgid "Main button background color"
+msgstr ""
+
+#: admin/sections/styling.php:316 admin/sections/styling.php:502
+msgid "Default: same as main gradient"
+msgstr ""
+
+#: admin/sections/styling.php:328
+msgid "Main button text color"
+msgstr ""
+
+#: admin/sections/styling.php:337
+msgid "Default Tag button text color"
+msgstr ""
+
+#: admin/sections/styling.php:338
+msgid "Default: #ffffff, Hover: #ffffff"
+msgstr ""
+
+#: admin/sections/styling.php:349
+msgid "Default Tag decoration color"
+msgstr ""
+
+#: admin/sections/styling.php:350
+msgid "Default: #7169FE, hover: #8338EC"
+msgstr ""
+
+#: admin/sections/styling.php:351
+msgid "This is the small circle on the left."
+msgstr ""
+
+#: admin/sections/styling.php:365
+msgid "Sidebar"
+msgstr ""
+
+#: admin/sections/styling.php:382
+msgid "Sidebar text color"
+msgstr ""
+
+#: admin/sections/styling.php:391
+msgid "Sidebar links color"
+msgstr ""
+
+#: admin/sections/styling.php:403
+msgid "Sidebar titles color"
+msgstr ""
+
+#: admin/sections/styling.php:412
+msgid "Sidebar title border color"
+msgstr ""
+
+#: admin/sections/styling.php:424
+msgid "Forms"
+msgstr ""
+
+#: admin/sections/styling.php:434
+msgid "All these options affects contact and comments form."
+msgstr ""
+
+#: admin/sections/styling.php:439
+msgid "Input box background color"
+msgstr ""
+
+#: admin/sections/styling.php:448
+msgid "Input box border color"
+msgstr ""
+
+#: admin/sections/styling.php:464
+msgid "Input box text color"
+msgstr ""
+
+#: admin/sections/styling.php:473
+msgid "Label text color"
+msgstr ""
+
+#: admin/sections/styling.php:500
+msgid "Submit button background color"
+msgstr ""
+
+#: admin/sections/styling.php:513
+msgid "Submit button text color"
+msgstr ""
+
+#: admin/sections/styling.php:532
+msgid "Footer background color"
+msgstr ""
+
+#: admin/sections/styling.php:542
+msgid "Footer text color"
+msgstr ""
+
+#: admin/sections/styling.php:551
+msgid "Footer links color"
+msgstr ""
+
+#: admin/sections/styling.php:563
+msgid "Footer titles color"
+msgstr ""
+
+#: admin/sections/styling.php:565
+msgid "Default: #ffffff"
+msgstr ""
+
+#: admin/sections/styling.php:572
+msgid "Footer title border color"
+msgstr ""
+
+#: admin/sections/styling.php:580
+msgid "Footer copyright text color"
+msgstr ""
+
+#: admin/sections/styling.php:589
+msgid "Footer copyright links color"
+msgstr ""
+
+#: admin/sections/subscribe.php:10
+msgid "Subscribe Settings"
+msgstr ""
+
+#: admin/sections/subscribe.php:17
+msgid "Subscribe Url"
+msgstr ""
+
+#: admin/sections/subscribe.php:18
+msgid ""
+"You can use a Mailchimp Form or any mailing system that generate a public "
+"Url. (Mailchimp is recommended, check the documentation)."
+msgstr ""
+
+#: admin/sections/subscribe.php:20
+msgid "e.g. http://eepurl.com/dxHIUz"
+msgstr ""
+
+#: admin/sections/subscribe.php:25
+msgid "Display subscribe button on Header"
+msgstr ""
+
+#: admin/sections/subscribe.php:26 admin/sections/subscribe.php:40
+msgid "You must enter a valid Mailchimp url to use this section."
+msgstr ""
+
+#: admin/sections/subscribe.php:32
+msgid "Title of subscribe header button"
+msgstr ""
+
+#: admin/sections/subscribe.php:33
+msgid "e.g. Subscribe"
+msgstr ""
+
+#: admin/sections/subscribe.php:39
+msgid "Display subscribe section on Footer"
+msgstr ""
+
+#: admin/sections/subscribe.php:55
+msgid "Title of subscribe section (Optional)"
+msgstr ""
+
+#: admin/sections/subscribe.php:56
+msgid "e.g. Subscribe to Rein"
+msgstr ""
+
+#: admin/sections/subscribe.php:62
+msgid "Description of subscribe section (Optional)"
+msgstr ""
+
+#: admin/sections/subscribe.php:63
+msgid "e.g. Get the latest posts delivered right to your email."
+msgstr ""
+
+#: admin/sections/typography.php:10
+msgid "Typography"
+msgstr ""
+
+#: admin/sections/typography.php:16
+msgid "Generals Fonts"
+msgstr ""
+
+#: admin/sections/typography.php:17
+msgid ""
+"Global font families for all sections, including pages, posts, sidebar and "
+"footer."
+msgstr ""
+
+#: admin/sections/typography.php:23
+msgid "Regular Text Font"
+msgstr ""
+
+#: admin/sections/typography.php:24 admin/sections/typography.php:81
+#: admin/sections/typography.php:120
+msgid "Default: Muli, 15px light (300)"
+msgstr ""
+
+#: admin/sections/typography.php:40
+msgid "Primary Titles Font Family"
+msgstr ""
+
+#: admin/sections/typography.php:41
+msgid "Default: Playfair Display, bold (700)"
+msgstr ""
+
+#: admin/sections/typography.php:42
+msgid "e.g. Article titles, box titles, page titles, etc."
+msgstr ""
+
+#: admin/sections/typography.php:57
+msgid "Sidebar Fonts"
+msgstr ""
+
+#: admin/sections/typography.php:58
+msgid ""
+"Font families only for Sidebar, leave blank if you want the same fonts as "
+"general section."
+msgstr ""
+
+#: admin/sections/typography.php:64
+msgid "Sidebar Titles Font Family"
+msgstr ""
+
+#: admin/sections/typography.php:65 admin/sections/typography.php:104
+msgid "Default: Playfair Display, bold"
+msgstr ""
+
+#: admin/sections/typography.php:80
+msgid "Sidebar regular Font Family"
+msgstr ""
+
+#: admin/sections/typography.php:96
+msgid "Footer Fonts"
+msgstr ""
+
+#: admin/sections/typography.php:97
+msgid ""
+"Font families only for Footer, leave blank if you want the same fonts as "
+"general section."
+msgstr ""
+
+#: admin/sections/typography.php:103
+msgid "Footer Titles Font Family"
+msgstr ""
+
+#: admin/sections/typography.php:119
+msgid "Footer regular Font Family"
+msgstr ""
+
+#: admin/sections/typography.php:138
+msgid "Important!"
+msgstr ""
+
+#: admin/sections/typography.php:139
+msgid ""
+"If you are using Muli and Playfair Display fonts, just leave blank the font "
+"family select box. We are loading a better rendering version for these fonts."
+msgstr ""
+
+#: admin/sections/typography.php:144
+msgid "<strong style=\"font-size: 16px;\">Post Content Sizes (single)</strong>"
+msgstr ""
+
+#: admin/sections/typography.php:149
+msgid "Editor Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:151 admin/sections/typography.php:206
+msgid "Default: 16 pixels."
+msgstr ""
+
+#: admin/sections/typography.php:160
+msgid "H1 Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:162
+msgid "Default: 34 pixels."
+msgstr ""
+
+#: admin/sections/typography.php:171
+msgid "H2 Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:173
+msgid "Default: 28 pixels."
+msgstr ""
+
+#: admin/sections/typography.php:182
+msgid "H3 Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:184
+msgid "Default: 24 pixels."
+msgstr ""
+
+#: admin/sections/typography.php:193
+msgid "H4 Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:195
+msgid "Default: 18 pixels."
+msgstr ""
+
+#: admin/sections/typography.php:204
+msgid "H5 Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:215
+msgid "H6 Font Size"
+msgstr ""
+
+#: admin/sections/typography.php:217
+msgid "Default: 14 pixels."
+msgstr ""
+
+#: metaboxes/menu.php:15 metaboxes/user.php:9
+msgid "Aditional Information"
+msgstr ""
+
+#: metaboxes/menu.php:19
+msgid "Menu Fontawesome Icon (Optional)"
+msgstr ""
+
+#: metaboxes/page-default.php:17 metaboxes/page-home.php:17
+#: metaboxes/post-categories.php:9 metaboxes/post.php:49
+msgid "General Information"
+msgstr ""
+
+#: metaboxes/page-default.php:22
+msgid "Enable Title"
+msgstr ""
+
+#: metaboxes/page-default.php:23
+msgid "Enable/Disable title for this page."
+msgstr ""
+
+#: metaboxes/page-default.php:31 metaboxes/post.php:117
+msgid "Enable Sidebar"
+msgstr ""
+
+#: metaboxes/page-default.php:32 metaboxes/post.php:118
+msgid "Enable/Disable sidebar for this post."
+msgstr ""
+
+#: metaboxes/page-default.php:40 metaboxes/page-home.php:151
+#: metaboxes/page-home.php:208 metaboxes/post.php:126
+msgid "Sidebar (optional)"
+msgstr ""
+
+#: metaboxes/page-default.php:41 metaboxes/post.php:127
+msgid "Use a different sidebar for this post."
+msgstr ""
+
+#: metaboxes/page-home.php:24
+msgid "Add different kinds of layouts."
+msgstr ""
+
+#: metaboxes/page-home.php:38 metaboxes/page-home.php:105
+msgid "Enable Masonry Style"
+msgstr ""
+
+#: metaboxes/page-home.php:39 metaboxes/page-home.php:106
+msgid "You can display the posts like a normal grid or in masonry style."
+msgstr ""
+
+#: metaboxes/page-home.php:47
+msgid "Number of Columns"
+msgstr ""
+
+#: metaboxes/page-home.php:49
+msgid "2 to 3 columns"
+msgstr ""
+
+#: metaboxes/page-home.php:58 metaboxes/page-home.php:114
+#: metaboxes/page-home.php:171 metaboxes/page-home.php:227
+#: metaboxes/page-home.php:268 metaboxes/page-home.php:448
+msgid "Featured Categories"
+msgstr ""
+
+#: metaboxes/page-home.php:60
+msgid ""
+"(Optional) select only post from these categories or leave blank to display "
+"all posts."
+msgstr ""
+
+#: metaboxes/page-home.php:71 metaboxes/page-home.php:127
+#: metaboxes/page-home.php:184
+msgid "Excluded Categories"
+msgstr ""
+
+#: metaboxes/page-home.php:73 metaboxes/page-home.php:129
+#: metaboxes/page-home.php:186
+msgid ""
+"(Optional) Usefull if you dont want to display posts used on the carousel."
+msgstr ""
+
+#: metaboxes/page-home.php:84 metaboxes/page-home.php:140
+#: metaboxes/page-home.php:197
+msgid "Posts per page"
+msgstr ""
+
+#: metaboxes/page-home.php:86 metaboxes/page-home.php:142
+#: metaboxes/page-home.php:199
+msgid ""
+"(Optional) by default is used the amount from Settings -> Reading option"
+msgstr ""
+
+#: metaboxes/page-home.php:98
+msgid "Grid Posts with Sidebar"
+msgstr ""
+
+#: metaboxes/page-home.php:116 metaboxes/page-home.php:173
+#: metaboxes/page-home.php:229 metaboxes/page-home.php:270
+msgid "(Optional) select only post from these categories."
+msgstr ""
+
+#: metaboxes/page-home.php:152 metaboxes/page-home.php:209
+msgid "Use a different sidebar for this module."
+msgstr ""
+
+#: metaboxes/page-home.php:221
+msgid "Posts Slider"
+msgstr ""
+
+#: metaboxes/page-home.php:239 metaboxes/page-home.php:307
+msgid "Posts Limit"
+msgstr ""
+
+#: metaboxes/page-home.php:241 metaboxes/page-home.php:309
+msgid "Max number of posts to retrieve."
+msgstr ""
+
+#: metaboxes/page-home.php:250 metaboxes/page-home.php:329
+msgid "Enable Author"
+msgstr ""
+
+#: metaboxes/page-home.php:262
+msgid "Posts Carousel"
+msgstr ""
+
+#: metaboxes/page-home.php:280
+msgid "Order by (optional)"
+msgstr ""
+
+#: metaboxes/page-home.php:284
+msgid "By Date (recent posts)"
+msgstr ""
+
+#: metaboxes/page-home.php:285
+msgid "By Post Views"
+msgstr ""
+
+#: metaboxes/page-home.php:293
+msgid "Date (optional)"
+msgstr ""
+
+#: metaboxes/page-home.php:294
+msgid "Combine with order by Post Views to get your popular posts."
+msgstr ""
+
+#: metaboxes/page-home.php:297
+msgid "All Time"
+msgstr ""
+
+#: metaboxes/page-home.php:298
+msgid "Past Month"
+msgstr ""
+
+#: metaboxes/page-home.php:299
+msgid "Past Week"
+msgstr ""
+
+#: metaboxes/page-home.php:318 metaboxes/page-home.php:471
+msgid "Visible Items"
+msgstr ""
+
+#: metaboxes/page-home.php:320
+msgid "Number of visible elements, recommended: 3"
+msgstr ""
+
+#: metaboxes/page-home.php:351 metaboxes/page-home.php:360
+#: rein-functions.php:246
+msgid "Image"
+msgstr ""
+
+#: metaboxes/page-home.php:352
+msgid "External Code"
+msgstr ""
+
+#: metaboxes/page-home.php:362
+msgid "Recommended size: 728x90"
+msgstr ""
+
+#: metaboxes/page-home.php:379
+msgid "URL"
+msgstr ""
+
+#: metaboxes/page-home.php:381
+msgid "Where the user will be redirected on click."
+msgstr ""
+
+#: metaboxes/page-home.php:395
+msgid "Advertising Code"
+msgstr ""
+
+#: metaboxes/page-home.php:396
+msgid "Add custom code for your banner for example Google Ads"
+msgstr ""
+
+#: metaboxes/page-home.php:415
+msgid "Text Editor"
+msgstr ""
+
+#: metaboxes/page-home.php:421
+msgid "Enable Background"
+msgstr ""
+
+#: metaboxes/page-home.php:422
+msgid "This option is useful if you want a totally separated module."
+msgstr ""
+
+#: metaboxes/page-home.php:430
+msgid "Add your description"
+msgstr ""
+
+#: metaboxes/page-home.php:431
+msgid "Shortcodes are allowed."
+msgstr ""
+
+#: metaboxes/page-home.php:442
+msgid "Popular Categories"
+msgstr ""
+
+#: metaboxes/page-home.php:450
+msgid "(Optional) select only these categories."
+msgstr ""
+
+#: metaboxes/page-home.php:460
+msgid "Categories Limit"
+msgstr ""
+
+#: metaboxes/page-home.php:462
+msgid "Max number of categories to retrieve."
+msgstr ""
+
+#: metaboxes/page-home.php:473
+msgid "Number of visible elements, recommended: 5"
+msgstr ""
+
+#: metaboxes/post-categories.php:14
+msgid "Category Main Color"
+msgstr ""
+
+#: metaboxes/post-categories.php:15
+msgid "(Optional) add a custom color for this category."
+msgstr ""
+
+#: metaboxes/post-categories.php:22
+msgid "Background image for Archive's pages"
+msgstr ""
+
+#: metaboxes/post-categories.php:24
+msgid ""
+"Optional: you can set a background image for this particular category on "
+"Archive's page."
+msgstr ""
+
+#: metaboxes/post.php:54
+msgid "Important"
+msgstr ""
+
+#: metaboxes/post.php:55
+msgid ""
+"\n"
+"            <h3 style=\"margin-top: 0\">Optimized images recommended sizes "
+"are:</h3>\n"
+"            <p><b>For Single content (inside post):</b> 950x500px</"
+"p><p><b>Grids images on home:</b> 850x500px</p>\n"
+"            <p><b>Classic posts on home:</b> 850x450px</p>\n"
+"            <h3 style=\"margin-top: 0\">Featured image recommended size:</"
+"h3>\n"
+"            <p><b>Standard style:</b> 950x500px</p>\n"
+"            <p><b>Fullcover style or post without sidebar:</b> 1500x500px</"
+"p>\n"
+"            <h3><b>Recommended Compression Tool:</b> <a href=\"https://"
+"compressimage.toolur.com/\" target=\"_blank\">Toolur Website</a></h3>\n"
+"            "
+msgstr ""
+
+#: metaboxes/post.php:69
+msgid "Optimized Image (optional)"
+msgstr ""
+
+#: metaboxes/post.php:71
+msgid ""
+"This image will be used on homepages only and the uploaded image will not be "
+"cropped, resized or any other method that can change the size or the quality "
+"of the image.<br><br>(This is useful if you have texts over images or you "
+"are already compressed the image manually)."
+msgstr ""
+
+#: metaboxes/post.php:80
+msgid "Optimized Image for Slider (optional)"
+msgstr ""
+
+#: metaboxes/post.php:82
+msgid ""
+"This image will be used on <b>slider module only</b> and the uploaded image "
+"will not be cropped, resized or any other method that can change the size or "
+"the quality of the image.<br><br>Recommended Size: 1280x600."
+msgstr ""
+
+#: metaboxes/post.php:91
+msgid "Loop Post Style"
+msgstr ""
+
+#: metaboxes/post.php:92
+msgid "How the post should look like on homepages, archives, etc."
+msgstr ""
+
+#: metaboxes/post.php:95 metaboxes/post.php:108
+msgid "Standard"
+msgstr ""
+
+#: metaboxes/post.php:96
+msgid "Background Style"
+msgstr ""
+
+#: metaboxes/post.php:104
+msgid "Single Post Style"
+msgstr ""
+
+#: metaboxes/post.php:105
+msgid "How the featured image should look like inside the post."
+msgstr ""
+
+#: metaboxes/post.php:109
+msgid "Full Cover"
+msgstr ""
+
+#: metaboxes/post.php:145
+msgid "Views Counter"
+msgstr ""
+
+#: metaboxes/post.php:146
+msgid "How many times this post has been viewed."
+msgstr ""
+
+#: metaboxes/post.php:169
+msgid "Video Information"
+msgstr ""
+
+#: metaboxes/post.php:174 metaboxes/post.php:280
+msgid "Show Featured Image"
+msgstr ""
+
+#: metaboxes/post.php:175
+msgid ""
+"By default it will be displayed the video on home pages, archives, etc. "
+"Enabling this option will show the featured image instead."
+msgstr ""
+
+#: metaboxes/post.php:183
+msgid "Video Type"
+msgstr ""
+
+#: metaboxes/post.php:184
+msgid "Select platform."
+msgstr ""
+
+#: metaboxes/post.php:187
+msgid "Youtube"
+msgstr ""
+
+#: metaboxes/post.php:188
+msgid "Vimeo"
+msgstr ""
+
+#: metaboxes/post.php:189
+msgid "Custom Embed"
+msgstr ""
+
+#: metaboxes/post.php:197
+msgid "Video URL"
+msgstr ""
+
+#: metaboxes/post.php:198
+msgid "eg. https://www.youtube.com/watch?v=v9nBysHSzhE"
+msgstr ""
+
+#: metaboxes/post.php:213
+msgid "Custom Embed Code"
+msgstr ""
+
+#: metaboxes/post.php:214
+msgid "eg. <iframe>....</iframe>"
+msgstr ""
+
+#: metaboxes/post.php:244
+msgid "Gallery Information"
+msgstr ""
+
+#: metaboxes/post.php:249
+msgid "Gallery images"
+msgstr ""
+
+#: metaboxes/post.php:275 metaboxes/post.php:311
+msgid "Audio Information"
+msgstr ""
+
+#: metaboxes/post.php:281
+msgid ""
+"By default it will be displayed the audio iframe on home pages, archives, "
+"etc. Enabling this option will show the featured image instead."
+msgstr ""
+
+#: metaboxes/post.php:289
+msgid "SoundCloud URL"
+msgstr ""
+
+#: metaboxes/post.php:290
+msgid "eg. https://soundcloud.com/mahu-semo/led-zepellin-stairway-to-heaven"
+msgstr ""
+
+#: metaboxes/post.php:316
+msgid "External URL"
+msgstr ""
+
+#: metaboxes/post.php:317
+msgid "eg. https://www.google.com"
+msgstr ""
+
+#: metaboxes/user.php:22
+msgid "e.g: https://twitter.com/wordpress"
+msgstr ""
+
+#: metaboxes/user.php:28
+msgid "Position (tagline)"
+msgstr ""
+
+#: metaboxes/user.php:29
+msgid "e.g: Founder & Editor"
+msgstr ""
+
+#: metaboxes/user.php:35
+msgid "Optimized Avatar"
+msgstr ""
+
+#: metaboxes/user.php:37
+msgid ""
+"Recommended size: 150x150. This step is totally optional, it's just boost a "
+"little the web speed rendering the image directly from your hosting, instead "
+"of gravatar."
+msgstr ""
+
+#: metaboxes/user.php:45
+msgid "Author Background Image"
+msgstr ""
+
+#: metaboxes/user.php:47
+msgid "Background image for your author information (optional)."
+msgstr ""
+
+#: rein-functions.php:350
+msgid "Follow me!"
+msgstr ""
+
+#: render-ads.php:16 render-ads.php:33 render-ads.php:68
+#: shortcodes/shortcodes.php:36
+msgid "Banner"
+msgstr ""
+
+#: shortcodes/lightbox.php:11
+msgid "You are not allowed to be here"
+msgstr ""
+
+#: shortcodes/lightbox.php:35
+msgid "Shortcodes"
+msgstr ""
+
+#: shortcodes/lightbox.php:385
+msgid "Cancel"
+msgstr ""
+
+#: shortcodes/lightbox.php:386
+msgid "Insert Shortcode"
+msgstr ""
+
+#: shortcodes/shortcodes.php:293
+msgid "Show All"
+msgstr ""
+
+#: shortcodes/shortcodes.php:311
+msgid "View more"
+msgstr ""

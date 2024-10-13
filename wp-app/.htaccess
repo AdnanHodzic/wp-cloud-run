@@ -1,0 +1,42 @@
+# BEGIN WordPress
+
+# Require all requests to be routed through index.php
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+
+# Block requests to wp-login & wp-admin/ unless they are coming from foolcontrol.org
+<IfModule mod_rewrite.c> 
+RewriteEngine on 
+RewriteCond %{REQUEST_METHOD} POST 
+RewriteCond %{HTTP_REFERER} !^https?://(.*)?foolcontrol.org [NC]
+RewriteCond %{REQUEST_URI} ^(.*)?wp-login.php(.*)$ [OR] 
+RewriteCond %{REQUEST_URI} ^(.*)?wp-admin$ 
+RewriteRule ^(.*)$ - [F] 
+</IfModule>
+
+# Global IP Blocking
+Order Allow,Deny
+Deny from 157.245.144.213
+Allow from all
+
+# Block WordPress xmlrpc.php requests except from a specific IP
+<Files "xmlrpc.php">
+    Order Deny,Allow
+    Deny from all
+    Allow from 62.195.102.237
+</Files>
+
+# Disable access to wp-login.php except from specific IPs
+<Files "wp-login.php">
+    Order Deny,Allow
+    Deny from all
+    Allow from 62.195.102.237
+    Allow from 149.34.244.138
+</Files>
+
+# END WordPress

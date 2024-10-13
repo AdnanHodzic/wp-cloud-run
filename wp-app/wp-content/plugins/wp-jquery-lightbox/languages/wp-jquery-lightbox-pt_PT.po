@@ -1,0 +1,166 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-09-21 14:49+0100\n"
+"PO-Revision-Date: 2015-09-21 16:37+0100\n"
+"Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
+"Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
+"Language: pt_PT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;"
+"_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2;"
+"esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.8.4\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: wp-jquery-lightbox.php:41
+msgid "Settings"
+msgstr "Definições"
+
+#: wp-jquery-lightbox.php:129
+msgid "previous image"
+msgstr "Imagem anterior"
+
+#: wp-jquery-lightbox.php:130
+msgid "next image"
+msgstr "Imagem seguinte"
+
+#: wp-jquery-lightbox.php:131
+msgid "close image gallery"
+msgstr "Fechar a galeria"
+
+#: wp-jquery-lightbox.php:132 wp-jquery-lightbox.php:242
+msgid "Image "
+msgstr "Imagem "
+
+#: wp-jquery-lightbox.php:133 wp-jquery-lightbox.php:242
+msgid " of "
+msgstr " de "
+
+#: wp-jquery-lightbox.php:134
+msgid "Download"
+msgstr "Descarregar"
+
+#: wp-jquery-lightbox.php:135
+msgid "(pause slideshow)"
+msgstr "(pausar apresentação)"
+
+#: wp-jquery-lightbox.php:136
+msgid "(play slideshow)"
+msgstr "(iniciar apresentação)"
+
+#: wp-jquery-lightbox.php:199
+msgid "Cheatin&#8217; uh?"
+msgstr "A fazer batota?"
+
+#: wp-jquery-lightbox.php:214
+msgid "Let the plugin add necessary html to image links"
+msgstr "Deixe o plugin adicionar o html necessário às ligações das imagens"
+
+#: wp-jquery-lightbox.php:214
+msgid "Auto-lightbox image links"
+msgstr "Alterar as ligações das imagens automaticamente"
+
+#: wp-jquery-lightbox.php:221
+msgid ""
+"Note: this will disable the nofollow-attribute of comment links, that "
+"otherwise interfere with the lightbox."
+msgstr ""
+"Nota: isto desactivará o atributo 'nofollow' das ligações dos comentários, "
+"que de outro modo interfeririam com o lightbox."
+
+#: wp-jquery-lightbox.php:221
+msgid ""
+"Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/"
+"Nofollow\">the nofollow attribute!</a>)"
+msgstr ""
+"Activar lightbox nos comentários (desactiva <a href=\"http://codex.wordpress."
+"org/Nofollow\">o atributo 'nofollow'!</a>)"
+
+#: wp-jquery-lightbox.php:228
+msgid "Show title"
+msgstr "Mostrar título"
+
+#: wp-jquery-lightbox.php:235
+msgid "Show caption"
+msgstr "Mostrar legenda"
+
+#: wp-jquery-lightbox.php:242
+msgid "Show image numbers:"
+msgstr "Mostrar números das imagens:"
+
+#: wp-jquery-lightbox.php:249
+msgid "Show download link"
+msgstr "Mostrar ligação para descarregar"
+
+#: wp-jquery-lightbox.php:257
+msgid "Show image info on top"
+msgstr "Mostrar a informação da imagem no topo"
+
+#: wp-jquery-lightbox.php:265
+msgid "Shrink large images to fit smaller screens"
+msgstr "Reduzir imagens grandes a ecrãs pequenos"
+
+#: wp-jquery-lightbox.php:270
+msgid "Keep a distance between the image and the screen edges."
+msgstr "Manter uma distância entre a imagem e os bordos do ecrã."
+
+#: wp-jquery-lightbox.php:270
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr "Margem mínima ao bordo do ecrã (por omissão: 0)"
+
+#: wp-jquery-lightbox.php:278
+msgid "Use custom stylesheet"
+msgstr "Usar folha de estilos personalizada"
+
+#: wp-jquery-lightbox.php:284
+msgid "Animation duration (in milliseconds) "
+msgstr "Duração da animação (em milisegundos) "
+
+#: wp-jquery-lightbox.php:290
+msgid "Slideshow speed (in milliseconds). 0 to disable."
+msgstr "Velocidade da apresentação (em milisegundos). 0 para desactivar."
+
+#: wp-jquery-lightbox.php:295
+msgid "Save Changes"
+msgstr "Guardar alterações"
+
+#~ msgid "&laquo; Previous"
+#~ msgstr "&laquo; Anterior"
+
+#~ msgid "Next &raquo;"
+#~ msgstr "Seguinte &raquo;"
+
+#~ msgid ""
+#~ "_blank: open the image in a new window or tab\n"
+#~ "_self: open the image in the same frame as it was clicked (default)\n"
+#~ "_parent: open the image in the parent frameset\n"
+#~ "_top: open the image in the full body of the window"
+#~ msgstr ""
+#~ "_blank: abrir a imagem numa nova janela ou separador\n"
+#~ "_self: abrir a imagem na mesma janela em que for seleccionada (por "
+#~ "omissão)\n"
+#~ "_parent: abrir a imagem na janela superior\n"
+#~ "_top: abrir a imagem ocupando toda a janela"
+
+#~ msgid "Target for download link:"
+#~ msgstr "Destino para a ligação de descarga:"
+
+#~ msgid "Help text (default: none) "
+#~ msgstr "Texto de ajuda (por omissão: nenhum)"
+
+#~ msgid ""
+#~ "Browse images with your keyboard: Arrows or P(revious)/N(ext) and X/C/ESC "
+#~ "for close."
+#~ msgstr ""
+#~ "Navegar pelas imagens com o teclado: Setas ou 'P' (Anterior) e "
+#~ "'N' (Seguinte), 'X' ou 'C' ou 'Esc' para fechar."
+
+#~ msgid "Show title & caption"
+#~ msgstr "Mostrar título e descrição"

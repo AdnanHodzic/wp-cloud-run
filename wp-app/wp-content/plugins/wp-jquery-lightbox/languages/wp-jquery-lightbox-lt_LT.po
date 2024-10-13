@@ -1,0 +1,179 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-10-05 13:07+0200\n"
+"PO-Revision-Date: 2013-10-05 13:19+0200\n"
+"Last-Translator: Hancas <majklas@nereal.us>\n"
+"Language-Team: ArtPrima.cz <ask@artprima.cz>\n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_c;__ngettext:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "Nustatymai"
+
+#: ../wp-jquery-lightbox.php:116
+msgid "previous image"
+msgstr "ankstesnis paveiksliukas"
+
+#: ../wp-jquery-lightbox.php:117
+msgid "next image"
+msgstr "sekantis paveiksliukas"
+
+#: ../wp-jquery-lightbox.php:118
+msgid "close image gallery"
+msgstr "uždaryti paveiksliukų galeriją"
+
+#: ../wp-jquery-lightbox.php:119
+msgid "Image "
+msgstr "Paveiksliukas "
+
+#: ../wp-jquery-lightbox.php:120
+msgid " of "
+msgstr " iš "
+
+#: ../wp-jquery-lightbox.php:121
+msgid "Download"
+msgstr "Parsisiųsti"
+
+#: ../wp-jquery-lightbox.php:122
+msgid "(pause slideshow)"
+msgstr "(Pristabdyti skaidrių peržiūrą)"
+
+#: ../wp-jquery-lightbox.php:123
+msgid "(play slideshow)"
+msgstr "(Paleisti skaidrių peržiūrą)"
+
+#: ../wp-jquery-lightbox.php:186
+msgid "Cheatin&#8217; uh?"
+msgstr "Čytini, ane?"
+
+#: ../wp-jquery-lightbox.php:201
+msgid "Let the plugin add necessary html to image links"
+msgstr "Leisti įskiepiui pridėti reikiamą kodą prie paveiksliukų nuorodų"
+
+#: ../wp-jquery-lightbox.php:201
+msgid "Auto-lightbox image links"
+msgstr "Automatiškai taikyti LightBox paveiksliukų nuorodoms"
+
+#: ../wp-jquery-lightbox.php:208
+msgid ""
+"Note: this will disable the nofollow-attribute of comment links, that "
+"otherwise interfere with the lightbox."
+msgstr ""
+"Dėmesio: tai panaikins \"nofollow\" atributą naudojamą komentarų nuorodose, "
+"nes tai nesuderinama su lightbox'u."
+
+#: ../wp-jquery-lightbox.php:208
+msgid ""
+"Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/"
+"Nofollow\">the nofollow attribute!</a>)"
+msgstr ""
+"Įgalinti lightbox'ą komentaruose (panaikins <a href=\"http://codex.wordpress."
+"org/Nofollow\">\"nofollow\" atributą!</a>)"
+
+#: ../wp-jquery-lightbox.php:215
+msgid "Show title & caption"
+msgstr "Rodyti pavadinimą ir iškarpą"
+
+#: ../wp-jquery-lightbox.php:222
+msgid "Show download link"
+msgstr "Rodyti parsisiuntimo nuorodą"
+
+#: ../wp-jquery-lightbox.php:226
+msgid ""
+"_blank: open the image in a new window or tab\n"
+"_self: open the image in the same frame as it was clicked (default)\n"
+"_parent: open the image in the parent frameset\n"
+"_top: open the image in the full body of the window"
+msgstr ""
+"_blank: atidaryti paveiksliuką naujame naršyklės lange ar skirtuke\n"
+"_self: atidaryti paveiksliuką tame pačiame lange, kuriame buvo paspausta "
+"(default)\n"
+"_parent: atidaryti paveiksliuką tėviname lange\n"
+"_top: atidaryti paveiksliuką per visą ekraną"
+
+#: ../wp-jquery-lightbox.php:229
+msgid "Target for download link:"
+msgstr "Parsisiuntimo nuorodos tipas:"
+
+#: ../wp-jquery-lightbox.php:243
+msgid "Show image info on top"
+msgstr "Rodyti paveiksliuko informaciją viršuje"
+
+#: ../wp-jquery-lightbox.php:251
+msgid "Shrink large images to fit smaller screens"
+msgstr "Sutraukti didelius paveiksliukus, kad tilptų į mažesnius ekranus"
+
+#: ../wp-jquery-lightbox.php:256
+msgid "Keep a distance between the image and the screen edges."
+msgstr "Atskirti patį paveiksliuką nuo ekrano šonų."
+
+#: ../wp-jquery-lightbox.php:256
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr "Minimalus atstumas nuo ekrano šonų (numatyta: 0)"
+
+#: ../wp-jquery-lightbox.php:263
+msgid "Animation duration (in milliseconds) "
+msgstr "Animacijos greitis (milisekundėmis)"
+
+#: ../wp-jquery-lightbox.php:269
+msgid "Slideshow speed (in milliseconds). 0 to disable."
+msgstr ""
+"Skaidrų peržiūros greitis (milisekundėmis). 0 - panaikina šią galimybę."
+
+#: ../wp-jquery-lightbox.php:275
+msgid "Help text (default: none) "
+msgstr "Pagalbinis tesktas (numatyta: jokio) "
+
+#: ../wp-jquery-lightbox.php:279
+msgid ""
+"Browse images with your keyboard: Arrows or P(revious)/N(ext) and X/C/ESC "
+"for close."
+msgstr ""
+"Peržvelgti paveiksliukus su klaviatūros pagalba: Rodyklytėm arba P"
+"(ankstesnis)/N(kitas) and X/C/ESC uždaryti."
+
+#: ../wp-jquery-lightbox.php:281
+msgid "Save Changes"
+msgstr "Išsaugoti pakeitimus"
+
+#~ msgid "&laquo; Previous"
+#~ msgstr "&laquo; Ankstesnis"
+
+#~ msgid "Next &raquo;"
+#~ msgstr "Sekantis  &raquo;"
+
+#~ msgid "Note: <u>Excessively large images</u> waste bandwidth!"
+#~ msgstr "Dėmesio: <u>LABAI dideli paveiksliukai</u> kenkia greitaveikai!"
+
+#~ msgid "(more...)"
+#~ msgstr "(далее...)"
+
+#~ msgid "Contacts"
+#~ msgstr "Контакты"
+
+#~ msgid "Contact Us"
+#~ msgstr "Связаться с нами"
+
+#~ msgid "Read more..."
+#~ msgstr "Читать далее..."
+
+#~ msgid "Contact Us..."
+#~ msgstr "Связаться с нами..."
+
+#~ msgid "Order..."
+#~ msgstr "Заказать..."
+
+#~ msgid "Search..."
+#~ msgstr "Поиск..."

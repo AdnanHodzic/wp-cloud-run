@@ -1,0 +1,590 @@
+/* All admin pages */
+
+.toplevel_page_lightpress-settings #wpbody-content > .notice {
+    margin-top: 30px;
+}
+
+.toplevel_page_lightpress-settings .lightpress-logo,
+.lightbox_page_lightpress-pro .lightpress-logo {
+	max-width: 220px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.lightbox_page_lightpress-pro .lightpress-logo {
+    margin-bottom: 0;
+}
+
+.lightpress-review-actions .button-primary {
+    padding: 0 12px !important;
+    text-transform: none !important;
+    font-size: 13px !important;
+}
+
+.toplevel_page_lightpress-settings .lightpress-header {
+	display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 90%;
+	margin-top: 30px;
+}
+
+.toplevel_page_lightpress-settings .lightpress-header .lightpress-logo {
+	margin-top: 0;
+}
+
+.toplevel_page_lightpress-settings .lightpress-header a,
+.toplevel_page_lightpress-settings .lightpress-header a:hover,
+.toplevel_page_lightpress-settings .lightpress-header a:focus,
+.toplevel_page_lightpress-settings .lightpress-header a:visited {
+	font-size: 16px;
+	text-decoration: none;
+	color: #5cbc67;
+}
+
+.toplevel_page_lightpress-settings .sale-banner,
+.lightbox_page_lightpress-pro .sale-banner {
+    background: #5cbc67;
+    padding: 8px 16px;
+    margin: 0 -32px 14px -20px;
+}
+
+.toplevel_page_lightpress-settings .sale-banner p,
+.lightbox_page_lightpress-pro .sale-banner p {
+    margin: 0;
+    color:  white;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.toplevel_page_lightpress-settings .sale-banner a,
+.lightbox_page_lightpress-pro .sale-banner a,
+.toplevel_page_lightpress-settings .sale-banner a:hover,
+.lightbox_page_lightpress-pro .sale-banner a:hover,
+.toplevel_page_lightpress-settings .sale-banner a:focus,
+.lightbox_page_lightpress-pro .sale-banner a:focus {
+    color:  white;
+}
+
+/* Settings page */
+
+.toplevel_page_lightpress-settings .efb-review-notice {
+	margin-top: 30px;
+}
+
+.toplevel_page_lightpress-settings .notice,
+.toplevel_page_lightpress-settings div.error,
+.toplevel_page_lightpress-settings div.updated,
+.lightbox_page_lightpress-pro .notice,
+.lightbox_page_lightpress-pro div.error,
+.lightbox_page_lightpress-pro div.updated {
+    margin-top: 20px;
+    margin-left: 0;
+}
+
+.toplevel_page_lightpress-settings .settings-section {
+	max-width: 90%;
+}
+
+.toplevel_page_lightpress-settings .general-settings-section {
+	margin-bottom: 40px;
+}
+
+.toplevel_page_lightpress-settings .general-settings-section h2 {
+	font-size: 20px;
+	margin-top: 22px !important;
+}
+
+.toplevel_page_lightpress-settings .active-lightbox-heading {
+	font-size: 22px;
+	margin-bottom: 30px 0;
+}
+
+.toplevel_page_lightpress-settings .settings-section.hide {
+	display:none;
+}
+
+.toplevel_page_lightpress-settings .settings-section h2 {
+	margin-top: 40px;
+}
+
+.toplevel_page_lightpress-settings .sub-settings-section h2 {
+	background: #2271b1;
+    background: #5cbc67;
+	border-radius: 2px;
+	color: white;
+	font-size: 16px;
+	margin-bottom: 0;
+	margin-top: 8px;
+	padding: 12px 14px;
+}
+
+.toplevel_page_lightpress-settings .sub-settings-section h2:after {
+	content: '\25bc';
+    float: right;
+    font-size: 17px;
+}
+
+.toplevel_page_lightpress-settings .settings-section.active h2:after {
+	content: '\25b2';
+}
+
+.toplevel_page_lightpress-settings .setting-section-description {
+    background: #dddddd;
+    padding: 12px;
+    font-size: 14px;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-style: italic;
+	display: none;
+}
+
+.toplevel_page_lightpress-settings  .sub-settings-section.active .setting-section-description {
+	display: block;
+}
+
+.toplevel_page_lightpress-settings  .sub-settings-section table {
+    border: 1px solid #ddd;
+	border-top: none;
+	display: none;
+	margin-top: 0;
+}
+
+.toplevel_page_lightpress-settings  .sub-settings-section.active table {
+	display: table;
+}
+
+.toplevel_page_lightpress-settings tr:nth-of-type(even) {
+	background: #dddddd;
+}
+
+.toplevel_page_lightpress-settings th,
+.toplevel_page_lightpress-settings td {
+	padding: 12px;
+	vertical-align: middle;
+}
+
+.toplevel_page_lightpress-settings td input,
+.toplevel_page_lightpress-settings td select {
+    margin-right: 10px;
+}
+
+.toplevel_page_lightpress-settings input[type=number],
+.toplevel_page_lightpress-settings input[type=text] {
+	width: 160px;
+}
+
+.toplevel_page_lightpress-settings .pro-button {
+	background: #5cbc67;
+	border-radius: 3px;
+    color: white;
+	font-weight: 600;
+	font-style: normal;
+    font-size: 12px;
+	margin-left: 10px;
+    padding: 6px 12px;
+    text-decoration: none;
+    text-transform: uppercase;
+	cursor: pointer;
+}
+
+.toplevel_page_lightpress-settings.wp-core-ui .button-primary {
+    background: #5cbc67;
+    border-color: #5cbc67;
+    padding: 5px 24px 5px 24px;
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.toplevel_page_lightpress-settings.wp-core-ui .button-primary.focus,
+.toplevel_page_lightpress-settings.wp-core-ui .button-primary.hover,
+.toplevel_page_lightpress-settings.wp-core-ui .button-primary:focus,
+.toplevel_page_lightpress-settings.wp-core-ui .button-primary:hover {
+    background: #4fa959;
+    border-color: #4fa959;
+    color: #fff;
+}
+
+/* Modal on settings page */
+
+.toplevel_page_lightpress-settings.modal-open {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.toplevel_page_lightpress-settings #TB_overlay {
+	opacity: .8
+}
+
+.toplevel_page_lightpress-settings #TB_window {
+	top: auto;
+    left: auto;
+	margin-top: -80px !important;
+    margin-left: 0 !important;
+	width: 520px !important;
+	height: 260px !important;
+	max-width: 95%;
+}
+
+.toplevel_page_lightpress-settings #TB_window {
+	transition: all 1s;
+}
+
+
+.toplevel_page_lightpress-settings  #TB_title {
+	border-bottom: none;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent {
+    height: 230px !important;
+	width: 100% !important;
+    justify-content: center;
+    box-sizing: border-box;
+	padding: 0px 40px 12px;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent h2 {
+    margin-bottom: 0;
+	font-size: 24px;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent h3 {
+    margin-top: 10px;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent p {
+    font-size: 16px;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent .hero-section-actions {
+    margin: 24px 0 2px;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent .pro-action-button {
+    padding: 10px 24px;
+    text-transform: none;
+    font-weight: normal;
+}
+
+.toplevel_page_lightpress-settings #TB_ajaxContent .pro-action-button.link-only,
+.toplevel_page_lightpress-settings #TB_ajaxContent .pro-action-button.link-only:hover,
+.toplevel_page_lightpress-settings #TB_ajaxContent .pro-action-button.link-only:focus,
+.toplevel_page_lightpress-settings #TB_ajaxContent .pro-action-button.link-only:visited {
+    background: transparent;
+    color: #4fa959;
+}
+
+.toplevel_page_lightpress-settings .dashicons-arrow-right-alt {
+	margin-left: 6px;
+    margin-right: -4px;
+}
+
+/* Pro Lightbox Promo */
+
+.toplevel_page_lightpress-settings .pro-lightbox-promo p {
+	font-size: 18px;
+    margin-bottom: 24px;
+}
+
+.toplevel_page_lightpress-settings .pro-lightbox-promo .pro-button {
+	margin: 0 6px 6px 0;
+    padding: 12px 24px;
+}
+
+/* Pro upgrade page */
+
+#toplevel_page_lightpress-settings ul li:nth-of-type(3) a {
+	color: #00f800 !important;
+}
+
+body.lightbox_page_lightpress-pro {
+	background-color: white;
+}
+
+.lightbox_page_lightpress-pro #wpbody {
+	max-width: 1300px;
+}
+
+.pricing-section {
+    padding: 40px 20px;
+}
+
+.hero-section {
+	display: flex;
+	align-items: center;
+}
+
+.hero-section-copy {
+    padding: 40px 40px 60px;
+	flex-basis: 100%;
+}
+
+.hero-section-copy-tag {
+    text-transform: uppercase;
+    font-size: 16px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    background: black;
+    color: white;
+    padding: 4px 16px;
+    display: inline-block;
+    margin-bottom: 30px;
+}
+
+.hero-section-copy-title {
+    font-size: 3em;
+    line-height: 1.2;
+	margin-top: 0;
+    font-weight: 800;
+}
+
+.hero-section-copy-text {
+    font-size: 18px;
+}
+
+.hero-section-actions {
+	margin: 50px 0 2px;
+
+}
+
+.pro-action-button {
+	background: #5cbc67;
+    padding: 16px 40px;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 16px;
+    border: none;
+    text-decoration: none;
+    color: white;
+    border-radius: 2px;
+	cursor: pointer;
+	display: inline-block;
+    margin-bottom: 6px;
+}
+
+.pro-action-button:hover,
+.pro-action-button:focus,
+.pro-action-button:visited {
+	background: #4fa959;
+    color: white;
+}
+
+.hero-section-copy-under-button {
+	font-size: 15px;
+    color: #666666;
+	margin-top: 2px;
+}
+
+.hero-section-image {
+	flex-basis: 150%;
+}
+
+.hero-section-image img {
+	max-width: 100%;
+}
+
+/* Pricing Table */
+
+.sale-notice h1,
+.sale-notice p {
+	text-align: center;
+	color: black;
+	font-size: 18px;
+	margin: 2px;
+}
+
+.sale-notice h1 {
+	font-size: 36px;
+	margin: 16px;
+    color: #5cbc67;
+    font-weight: 800;
+}
+
+.pricing-table {
+    color: #000000;
+    text-align: center;
+    font-size: 16px;
+    width: 98%;
+    max-width: 1100px;
+    margin: 100px auto;
+}
+
+.pricing-table * {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.pricing-table .plan {
+    margin: 0;
+    width: 33.3333%;
+    position: relative;
+    float: left;
+    background-color: #ffffff;
+	box-shadow: 0 0 4px 2px rgba(0,0,0,.08);
+	border-radius: 3px;
+}
+
+.pricing-table .plan-title {
+    position: relative;
+    top: 0;
+    font-weight: 900 !important;
+    padding: 24px 10px;
+	display: block;
+	background-color: #5cbc67;
+    color: #ffffff !important;
+    text-transform: uppercase;
+	letter-spacing: 1px;
+	border-bottom: 0px solid #000;
+	text-align: center;
+	font-size: 34px;
+	margin: 0 0 30px 0;
+	padding: 34px 10px;
+}
+
+.pricing-table .plan:first-of-type .plan-title {
+    border-radius: 3px 0 0 0;
+}
+
+.pricing-table .plan:nth-of-type(2) .plan-title {
+    border-radius: 3px 3px 0 0;
+}
+
+.pricing-table .plan:nth-of-type(3) .plan-title {
+    border-radius: 0 5px 0 0;
+}
+
+.pricing-table .most-popular {
+    display: block;
+    font-size: 18px;
+    line-height: 40px;
+}
+
+.pricing-table .plan-cost {
+    padding: 0px 10px 20px;
+}
+
+.pricing-table .plan-price {
+    font-weight: 700;
+    font-size: 2.4em;
+    color: #34495e;
+}
+
+.pricing-table .plan-features {
+    padding: 0 !important;
+    margin: 0 !important;
+    text-align: center;
+    list-style: outside none none !important;
+    font-size: 0.8em !important;
+}
+
+.pricing-table .plan-features li {
+    border-top: 1px solid #d2d7e2;
+    padding: 12px 10px 16px;
+	font-size: 16px;
+	letter-spacing: .5px;
+	opacity: .7;
+	margin-bottom: 0;
+}
+
+.pricing-table .plan-features li.strong {
+    font-weight: bold;
+	  font-size: 17px;
+	  opacity: 1;
+}
+
+.pricing-table .plan-features li:first-of-type {
+    font-size: 26px;
+	  padding: 40px 10px;
+	  line-height: 1.3;
+	  color: #444;
+	  letter-spacing: 0px;
+}
+
+.pricing-table .plan-features li:nth-child(even) {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.pricing-table .plan-features li.included:before {
+    content: "\f147";
+    font-family: "Dashicons";
+    color: green;
+    font-size: 20px;
+	position: relative;
+	top: 5px;
+	right: 5px
+}
+	
+.pricing-table .plan-features li.excluded:before {
+    content: "\f158";
+    font-family: "Dashicons";
+    color: red;
+    font-size: 20px;
+	position: relative;
+	top: 5px;
+	right: 5px
+}
+
+.pricing-table .plan-features li:first-of-type:before {
+    display:none;
+}
+
+.pricing-table .plan-select {
+    border-top: 1px solid #d2d7e2;
+	  padding: 40px 20px;
+}
+
+.pricing-table #basic-purchase,
+.pricing-table #pro-purchase,
+.pricing-table #enterprise-purchase {
+    margin-top: 20px;
+}
+
+.pricing-table .featured {
+    margin-top: -34px;
+    background-color: #f7f7f7;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    z-index: 1;
+}
+
+.pricing-table .featured .plan-title {
+	  padding: 42px 10px 20px;
+}
+
+.pricing-notice {
+	width: 800px; 
+	max-width: 95%; 
+	margin: 100px auto 150px; 
+	text-align: center;
+}
+	
+.pricing-notice h3 {
+	text-align: center;
+}
+
+@media only screen and (max-width: 880px) {
+	.hero-section {
+		flex-direction: column;
+	}
+    .pricing-table .plan {
+        width: 100%;
+			  margin-bottom: 30px
+    }
+    .pricing-table .plan-title,
+    .show-pricing-table .plan-select a {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    .pricing-table .plan-cost,
+    .pricing-table .featured .plan-cost {
+        padding: 20px 10px 20px;
+    }
+    .pricing-table .plan-select,
+    .pricing-table .featured .plan-select {
+        padding: 10px 10px 10px;
+    }
+    .pricing-table .featured {
+        margin-top: 0;
+    }
+}

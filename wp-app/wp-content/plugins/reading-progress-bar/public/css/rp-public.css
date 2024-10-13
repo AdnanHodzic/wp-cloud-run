@@ -1,0 +1,16 @@
+/**
+ * Public CSS rules
+ */
+.readingProgressbar {
+	display: none;
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	z-index: 9999999;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	border: none;
+	background-color: transparent;
+}

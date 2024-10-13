@@ -1,0 +1,94 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-05-17 16:35+0900\n"
+"PO-Revision-Date: 2011-05-18 15:56+0900\n"
+"Last-Translator: Redcocker\n"
+"Language-Team: redcocker <masa153@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_c;__ngettext:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Japanese\n"
+"X-Poedit-Country: JAPAN\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: C:\\_work\\svn\\artprima\\trunk\\wp-content\\plugins\\wp-jquery-lightbox\n"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "設定"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:98
+msgid " \\u2190 / P - previous image\\u00a0\\u00a0\\u00a0\\u00a0\\u2192 / N - next image\\u00a0\\u00a0\\u00a0\\u00a0ESC / X - close image gallery"
+msgstr " \\u2190 / P - 前の画像\\u00a0\\u00a0\\u00a0\\u00a0\\u2192 / N - 次の画像\\u00a0\\u00a0\\u00a0\\u00a0ESC / X - ギャラリーを閉じる"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:99
+msgid "previous image"
+msgstr "前の画像"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:100
+msgid "next image"
+msgstr "次の画像"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:101
+msgid "&laquo; Previous"
+msgstr "&laquo; 前へ"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:102
+msgid "Next &raquo;"
+msgstr "次へ &raquo;"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:103
+msgid "close image gallery"
+msgstr "ギャラリーを閉じる"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:104
+msgid "Image "
+msgstr "画像 "
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:105
+msgid " of "
+msgstr "の"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:106
+msgid "Download"
+msgstr "ダウンロード"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:152
+msgid "Cheatin&#8217; uh?"
+msgstr "間違えましたか？"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:165
+msgid "Let the plugin add necessary html to image links"
+msgstr "必要とするHTMLをイメージリンクに追加させる"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:165
+msgid "Auto-lightbox image links"
+msgstr "自動的に画像（イメージリンク）にLightbox効果を適応する"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:172
+msgid "Disables the nofollow-attribute of comment links, that otherwise interfere with the lightbox."
+msgstr "Lightbox効果を妨げるコメントリンクのnofollow属性は無効になる"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:172
+msgid "Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/Nofollow\">the nofollow attribute!</a>)"
+msgstr "コメント欄でLightbox効果を有効にする（<a href=\"http://codex.wordpress.org/Nofollow\">nofollow属性</a>は無効になります。）"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:179
+msgid "Show download link"
+msgstr "ダウンロードリンクを表示"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:186
+msgid "Shrink large images to fit smaller screens"
+msgstr "スクリーンサイズに合わせて画像を縮小"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:192
+msgid "Animation duration (in milliseconds)"
+msgstr "アニメーションの継続時間（ミリ秒）"
+
+#: C:\_work\svn\artprima\trunk\wp-content\plugins\wp-jquery-lightbox/wp-jquery-lightbox.php:197
+msgid "Save Changes"
+msgstr "設定を保存"
+

@@ -1,0 +1,137 @@
+/* Generl Overrides */
+
+#lightbox {
+	position: fixed;
+	top: 50% !important;
+	left: 50% !important;
+	transform: translate(-50%, -50%);
+}
+
+#imageContainer {
+	position: relative;
+	height: 100%;
+	box-sizing: border-box;
+}
+
+#imageDataContainer {
+	position: relative;
+}
+
+#imageDataContainer.hide {
+	display: none;
+}
+
+#newHoverNav {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+#prevArrow,
+#nextArrow {
+	color: black;
+	background: rgba(255,255,255,.7);
+	font-size: 40px;
+	position: relative;
+	display: none;
+	padding: 8px 10px 8px 6px;
+    cursor: pointer;
+    width: 46px;
+    height: 46px;
+	box-sizing: border-box;
+}
+
+#nextArrow {
+	padding: 8px 6px 8px 10px;
+}
+
+#prevArrow.fixed,
+#nextArrow.fixed {
+	position: fixed;
+	display:block;
+	top: 50%;
+	left: 1%;
+	transform: translate(0, -50%);
+	border-radius: 2px;
+}
+
+#nextArrow.fixed {
+    right: 1%;
+	left: auto;
+}
+
+@media screen and (max-width: 800px) {
+	#prevArrow.fixed,
+	#nextArrow.fixed {
+		border-radius: 2px;
+	}
+	#prevArrow.fixed {
+		left: 0;
+	}
+	#nextArrow.fixed {
+		right: 0;
+	}
+}
+
+#imageContainer:hover #prevArrow,
+#imageContainer:hover #nextArrow {
+	display:block;
+}
+
+#imageData {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 4px 10px 8px;
+}
+
+#imageData #imageDetails {
+	margin-bottom: 0;
+}
+
+#imageData #bottomNav #bottomNavClose {
+	margin-bottom: 0;
+}
+
+#jqlb_loading {
+    top: 45%;
+}
+
+
+/* Overrides for mobile styling */ 
+
+#prevArrow.touch-device,
+#nextArrow.touch-device {
+	display: block;
+}
+
+#prevLink.touch-device,
+#nextLink.touch-device {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	height: 40px;
+	width: 40px;
+	float: none;
+}
+
+#prevLink.touch-device {
+	left: 0;
+	background: url(./images/prev.gif) center center no-repeat;
+}
+
+#nextLink.touch-device {
+	right: 0;
+	background: url(./images/next.gif) center center no-repeat;
+}
+
+#imageDataContainer {
+	position: relative;
+	z-index: 20px;
+}

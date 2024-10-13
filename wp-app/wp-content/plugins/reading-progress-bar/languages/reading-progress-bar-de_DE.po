@@ -1,0 +1,116 @@
+# Translation of Plugins - Reading progressbar - Development (trunk) in German
+# This file is distributed under the same license as the Plugins - Reading progressbar - Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: +0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.3.0-alpha\n"
+"Language: de\n"
+"Project-Id-Version: Plugins - Reading progressbar - Development (trunk)\n"
+
+#: admin/rp-admin.php:45
+msgid "Reading progressbar"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://jeanbaptisteaudras.com"
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Jean-Baptiste Audras, project manager @ Whodunit"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "A reading position indicator that you can use where you want: top, bottom or custom position in differents templates or post types."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://jeanbaptisteaudras.com/portfolio/wordpress-reading-progressbar-indicator-plugin/"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Reading Progress Bar"
+msgstr ""
+
+#: admin/rp-admin.php:261
+msgid "Check out the plugin options below."
+msgstr ""
+
+#: admin/rp-admin.php:216
+msgid "Single post / page / custom post type"
+msgstr ""
+
+#: admin/rp-admin.php:215 admin/rp-admin.php:217
+msgid "(you need to include concerned post types below)"
+msgstr ""
+
+#: admin/rp-admin.php:214
+msgid "Archives and categories / taxonomies for posts or custom post types"
+msgstr ""
+
+#: admin/rp-admin.php:212
+msgid "Blog page"
+msgstr ""
+
+#: admin/rp-admin.php:211 admin/rp-admin.php:213
+msgid "(as set in Settings &gt; Reading)"
+msgstr ""
+
+#: admin/rp-admin.php:210
+msgid "Front-page"
+msgstr ""
+
+#: admin/rp-admin.php:190
+msgid "Note: use it only if you have selected <b>custom</b> position before, instead of <b>top</b> or <b>bottom</b>"
+msgstr ""
+
+#: admin/rp-admin.php:177
+msgid "Note: custom position is not ok with all WordPress themes. It needs a fixed element to stick the progressbar on it. <br />You may need some custom CSS to put the progressbar on the right place as it uses absolute positionning."
+msgstr ""
+
+#: admin/rp-admin.php:175
+msgid "Custom"
+msgstr ""
+
+#: admin/rp-admin.php:174
+msgid "Bottom"
+msgstr ""
+
+#: admin/rp-admin.php:173
+msgid "Top"
+msgstr ""
+
+#: admin/rp-admin.php:110
+msgid "Select post types to apply progressbar"
+msgstr ""
+
+#: admin/rp-admin.php:102
+msgid "Select templates to apply progressbar"
+msgstr ""
+
+#: admin/rp-admin.php:94
+msgid "Target fixed HTML element class/id to stick the bar on it’s bottom"
+msgstr ""
+
+#: admin/rp-admin.php:86
+msgid "Progressbar position"
+msgstr ""
+
+#: admin/rp-admin.php:78
+msgid "Background color"
+msgstr ""
+
+#: admin/rp-admin.php:70
+msgid "Foreground color"
+msgstr ""
+
+#: admin/rp-admin.php:62
+msgid "Progressbar height (pixels)"
+msgstr ""
+
+#: admin/rp-admin.php:45 admin/rp-admin.php:55
+msgid "Reading progressbar options"
+msgstr ""

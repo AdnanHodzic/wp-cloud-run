@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<advads-export>
+    <ads type="array">
+        <item key="0" type="array">
+            <ID type="string">1</ID>
+            <post_content type="string">
+                <![CDATA[<div style="width: 100%; height: 90px; background: #15A2E1; color: #fff; line-height: 90px; text-align: center; ">Example Ad #1 (only visible for logged-in visitors)</div>]]></post_content>
+            <post_title type="string">Example Ad #1 (only for logged-in visitors)</post_title>
+            <post_status type="string">publish</post_status>
+            <meta_input type="array">
+                <advanced_ads_ad_options type="array">
+                    <visitor type="array"/>
+                    <visitors type="array">
+                        <item key="0" type="array">
+                            <type type="string">loggedin</type>
+                            <operator type="string">is</operator>
+                        </item>
+                    </visitors>
+                    <output type="array">
+                        <allow_php type="string">0</allow_php>
+                    </output>
+                    <type type="string">plain</type>
+                    <width type="numeric">0</width>
+                    <height type="numeric">0</height>
+                </advanced_ads_ad_options>
+            </meta_input>
+        </item>
+        <item key="1" type="array">
+            <ID type="string">2</ID>
+            <post_content type="string">
+                <![CDATA[<div style="width: 100%; height: 90px; background: #04B404; color: #fff; line-height: 90px; text-align: center; ">Example Ad #2 (only visible for logged-in visitors)</div>]]></post_content>
+            <post_title type="string">Example Ad #2 (only for logged-in visitors)</post_title>
+            <post_status type="string">publish</post_status>
+            <meta_input type="array">
+                <advanced_ads_ad_options type="array">
+                    <visitor type="array"/>
+                    <visitors type="array">
+                        <item key="0" type="array">
+                            <type type="string">loggedin</type>
+                            <operator type="string">is</operator>
+                        </item>
+                    </visitors>
+                    <output type="array">
+                        <allow_php type="string">0</allow_php>
+                    </output>
+                    <type type="string">plain</type>
+                    <width type="numeric">0</width>
+                    <height type="numeric">0</height>
+                </advanced_ads_ad_options>
+            </meta_input>
+        </item>
+    </ads>
+    <placements type="array">
+        <item key="0" type="array">
+            <type type="string">post_top</type>
+            <name type="string">Before Content Placement</name>
+            <item type="string">ad_1</item>
+            <key type="string">before-content-placement</key>
+        </item>
+        <item key="1" type="array">
+            <type type="string">post_content</type>
+            <name type="string">Content Placement after 3rd Paragraph</name>
+            <item type="string">ad_2</item>
+            <options type="array">
+                <position type="string">after</position>
+                <index type="numeric">3</index>
+                <tag type="string">p</tag>
+                <ad_label type="string">default</ad_label>
+                <placement_position type="string"/>
+            </options>
+            <key type="string">content-placement-after-3rd-paragraph</key>
+        </item>
+    </placements>
+</advads-export>

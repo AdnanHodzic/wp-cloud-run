@@ -1,0 +1,23 @@
+{
+  "name": "lightpress",
+  "version": "2.3.2",
+  "description": "WordPress plugin to add lightweight lightbox to view images, videos, and other media..",
+  "main": "index.js",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "check-engines": "wp-scripts check-engines"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@wordpress/scripts": "^27.0.0"
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^13.1.0",
+    "@wordpress/components": "^28.1.0",
+    "@wordpress/compose": "^7.1.0",
+    "@wordpress/hooks": "^4.1.0",
+    "@wordpress/i18n": "^5.1.0"
+  }
+}

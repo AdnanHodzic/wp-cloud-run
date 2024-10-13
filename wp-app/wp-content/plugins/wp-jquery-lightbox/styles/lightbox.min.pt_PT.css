@@ -1,0 +1,145 @@
+/**
+ * WP jQuery Lightbox
+ * Version 1.4.6.1 - 2015-03-21
+ * http://wordpress.org/extend/plugins/wp-jquery-lightbox/ 
+ * 
+ * WP jQuery Lightbox uses the minified version of this stylesheet (lightbox.min.css).
+ * This file is provided only for you to base your modification on. Edits will not be reflected on the site!
+ *
+ * To minify your stylesheet after modifying it, use http://refresh-sf.com/ and save the compressed code to
+ * lightbox.min.css or lightbox.min.{locale}.css (for translations)
+ *
+ * If you activate the "Use custom stylesheet"-setting, WP jQuery Lightbox will try and grab its CSS files 
+ * from your theme's style-folder. Ergo: move your lightbox.min.css to the theme style folder to avoid having
+ * your changes reverted whenever the plugin updates.
+ */
+.clearfix:after {
+	content: "."; 
+	display: block; 
+	height: 0; 
+	clear: both; 
+	visibility: hidden;
+}
+* html>body .clearfix {
+	display: inline-block; 
+	width: 100%;
+}
+* html .clearfix {
+	/* Hides from IE-mac \*/
+	height: 1%;
+	/* End hide from IE-mac */
+}	
+#lightboxIframe {
+	display: none;
+}	
+#overlay{
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 10090;
+	width: 100%;
+	height: 500px;
+	background-color: #000;
+	filter:alpha(opacity=60);
+	-moz-opacity: 0.6;
+	opacity: 0.6;
+	display: none;
+}
+#lightbox{
+	position: absolute;
+	left: 0;
+	width: 100%;
+	z-index: 10100;/*twentyeleven keeps the header at 999...*/
+	line-height: 0;
+}
+#jqlb_spinner{
+	height:32px;
+	background-image:url('./images/pt_PT/loading.gif');
+	background-repeat:no-repeat;				
+	background-position:center center; 		
+}	
+#jqlb_closelabel{
+	height:22px;
+	width:66px;
+	background-image:url('./images/pt_PT/closelabel.gif');
+	background-repeat:no-repeat;				
+	background-position:center center;
+}	
+#lightbox a img{ border: none; }
+#outerImageContainer{
+	position: relative;
+	background-color: #fff;
+	width: 300px; 
+	height: 300px;
+	margin: 0 auto;
+}
+#imageContainer{
+	padding: 10px;
+	text-align: center;
+}
+#jqlb_loading{
+	position: absolute;
+	top: 40%;
+	left: 0%;
+	height: 25%;
+	width: 100%;
+	line-height: 0;
+}
+#hoverNav{
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	z-index: 10;
+}
+#imageContainer>#hoverNav{ left: 0; }
+#hoverNav a{ outline: none; }
+
+/*** START : next / previous image links ***/
+#prevLink, #nextLink{
+	width: 45%;
+	height: 100%;
+	background: transparent url('./images/pt_PT/blank.gif') no-repeat; /* Trick IE into showing hover */
+	display: block;
+}
+#prevLink { left: 0; float: left;}
+#nextLink { right: 0; float: right;}
+#prevLink:hover, #prevLink:visited:hover { background: url('./images/pt_PT/prev.gif') left 50% no-repeat; }
+#nextLink:hover, #nextLink:visited:hover { background: url('./images/pt_PT/next.gif') right 50% no-repeat; }
+/*** END : next / previous image links ***/
+
+/** Text styling goes below. 
+I've written out the entire selector hierarchy so you can decide how specific you want your selectors to be.**/
+#imageDataContainer{
+	font: 10px Verdana, Helvetica, sans-serif;
+	background-color: #fff;
+	color: #000;
+	margin: 0 auto;
+	line-height: 1.4em;
+}
+#imageData{
+	padding:0 10px;
+}
+.ontop #imageData {
+    padding-top: 5px; /* add padding when title and caption are on top */
+}
+#imageData #imageDetails{ 	 
+	float: left; 
+	text-align: left; 
+	margin-bottom: 10px;	
+	width: 80%; /* make room for the CLOSE-button. */
+	width: -moz-calc(100% - 80px); /* Firefox */	
+	width: -webkit-calc(100% - 80px);/* WebKit */	
+	width: -o-calc(100% - 80px); /* Opera */	
+	width: calc(100% - 80px); /* Standard */
+}	
+#imageData #imageDetails #titleAndCaption{ } /*previously: #caption*/
+#imageData #imageDetails #titleAndCaption #titleText { font-weight: bold; }
+#imageData #imageDetails #titleAndCaption #captionText { font-weight: normal; }
+#imageData #imageDetails #controls{ margin:0px; white-space: nowrap;}	
+#imageData #imageDetails #controls #playPause{}
+#imageData #imageDetails #controls #numberDisplay{}
+#imageData #imageDetails #controls #downloadLink{}
+#imageData #bottomNav #bottomNavClose{ height:22px; width: 66px; float: right; margin-bottom: 10px; }
+

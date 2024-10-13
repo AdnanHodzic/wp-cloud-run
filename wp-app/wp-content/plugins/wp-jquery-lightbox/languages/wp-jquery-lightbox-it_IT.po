@@ -1,0 +1,145 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-26 20:31+0100\n"
+"PO-Revision-Date: 2013-04-10 20:01+0100\n"
+"Last-Translator: Il Zio <zio069@gmail.com>\n"
+"Language-Team: grogcw <grogcw@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_c;__ngettext:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Language: fr_FR\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-SearchPath-0: G:\\@WINNEEDS\\Desktop\\wp-jquery-lightbox.1.3.3\\wp-"
+"jquery-lightbox\n"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:113
+msgid "previous image"
+msgstr "Immagine precedente"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:114
+msgid "next image"
+msgstr "Image successiva"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:115
+msgid "&laquo; Previous"
+msgstr "&laquo; Precedente"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:116
+msgid "Next &raquo;"
+msgstr "Successiva&raquo;"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:117
+msgid "close image gallery"
+msgstr "chiudi la galleria"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:118
+msgid "Image "
+msgstr "Immagine "
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:119
+msgid " of "
+msgstr " di "
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:120
+msgid "Download"
+msgstr "Scarica"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:166
+msgid "Cheatin&#8217; uh?"
+msgstr "Giochi sporco, eh ?"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:179
+msgid "Let the plugin add necessary html to image links"
+msgstr "Lascia che il plugin aggiunga l'html necessario ai link delle immagini"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:179
+msgid "Auto-lightbox image links"
+msgstr "Aggiungi automaticamente i link alle immagini"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:186
+msgid ""
+"Note: this will disable the nofollow-attribute of comment links, that "
+"otherwise interfere with the lightbox."
+msgstr ""
+"Nota: questo disattiverà l'attributo nofollow dei link ai commenti, che "
+"altrimenti interferirebbero con lightbox"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:186
+msgid ""
+"Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/"
+"Nofollow\">the nofollow attribute!</a>)"
+msgstr ""
+"Attiva i commenti in Lightbox (disabilita <a href=\"http://codex.wordpress."
+"org/Nofollow\">l'attributo nofollow !</a>)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:193
+msgid "Show download link"
+msgstr "Mostra il link di download"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:197
+msgid ""
+"_blank: open the image in a new window or tab\n"
+"_self: open the image in the same frame as it was clicked (default)\n"
+"_parent: open the image in the parent frameset\n"
+"_top: open the image in the full body of the window"
+msgstr ""
+"_blank: apre l'immagine in una nuova finestra o scheda_self: apre l'immagine "
+"nello stessa scheda che la utilizza (default)\n"
+"_parent: apre l'immagine nella finestra padre\n"
+"_top: apre l'immagine nell'intera scheda"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:200
+msgid "Target for download link:"
+msgstr "Destinazione per il link di download :"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:214
+msgid "Show image info on top"
+msgstr "Mostra le informazioni sull'immagine sopra"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:222
+msgid "Shrink large images to fit smaller screens"
+msgstr "Riduci le immagini grandi per entrare negli schermi più piccoli"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:227
+msgid "Keep a distance between the image and the screen edges."
+msgstr "Mantieni distanza tra l'immagine ed i bordi dello schermo"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:227
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr "Margine minimo ai bordi dello schermo (di default: 0)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:234
+msgid "Animation duration (in milliseconds) "
+msgstr "Durata animazione (in millisecondes)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:240
+msgid "Help text (default: none) "
+msgstr "Testo di aiuto (default : nessuno)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:244
+msgid ""
+"Browse images with your keyboard: Arrows or P(revious)/N(ext) and X/C/ESC "
+"for close."
+msgstr ""
+"Navigazione con la tastiera: frecce o (P)recedente / Segue(N)te ; X / C / "
+"per chiudere."
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:246
+msgid "Save Changes"
+msgstr "Salva le modifiche"
+
+#~ msgid ""
+#~ " \\u2190 / P - previous image\\u00a0\\u00a0\\u00a0\\u00a0\\u2192 / N - "
+#~ "next image\\u00a0\\u00a0\\u00a0\\u00a0ESC / X - close image gallery"
+#~ msgstr ""
+#~ " \\u2190 / P - Image précédente\\u00a0\\u00a0\\u00a0\\u00a0\\u2192 / N - "
+#~ "Image suivante\\u00a0\\u00a0\\u00a0\\u00a0ESC / X - fermer la galerie "

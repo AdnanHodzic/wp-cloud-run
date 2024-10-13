@@ -1,0 +1,125 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WP JQuery Lightbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-26 20:31+0100\n"
+"PO-Revision-Date: 2012-07-13 11:47+0200\n"
+"Last-Translator: Toni Ahonen <toni.ahonen@me.com>\n"
+"Language-Team: Toni Ahonen\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_c;__ngettext:1,2\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-Language: Finnish\n"
+"X-Poedit-Country: FINLAND\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "Asetukset"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:113
+msgid "previous image"
+msgstr "edellinen kuva"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:114
+msgid "next image"
+msgstr "seuraava kuva"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:115
+msgid "&laquo; Previous"
+msgstr "&laquo; Edellinen"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:116
+msgid "Next &raquo;"
+msgstr "Seuraava &raquo;"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:117
+msgid "close image gallery"
+msgstr "sulje kuvagalleria"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:118
+msgid "Image "
+msgstr "Kuva "
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:119
+msgid " of "
+msgstr "/"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:120
+msgid "Download"
+msgstr "Lataa"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:166
+msgid "Cheatin&#8217; uh?"
+msgstr "Huijaatko?"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:179
+msgid "Let the plugin add necessary html to image links"
+msgstr "Anna lis&auml;osan lis&auml;t&auml; tarvittavat html-koodit kuvalinkkeihin"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:179
+msgid "Auto-lightbox image links"
+msgstr "Automaattiset lightbox-kuvalinkit"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:186
+msgid "Note: this will disable the nofollow-attribute of comment links, that otherwise interfere with the lightbox."
+msgstr "Huomio: T&auml;m&auml; est&auml;&auml; nofollow-attribuutin kommenttilinkeist&auml;, joka voi vaikuttaa lightboxiin."
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:186
+msgid "Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/Nofollow\">the nofollow attribute!</a>)"
+msgstr "Salli lightbox kommenteissa (est&auml;&auml; <a href=\"http://codex.wordpress.org/Nofollow\">nofollow-attribuutin!</a>)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:193
+msgid "Show download link"
+msgstr "N&auml;yt&auml; latauslinkki"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:197
+msgid ""
+"_blank: open the image in a new window or tab\n"
+"_self: open the image in the same frame as it was clicked (default)\n"
+"_parent: open the image in the parent frameset\n"
+"_top: open the image in the full body of the window"
+msgstr ""
+"_blank: avaa kuvan uuteen ikkunaan tai välilehteen\n"
+"_self: avaa kuvan samaan kehykseen (oletus)\n"
+"_parent: avaa kuvan p&auml;&auml;kehykseen \n"
+"_top: avaa kuvan koko ikkunaan"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:200
+msgid "Target for download link:"
+msgstr "Ladattavan kuvan target-attribuutti:"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:214
+msgid "Show image info on top"
+msgstr "N&auml;yt&auml; kuvan info yl&auml;puolella"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:222
+msgid "Shrink large images to fit smaller screens"
+msgstr "Pienenn&auml; suuret kuvat sopimaan pienempiin n&auml;ytt&ouml;ihin"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:227
+msgid "Keep a distance between the image and the screen edges."
+msgstr "S&auml;ilyt&auml; v&auml;li kuvan ja n&auml;yt&ouml;n reunojen v&auml;lill&auml;."
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:227
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr "Pienin sallittu marginaali n&auml;yt&ouml;n reunalle (oletus: 0)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:234
+msgid "Animation duration (in milliseconds) "
+msgstr "Animaation kesto (millisekunneissa)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:240
+msgid "Help text (default: none) "
+msgstr "Ohjeteksti (oletus: tyhj&auml;)"
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:244
+msgid "Browse images with your keyboard: Arrows or P(revious)/N(ext) and X/C/ESC for close."
+msgstr "Selaa kuvia n&auml;pp&auml;imist&ouml;ll&auml;: Nuolin&auml;pp&auml;imet tai P (=edellinen)/N(=seuraava) ja X/C/ESC sulkemiseen."
+
+#: G:\@WINNEEDS\Desktop\wp-jquery-lightbox.1.3.3\wp-jquery-lightbox/wp-jquery-lightbox.php:246
+msgid "Save Changes"
+msgstr "Tallenna muutokset"
+

@@ -1,0 +1,150 @@
+.advads-ad-positioning {
+  margin-bottom: -20px !important;
+}
+.advads-ad-positioning-position-groups-wrapper {
+  display: flex !important;
+  float: none !important;
+}
+.advads-ad-positioning-position-group {
+  display: flex;
+  flex-wrap: wrap;
+  flex-basis: 163px;
+  row-gap: 20px;
+  column-gap: 14px;
+  margin-left: 35px;
+  margin-right: 36px;
+  position: relative;
+}
+.advads-ad-positioning-position-group::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 1px;
+  background-color: #c3c4c7;
+  position: absolute;
+  right: -35px;
+  top: 0;
+}
+.advads-ad-positioning-position-group:first-child {
+  margin-left: 0;
+}
+.advads-ad-positioning-position-group:last-child {
+  margin-right: 0;
+}
+.advads-ad-positioning-position-group:last-child::after {
+  display: none;
+}
+.advads-ad-positioning-position-group-heading, .advads-ad-positioning-position-group-description {
+  margin: 0;
+  flex-basis: 100%;
+}
+.advads-ad-positioning-position-group-heading {
+  font-size: 13px;
+}
+.advads-ad-positioning-position-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+.advads-ad-positioning-position-wrapper.is-checked .advads-ad-positioning-position-icon path {
+  fill: #fff;
+}
+.advads-ad-positioning-position-wrapper.is-checked .advads-ad-positioning-position-icon .background {
+  fill: #0074A2;
+}
+.advads-ad-positioning-position-wrapper:hover .advads-ad-positioning-position-icon path, .advads-ad-positioning-position-wrapper:focus .advads-ad-positioning-position-icon path {
+  fill: #fff;
+}
+.advads-ad-positioning-position-wrapper:hover .advads-ad-positioning-position-icon .background, .advads-ad-positioning-position-wrapper:focus .advads-ad-positioning-position-icon .background {
+  fill: #0074A2;
+}
+.advads-ad-positioning-position-icon {
+  width: 45px;
+  height: 45px;
+}
+.advads-ad-positioning-position-icon svg {
+  width: 100%;
+  height: 100%;
+}
+#advads-ad-positioning-position-right_float ~ .advads-ad-positioning-position-icon, #advads-ad-positioning-position-right_nofloat ~ .advads-ad-positioning-position-icon {
+  transform: rotateZ(180deg);
+}
+
+.advads-ad-positioning-position-option {
+  position: absolute;
+  z-index: -1;
+}
+
+.advads-ad-positioning-spacing-wrapper {
+  display: inline-grid !important;
+  float: none !important;
+  grid-template-rows: auto 17px auto 17px auto;
+  grid-template-columns: auto 17px auto 17px auto;
+  grid-template-areas: ". . top . ." ". . icon_top . ." "left icon_left ad icon_right right" ". . icon_bottom . ." ". . bottom . legend";
+}
+label[for=advads-ad-positioning-spacing-top] {
+  grid-area: top;
+}
+label[for=advads-ad-positioning-spacing-right] {
+  grid-area: right;
+}
+label[for=advads-ad-positioning-spacing-bottom] {
+  grid-area: bottom;
+}
+label[for=advads-ad-positioning-spacing-left] {
+  grid-area: left;
+}
+
+.advads-ad-positioning-spacing-option {
+  width: 65px;
+}
+.advads-ad-positioning-spacing-option[type=number] {
+  padding-right: 2px;
+}
+.advads-ad-positioning-spacing-legend {
+  grid-area: legend;
+  align-self: end;
+  justify-self: end;
+}
+.advads-ad-positioning-spacing-direction {
+  justify-self: center;
+  align-self: center;
+}
+.advads-ad-positioning-spacing-direction svg path {
+  transform-origin: center;
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-top {
+  grid-area: icon_top;
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-top svg path {
+  transform: rotate(0deg);
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-right {
+  grid-area: icon_right;
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-right svg path {
+  transform: rotate(90deg);
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-bottom {
+  grid-area: icon_bottom;
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-bottom svg path {
+  transform: rotate(180deg);
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-left {
+  grid-area: icon_left;
+}
+.advads-ad-positioning-spacing-direction.advads-ad-positioning-spacing-left svg path {
+  transform: rotate(270deg);
+}
+.advads-ad-positioning-spacing-adcenter {
+  grid-area: ad;
+  background-color: var(--advads-ci-lightblue);
+  color: #fff;
+  border-radius: 4px;
+  text-align: center;
+  align-self: center;
+  line-height: 30px;
+}

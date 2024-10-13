@@ -1,0 +1,34 @@
+/* CSS Document */
+
+#customize-controls .redux-main .description{ margin-left: 3px; }
+
+#redux-header .display_header{ float: none !important; text-align: right; background: url('../images/logo-ep-black.png') no-repeat left center; padding-left: 200px; height: 50px; margin: 10px 20px; }
+
+.rAds,
+#redux-header .rAds{ display: none !important; }
+
+#redux-header{
+    background: #000229 !important;
+}
+
+#redux-intro-text{ display: none; }
+.redux-sidebar .redux-group-menu li a{ opacity: 1; }
+.redux-container .notice-yellow{ color: #B48941; }
+
+.redux-container-image_select .redux-image-select label span{ font-size: 11px; text-align: center; display: block; }
+
+/* Fixes */
+
+.redux-main .wp-picker-container{ vertical-align: middle; margin-bottom: 0; }
+.redux-main .redux-info-field{ margin-bottom: 10px; }
+.social-profile{ vertical-align: middle; margin: -4px 5px 0 0; }
+.redux-container .ui-buttonset .ui-button .ui-icon{
+    display: none;
+}
+
+.redux-container .redux-field-container{
+    padding: 10px 0 !important;
+}
+.wp-customizer .redux-section .accordion-section-title i, .wp-customizer .redux-field .accordion-field-title i, .wp-customizer .redux-panel .accordion-section-title i{
+    display: none;
+}	

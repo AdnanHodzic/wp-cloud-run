@@ -1,0 +1,139 @@
+# Translation of Development (trunk) in Ukrainian
+# This file is distributed under the same license as the Development (trunk) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-12-18 20:46+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.6\n"
+"Project-Id-Version: Development (trunk)\n"
+"POT-Creation-Date: \n"
+"Last-Translator: Ihor Vispyanskiy <virua@ukr.net>\n"
+"Language-Team: \n"
+"Language: uk\n"
+
+#: wp-jquery-lightbox.php:42
+msgid "Settings"
+msgstr "Налаштування"
+
+#: wp-jquery-lightbox.php:130
+msgid "previous image"
+msgstr "попереднє зображення"
+
+#: wp-jquery-lightbox.php:131
+msgid "next image"
+msgstr "наступне зображення"
+
+#: wp-jquery-lightbox.php:132
+msgid "close image gallery"
+msgstr "закрити галерею зображень"
+
+#: wp-jquery-lightbox.php:133 wp-jquery-lightbox.php:243
+msgid "Image "
+msgstr "Зображення "
+
+#: wp-jquery-lightbox.php:134 wp-jquery-lightbox.php:243
+msgid " of "
+msgstr " з "
+
+#: wp-jquery-lightbox.php:135
+msgid "Download"
+msgstr "Завантажити"
+
+#: wp-jquery-lightbox.php:136
+msgid "(pause slideshow)"
+msgstr "(зупинити слайд-шоу)"
+
+#: wp-jquery-lightbox.php:137
+msgid "(play slideshow)"
+msgstr "(почати слайд-шоу)"
+
+#: wp-jquery-lightbox.php:200
+msgid "Cheatin&#8217; uh?"
+msgstr "Шахраюємо?"
+
+#: wp-jquery-lightbox.php:215
+msgid "Let the plugin add necessary html to image links"
+msgstr "Дозволити плагіну додавати необхідний html до посилань на зображення"
+
+#: wp-jquery-lightbox.php:215
+msgid "Auto-lightbox image links"
+msgstr "Використовувати lightbox автоматично"
+
+#: wp-jquery-lightbox.php:222
+msgid "Note: this will disable the nofollow-attribute of comment links, that otherwise interfere with the lightbox."
+msgstr "Примітка: це відключить nofollow-атрибут для посиланнях в коментарях, який в іншому випадку втручатиметься в lightbox."
+
+#: wp-jquery-lightbox.php:222
+msgid "Enable lightbox in comments (disables <a href=\"http://codex.wordpress.org/Nofollow\">the nofollow attribute!</a>)"
+msgstr "Включити lightbox в коментарях (відключає <a href=\"http://codex.wordpress.org/Nofollow\">nofollow-атрибут!</a>)"
+
+#: wp-jquery-lightbox.php:229
+msgid "Show title"
+msgstr "Показати назву"
+
+#: wp-jquery-lightbox.php:236
+msgid "Show caption"
+msgstr "Показати підпис"
+
+#: wp-jquery-lightbox.php:243
+msgid "Show image numbers:"
+msgstr "Показати кількість зображень:"
+
+#: wp-jquery-lightbox.php:250
+msgid "Show download link"
+msgstr "Показати посилання на завантаження"
+
+#: wp-jquery-lightbox.php:258
+msgid "Show image info on top"
+msgstr "Показати дані про зображення зверху"
+
+#: wp-jquery-lightbox.php:266
+msgid "Shrink large images to fit smaller screens"
+msgstr "Підігнати розмір зображення під екран"
+
+#: wp-jquery-lightbox.php:271
+msgid "Keep a distance between the image and the screen edges."
+msgstr "Тримати дистанцію між зображенням і краєм екрану."
+
+#: wp-jquery-lightbox.php:271
+msgid "Minimum margin to screen edge (default: 0)"
+msgstr "Мінімальний відступ до краю екрана (за замовчуванням: 0)"
+
+#: wp-jquery-lightbox.php:279
+msgid "Use custom stylesheet"
+msgstr "Використовувати власні стилі"
+
+#: wp-jquery-lightbox.php:285
+msgid "Animation duration (in milliseconds) "
+msgstr "Тривалість анімації (в мілісекундах) "
+
+#: wp-jquery-lightbox.php:291
+msgid "Slideshow speed (in milliseconds). 0 to disable."
+msgstr "Швидкість слайд-шоу (в мілісекундах). 0 для відключення."
+
+#: wp-jquery-lightbox.php:296
+msgid "Save Changes"
+msgstr "Зберегти зміни"
+
+#. Plugin Name of the plugin/theme
+msgid "wp-jquery-lightbox"
+msgstr "WP jQuery Lightbox"
+
+#. Plugin URI of the plugin/theme
+msgid "http://wordpress.org/extend/plugins/wp-jquery-lightbox/"
+msgstr "http://wordpress.org/extend/plugins/wp-jquery-lightbox/"
+
+#. Description of the plugin/theme
+msgid "A drop in replacement for LightBox-2 and similar plugins. Uses jQuery to save you from the JS-library mess in your header. :)"
+msgstr "Спроба замінити LightBox-2 і аналогічні плагіни. Використовує jQuery, щоб врятувати вас від засилля JS-бібліотек в шапці сайту. :)"
+
+#. Author of the plugin/theme
+msgid "Ulf Benjaminsson"
+msgstr "Ulf Benjaminsson"
+
+#. Author URI of the plugin/theme
+msgid "http://www.ulfben.com"
+msgstr "http://www.ulfben.com"

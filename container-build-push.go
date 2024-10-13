@@ -1,6 +1,8 @@
 // container-build-push.go
+//
 // Build and push a wp-cloud-run (WordPress app) container image to Google Cloud Registry
 // Refer to wp-cloud-run repository README for more information.
+//
 // Copyright: Adnan Hodzic
 // License: Apache-2.0
 package main

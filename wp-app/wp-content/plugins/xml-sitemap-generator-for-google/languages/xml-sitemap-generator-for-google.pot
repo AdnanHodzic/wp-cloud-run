@@ -1,0 +1,920 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Google XML Sitemaps Generator\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-03-17 08:50+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.6; wp-6.4.3\n"
+"X-Domain: xml-sitemap-generator-for-google"
+
+#: templates/partials/sidebar.php:102
+msgid ""
+" to take your Search Engine Optimization to the Next Level with unlocking "
+"Premium Features."
+msgstr ""
+
+#. %s is Cached Time
+#: includes/Cache.php:42
+#, php-format
+msgid "%s ago"
+msgstr ""
+
+#: templates/sections/general/additional.php:21
+msgid "(Optional)"
+msgstr ""
+
+#. Sitemap Index URL
+#: templates/xsl/sitemap.php:87
+#, php-format
+msgid "<a href=\"%s\">&#8592; Sitemap Index</a>"
+msgstr ""
+
+#: templates/partials/sidebar.php:116
+msgid "Account & Premium Support"
+msgstr ""
+
+#: templates/sections/general/additional.php:57
+msgid "Add New URL"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:22
+msgid "Add Sitemap Output URLs to site \"robots.txt\" file"
+msgstr ""
+
+#: templates/sections/general/additional.php:12
+msgid "Additional URLs"
+msgstr ""
+
+#: templates/settings.php:23
+msgid "Advanced"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:105
+msgid "Advanced Caching features to improve Sitemap data collection."
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:14
+msgid ""
+"All below options will be available after enabling Image Sitemap. Default "
+"Sitemap will only include Images that are used in Content."
+msgstr ""
+
+#: templates/sections/advanced/cache.php:18
+msgid ""
+"All below options will be available after enabling Sitemap Cache. Sitemaps "
+"Content will be cached for faster loading."
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:13
+msgid ""
+"All below options will be available after enabling Video Sitemap. Sitemap "
+"will only include Videos that are used in Content."
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:58
+msgid "Allow Image Types in your Image Sitemap."
+msgstr ""
+
+#: templates/fields/frequency.php:10
+msgid "Always"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:56
+msgid "Average Comments Count will be used for Priority Calculation"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:13
+msgid ""
+"Basic Settings for your Sitemaps. Enabling all below options is recommended."
+msgstr ""
+
+#: templates/partials/sidebar.php:141
+msgid "Bing Webmaster Tools"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:95
+msgid "BMP"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:136
+msgid "Broken Images"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:15
+msgid "Cache"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:37
+msgid "Cache Timeout:"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:99
+msgid ""
+"Caching YouTube API Data improves performance by storing and reusing "
+"requested Video data from YouTube API."
+msgstr ""
+
+#: templates/partials/sidebar.php:85
+msgid "can be displayed using Page Builder Widget or Shortcode"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:30
+msgid "Categories"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:63
+msgid "Change API Key"
+msgstr ""
+
+#: includes/Dashboard.php:201
+msgid "Changes saved!"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:58
+#: templates/sections/media-sitemaps/video-sitemap.php:86
+msgid "Check API Key"
+msgstr ""
+
+#. %s Google Index Sitemap URL
+#: templates/sections/general/sitemap-index.php:23
+msgid "Choose Sitemap Structure:"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:96
+msgid "Clear Cache"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:115
+msgid "Clear cache when Page/Post created or updated"
+msgstr ""
+
+#: templates/partials/sidebar.php:29
+msgid "Clear Sitemaps Cache"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:117
+msgid "Clear YouTube Data Cache"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:55
+msgid "Comments Average"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:40
+msgid "Comments Count"
+msgstr ""
+
+#: templates/sections/general/sitemap-options.php:17
+#: templates/sections/general/sitemap-options.php:46
+#: templates/sections/media-sitemaps/content.php:18
+#: templates/sections/media-sitemaps/content.php:38
+#: templates/sections/google-news/content.php:18
+#: templates/sections/google-news/content.php:50
+msgid "Content"
+msgstr ""
+
+#: templates/sections/google-news/content.php:11
+msgid "Content Options"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:38
+msgid ""
+"Custom Keywords Taxonomy will be available for Posts after enabling this "
+"option."
+msgstr ""
+
+#: templates/sections/general/sitemap-options.php:42
+#: templates/sections/media-sitemaps/content.php:30
+#: templates/sections/google-news/content.php:42
+msgid "Custom Post Types"
+msgstr ""
+
+#: templates/post-meta-box.php:15
+msgid ""
+"Custom Sitemap Options for the Current Post such as Exclude from Sitemap, "
+"Post Priority, Post Frequency."
+msgstr ""
+
+#: templates/fields/frequency.php:16
+msgid "Daily"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:42
+msgid "day(s)"
+msgstr ""
+
+#: includes/Notices.php:63 includes/Notices.php:85
+msgid "Dismiss"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:25
+msgid "Do not use Priority Calculation"
+msgstr ""
+
+#: templates/partials/sidebar.php:120
+msgid "Documentation"
+msgstr ""
+
+#: templates/sections/advanced/import-export.php:28
+msgid "Download Settings Data File"
+msgstr ""
+
+#: templates/partials/sidebar.php:88
+msgid "Elementor"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:108
+msgid "Enable Cache for YouTube Data"
+msgstr ""
+
+#: templates/sections/google-news/general-settings.php:22
+msgid "Enable Google News"
+msgstr ""
+
+#: templates/sections/general/html-sitemap.php:29
+msgid "Enable HTML Sitemap"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:24
+msgid "Enable Image Sitemap"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:34
+msgid "Enable IndexNow Protocol (Microsoft Bing, Seznam.cz, Naver, Yandex)"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:28
+msgid "Enable Sitemap Cache"
+msgstr ""
+
+#: templates/sections/google-news/stock-tickers.php:24
+msgid "Enable Stock Tickers "
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:22
+msgid "Enable Video Sitemap"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:166
+msgid ""
+"Enabling this option includes Featured Images from Pages, Posts, and Custom "
+"Posts to your Image Sitemap."
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:192
+msgid ""
+"Enabling this option includes WooCommerce Gallery Images from Products to "
+"your Image Sitemap."
+msgstr ""
+
+#: templates/sections/general/additional.php:18
+msgid ""
+"Enter the URL to the External Page. For example: https://example.com/blog or "
+"www.example.com/account."
+msgstr ""
+
+#: templates/fields/post-row.php:13 templates/fields/content.php:11
+#: templates/sections/general/exclude.php:12
+#: templates/sections/google-news/exclude.php:12
+msgid "Exclude"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:151
+msgid "Exclude Broken Images"
+msgstr ""
+
+#: templates/sections/general/exclude.php:35
+#: templates/sections/google-news/exclude.php:36
+msgid "Exclude Categories and Tags:"
+msgstr ""
+
+#: templates/sections/general/exclude.php:23
+msgid "Exclude Pages/Posts:"
+msgstr ""
+
+#: templates/sections/google-news/exclude.php:23
+msgid "Exclude Posts:"
+msgstr ""
+
+#: templates/sections/advanced/import-export.php:22
+msgid "Export Settings"
+msgstr ""
+
+#: templates/sections/general/additional.php:15
+msgid "External URLs which should be included in your Sitemap:"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:161
+msgid "Featured Images"
+msgstr ""
+
+#: templates/partials/sidebar.php:25
+msgid "Flush Rewrite Rules"
+msgstr ""
+
+#: templates/settings.php:20
+msgid "General"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:11
+#: templates/sections/google-news/general-settings.php:11
+msgid "General Settings"
+msgstr ""
+
+#: templates/partials/pro-overlay.php:9
+msgid "Get Now"
+msgstr ""
+
+#: includes/Dashboard.php:348
+msgid "Get Pro"
+msgstr ""
+
+#: templates/partials/sidebar.php:101
+msgid "Get Pro Version now"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:108
+msgid "GIF"
+msgstr ""
+
+#: includes/Sitemap.php:129 templates/settings.php:21
+#: templates/partials/sidebar.php:56 templates/sections/advanced/cache.php:67
+msgid "Google News"
+msgstr ""
+
+#: templates/sections/google-news/output.php:35
+msgid "Google News for other languages:"
+msgstr ""
+
+#: templates/partials/sidebar.php:132
+msgid "Google News Help Center"
+msgstr ""
+
+#: templates/sections/google-news/output.php:13
+msgid "Google News URL"
+msgstr ""
+
+#: templates/sections/google-news/output.php:23
+msgid "Google News URL:"
+msgstr ""
+
+#: templates/partials/sidebar.php:129
+msgid "Google Search Console"
+msgstr ""
+
+#. Name of the plugin
+msgid "Google XML Sitemaps Generator"
+msgstr ""
+
+#: includes/Dashboard.php:26 templates/settings.php:11
+msgid "Google XML Sitemaps Generator Settings"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Greatly improves SEO by generating XML Sitemaps, HTML Sitemaps and Google "
+"News, helping search engines like Google, Bing, Yahoo and others index your "
+"site more effectively."
+msgstr ""
+
+#: templates/partials/sidebar.php:90
+msgid "Gutenberg"
+msgstr ""
+
+#: templates/sections/advanced/import-export.php:24
+msgid ""
+"Here you can download your current Settings. Keep this safe as you can use "
+"it as a backup if anything goes wrong."
+msgstr ""
+
+#: templates/sections/general/html-sitemap.php:20
+msgid "Here you can enable HTML Sitemap, customize Output URL and preview."
+msgstr ""
+
+#: templates/sections/google-news/output.php:15
+msgid "Here you can preview your Google News and customize Output URL."
+msgstr ""
+
+#: templates/sections/general/xml-sitemap.php:15
+msgid "Here you can preview your XML Sitemap and customize Output URL."
+msgstr ""
+
+#: templates/sections/advanced/cache.php:41
+msgid "hour(s)"
+msgstr ""
+
+#: templates/fields/frequency.php:13
+msgid "Hourly"
+msgstr ""
+
+#: templates/partials/sidebar.php:48 templates/partials/sidebar.php:84
+#: templates/sections/advanced/cache.php:59
+#: templates/sections/general/html-sitemap.php:14
+msgid "HTML Sitemap"
+msgstr ""
+
+#: templates/sections/general/html-sitemap.php:44
+msgid "HTML Sitemap URL:"
+msgstr ""
+
+#: templates/sections/general/html-sitemap.php:56
+msgid "HTML Sitemaps for other languages:"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/xml-sitemap-generator-for-google/"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://wpgrim.com/"
+msgstr ""
+
+#: templates/sections/media-sitemaps/content.php:11
+msgid "Image & Video Content Options"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:53
+msgid "Image MIME Types"
+msgstr ""
+
+#: includes/Sitemap.php:132 templates/partials/sidebar.php:64
+#: templates/sections/advanced/cache.php:75
+#: templates/sections/media-sitemaps/image-sitemap.php:11
+msgid "Image Sitemap"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:39
+msgid "Image Sitemap URL:"
+msgstr ""
+
+#: templates/sections/advanced/import-export.php:7
+#: templates/sections/advanced/import-export.php:14
+msgid "Import Settings"
+msgstr ""
+
+#: templates/fields/post-row.php:12 templates/fields/content.php:10
+#: templates/sections/general/sitemap-options.php:18
+#: templates/sections/general/sitemap-options.php:47
+#: templates/sections/media-sitemaps/content.php:19
+#: templates/sections/media-sitemaps/content.php:39
+#: templates/sections/google-news/content.php:19
+#: templates/sections/google-news/content.php:51
+msgid "Include"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:176
+msgid "Include Featured Images"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:202
+msgid "Include WooCommerce Gallery Images"
+msgstr ""
+
+#: includes/Dashboard.php:60
+msgid "IndexNow API Key changed successfully."
+msgstr ""
+
+#. %s: IndexNow API Key
+#: templates/sections/general/general-settings.php:49
+#, php-format
+msgid "INDEXNOW API KEY: %s"
+msgstr ""
+
+#: templates/partials/sidebar.php:138
+msgid "IndexNow Protocol"
+msgstr ""
+
+#: templates/sections/general/general-settings.php:41
+msgid ""
+"IndexNow Protocol informs search engines like Microsoft Bing, Seznam.cz, "
+"Naver, and Yandex about all updates of your website, including changes when "
+"saving Posts."
+msgstr ""
+
+#: includes/Notices.php:18
+msgid "Invalid nonce."
+msgstr ""
+
+#: includes/ImportExport.php:37
+msgid "Invalid settings file or data."
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:69
+msgid "JPEG"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:12
+msgid "Keywords"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:24
+msgid "Keywords from:"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:31
+msgid "Keywords Taxonomy"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:46
+msgid "Last Cached Time:"
+msgstr ""
+
+#: templates/sections/general/additional.php:30
+msgid "Last Modified"
+msgstr ""
+
+#: templates/sections/general/additional.php:20
+msgid "Last Modified:"
+msgstr ""
+
+#: templates/partials/sidebar.php:111
+msgid "Links"
+msgstr ""
+
+#: templates/settings.php:22
+msgid "Media Sitemaps"
+msgstr ""
+
+#: templates/sections/advanced/optimize.php:29
+msgid "Minimize Sitemap source code"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:40
+msgid "minute(s)"
+msgstr ""
+
+#: templates/fields/frequency.php:22
+msgid "Monthly"
+msgstr ""
+
+#: templates/fields/frequency.php:28
+msgid "Never"
+msgstr ""
+
+#: includes/Cache.php:43
+msgid "No Cache"
+msgstr ""
+
+#: templates/sections/general/additional.php:37
+msgid "No URLs added yet!"
+msgstr ""
+
+#: templates/fields/select.php:9
+msgid "None"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:91
+msgid ""
+"Note: Sitemap Cache will only be created when someone opens/visits the "
+"Sitemap on front-end."
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:41
+msgid "Number of Post Comments will be used for Priority Calculation"
+msgstr ""
+
+#: templates/sections/google-news/stock-tickers.php:33
+msgid ""
+"Once this option is enabled, you will be able to specify values under the "
+"custom Stock Tickers Taxonomy."
+msgstr ""
+
+#: templates/sections/advanced/optimize.php:13
+msgid "Optimize"
+msgstr ""
+
+#: templates/partials/sidebar.php:21
+msgid "Ping IndexNow Protocol"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:18
+msgid "Please choose a priority for calculating each of posts:"
+msgstr ""
+
+#: templates/sections/general/exclude.php:17
+msgid ""
+"Please search and choose here Pages, Posts, Custom Posts, Categories and "
+"Tags that should be excluded from Sitemap:"
+msgstr ""
+
+#: templates/sections/google-news/exclude.php:17
+msgid ""
+"Please search and choose here Posts that should be excluded from Google News:"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:17
+msgid ""
+"Please select the source from which the Google News Keywords should be "
+"extracted."
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:82
+msgid "PNG"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:12
+msgid "Posts Priority"
+msgstr ""
+
+#: templates/sections/general/posts-priority.php:26
+msgid ""
+"Posts will have the same priority which is defined in \"Sitemap Options\""
+msgstr ""
+
+#: templates/partials/sidebar.php:37
+msgid "Preview"
+msgstr ""
+
+#: templates/sections/google-news/output.php:34
+msgid "Preview your Google News:"
+msgstr ""
+
+#: templates/sections/general/html-sitemap.php:55
+msgid "Preview your HTML Sitemap:"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:46
+msgid "Preview your Image Sitemap:"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:44
+msgid "Preview your Video Sitemap:"
+msgstr ""
+
+#: templates/sections/general/xml-sitemap.php:34
+msgid "Preview your XML Sitemap:"
+msgstr ""
+
+#: templates/sections/general/additional.php:28
+#: templates/sections/general/sitemap-options.php:19
+#: templates/sections/general/sitemap-options.php:48
+msgid "Priority"
+msgstr ""
+
+#: includes/Dashboard.php:340
+msgid "Pro Version"
+msgstr ""
+
+#: includes/Notices.php:80
+msgid "Pro version"
+msgstr ""
+
+#: templates/sections/google-news/general-settings.php:37
+msgid "Publication Name:"
+msgstr ""
+
+#: includes/Dashboard.php:366 templates/partials/sidebar.php:126
+msgid "Rate ★★★★★"
+msgstr ""
+
+#: templates/partials/sidebar.php:103
+msgid "Read More"
+msgstr ""
+
+#: templates/sections/advanced/import-export.php:16
+msgid "Select the JSON file in order to Import Settings."
+msgstr ""
+
+#: includes/Dashboard.php:330
+msgid "Settings"
+msgstr ""
+
+#: includes/ImportExport.php:27
+msgid "Settings imported successfully."
+msgstr ""
+
+#: templates/partials/sidebar.php:135
+msgid "Show up in Google News"
+msgstr ""
+
+#: templates/sections/general/sitemap-index.php:29
+msgid "Single Sitemap"
+msgstr ""
+
+#: includes/Sitemap.php:125 includes/Sitemap.php:138
+msgid "Sitemap"
+msgstr ""
+
+#: includes/Sitemap.php:141 templates/sections/general/sitemap-index.php:36
+msgid "Sitemap Index"
+msgstr ""
+
+#: templates/sections/general/sitemap-options.php:11
+msgid "Sitemap Options"
+msgstr ""
+
+#: templates/sections/advanced/optimize.php:20
+msgid "Sitemap source code will be compressed into a single line."
+msgstr ""
+
+#: templates/sections/general/sitemap-index.php:11
+msgid "Sitemap Structure"
+msgstr ""
+
+#: includes/Dashboard.php:74 includes/Tools.php:43
+msgid "Sitemaps Cache cleared."
+msgstr ""
+
+#: templates/sections/general/xml-sitemap.php:35
+msgid "Sitemaps for other languages:"
+msgstr ""
+
+#: templates/sections/advanced/cache.php:100
+msgid "Smart Caching"
+msgstr ""
+
+#. %s General Settings URL
+#: templates/sections/google-news/general-settings.php:49
+msgid "Source Labels:"
+msgstr ""
+
+#: templates/sections/google-news/stock-tickers.php:12
+msgid "Stock Tickers"
+msgstr ""
+
+#: templates/sections/google-news/stock-tickers.php:31
+msgid "Stock tickers are most commonly used in articles related to business."
+msgstr ""
+
+#: includes/Dashboard.php:365
+msgid "Support"
+msgstr ""
+
+#: templates/partials/sidebar.php:123
+msgid "Support Forum"
+msgstr ""
+
+#: templates/sections/google-news/keywords.php:29
+msgid "Tags"
+msgstr ""
+
+#: templates/partials/pro-overlay.php:8
+msgid "This feature is available on Premium version"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:56
+msgid ""
+"This is required field for retrieving the data from Youtube embeds if you "
+"are using them in Contents."
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:141
+msgid ""
+"This option allows to exclude Broken or Not Existing 404 images. Recommended "
+"to use this option with Sitemap Cache, as it affects to Sitemap Generating "
+"Speed."
+msgstr ""
+
+#: templates/sections/general/sitemap-options.php:13
+msgid "This Options will be used for generating your Sitemap."
+msgstr ""
+
+#: templates/sections/media-sitemaps/content.php:13
+msgid "This settings will be used for generating Image & Video Sitemaps."
+msgstr ""
+
+#: templates/sections/google-news/content.php:13
+msgid "This settings will be used for generating your Google News."
+msgstr ""
+
+#: templates/partials/sidebar.php:81
+msgid "Tips"
+msgstr ""
+
+#: templates/partials/sidebar.php:15
+msgid "Tools"
+msgstr ""
+
+#: templates/fields/autocomplete.php:11
+msgid "Type to Search..."
+msgstr ""
+
+#: templates/sections/general/additional.php:29
+#: templates/sections/general/sitemap-options.php:20
+#: templates/sections/general/sitemap-options.php:49
+msgid "Update Frequency"
+msgstr ""
+
+#: templates/sections/general/additional.php:27
+msgid "URL to External Page"
+msgstr ""
+
+#: templates/sections/general/additional.php:17
+msgid "URL to External Page:"
+msgstr ""
+
+#: includes/Sitemap.php:135 templates/partials/sidebar.php:72
+#: templates/sections/advanced/cache.php:83
+#: templates/sections/media-sitemaps/video-sitemap.php:11
+msgid "Video Sitemap"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:37
+msgid "Video Sitemap URL:"
+msgstr ""
+
+#: templates/sections/advanced/import-export.php:9
+msgid ""
+"WARNING! This will overwrite all existing Settings, please proceed with "
+"caution or backup current Settings!"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:121
+msgid "WEBP"
+msgstr ""
+
+#: templates/fields/frequency.php:19
+msgid "Weekly"
+msgstr ""
+
+#: templates/sections/general/sitemap-index.php:30
+msgid "will be generated with all links"
+msgstr ""
+
+#: templates/sections/general/sitemap-index.php:37
+msgid "will be generated with Inner Sitemaps"
+msgstr ""
+
+#: templates/sections/media-sitemaps/image-sitemap.php:187
+msgid "WooCommerce Gallery"
+msgstr ""
+
+#: includes/Tools.php:39
+msgid "WordPress Rewrite Rules flushed."
+msgstr ""
+
+#: templates/partials/sidebar.php:92
+msgid "WPBakery (Visual Composer)"
+msgstr ""
+
+#. Author of the plugin
+msgid "WPGrim"
+msgstr ""
+
+#: templates/partials/sidebar.php:41 templates/sections/advanced/cache.php:52
+#: templates/sections/general/xml-sitemap.php:13
+msgid "XML Sitemap"
+msgstr ""
+
+#: templates/sections/general/xml-sitemap.php:24
+msgid "XML Sitemap URL:"
+msgstr ""
+
+#: templates/partials/sidebar.php:147
+msgid "XML Sitemap Validator"
+msgstr ""
+
+#: includes/Dashboard.php:27
+msgid "XML Sitemaps"
+msgstr ""
+
+#: templates/partials/sidebar.php:144
+msgid "Yandex Webmaster"
+msgstr ""
+
+#: templates/fields/frequency.php:25
+msgid "Yearly"
+msgstr ""
+
+#: includes/Notices.php:65
+msgid "Yes, Rate Now"
+msgstr ""
+
+#: includes/Notices.php:87
+msgid "Yes, Read More"
+msgstr ""
+
+#: templates/sections/general/additional.php:22
+msgid ""
+"You can select the Last Modified datetime for the URL or leave it empty "
+"(default) to always show the Current Datetime on Sitemap."
+msgstr ""
+
+#: includes/Dashboard.php:110
+msgid "YouTube API key passed the check successfully."
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:51
+msgid "YouTube Data API"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:64
+msgid "YouTube Data API v3 Key:"
+msgstr ""
+
+#: templates/sections/media-sitemaps/video-sitemap.php:93
+msgid "YouTube Data Cache"
+msgstr ""
+
+#: includes/Dashboard.php:95
+msgid "YouTube Data Cache cleared."
+msgstr ""

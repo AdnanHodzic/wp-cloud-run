@@ -1,0 +1,64 @@
+/*------------------------------------*\
+    			SETTINGS
+\*------------------------------------*/
+
+/* @group Font Families */
+
+$font-family: 'Poppins', 'Roboto', sans-serif;
+$font-weight: 400;
+$font-size: 15px; // General content font size
+$line-height: 1.8;
+
+$font-size-editor: 17px; // Single Content font size
+$line-height-editor: 2;
+$font-weight-editor: 400;
+
+$title-font-family: 'Roboto', sans-serif;
+$title-font-size: 24px;
+
+/* @end */
+
+/* @group Colors */
+
+// rojo: DE394A
+// amarillo: FFD54F
+
+// opcion: EF3043   FF3745 
+// Guten fd4145
+
+$red: #FF3152; //Primary Color // Tests: ff414e FC3F5D FF3152
+$yellow: #FFD012; // Secondary Color
+// $black: #222527;
+$black1: #111; // Header, subscribe, back to top button, etc
+$black2: #222; // Main titles
+
+$text-color: #494949; // Body text color
+$border-color: #e5e5e5; // Sidebar and separators
+
+$lighten: 9%; //Lighten amount for hovers and overlays, example: subscribe input box background
+$darken: 9%; //Darken amount for hovers and overlays, example: search box background
+
+$border-radius: 25px;
+
+/* @end */
+
+/* @group Effects speed */
+
+$transition-time: 300ms;
+$transition-method: ease;
+
+/* @end */
+
+/* @group Content Width and Margins */
+
+$editor-base-unit: 32px; // Space between paragraphs and titles (post content)
+$section-padding: 50px; // Padding top and bottom for containers, example: sidebar widgets, suscribe form
+$element-padding: 25px;
+
+$grid-container: 1200px; // Max width for the theme
+$grid-small: 780px;
+$grid-medium: 900px;
+$grid-large: 1400px;
+$grid-gap: 30px; // Space betweens grids elements
+
+/* @end */
