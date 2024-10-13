@@ -1,4 +1,4 @@
 .env
 backup/*
 wp-app/wp-content/plugins/all-in-one-wp-migration-unlimited-extension/*
-wp-app/wp-content/plugins/themes/*
+wp-app/wp-content/themes/*
