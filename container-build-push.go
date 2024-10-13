@@ -24,7 +24,7 @@ func main() {
 
 	// variables for the container image
 	// WP_VERSION & WP_CLOUD_RUN_IMG are defined in the .env file
-	project := "fooctrl-312814"
+	project := "wp-cloud-run-438307"
 	repo_region := "europe-west4-docker.pkg.dev"
 	repo_name := "wp-cloud-run"
 
