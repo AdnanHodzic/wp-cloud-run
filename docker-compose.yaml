@@ -1,0 +1,29 @@
+# docker-compose file for running WordPress with MySQL service on Cloud Run (wp-cloud-run)
+services:
+  # mysql service
+  db:
+    image: mysql:8.0
+    restart: always
+    env_file:
+      - .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+  # wordpress service
+  wordpress:
+    depends_on:
+      - db
+    image: europe-west4-docker.pkg.dev/fooctrl-312814/wp-cloud-run/wp-cloud-run:${WP_CLOUD_RUN_IMG}
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+
