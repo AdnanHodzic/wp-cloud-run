@@ -73,7 +73,7 @@ class Dashboard extends Controller {
 	 * Save Settings
 	 */
 	public function save_settings() {
-		if ( 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ) || ! isset( $_POST['save_settings'] ) ) {
+		if ( 'POST' !== strtoupper( $_SERVER['REQUEST_METHOD'] ?? '' ) || ! isset( $_POST['save_settings'] ) ) {
 			return;
 		}
 

@@ -34,7 +34,7 @@ $settings = $args['settings'] ?? new stdClass();
 			</strong>
 		</p>
 		<p class="cache-timeout-group">
-			<label for="cache_timeout" class="sitemap-cache"><?php esc_html_e( 'Cache Timeout:', 'xml-sitemap-generator-for-google' ); ?></label>
+			<label for="cache_timeout" class="sitemap-cache"><?php esc_html_e( 'Cache Expiration Time:', 'xml-sitemap-generator-for-google' ); ?></label>
 			<input type="number" id="cache_timeout" name="cache_timeout" class="sitemap-cache" value="<?php echo esc_attr( $settings->cache_timeout ?? 24 ); ?>"/>
 			<select name="cache_timeout_period" class="sitemap-cache">
 				<option value="60" <?php selected( esc_attr( $settings->cache_timeout_period ?? 3600 ), 60 ); ?>><?php esc_html_e( 'minute(s)', 'xml-sitemap-generator-for-google' ); ?></option>

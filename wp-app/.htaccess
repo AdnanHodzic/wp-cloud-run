@@ -28,15 +28,15 @@ Allow from all
 <Files "xmlrpc.php">
     Order Deny,Allow
     Deny from all
-    Allow from 62.195.102.237
+    Allow from 77.163.4.0/24
 </Files>
 
 # Disable access to wp-login.php except from specific IPs
 <Files "wp-login.php">
     Order Deny,Allow
     Deny from all
-    Allow from 62.195.102.237
-    Allow from 149.34.244.138
+    Allow from 77.163.4.0/24
+    Allow from 149.34.244.0/24
 </Files>
 
 # END WordPress

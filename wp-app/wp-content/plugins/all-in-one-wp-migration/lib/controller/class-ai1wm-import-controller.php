@@ -35,7 +35,6 @@ class Ai1wm_Import_Controller {
 
 	public static function import( $params = array() ) {
 		global $ai1wm_params;
-		ai1wm_setup_environment();
 
 		// Set params
 		if ( empty( $params ) ) {
@@ -47,11 +46,16 @@ class Ai1wm_Import_Controller {
 			$params['priority'] = 10;
 		}
 
+		$ai1wm_params = $params;
+
 		// Set secret key
 		$secret_key = null;
 		if ( isset( $params['secret_key'] ) ) {
 			$secret_key = trim( $params['secret_key'] );
 		}
+
+		ai1wm_setup_environment();
+		ai1wm_setup_errors();
 
 		try {
 			// Ensure that unauthorized people cannot access import action
@@ -59,8 +63,6 @@ class Ai1wm_Import_Controller {
 		} catch ( Ai1wm_Not_Valid_Secret_Key_Exception $e ) {
 			exit;
 		}
-
-		$ai1wm_params = $params;
 
 		// Loop over filters
 		if ( ( $filters = ai1wm_get_filters( 'ai1wm_import' ) ) ) {

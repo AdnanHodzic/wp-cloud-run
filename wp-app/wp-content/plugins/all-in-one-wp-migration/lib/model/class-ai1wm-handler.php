@@ -39,14 +39,10 @@ class Ai1wm_Handler {
 	 * @return void
 	 */
 	public static function error( $errno, $errstr, $errfile, $errline ) {
-		Ai1wm_Log::error(
-			array(
-				'Number'  => $errno,
-				'Message' => $errstr,
-				'File'    => $errfile,
-				'Line'    => $errline,
-			)
-		);
+		global $ai1wm_params;
+		if ( ! empty( $ai1wm_params['storage'] ) ) {
+			Ai1wm_Log::error( $ai1wm_params['storage'], array( 'Number' => $errno, 'Message' => $errstr, 'File' => $errfile, 'Line' => $errline ) );
+		}
 	}
 
 	/**
@@ -55,8 +51,11 @@ class Ai1wm_Handler {
 	 * @return void
 	 */
 	public static function shutdown() {
-		if ( ( $error = error_get_last() ) ) {
-			Ai1wm_Log::error( $error );
+		global $ai1wm_params;
+		if ( ! empty( $ai1wm_params['storage'] ) ) {
+			if ( ( $error = error_get_last() ) ) {
+				Ai1wm_Log::error( $ai1wm_params['storage'], $error );
+			}
 		}
 	}
 }

@@ -35,7 +35,7 @@ define( 'AI1WM_DEBUG', false );
 // ==================
 // = Plugin Version =
 // ==================
-define( 'AI1WM_VERSION', '7.86' );
+define( 'AI1WM_VERSION', '7.87' );
 
 // ===============
 // = Plugin Name =
@@ -300,7 +300,7 @@ define( 'AI1WM_W3TC_CONFIG_FILE', 'w3tc-config' . DIRECTORY_SEPARATOR . 'master.
 // ==================
 // = Error Log Name =
 // ==================
-define( 'AI1WM_ERROR_NAME', 'error.log' );
+define( 'AI1WM_ERROR_NAME', 'error-log-%s.log' );
 
 // ==============
 // = Secret Key =
@@ -470,6 +470,11 @@ if ( ! defined( 'AI1WM_MAX_SELECT_RECORDS' ) ) {
 // = Max Storage Cleanup =
 // =======================
 define( 'AI1WM_MAX_STORAGE_CLEANUP', 24 * 60 * 60 );
+
+// ===================
+// = Max Log Cleanup =
+// ===================
+define( 'AI1WM_MAX_LOG_CLEANUP', 7 * 24 * 60 * 60 );
 
 // =====================
 // = Disk Space Factor =

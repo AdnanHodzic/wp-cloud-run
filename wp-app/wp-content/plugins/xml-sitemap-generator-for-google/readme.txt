@@ -5,7 +5,7 @@ Tags: sitemap, xml sitemap, google news, image sitemap, video sitemap, google si
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.6.2
-Stable tag: 1.9.12
+Stable tag: 2.0.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -78,8 +78,6 @@ Here is a short list of Google XML Sitemap plugin features.
 * Automatically add Sitemaps to robots.txt
 * Links Per Page for Sitemap Index **[NEW]**
 * Static Sitemap File detector **[NEW]**
-* Cache Sitemaps 🔥
-* Import & Export Settings
 * Toolbar with most helpful Actions & Links 🔥
 * Disables auto-generated WP Sitemaps
 * Multisite Network compatible
@@ -109,6 +107,13 @@ Here is a short list of Google XML Sitemap plugin features.
 * Video Sitemap 🔥
 * Include Pages & Posts
 * Custom Image & Video Sitemaps URL 🔥
+
+**Advanced Features**
+
+* Cache Sitemaps 🔥
+* Cache Expiration Time
+* Last Cached Time of Sitemaps
+* Import & Export Settings
 
 ## Upgrade to Pro Version
 
@@ -248,21 +253,7 @@ function my_sitemap_post_priority( $priority, $post_id ) {
 
 = How to add Custom Sitemaps to Sitemap Index? =
 
-You can add Custom Sitemap URLs to Sitemap Index using filter **sgg_additional_index_sitemaps**.
-
-Example:
-
-``
-add_filter( 'sgg_additional_index_sitemaps', 'my_additional_index_sitemaps' );
-function my_additional_index_sitemaps( $sitemaps ) {
-    $sitemaps[] = array(
-        'url'     => 'https://example.com/custom-sitemap.xml',
-        'lastmod' => '2024-08-30T21:58', // Optional
-    );
-
-    return $sitemaps;
-}
-``
+You can add Custom Sitemap URLs to Sitemap Index under **Settings > XML Sitemaps > General** tab.
 
 == Installation ==
 This section describes how to install the plugin and get it working.
@@ -273,6 +264,9 @@ This section describes how to install the plugin and get it working.
 4. Set Up Page in **Settings -> XML Sitemaps**.
 
 == Changelog ==
+
+= 2.0.0 - 2024-10-14 =
+* Setup Wizard added
 
 = 1.9.12 - 2024-09-26 =
 * Multiple Sitemap queries improved

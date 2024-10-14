@@ -9,6 +9,10 @@ jQuery(document).ready(function($) {
 
     updateStep(currentStep);
 
+    $(document).on('change', '.sitemap-cache-toggle input', function() {
+        $('.sitemap-cache').attr('disabled', !$(this).is(':checked'));
+    });
+
     formSubmitBtn.on("click", function(event) {
         event.preventDefault();
 
@@ -16,7 +20,31 @@ jQuery(document).ready(function($) {
             currentStep++;
             updateStep(currentStep);
         } else {
-            $('form').submit();
+            $('.wizard-form-btn-wrapper').addClass('loading');
+
+            let data = new FormData();
+            data.append('action', 'save_wizard_settings');
+            data.append('nonce', sggWizard.nonce);
+
+            $('#wizard-form').serializeArray().forEach(function(item) {
+                data.append(item.name, item.value);
+            });
+
+            $.ajax({
+                url: sggWizard.ajax_url,
+                type: 'POST',
+                data: data,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.redirect;
+                    } else {
+                        console.log(response);
+                    }
+                    $('.wizard-form-btn-wrapper').removeClass('loading');
+                }
+            });
         }
     });
 

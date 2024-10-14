@@ -10,4 +10,5 @@ COPY --chown=www-data:www-data ./wp-app/wp-content/plugins /var/www/html/wp-cont
 COPY --chown=www-data:www-data ./wp-app/wp-content/themes /var/www/html/wp-content/themes
 
 # copy configuration files (.htaccess, robots.txt)
-COPY --chown=www-data:www-data ./wp-app/.htaccess ./wp-app/robots.txt /var/www/html/
+COPY --chown=www-data:www-data ./wp-app/.htaccess /var/www/html/
+COPY --chown=www-data:www-data ./wp-app/robots.txt /var/www/html/

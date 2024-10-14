@@ -35,7 +35,6 @@ class Ai1wm_Export_Controller {
 
 	public static function export( $params = array() ) {
 		global $ai1wm_params;
-		ai1wm_setup_environment();
 
 		// Set params
 		if ( empty( $params ) ) {
@@ -47,11 +46,16 @@ class Ai1wm_Export_Controller {
 			$params['priority'] = 5;
 		}
 
+		$ai1wm_params = $params;
+
 		// Set secret key
 		$secret_key = null;
 		if ( isset( $params['secret_key'] ) ) {
 			$secret_key = trim( $params['secret_key'] );
 		}
+
+		ai1wm_setup_environment();
+		ai1wm_setup_errors();
 
 		try {
 			// Ensure that unauthorized people cannot access export action
@@ -59,8 +63,6 @@ class Ai1wm_Export_Controller {
 		} catch ( Ai1wm_Not_Valid_Secret_Key_Exception $e ) {
 			exit;
 		}
-
-		$ai1wm_params = $params;
 
 		// Loop over filters
 		if ( ( $filters = ai1wm_get_filters( 'ai1wm_export' ) ) ) {
@@ -266,7 +268,11 @@ class Ai1wm_Export_Controller {
 			// Loop over folders and files
 			foreach ( $iterator as $item ) {
 				try {
-					if ( $item->getMTime() < ( time() - AI1WM_MAX_STORAGE_CLEANUP ) ) {
+					if ( $item->isFile() && $item->getExtension() === 'log' ) {
+						if ( $item->getMTime() < ( time() - AI1WM_MAX_LOG_CLEANUP ) ) {
+							Ai1wm_File::delete( $item->getPathname() );
+						}
+					} elseif ( $item->getMTime() < ( time() - AI1WM_MAX_STORAGE_CLEANUP ) ) {
 						if ( $item->isDir() ) {
 							Ai1wm_Directory::delete( $item->getPathname() );
 						} else {

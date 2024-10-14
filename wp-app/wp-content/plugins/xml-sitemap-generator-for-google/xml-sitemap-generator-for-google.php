@@ -8,14 +8,14 @@
  * License: GNU General Public License v2 or later
  * License URI: http://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: xml-sitemap-generator-for-google
- * Version: 1.9.12
+ * Version: 2.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'GRIM_SG_VERSION', '1.9.12' );
+define( 'GRIM_SG_VERSION', '2.0.0' );
 define( 'GRIM_SG_FILE', __FILE__ );
 define( 'GRIM_SG_PATH', dirname( GRIM_SG_FILE ) );
 define( 'GRIM_SG_INCLUDES', GRIM_SG_PATH . '/includes/' );

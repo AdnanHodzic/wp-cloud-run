@@ -30,7 +30,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Ai1wm_Export_Config_File {
 
 	public static function execute( $params ) {
-
 		$package_bytes_written = 0;
 
 		// Set archive bytes offset

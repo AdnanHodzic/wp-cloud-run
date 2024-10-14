@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Ai1wm_Log {
 
-	public static function error( $params ) {
+	public static function error( $nonce, $params ) {
 		$data = array();
 
 		// Add date
@@ -42,7 +42,7 @@ class Ai1wm_Log {
 		$data[] = PHP_EOL;
 
 		// Write log data
-		if ( $handle = ai1wm_open( ai1wm_error_path(), 'a' ) ) {
+		if ( $handle = ai1wm_open( ai1wm_error_path( $nonce ), 'a' ) ) {
 			ai1wm_write( $handle, implode( PHP_EOL, $data ) );
 			ai1wm_close( $handle );
 		}

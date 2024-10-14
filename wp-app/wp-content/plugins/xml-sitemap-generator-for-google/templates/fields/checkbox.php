@@ -14,6 +14,5 @@
 			echo " data-{$attr}='$value' ";
 		}
 	}
-	?>  />
+	?> />
 <label for="<?php echo esc_attr( $args['name'] ); ?>"><?php echo esc_html( $args['label'] ); ?></label>
-

@@ -2,9 +2,9 @@
 Contributors: yani.iliev, bangelov, pimjitsawang
 Tags: backup, transfer, copy, move, clone
 Requires at least: 3.3
-Tested up to: 6.6
+Tested up to: 6.7
 Requires PHP: 5.3
-Stable tag: 7.86
+Stable tag: 7.87
 License: GPLv2 or later
 
 Backup, transfer, copy, and move a site with 1-click. Quick, easy, and reliable.
@@ -71,6 +71,7 @@ The plugin comes preinstalled on all Bitnami WordPress sites running on AWS, Goo
 * Government Reliability: Following a directive to improve digital accessibility, a government agency used our plugin to migrate their content to a new, compliant platform without impacting public access to critical information.
 
 = Contact us =
+* [Report a security vulnerability](https://patchstack.com/database/vdp/all-in-one-wp-migration)
 * [Get free help from us here](https://servmask.com/help)
 * [Report a bug or request a feature](https://servmask.com/help)
 * [Find out more about us](https://servmask.com)
@@ -97,6 +98,15 @@ All-in-One WP Migration is in full compliance with General Data Protection Regul
 See our [GDPR Compliant Privacy Policy here](https://www.iubenda.com/privacy-policy/946881).
 
 == Changelog ==
+= 7.87 =
+**Added**
+
+* Validation to ensure archive names contain the .wpress extension
+
+**Fixed**
+
+* Resolved a vulnerability where error logs were publicly accessible with a known name by appending random affixes to error log filenames, making them unguessable. Error logs are now automatically deleted daily and during plugin updates. Special thanks to villu164 for responsibly disclosing this issue.
+
 = 7.86 =
 **Fixed**
 

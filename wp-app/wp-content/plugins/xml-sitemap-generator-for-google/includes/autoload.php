@@ -42,10 +42,12 @@ function sgg_init() {
 	if ( is_admin() ) {
 		require_once GRIM_SG_INCLUDES . 'Dashboard.php';
 		require_once GRIM_SG_INCLUDES . 'Notices.php';
+		require_once GRIM_SG_INCLUDES . 'Wizard.php';
 
 		new GRIM_SG\Dashboard();
 		new GRIM_SG\Notices();
 		new GRIM_SG\ImportExport();
+		new GRIM_SG\Wizard();
 	}
 }
 add_action( 'plugins_loaded', 'sgg_init', 1 );

@@ -69,7 +69,7 @@ function sgg_get_home_url( $path = '' ) {
 
 	if ( defined( 'ICL_SITEPRESS_VERSION' ) && ! empty( $path ) && ! empty( $_GET['lang'] ) && false !== strpos( $home_url, '?lang=' ) ) {
 		$home_url = trim( strtok( $home_url, '?' ), '/' );
-		$home_url = add_query_arg( 'lang', $_GET['lang'], "{$home_url}/{$path}" );
+		$home_url = add_query_arg( 'lang', sanitize_text_field( $_GET['lang'] ), "{$home_url}/{$path}" );
 		$path     = ''; // Reset path to avoid duplication
 	}
 
