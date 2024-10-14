@@ -35,15 +35,12 @@ After filling out the variable values, run: `go run container-build-push.go`
 
 By default (without specifying any parameters) both container build & push operations will be run.
 
-* `-build` | Build the wp-cloud-run Docker (container) image
-* `-push` | Push the wp-cloud-run Docker (container) image to registry
 * `-help` | list of options
-* `-push=false` | Example of only doing a image build without performing push
+* `-push=false` | Example of only doing an image build without performing push
 
 ### How to use for local WordPress development
 
 ToDo: add link to Youtube video/blog post
-
 
 ### Donate
 
