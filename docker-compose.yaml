@@ -15,7 +15,7 @@ services:
   wordpress:
     depends_on:
       - db
-    image: europe-west4-docker.pkg.dev/fooctrl-312814/wp-cloud-run/wp-cloud-run:${WP_CLOUD_RUN_IMG}
+    image: ${GAR_REGION}/${GCP_PROJECT}/${GAR_REPO}/${GAR_REPO}:${WP_CLOUD_RUN_IMG}
     restart: always
     env_file:
       - .env

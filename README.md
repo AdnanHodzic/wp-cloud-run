@@ -26,10 +26,13 @@ After filling out the variable values, run: `go run container-build-push.go`
 
 #### Variables
 
-* `WP_VERSION` environment variable will be sourced from the [.env](https://raw.githubusercontent.com/AdnanHodzic/wp-cloud-run/main/.env) file to pull the specified version of the WordPress image from [Docker Hub](https://hub.docker.com/_/wordpress). This version will then be used as part of the `WP_CLOUD_RUN_IMG` in the same .env file for the final container image version name."
-* `project` specify Google Cloud Project ID which will be used
-* `repo_region` specify Artifact Registry region to which image will be uploaded (pushed) to
-* `repo_name` specify Artifact Registry repository name to which image will be uploaded (pushed) to
+Please note all variables files will be defined as environment variables in [.env file](https://raw.githubusercontent.com/AdnanHodzic/wp-cloud-run/main/.env). Which will also be added to .gitignore so you don't push potentially secret data to Github repo.
+
+* `WP_VERSION` will pull specified version of the WordPress image from [Docker Hub](https://hub.docker.com/_/wordpress).
+* `WP_CLOUD_RUN_IMG` is a variable that represents the container image updates we have made.
+* `GCP_PROJECT` specify Google Cloud Project ID which will be used
+* `GAR_REGION` specify Artifact Registry region to which image will be uploaded (pushed) to
+* `GAR_REPO` specify Artifact Registry repository name to which image will be uploaded (pushed) to
 
 #### Options:
 

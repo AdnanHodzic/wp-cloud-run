@@ -22,16 +22,20 @@ func main() {
 	push := flag.Bool("push", true, "Push the wp-cloud-run Docker (container) image to the registry")
 	flag.Parse()
 
-	// variables for the container image
-	// WP_VERSION & WP_CLOUD_RUN_IMG are defined in the .env file
-	project := "wp-cloud-run-438307"
-	repo_region := "europe-west4-docker.pkg.dev"
-	repo_name := "wp-cloud-run"
+	// Please note:
+	// variables for the container image & GCP Project & Artifact Registry settings are defined in the .env file
 
 	// Load the .env file
 	err := godotenv.Load(".env")
 	if err != nil {
 		fmt.Println("Error loading .env file")
+		return
+	}
+
+	// Get the WP_VERSION from the environment variables
+	wpVersion := os.Getenv("WP_VERSION")
+	if wpVersion == "" {
+		fmt.Println("WP_VERSION not set in .env file")
 		return
 	}
 
@@ -42,10 +46,24 @@ func main() {
 		return
 	}
 
-	// Get the WP_VERSION from the environment variables
-	wpVersion := os.Getenv("WP_VERSION")
-	if wpVersion == "" {
-		fmt.Println("WP_VERSION not set in .env file")
+	// Get the GCP_PROJECT from the environment variables
+	project := os.Getenv("GCP_PROJECT")
+	if project == "" {
+		fmt.Println("GCP_PROJECT not set in .env file")
+		return
+	}
+
+	// Get the GCP_PROJECT from the environment variables
+	repo_region := os.Getenv("GAR_REGION")
+	if project == "" {
+		fmt.Println("GAR_REGION not set in .env file")
+		return
+	}
+
+	// Get the GAR_REPO from the environment variables
+	repo_name := os.Getenv("GAR_REPO")
+	if repo_name == "" {
+		fmt.Println("GAR_REPO not set in .env file")
 		return
 	}
 
