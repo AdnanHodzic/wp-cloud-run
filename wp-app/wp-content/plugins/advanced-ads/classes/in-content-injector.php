@@ -471,9 +471,9 @@ class Advanced_Ads_In_Content_Injector {
 		usort( $ads_for_placeholders, [ 'Advanced_Ads_In_Content_Injector', 'sort_ads_for_placehoders' ] );
 
 		// Add tags before/after which ad placehoders were injected.
+		$alts = [];
 		foreach ( $ads_for_placeholders as $ad_content ) {
-			$alts = [];
-			$tag  = $ad_content['tag'];
+			$tag = $ad_content['tag'];
 
 			switch ( $ad_content['position'] ) {
 				case 'before':

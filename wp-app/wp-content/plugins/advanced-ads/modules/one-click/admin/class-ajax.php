@@ -73,6 +73,9 @@ class Ajax implements Integration_Interface {
 			);
 		}
 
+		// Default module enabled.
+		Options::module( 'header_bidding', true );
+
 		wp_send_json_success(
 			[
 				'message'       => esc_html__( 'We have successfully migrated your MonetizeMore Pubguru Ad Units to your WordPress site. The existing placements and ads have been paused.', 'advanced-ads' ),
@@ -150,7 +153,7 @@ class Ajax implements Integration_Interface {
 	 * @return WP_Error|array
 	 */
 	private function pubguru_api_connect() {
-		$domain   = WordPress::get_site_domain();
+		$domain   = Params::post( 'testDomain' ) ? Params::post( 'testDomain' ) : WordPress::get_site_domain();
 		$domain   = str_replace( 'www.', '', $domain );
 		$response = wp_remote_get(
 			'https://app.pubguru.com/domain_configs/?domain=' . $domain,

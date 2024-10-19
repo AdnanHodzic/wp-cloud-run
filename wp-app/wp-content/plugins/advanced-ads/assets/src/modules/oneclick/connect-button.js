@@ -27,9 +27,12 @@ export default function () {
 	const disconnectWrap = jQuery('.js-pubguru-disconnect');
 	const metabox = jQuery('#advads-m2-connect');
 	const connectButton = jQuery('.js-pubguru-connecting');
+	const continueButton = jQuery('.js-pubguru-continue');
 	const spinner = connectButton.next('.aa-spinner');
 	const contentConnected = jQuery('.pubguru-connected');
 	const contentNotConnected = jQuery('.pubguru-not-connected');
+	const warningBox = jQuery('#pubguru-warning');
+	const cancelButton = jQuery('.js-pubguru-cancel');
 
 	// Show consent box.
 	connectWrap.on('click', '.button', function (event) {
@@ -39,13 +42,29 @@ export default function () {
 
 	jQuery('#m2-connect-consent').on('change', function () {
 		const checkbox = jQuery(this);
-		connectButton.prop('disabled', !checkbox.is(':checked'));
+		continueButton.prop('disabled', !checkbox.is(':checked'));
+	});
+
+	cancelButton.on('click', function (event) {
+		event.preventDefault();
+		continueButton.show();
+		warningBox.addClass('hidden');
+	});
+
+	continueButton.on('click', function (event) {
+		event.preventDefault();
+		continueButton.hide();
+		warningBox.removeClass('hidden');
 	});
 
 	connectButton.on('click', function (event) {
 		event.preventDefault();
 
 		spinner.addClass('show');
+
+		let testDomain = jQuery('#m2-oci-test-domain');
+		testDomain = testDomain.length ? testDomain.val() : '';
+
 		jQuery
 			.ajax({
 				type: 'POST',
@@ -53,6 +72,7 @@ export default function () {
 				data: {
 					action: 'pubguru_connect',
 					nonce: advadsglobal.ajax_nonce,
+					testDomain,
 				},
 				dataType: 'json',
 			})
@@ -101,7 +121,7 @@ export default function () {
 					return;
 				}
 
-				createNotice(response.data.message, 'success', true);
+				createNotice(response.data.message, 'success');
 			});
 	});
 }

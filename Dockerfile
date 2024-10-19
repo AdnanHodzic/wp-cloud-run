@@ -9,6 +9,5 @@ COPY --chown=www-data:www-data ./wp-app/wp-content/ai1wm-backups /var/www/html/w
 COPY --chown=www-data:www-data ./wp-app/wp-content/plugins /var/www/html/wp-content/plugins
 COPY --chown=www-data:www-data ./wp-app/wp-content/themes /var/www/html/wp-content/themes
 
-# copy configuration files (.htaccess, robots.txt)
-COPY --chown=www-data:www-data ./wp-app/.htaccess /var/www/html/
+# copy configuration files (robots.txt)
 COPY --chown=www-data:www-data ./wp-app/robots.txt /var/www/html/

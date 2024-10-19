@@ -204,7 +204,7 @@ class Api_Ads extends Importer implements Interface_Importer {
 	private function map_placement_type( $type ): string {
 		$type = strtolower( str_replace( ' ', '_', $type ) );
 		$hash = [
-			'leaderboard'  => 'post_bottom',
+			'leaderboard'  => 'post_top',
 			'in_content_1' => 'post_content',
 			'in_content_2' => 'post_content',
 			'sidebar'      => 'sidebar_widget',
@@ -353,6 +353,23 @@ class Api_Ads extends Importer implements Interface_Importer {
 	 */
 	private function normalize_ads( $ads ): array {
 		$normalized = [];
+		$in_content = [
+			'in-content1' => [
+				'count'    => 3,
+				'position' => 'after',
+				'repeat'   => false,
+			],
+			'in-content2' => [
+				'count'    => 5,
+				'position' => 'after',
+				'repeat'   => false,
+			],
+			'in-content3' => [
+				'count'    => 7,
+				'position' => 'after',
+				'repeat'   => true,
+			],
+		];
 
 		foreach ( $ads as $ad ) {
 			// already created.
@@ -360,16 +377,23 @@ class Api_Ads extends Importer implements Interface_Importer {
 				continue;
 			}
 
-			if ( empty( $ad['in_content_position'] ) ) {
-				$ad['in_content_position'] = Str::contains( 'in_content_2', $ad['slot'] ) ? 'After' : 'Before';
-			}
+			foreach ( $in_content as $key => $value ) {
+				$matches = [];
+				preg_match( '/.*in[-_]?content[_-]?(\d+).*/', $ad['slot'], $matches );
+				if ( ! empty( $matches ) && ( 'in-content' . $matches[1] ) === $key ) {
+					if ( empty( $ad['in_content_count'] ) ) {
+						$ad['in_content_count'] = $value['count'];
+					}
 
-			if ( empty( $ad['in_content_count'] ) ) {
-				$ad['in_content_count'] = Str::contains( 'in_content_2', $ad['slot'] ) ? 3 : 1;
-			}
+					if ( empty( $ad['in_content_position'] ) ) {
+						$ad['in_content_position'] = $value['position'];
+					}
 
-			if ( empty( $ad['in_content_repeat'] ) ) {
-				$ad['in_content_repeat'] = Str::contains( 'in_content_2', $ad['slot'] ) ? true : false;
+					if ( empty( $ad['in_content_repeat'] ) ) {
+						$ad['in_content_repeat'] = $value['repeat'];
+					}
+					break;
+				}
 			}
 
 			$normalized[] = [
@@ -377,8 +401,8 @@ class Api_Ads extends Importer implements Interface_Importer {
 				'device'               => $ad['device'],
 				'placement'            => $this->map_placement_type( $ad['slot'] ),
 				'placement_conditions' => $this->parse_display_conditions( $data['placement_conditions'] ?? 'all' ),
-				'in_content_position'  => $ad['in_content_position'],
-				'in_content_count'     => $ad['in_content_count'],
+				'in_content_position'  => $ad['in_content_position'] ?? 'before',
+				'in_content_count'     => $ad['in_content_count'] ?? 1,
 				'in_content_element'   => $ad['in_content_element'] ?? 'p',
 				'in_content_repeat'    => $ad['in_content_repeat'] ?? false,
 			];

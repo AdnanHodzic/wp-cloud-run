@@ -6,12 +6,13 @@
  * @author  Advanced Ads <info@wpadvancedads.com>
  */
 
+use AdvancedAds\Framework\Utilities\Params;
 use AdvancedAds\Modules\OneClick\Options;
 
 $header_bidding = Options::module( 'header_bidding' );
 ?>
 <div class="pubguru-not-connected space-y-4<?php echo false === $pubguru_config ? '' : ' hidden'; ?>">
-	<label for="m2-connect-consent" class="flex items-center w-full">
+	<label for="m2-connect-consent" class="flex items-center w-full mt-4">
 		<span class="self-start">
 			<input type="checkbox" class="!mt-1 !mr-2" id="m2-connect-consent">
 		</span>
@@ -28,9 +29,29 @@ $header_bidding = Options::module( 'header_bidding' );
 		</span>
 	</label>
 
+	<?php if ( 'domain' === Params::get( 'aa-oci' ) ) : ?>
+	<label for="test-domain" class="flex items-center w-full">
+		<strong class="mr-4">Test Domain:</strong>
+		<span>
+			<input type="text" id="m2-oci-test-domain">
+		</span>
+	</label>
+	<?php endif; ?>
+
 	<div class="flex items-center gap-x-4">
-		<button class="button button-primary js-pubguru-connecting" disabled type="button"><?php esc_html_e( 'Connect PGHB', 'advanced-ads' ); ?></button>
+		<button class="button button-primary js-pubguru-continue" disabled type="button"><?php esc_html_e( 'Connect PGHB', 'advanced-ads' ); ?></button>
 		<div class="lds-ripple aa-spinner"><div></div><div></div></div>
+	</div>
+
+	<div id="pubguru-warning" class="hidden">
+		<div class="flex items-center bg-[#f2fcff] border border-solid border-advads px-4 rounded mb-4">
+			<p><?php esc_html_e( 'When you connect to PubGuru, your existing ads and placements will be drafted, and PubGuru ad units will be imported automatically. If needed, you can easily rollback these changes at any time.', 'advanced-ads' ); ?></p>
+		</div>
+		<div class="flex items-center gap-x-4">
+			<button class="button button-secondary js-pubguru-cancel" type="button"><?php esc_html_e( 'Cancel', 'advanced-ads' ); ?></button>
+			<button class="button button-primary js-pubguru-connecting" type="button"><?php esc_html_e( 'Continue', 'advanced-ads' ); ?></button>
+			<div class="lds-ripple aa-spinner"><div></div><div></div></div>
+		</div>
 	</div>
 </div>
 
