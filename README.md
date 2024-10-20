@@ -2,6 +2,14 @@
 
 * Blog post & discussion: [FoolControl - wp-cloud-run: Ultimate WordPress (GCP) Cloud Run setup](https://foolcontrol.org/?p=4802)
 
+* [Watch the "wp-cloud-run: Ultimate WordPress setup on (GCP) Cloud Run" playlist on YouTube](https://www.youtube.com/playlist?list=PL83G0TLSeXREwjHDZPsV_34azAmniL81V) 
+
+wp-cloud-run architecture:
+
+<img src="https://github.com/user-attachments/assets/532a7b10-4508-426a-8b44-b6a367e02027" alt="wp-cloud-run architecture" width="600" align="none">
+
+
+
 ### container-build-push.go
 
 Build and push a wp-cloud-run (WordPress app) container image to Google Cloud Registry
@@ -41,9 +49,9 @@ By default (without specifying any parameters) both container build & push opera
 * `-help` | list of options
 * `-push=false` | Example of only doing an image build without performing push
 
-### How to use for local WordPress development
+### How to use "wp-cloud"run" for local WordPress development
 
-ToDo: add link to Youtube video/blog post
+[![Watch the video](https://img.youtube.com/vi/PLRKrG5Q15w/0.jpg)](https://youtu.be/PLRKrG5Q15w)
 
 ### Donate
 
