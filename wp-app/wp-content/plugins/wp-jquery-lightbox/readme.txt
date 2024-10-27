@@ -2,8 +2,8 @@
 Contributors: pandaboxwp
 Tags: lightbox, photo, image, gallery
 Requires at least: 5.0
-Tested up to: 6.6.1
-Stable tag: 2.3.2
+Tested up to: 6.7
+Stable tag: 2.3.3
 Requires PHP: 7.0
 License: GPLv2 or later
 
@@ -72,6 +72,11 @@ Special thanks to [Ulf Benjaminsson](http://www.ulfbenjaminsson.com), who create
 1. Check out the jQuery Lightbox-panel in your admin interface for usage details and configuration.
 
 == Changelog ==
+
+= 2.3.3 =
+* Update Pro landing and pricing
+* Fix invalid invalid infobar CSS
+* Update WordPress tested version
 
 = 2.3.2 (2024-07-30) =
 * Fix Animation Duration setting

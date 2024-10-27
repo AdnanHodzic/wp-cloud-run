@@ -153,7 +153,7 @@ class LightPress {
 
 		if ( ! class_exists( 'LightPress_Pro' ) && ! $this->should_show_review_request() ) {
 			echo '<div class="sale-banner"><p>';
-			esc_html_e( 'LightPress Pro is launched! Take 30% off this week - use code LIGHTPRESS at checkout.', 'wp-jquery-lightbox' );
+			esc_html_e( 'Upgrade to Pro! Take 30% off this week with coupon code PRO.', 'wp-jquery-lightbox' );
 			echo ' <a href="https://lightpress.io/pro-lightbox" target="_blank">' . esc_html__( 'LEARN MORE', 'wp-jquery-lightbox' ) . '</a>';
 			echo '</p></div>';
 		}
@@ -219,7 +219,7 @@ class LightPress {
 	 * This method generates the HTML for the pro upgrade page.
 	 */
 	public function pro_landing_page() {
-		include LIGHTPRESS_PLUGIN_DIR . 'admin/views/pro-landing-page.php';
+		include LIGHTPRESS_PLUGIN_DIR . 'admin/views/pro-landing-page-short.php';
 	}
 
 	/**

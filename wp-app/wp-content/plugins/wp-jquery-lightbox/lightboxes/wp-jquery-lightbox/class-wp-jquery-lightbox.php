@@ -282,16 +282,16 @@ class WP_JQuery_Lightbox {
 		$has_box_shadow       = get_option( 'jqlb_boxShadow' );
 		$has_info_bar         = get_option( 'jqlb_showInfoBar' );
 		$has_info_bar_top     = get_option( 'jqlb_navbarOnTop' );
-		$image_box_shadow     = $has_box_shadow ? '0 0 4px 2px rgba(0,0,0,.2)' : '';
+		$image_box_shadow     = $has_box_shadow ? '0 0 4px 2px rgba(0,0,0,.2)' : 'none';
 		$infobar_box_shadow   = ( $has_box_shadow && $has_info_bar )
-			? '0 -4px 0 0 #fff, 0 0 4px 2px rgba(0,0,0,.1);'
-			: '';
+			? '0 -4px 0 0 #fff, 0 0 4px 2px rgba(0,0,0,.1)'
+			: 'none';
 		if ( $has_box_shadow && $has_info_bar && $has_info_bar_top ) {
-			$infobar_box_shadow = '0 4px 0 0 #fff, 0 0 4px 2px rgba(0,0,0,.1);';
+			$infobar_box_shadow = '0 4px 0 0 #fff, 0 0 4px 2px rgba(0,0,0,.1)';
 		}
 		$infobar_zindex = ( $has_box_shadow && $has_info_bar && $has_info_bar_top )
-			? '99;'
-			: '';
+			? '99'
+			: 'auto';
 
 		$custom_css           = "
 			#outerImageContainer {

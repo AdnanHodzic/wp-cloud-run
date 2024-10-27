@@ -334,14 +334,22 @@ body.lightbox_page_lightpress-pro {
 }
 
 .hero-section-copy-title {
-    font-size: 3em;
+    font-size: 30px;
     line-height: 1.2;
 	margin-top: 0;
     font-weight: 800;
 }
 
 .hero-section-copy-text {
-    font-size: 18px;
+	margin: 3px;
+    display: flex;
+    align-items: center;
+    font-size: 17px;
+}
+
+.hero-section-copy-text .dashicons {
+    margin-right: 6px;
+    color: green;
 }
 
 .hero-section-actions {
@@ -561,6 +569,41 @@ body.lightbox_page_lightpress-pro {
 	
 .pricing-notice h3 {
 	text-align: center;
+}
+
+/* Pricing Section Short */
+.pricing-section.short {
+    width: 550px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.pricing-section.short .pricing-headline {
+    font-size: 55px;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+.pricing-section.short .pricing-guarantee-1,
+.pricing-section.short .pricing-guarantee-2 {
+    font-size: 20px;
+    font-weight: normal;
+    margin: 10px 0;
+}
+
+.plan-select {
+    margin: 36px 0;
+}
+
+#pro-licenses {
+    font-size: 16px;
+    width: 250px;
+}
+
+#pro-purchase {
+	width: 250px;
+    margin: 12px;
 }
 
 @media only screen and (max-width: 880px) {

@@ -1,6 +1,6 @@
 {
   "name": "lightpress",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "WordPress plugin to add lightweight lightbox to view images, videos, and other media..",
   "main": "index.js",
   "scripts": {
