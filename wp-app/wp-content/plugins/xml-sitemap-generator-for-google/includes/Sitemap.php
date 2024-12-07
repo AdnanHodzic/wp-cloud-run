@@ -568,15 +568,12 @@ class Sitemap extends Controller {
 
 		$sql_multilingual = $this->multilingual_sql( array( 'post' ) );
 		$where_clause     = ! empty( $sql_multilingual ) ? 'AND ' : 'WHERE ';
-		$sql              = sprintf(
-			"SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, post_date AS post_date, count(ID) as count_posts
-			FROM wp_posts as posts
+		$sql              = "SELECT YEAR(post_date) AS `year`, MONTH(post_date) AS `month`, post_date AS post_date, count(ID) as count_posts
+			FROM $wpdb->posts as posts
 			$sql_multilingual
 			$where_clause post_type = 'post' AND post_status = 'publish' AND post_password = ''
 			GROUP BY YEAR(post_date), MONTH(post_date)
-			ORDER BY post_date DESC",
-			$wpdb->posts
-		);
+			ORDER BY post_date DESC";
 
 		if ( $is_sitemap_index ) {
 			$sql .= ' LIMIT 1';

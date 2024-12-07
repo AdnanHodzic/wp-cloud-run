@@ -87,7 +87,18 @@ abstract class MediaSitemap extends Sitemap {
 			$urls  = array();
 
 			if ( preg_match_all( '(https?://[-_.!~*()a-zA-Z0-9;/?:@&=+$%#纊-黑亜-熙ぁ-んァ-ヶ]+)', $content, $result ) !== false ) {
-				$urls = array_values( array_unique( $result[0] ) );
+				$unique_urls = array();
+
+				// Remove duplicate Image sizes URLs
+				foreach ( array_unique( $result[0] ) as $url ) {
+					$base_url = preg_replace( '/-\d+x\d+(?=\.\w{3,4}$)/', '', $url );
+
+					if ( ! isset( $unique_urls[ $base_url ] ) ) {
+						$unique_urls[ $base_url ] = $url;
+					}
+				}
+
+				$urls = array_values($unique_urls);
 			}
 
 			$urls = apply_filters( 'sgg_sitemap_post_media_urls', $urls, $post->ID );

@@ -315,7 +315,7 @@ class SitemapGenerator {
 			throw new \LengthException( 'Sitemap index can contains 1000 single sitemaps. Perhaps You trying to submit too many URLs.' );
 		}
 
-		if ( count( $this->sitemaps ) > 1 ) {
+		if ( ! empty( $settings->sitemap_view ) && 'sitemap' === $template && count( $this->sitemaps ) > 0 ) {
 			$stylesheet_url   = sgg_get_sitemap_url( "{$stylesheet_path}?template=sitemap-index", 'sitemap_xsl=sitemap-index', false );
 			$stylesheet_url   = strtok( $stylesheet_url, '&' ); // remove & query string
 
@@ -416,6 +416,7 @@ class SitemapGenerator {
 			} else {
 				$this->sitemapFullURL = $this->baseURL . $this->sitemapFileName;
 			}
+
 			$this->sitemaps[0] = array(
 				$this->sitemapFileName,
 				$this->sitemaps[0],

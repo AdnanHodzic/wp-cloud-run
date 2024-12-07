@@ -4,8 +4,8 @@ Donate link: https://wpgrim.com/google-xml-sitemaps-generator-pro/?utm_source=wo
 Tags: sitemap, xml sitemap, google news, image sitemap, video sitemap, google sitemaps, xml, google, seo, sitemaps
 Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 6.6.2
-Stable tag: 2.0.0
+Tested up to: 6.7.1
+Stable tag: 2.0.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -80,6 +80,7 @@ Here is a short list of Google XML Sitemap plugin features.
 * Static Sitemap File detector **[NEW]**
 * Toolbar with most helpful Actions & Links 🔥
 * Disables auto-generated WP Sitemaps
+* Setup Wizard **[NEW]** 🔥
 * Multisite Network compatible
 * WooCommerce compatible
 * Multilingual Sitemap 🔥
@@ -196,6 +197,7 @@ Developed with ❤️ by [WP Grim](https://wpgrim.com/?utm_source=wordpressorg&u
 9. Image Sitemap
 10. Google News
 11. Multilingual Sitemap
+12. Setup Wizard
 
 == Frequently Asked Questions ==
 
@@ -264,6 +266,18 @@ This section describes how to install the plugin and get it working.
 4. Set Up Page in **Settings -> XML Sitemaps**.
 
 == Changelog ==
+
+= 2.0.3 - 2024-11-22 =
+* Archive Sitemap wp_ table prefix issue fixed. Thanks to @jdorner
+* **xml_sitemaps_site_url** filter added for customizing Site URL
+* WordPress 6.7.1 compatible
+
+= 2.0.2 - 2024-11-13 =
+* WordPress 6.7 compatible
+
+= 2.0.1 - 2024-11-04 =
+* Sitemap Index: Showing Single Sitemap issue fixed. Thanks to @waldub
+* Image Sitemap: Duplicating Image Sizes removed
 
 = 2.0.0 - 2024-10-14 =
 * Setup Wizard added

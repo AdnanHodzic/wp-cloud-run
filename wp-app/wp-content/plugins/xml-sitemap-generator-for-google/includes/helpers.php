@@ -73,6 +73,8 @@ function sgg_get_home_url( $path = '' ) {
 		$path     = ''; // Reset path to avoid duplication
 	}
 
+	$home_url = apply_filters( 'xml_sitemaps_site_url', $home_url );
+
 	return ! empty( $path ) ? "{$home_url}/{$path}" : $home_url;
 }
 
