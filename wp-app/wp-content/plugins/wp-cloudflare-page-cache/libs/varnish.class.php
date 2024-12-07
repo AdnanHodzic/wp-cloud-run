@@ -121,17 +121,12 @@ class SWCFPC_Varnish {
 		];
 
 		$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', "Send purging request to {$finalURL}" );
-
-		if ( $this->objects['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-			$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Request args ' . print_r( $request_args, true ) );
-		}
+		$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Request args ' . print_r( $request_args, true ), true );
 
 		// Send purge request to Varnish
 		$response = wp_remote_request( $finalURL, $request_args );
 
-		if ( $this->objects['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-			$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Response: ' . print_r( $response, true ) );
-		}
+		$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Response: ' . print_r( $response, true ), true );
 
 		if ( is_wp_error( $response ) || $response['response']['code'] != '200' ) {
 
@@ -168,17 +163,13 @@ class SWCFPC_Varnish {
 			}
 
 			$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', "Send purging request to {$finalURL}" );
+			$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Request args ' . print_r( $request_args, true ), true );
 
-			if ( $this->objects['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-				$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Request args ' . print_r( $request_args, true ) );
-			}
 
 			// Send new purge request to Varnish
 			$response = wp_remote_request( $finalURL, $request_args );
 
-			if ( $this->objects['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-				$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Response: ' . print_r( $response, true ) );
-			}
+			$this->objects['logs']->add_log( 'varnish::purge_single_url_cache', 'Response: ' . print_r( $response, true ), true );
 
 			if ( is_wp_error( $response ) ) {
 				$error = $response->get_error_message();

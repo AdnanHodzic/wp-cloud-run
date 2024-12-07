@@ -5,6 +5,68 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.56.3] - 2024-12-02
+### Changed
+- Made resharing async in classic editor to fix timeout issues. [#40302]
+
+## [0.56.2] - 2024-11-26
+### Fixed
+- Fixed undefined index error on Atomic sites. [#40337]
+
+## [0.56.1] - 2024-11-25
+### Added
+- Added initial post share status to the initial state. [#40301]
+
+### Changed
+- Updated package dependencies. [#40286] [#40288]
+
+### Fixed
+- Fixed initial state error in the editor for Simple sites. [#40319]
+- Fix page-detection util methods to stop unnecessary API calls to WordPress.com. [#40311]
+- Fixed call to undefined method on WordPress.com. [#40328]
+
+## [0.56.0] - 2024-11-18
+### Added
+- Added a new toggle for UTM tracking [#39998]
+
+### Removed
+- General: Update minimum PHP version to 7.2. [#40147]
+
+## [0.55.2] - 2024-11-11
+### Changed
+- Social: Migrated social plugins settings to new script data. [#40032] [#40081]
+- Updated package dependencies. [#39999]
+
+## [0.55.1] - 2024-11-04
+### Added
+- Enable test coverage. [#39961]
+
+### Changed
+- Social: Migrated Social Image Generator settings to new store [#39904]
+
+## [0.55.0] - 2024-10-25
+### Fixed
+- Social: Fix Bsky profile URL [#39849]
+
+## [0.54.4] - 2024-10-21
+### Changed
+- Initial State: Migrated URLs to script data. [#39797]
+
+### Fixed
+- Fixed the site features for Simple sites. [#39817]
+
+## [0.54.3] - 2024-10-14
+### Changed
+- Updated package dependencies. [#39707]
+
+## [0.54.2] - 2024-10-07
+### Changed
+- Updated package dependencies. [#39594]
+
+## [0.54.1] - 2024-10-02
+### Fixed
+- Social: Fixed Bluesky not showing up on page load [#39597]
+
 ## [0.54.0] - 2024-09-23
 ### Added
 - Added tracking for the resharing action [#39408]
@@ -717,6 +779,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated package dependencies.
 - Update package.json metadata.
 
+[0.56.3]: https://github.com/Automattic/jetpack-publicize/compare/v0.56.2...v0.56.3
+[0.56.2]: https://github.com/Automattic/jetpack-publicize/compare/v0.56.1...v0.56.2
+[0.56.1]: https://github.com/Automattic/jetpack-publicize/compare/v0.56.0...v0.56.1
+[0.56.0]: https://github.com/Automattic/jetpack-publicize/compare/v0.55.2...v0.56.0
+[0.55.2]: https://github.com/Automattic/jetpack-publicize/compare/v0.55.1...v0.55.2
+[0.55.1]: https://github.com/Automattic/jetpack-publicize/compare/v0.55.0...v0.55.1
+[0.55.0]: https://github.com/Automattic/jetpack-publicize/compare/v0.54.4...v0.55.0
+[0.54.4]: https://github.com/Automattic/jetpack-publicize/compare/v0.54.3...v0.54.4
+[0.54.3]: https://github.com/Automattic/jetpack-publicize/compare/v0.54.2...v0.54.3
+[0.54.2]: https://github.com/Automattic/jetpack-publicize/compare/v0.54.1...v0.54.2
+[0.54.1]: https://github.com/Automattic/jetpack-publicize/compare/v0.54.0...v0.54.1
 [0.54.0]: https://github.com/Automattic/jetpack-publicize/compare/v0.53.0...v0.54.0
 [0.53.0]: https://github.com/Automattic/jetpack-publicize/compare/v0.52.3...v0.53.0
 [0.52.3]: https://github.com/Automattic/jetpack-publicize/compare/v0.52.2...v0.52.3

@@ -6,6 +6,8 @@
  * @author  Dovy Paukstys (dovy)
  * @class   Redux_Extension_Widget_Areas
  * @version 4.3.20
+ *
+ * @noinspection PhpIgnoredClassAliasDeclaration
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -22,20 +24,20 @@ if ( ! class_exists( 'Redux_Extension_Widget_Areas' ) ) {
 		 *
 		 * @var string
 		 */
-		public static $version = '4.3.20';
+		public static string $version = '4.3.20';
 
 		/**
 		 * Extension Friendly name.
 		 *
 		 * @var string
 		 */
-		public $extension_name = 'Widget Areas';
+		public string $extension_name = 'Widget Areas';
 
 
 		/**
 		 * Redux_Extension_Widget_Areas constructor.
 		 *
-		 * @param object $redux ReduxFramework object pointer.
+		 * @param ReduxFramework $redux ReduxFramework object pointer.
 		 */
 		public function __construct( $redux ) {
 			parent::__construct( $redux, __FILE__ );

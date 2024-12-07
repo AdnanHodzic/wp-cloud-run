@@ -59,6 +59,17 @@ if (!isset($collapseable)) {
 						))->render();
 						?>
 					</li>
+					<li>
+						<?php
+						echo wfView::create('options/option-toggled', array(
+							'optionName' => 'displayTopLevelAuditLog',
+							'enabledValue' => 1,
+							'disabledValue' => 0,
+							'value' => wfConfig::get('displayTopLevelAuditLog') ? 1 : 0,
+							'title' => __('Display "Audit Log" menu item', 'wordfence'),
+						))->render();
+						?>
+					</li>
 				</ul>
 			</div>
 		</div>

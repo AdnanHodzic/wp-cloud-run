@@ -3,7 +3,7 @@ Contributors: themeisle, salvatorefresta, isaumya
 Tags: cloudflare, caching ,performance, page caching, pagespeed
 Requires at least: 5.3
 Requires PHP: 7.4
-Tested up to: 6.6
+Tested up to: 6.7
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -166,6 +166,67 @@ First check the questions mentioned in the FAQ tab inside the plugin settings pa
 
 
 == Changelog ==
+
+#####   Version 5.0.9 (2024-11-20)
+
+- Fixes issue where auto-purge was not working when posts were updated
+
+
+
+
+#####   Version 5.0.8 (2024-11-08)
+
+- Fixed issue where Automatically preload purged pages option cannot be changed
+- Fixed issue where settings could not be saved if on a previous version an invalid email was already saved
+
+
+
+
+#####   Version 5.0.7 (2024-11-06)
+
+fix: number inputs in the dashboard settings having a maximum limit of 100 by default
+
+
+
+
+#####   Version 5.0.6 (2024-11-06)
+
+- Fixed checkbox values not working as expected
+- Fixed cache purge and preloader start via cronjob functionality
+- Fix programatically purging cache having the wrong authentication parameters
+- Added notices to clarify when JS and Media Optimizations work
+- Simplified the settings interface and reworked the backend UI
+- Tweak dashboard notices UI
+- Only display legacy Cloudflare worker settings when the feature is enabled
+- Removed HTML Disk Cache comment when WP_DEBUG is not defined and true
+- Upgraded wp-background-processing to latest version
+- Enable browser caching by default for new users
+- Renamed static cache status header from X-WP-CF-Super-Cache to X-WP-SPC-Disk-Cache to avoid confusion
+
+
+
+
+#####   Version 5.0.5 (2024-10-29)
+
+- adds bypass cache reason header
+- adds migration functionality for the cache rule when updating the plugin
+- adds View Log button so you can view it straight on the website without downloading it
+- updates Cloudflare integration for a higher, more efficient cache hit-rate with a transform rule that ignores query parameters
+- adds capability of the static cache to ignore URL parameters and deliver cached pages
+- improves default ignored cookies list and the way cookies are checked in CloudFlare when checking if cache should be bypassed for a more efficient cache hit-rate
+- tweak cache rule to respect browser caching original TTL
+- renames the Cloudflare cache rule to warn users about editing it and use the site URL in the name
+- automatically run the cache preloader after setting up Cloudflare connection;
+- fixes HIT/MISS/DISABLED/BYPASS cache header consistency
+- fixes issue where module scripts were deferred
+- improves stability and reliability of Cloudflare API interaction
+- tweak settings defaults for new users
+- hide legacy settings for users that don't have a page rule
+- more explicit logging and error handling when something fails when using token permissions
+- improve UX for cache test modal
+
+
+
 
 #####   Version 5.0.4 (2024-09-16)
 

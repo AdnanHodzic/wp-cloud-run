@@ -13,7 +13,6 @@ if ( isset( $_SERVER['REQUEST_METHOD'] ) && strcasecmp( $_SERVER['REQUEST_METHOD
 
 $swcfpc_fallback_cache_config_path = WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$_SERVER['HTTP_HOST']}/";
 $swcfpc_fallback_cache_path        = WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$_SERVER['HTTP_HOST']}/fallback_cache/";
-$swcfpc_fallback_cache_key         = swcfpc_fallback_cache_get_current_page_cache_key();
 
 if ( ! file_exists( "{$swcfpc_fallback_cache_config_path}main_config.php" ) ) {
 	return;
@@ -26,6 +25,14 @@ $swcfpc_config = json_decode( stripslashes( $swcfpc_config ), true );
 if ( ! is_array( $swcfpc_config ) ) {
 	return;
 }
+
+$swcfpc_addon_path = WP_CONTENT_DIR . '/wp-cloudflare-super-page-cache/advanced-cache-pro-addon.php';
+
+if ( file_exists( $swcfpc_addon_path ) ) {
+	require $swcfpc_addon_path;
+}
+
+$swcfpc_fallback_cache_key = swcfpc_fallback_cache_get_current_page_cache_key();
 
 if ( swcfpc_fallback_cache_is_url_to_exclude() ) {
 	return;
@@ -52,9 +59,8 @@ if ( file_exists( $swcfpc_fallback_cache_path . $swcfpc_fallback_cache_key ) && 
 	header_remove( 'Expires' );
 	header_remove( 'Cache-Control' );
 	header( "Cache-Control: {$cache_controller}" );
-	header( 'X-WP-CF-Super-Cache: cache' );
+	header( 'X-WP-SPC-Disk-Cache: HIT' );
 	header( 'X-WP-CF-Super-Cache-Active: 1' );
-	header( 'X-WP-CF-Fallback-Cache: 1' );
 	header( "X-WP-CF-Super-Cache-Cache-Control: {$cache_controller}" );
 
 	if ( isset( $swcfpc_config['cf_woker_enabled'] ) && $swcfpc_config['cf_woker_enabled'] > 0 && isset( $swcfpc_config['cf_worker_bypass_cookies'] ) && is_array( $swcfpc_config['cf_worker_bypass_cookies'] ) && count( $swcfpc_config['cf_worker_bypass_cookies'] ) > 0 ) {
@@ -65,17 +71,19 @@ if ( file_exists( $swcfpc_fallback_cache_path . $swcfpc_fallback_cache_key ) && 
 
 		foreach ( $stored_headers as $single_header ) {
 			header( $single_header, false );
-		}   
+		}
 	}
 
-	die( file_get_contents( $swcfpc_fallback_cache_path . $swcfpc_fallback_cache_key ) . '<!-- ADVANCED CACHE -->' );
+	$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+
+	die( file_get_contents( $swcfpc_fallback_cache_path . $swcfpc_fallback_cache_key ) . ( $is_debug ? '<!-- ADVANCED CACHE -->' : '' ) );
 
 }
 
 ob_start( 'swcfpc_fallback_cache_end' );
 
 
-function swcfpc_is_this_page_cachable() { 
+function swcfpc_is_this_page_cachable() {
 	if (
 		swcfpc_is_api_request() ||
 		( isset( $GLOBALS['pagenow'] ) && in_array( $GLOBALS['pagenow'], [ 'wp-login.php', 'wp-register.php' ] ) ) ||
@@ -98,7 +106,7 @@ function swcfpc_is_this_page_cachable() {
 }
 
 
-function swcfpc_is_api_request() { 
+function swcfpc_is_api_request() {
 	// WordPress standard API
 	if ( ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || strcasecmp( substr( $_SERVER['REQUEST_URI'], 0, 8 ), '/wp-json' ) == 0 ) {
 		return true;
@@ -119,7 +127,7 @@ function swcfpc_is_api_request() {
 }
 
 
-function swcfpc_fallback_cache_end( $html ) { 
+function swcfpc_fallback_cache_end( $html ) {
 	/**
 	 * The main plugin class.
 	 *
@@ -158,7 +166,9 @@ function swcfpc_fallback_cache_end( $html ) {
 				$ttl = time() + $sw_cloudflare_pagecache->get_single_config( 'cf_fallback_cache_ttl', 0 );
 			}
 
-			$html .= "\n<!-- Page retrieved from Super Page Cache fallback cache - page generated @ " . date( 'Y-m-d H:i:s' ) . ' - fallback cache expiration @ ' . ( $ttl > 0 ? date( 'Y-m-d H:i:s', $ttl ) : 'never expires' ) . " - cache key {$cache_key} -->";
+			if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+				$html .= "\n<!-- Page retrieved from Super Page Cache fallback cache - page generated @ " . date( 'Y-m-d H:i:s' ) . ' - fallback cache expiration @ ' . ( $ttl > 0 ? date( 'Y-m-d H:i:s', $ttl ) : 'never expires' ) . " - cache key {$cache_key} -->";
+			}
 
 			// Provide a filter to modify the HTML before it is cached
 			$html = apply_filters( 'swcfpc_normal_fallback_cache_html', $html );
@@ -172,8 +182,8 @@ function swcfpc_fallback_cache_end( $html ) {
 			// Store headers
 			if ( $sw_cloudflare_pagecache->get_single_config( 'cf_fallback_cache_save_headers', 0 ) > 0 ) {
 				swcfpc_fallback_cache_save_headers( $cache_path, $cache_key );
-			}       
-		}   
+			}
+		}
 	}
 
 	return $html;
@@ -181,7 +191,7 @@ function swcfpc_fallback_cache_end( $html ) {
 }
 
 
-function swcfpc_fallback_cache_get_current_page_cache_key( $url = null ) { 
+function swcfpc_fallback_cache_get_current_page_cache_key( $url = null ) {
 	$replacements = [ '://', '/', '?', '#', '&', '.', ',', '@', '-', '\'', '"', '%', ' ', '\\', '=' ];
 
 	if ( ! is_null( $url ) ) {
@@ -200,51 +210,28 @@ function swcfpc_fallback_cache_get_current_page_cache_key( $url = null ) {
 
 		if ( $current_uri == '/' ) {
 			$current_uri = $parts['host'];
-		}   
+		}
 	} else {
-
 		$current_uri = $_SERVER['REQUEST_URI'];
 
 		if ( $current_uri == '/' ) {
 			$current_uri = $_SERVER['HTTP_HOST'];
 		}
+
+		$current_uri = trim( $current_uri, '/' );
+
+		if ( strpos( $current_uri, '?' ) === 0 ) {
+			$current_uri = $_SERVER['HTTP_HOST'] . $current_uri;
+		}
 	}
 
-	if ( substr( $current_uri, 0, 1 ) == '/' ) {
-		$current_uri = substr( $current_uri, 1 );
-	}
+	$current_uri = apply_filters( 'swcfpc_fc_modify_current_url', $current_uri );
 
-	if ( substr( $current_uri, -1, 1 ) == '/' ) {
-		$current_uri = substr( $current_uri, 0, -1 );
-	}
-
-	if ( has_filter( 'swcfpc_fc_modify_current_url' ) ) {
-
-		// Modify the current URL by yourself to remove the query string or any other unwanted characters
-		$current_uri = apply_filters( 'swcfpc_fc_modify_current_url', $current_uri );
-
-		$cache_key = str_replace( $replacements, '_', $current_uri );
-
-	} else {
-
-		$cache_key = str_replace( $replacements, '_', swcfpc_fallback_cache_remove_url_parameters( $current_uri ) );
-	}
-
-
-	// Fix error fnmatch(): Filename exceeds the maximum allowed length
+	$cache_key = str_replace( $replacements, '_', swcfpc_fallback_cache_remove_url_parameters( $current_uri ) );
+	$cache_key = trim( $cache_key, '_' );
 	$cache_key = sha1( $cache_key );
 
-	/*
-	if( strlen($cache_key) > 250 ) {
-		$cache_key = substr($cache_key, 0, -32);
-		$cache_key .= md5( $current_uri );
-	}
-	*/
-
-	$cache_key .= '.html';
-
-	return $cache_key;
-
+	return $cache_key . '.html';
 }
 
 function swcfpc_get_unparsed_url( $parsed_url ) {
@@ -258,10 +245,11 @@ function swcfpc_get_unparsed_url( $parsed_url ) {
 	$path     = isset( $parsed_url['path'] ) ? $parsed_url['path'] : '';
 	$query    = isset( $parsed_url['query'] ) ? '?' . $parsed_url['query'] : '';
 	$fragment = isset( $parsed_url['fragment'] ) ? '#' . $parsed_url['fragment'] : '';
+
 	return "{$scheme}{$user}{$pass}{$host}{$port}{$path}{$query}{$fragment}";
 }
 
-function swcfpc_fallback_cache_remove_url_parameters( $url ) { 
+function swcfpc_fallback_cache_remove_url_parameters( $url ) {
 	$url_parsed       = parse_url( $url );
 	$url_query_params = [];
 
@@ -270,7 +258,7 @@ function swcfpc_fallback_cache_remove_url_parameters( $url ) {
 		if ( $url_parsed['query'] === '' ) {
 
 			// this means the URL ends with just ? i.e. /example-page/? - so just remove the last character ? from the URL
-			$url = substr( trim( $url ), 0, -1 );
+			$url = substr( trim( $url ), 0, - 1 );
 
 		} else {
 
@@ -728,6 +716,8 @@ function swcfpc_fallback_cache_remove_url_parameters( $url ) {
 				'zeffdn',
 			];
 
+			$ignored_query_params = apply_filters( 'swcfpc_fallback_cache_ignored_query_params', $ignored_query_params );
+
 			// First parse the query params to an array to manage it better
 			parse_str( $url_parsed['query'], $url_query_params );
 
@@ -763,7 +753,7 @@ function swcfpc_fallback_cache_remove_url_parameters( $url ) {
 }
 
 
-function swcfpc_fallback_cache_is_expired_page( $cache_key ) { 
+function swcfpc_fallback_cache_is_expired_page( $cache_key ) {
 	$config_path = WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$_SERVER['HTTP_HOST']}/";
 
 	if ( ! file_exists( "{$config_path}ttl_registry.json" ) ) {
@@ -791,7 +781,7 @@ function swcfpc_fallback_cache_is_expired_page( $cache_key ) {
 }
 
 
-function swcfpc_fallback_cache_is_cookie_to_exclude() { 
+function swcfpc_fallback_cache_is_cookie_to_exclude() {
 	global $swcfpc_config;
 
 	if ( count( $_COOKIE ) == 0 ) {
@@ -813,8 +803,10 @@ function swcfpc_fallback_cache_is_cookie_to_exclude() {
 	foreach ( $excluded_cookies as $single_cookie ) {
 
 		if ( count( preg_grep( "#{$single_cookie}#", $cookies ) ) > 0 ) {
+			swcfpc_bypass_reason_header( sprintf( 'Cookie - %s', $single_cookie ) );
+
 			return true;
-		}   
+		}
 	}
 
 	return false;
@@ -822,7 +814,7 @@ function swcfpc_fallback_cache_is_cookie_to_exclude() {
 }
 
 
-function swcfpc_fallback_cache_is_cookie_to_exclude_cf_worker() { 
+function swcfpc_fallback_cache_is_cookie_to_exclude_cf_worker() {
 	global $swcfpc_config;
 
 	if ( count( $_COOKIE ) == 0 ) {
@@ -852,8 +844,10 @@ function swcfpc_fallback_cache_is_cookie_to_exclude_cf_worker() {
 	foreach ( $excluded_cookies as $single_cookie ) {
 
 		if ( count( preg_grep( "#{$single_cookie}#", $cookies ) ) > 0 ) {
+			swcfpc_bypass_reason_header( sprintf( 'Cookie - %s', $single_cookie ) );
+
 			return true;
-		}   
+		}
 	}
 
 	return false;
@@ -861,10 +855,18 @@ function swcfpc_fallback_cache_is_cookie_to_exclude_cf_worker() {
 }
 
 
-function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) { 
+function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) {
 	global $swcfpc_config;
 
-	if ( is_array( $swcfpc_config ) && isset( $swcfpc_config['cf_fallback_cache_prevent_cache_urls_without_trailing_slash'] ) && $swcfpc_config['cf_fallback_cache_prevent_cache_urls_without_trailing_slash'] > 0 && ! preg_match( '/\/$/', $_SERVER['REQUEST_URI'] ) ) {
+	if (
+		is_array( $swcfpc_config ) &&
+		isset( $swcfpc_config['cf_fallback_cache_prevent_cache_urls_without_trailing_slash'] ) &&
+		$swcfpc_config['cf_fallback_cache_prevent_cache_urls_without_trailing_slash'] > 0 &&
+		! preg_match( '/\/$/', $_SERVER['REQUEST_URI'] ) &&
+		apply_filters( 'swcfpc_fallback_cache_skip_unslashed', true, $_SERVER['REQUEST_URI'] )
+	) {
+		swcfpc_bypass_reason_header( 'URL Without Trailing Slash' );
+
 		return true;
 	}
 
@@ -882,7 +884,7 @@ function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) {
 
 			if ( isset( $_SERVER['QUERY_STRING'] ) && strlen( $_SERVER['QUERY_STRING'] ) > 0 ) {
 				$current_url .= "?{$_SERVER['QUERY_STRING']}";
-			}       
+			}
 		} else {
 			$current_url = $url;
 		}
@@ -890,6 +892,8 @@ function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) {
 		foreach ( $excluded_urls as $url_to_exclude ) {
 
 			if ( swcfpc_wildcard_match( $url_to_exclude, $current_url ) ) {
+				swcfpc_bypass_reason_header( 'Excluded URL' );
+
 				return true;
 			}
 
@@ -899,7 +903,7 @@ function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) {
 			}
 			*/
 
-		}   
+		}
 	}
 
 	return false;
@@ -907,15 +911,15 @@ function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) {
 }
 
 
-function swcfpc_fallback_cache_save_headers( $fallback_cache_path, $cache_key ) { 
+function swcfpc_fallback_cache_save_headers( $fallback_cache_path, $cache_key ) {
 	$headers_file = "{$fallback_cache_path}{$cache_key}.headers.json";
 
 	$headers_list  = headers_list();
 	$headers_count = count( $headers_list );
 
-	for ( $i = 0; $i < $headers_count; ++$i ) {
+	for ( $i = 0; $i < $headers_count; ++ $i ) {
 
-		list($header_name, $header_value) = explode( ':', $headers_list[ $i ] );
+		list( $header_name, $header_value ) = explode( ':', $headers_list[ $i ] );
 
 		if (
 			strcasecmp( $header_name, 'cache-control' ) == 0 ||
@@ -924,7 +928,7 @@ function swcfpc_fallback_cache_save_headers( $fallback_cache_path, $cache_key ) 
 		) {
 			unset( $headers_list[ $i ] );
 			continue;
-		}   
+		}
 	}
 
 	if ( count( $headers_list ) == 0 ) {
@@ -944,7 +948,7 @@ function swcfpc_fallback_cache_save_headers( $fallback_cache_path, $cache_key ) 
 }
 
 
-function swcfpc_fallback_cache_get_stored_headers( $fallback_cache_path, $cache_key ) { 
+function swcfpc_fallback_cache_get_stored_headers( $fallback_cache_path, $cache_key ) {
 	$headers_file = "{$fallback_cache_path}{$cache_key}.headers.json";
 
 	if ( file_exists( $headers_file ) ) {
@@ -953,7 +957,7 @@ function swcfpc_fallback_cache_get_stored_headers( $fallback_cache_path, $cache_
 
 		if ( is_array( $swcfpc_headers ) && count( $swcfpc_headers ) > 0 ) {
 			return $swcfpc_headers;
-		}   
+		}
 	}
 
 	return false;
@@ -971,6 +975,16 @@ function swcfpc_wildcard_match( $pattern, $subject ) {
 		return false;
 	}
 
+	swcfpc_bypass_reason_header( sprintf( 'Excluded URL - %s', $pattern ) );
+
 	return true;
 
+}
+
+function swcfpc_bypass_reason_header( $reason = '' ) {
+	if ( ! is_string( $reason ) || empty( $reason ) ) {
+		return;
+	}
+
+	header( sprintf( 'X-WP-CF-Super-Cache-Disabled-Reason: %s', $reason ) );
 }

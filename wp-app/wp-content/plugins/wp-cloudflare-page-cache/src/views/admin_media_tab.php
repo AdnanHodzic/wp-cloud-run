@@ -1,9 +1,9 @@
 <?php
-namespace SPC\Views;
 
 use SPC\Constants;
 use SPC\Loader;
 use function SPC\Views\Functions\render_description;
+use function SPC\Views\Functions\render_description_section;
 use function SPC\Views\Functions\render_header;
 use function SPC\Views\Functions\render_number_field;
 use function SPC\Views\Functions\render_switch;
@@ -13,6 +13,21 @@ use function SPC\Views\Functions\render_update_wordpress_notice;
 global $sw_cloudflare_pagecache;
 
 ?>
+
+<div class="fallbackcache_not">
+	<?php 
+	render_description_section(
+	/* translators: %s: 'Cache'. */
+		sprintf(
+			__( 'Media optimizations only work if the Disk Page cache is enabled. You have to turn it on in the %s tab before these options can take effect.', 'wp-cloudflare-page-cache' ),
+			'<strong>' . __( 'Cache', 'wp-cloudflare-page-cache' ) . '</strong>' 
+		),
+		true,
+		false 
+	); 
+	?>
+</div>
+
 <!-- Native lazy load -->
 <?php render_header( __( 'Native Lazy Load', 'wp-cloudflare-page-cache' ), true, Loader::can_process_html() ? '' : 'update-wp' ); ?>
 

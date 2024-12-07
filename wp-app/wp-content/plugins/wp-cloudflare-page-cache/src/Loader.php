@@ -2,6 +2,12 @@
 
 namespace SPC;
 
+use SPC\Modules\Admin;
+use SPC\Modules\Frontend;
+use SPC\Modules\HTML_Modifier;
+use SPC\Modules\Module_Interface;
+use SPC\Modules\Settings_Manager;
+
 class Loader {
 	/**
 	 * Modules.
@@ -17,6 +23,7 @@ class Loader {
 		$this->modules['frontend']         = new Frontend();
 		$this->modules['html_modifier']    = new HTML_Modifier();
 		$this->modules['settings_manager'] = new Settings_Manager();
+		$this->modules['admin']            = new Admin();
 
 		$modules = apply_filters( 'spc_loaded_modules', $this->modules );
 
@@ -24,14 +31,14 @@ class Loader {
 			$modules,
 			function ( $module ) {
 				return $module instanceof Module_Interface;
-			} 
+			}
 		);
 
 		array_walk(
 			$valid_modules,
 			function ( $module ) {
 				$module->init();
-			} 
+			}
 		);
 	}
 

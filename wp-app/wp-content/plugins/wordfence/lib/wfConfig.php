@@ -10,6 +10,7 @@ class wfConfig {
 	const TYPE_FLOAT = 'double';
 	const TYPE_DOUBLE = 'double';
 	const TYPE_STRING = 'string';
+	const TYPE_MULTI_STRING = 'multi-string';
 	const TYPE_ARRAY = 'array';
 	const TYPE_JSON = 'json';
 	
@@ -19,6 +20,7 @@ class wfConfig {
 	const OPTIONS_TYPE_SCANNER = 'scanner';
 	const OPTIONS_TYPE_TWO_FACTOR = 'twofactor';
 	const OPTIONS_TYPE_LIVE_TRAFFIC = 'livetraffic';
+	const OPTIONS_TYPE_AUDIT_LOG = 'auditlog';
 	const OPTIONS_TYPE_DIAGNOSTICS = 'diagnostics';
 	const OPTIONS_TYPE_ALL = 'all';
 	
@@ -125,6 +127,7 @@ class wfConfig {
 			'displayTopLevelOptions' => array('value' => true, 'autoload' => self::AUTOLOAD),
 			'displayTopLevelBlocking' => array('value' => false, 'autoload' => self::AUTOLOAD),
 			'displayTopLevelLiveTraffic' => array('value' => false, 'autoload' => self::AUTOLOAD),
+			'displayTopLevelAuditLog' => array('value' => true, 'autoload' => self::AUTOLOAD),
 			'displayAutomaticBlocks' => array('value' => true, 'autoload' => self::AUTOLOAD),
 			'allowLegacy2FA' => array('value' => false, 'autoload' => self::AUTOLOAD),
 			'wordfenceI18n' => array('value' => true, 'autoload' => self::AUTOLOAD),
@@ -190,6 +193,7 @@ class wfConfig {
 			'loginSec_enableSeparateTwoFactor' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'blockCustomText' => array('value' => '', 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'alertOn_severityLevel' => array('value' => wfIssues::SEVERITY_LOW, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)),
+			'auditLogMode' => array('value' => wfAuditLog::AUDIT_LOG_MODE_DEFAULT, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 		),
 		//Set as default only, not included automatically in the settings import/export or options page saving
 		'defaultsOnly' => array(
@@ -206,18 +210,21 @@ class wfConfig {
 			'onboardingAttempt3' => array('value' => '', 'autoload' => self::DONT_AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'onboardingAttempt3Initial' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'onboardingDelayedAt' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)),
+			'onboardingLastVersion' => array('value' => '', 'autoload' => self::DONT_AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'needsNewTour_dashboard' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsNewTour_firewall' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsNewTour_scan' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsNewTour_blocking' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsNewTour_livetraffic' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsNewTour_loginsecurity' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
+			'needsNewTour_auditlog' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsUpgradeTour_dashboard' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsUpgradeTour_firewall' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsUpgradeTour_scan' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsUpgradeTour_blocking' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsUpgradeTour_livetraffic' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'needsUpgradeTour_loginsecurity' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
+			'needsUpgradeTour_auditlog' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'supportContent' => array('value' => '{}', 'autoload' => self::DONT_AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'supportHash' => array('value' => '', 'autoload' => self::DONT_AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'whitelistPresets' => array('value' => '{}', 'autoload' => self::DONT_AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
@@ -233,7 +240,7 @@ class wfConfig {
 			'satisfactionPromptOverride' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 		),
 	);
-	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_core', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData', 'malwarePrefixes', 'coreHashes', 'noc1ScanSchedule', 'allScansScheduled', 'disclosureStates', 'scanStageStatuses', 'adminNoticeQueue', 'suspiciousAdminUsernames', 'wordpressPluginVersions', 'wordpressThemeVersions');
+	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_core', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData', 'malwarePrefixes', 'coreHashes', 'noc1ScanSchedule', 'allScansScheduled', 'disclosureStates', 'scanStageStatuses', 'adminNoticeQueue', 'suspiciousAdminUsernames', 'wordpressPluginVersions', 'wordpressThemeVersions', 'lastAuditEvents');
 	// Configuration keypairs that can be set from Central.
 	private static $wfCentralInternalConfig = array(
 		'wordfenceCentralUserSiteAuthGrant',
@@ -501,6 +508,9 @@ class wfConfig {
 			wordfence::status(1, 'error', $msg);
 			return;
 		}
+		
+		
+		self::_handleActionHooks($key, $val);
 
 		if (($key == 'apiKey' || $key == 'isPaid' || $key == 'other_WFNet') && wfWAF::getInstance() && !WFWAF_SUBDIRECTORY_INSTALL) {
 			if ($key == 'isPaid' || $key == 'other_WFNet') {
@@ -726,6 +736,8 @@ class wfConfig {
 		if (!self::$tableExists) {
 			return;
 		}
+		
+		self::_handleActionHooks($key, $val);
 		
 		self::delete_ser_chunked($key); //Ensure any old values for a chunked value are deleted first
 		
@@ -1272,7 +1284,7 @@ Options -ExecCGI
 						}
 					}
 					if (count($badWhiteIPs) > 0) {
-						$errors[] = array('option' => $key, 'error' => __('Please make sure you separate your IP addresses with commas. The following allowlisted IP addresses are invalid: ', 'wordfence') . esc_html(implode(', ', $badWhiteIPs), array()));
+						$errors[] = array('option' => $key, 'error' => __('Please make sure you separate your IP addresses with commas or newlines. The following allowlisted IP addresses are invalid: ', 'wordfence') . esc_html(implode(', ', $badWhiteIPs), array()));
 					}
 					
 					$checked = true;
@@ -1417,6 +1429,8 @@ Options -ExecCGI
 		$waf = wfWAF::getInstance();
 		$wafConfig = $waf->getStorageEngine();
 		
+		$events = array();
+		
 		$apiKey = false;
 		if (isset($changes['apiKey'])) { //Defer to end
 			$apiKey = $changes['apiKey'];
@@ -1451,6 +1465,7 @@ Options -ExecCGI
 				}
 				case 'wafStatus':
 				{
+					$before = $wafConfig->getConfig($key);
 					$wafConfig->setConfig($key, $value);
 					if ($value != wfFirewall::FIREWALL_MODE_LEARNING) {
 						$wafConfig->setConfig('learningModeGracePeriodEnabled', 0);
@@ -1471,30 +1486,84 @@ Options -ExecCGI
 						), $alertCallback);
 					}
 					
+					if ($before != $value) {
+						/**
+						 * Fires when the WAF mode changes.
+						 *
+						 * @param string $before The previous mode.
+						 * @param string $after The new mode.
+						 * @since 8.0.0
+						 *
+						 */
+						do_action('wordfence_waf_mode', $before, $value);
+					}
+					
 					$saved = true;
 					break;
 				}
 				case 'wafRules':
 				{
+					$changes = array('enabled' => array(), 'disabled' => array());
 					$disabledRules = (array) $wafConfig->getConfig('disabledRules');
 					foreach ($value as $ruleID => $ruleEnabled) {
 						$ruleID = (int) $ruleID;
 						if ($ruleEnabled) {
+							if (isset($disabledRules[$ruleID])) {
+								$changes['enabled'][] = $ruleID;
+							}
 							unset($disabledRules[$ruleID]);
-						} else {
+						}
+						else {
+							if (!isset($disabledRules[$ruleID])) {
+								$changes['disabled'][] = $ruleID;
+							}
 							$disabledRules[$ruleID] = true;
 						}
 					}
 					$wafConfig->setConfig('disabledRules', $disabledRules);
+					
+					if (!empty($changes['enabled']) || !empty($changes['disabled'])) {
+						/**
+						 * Fires when the rules are enabled or disabled for the WAF.
+						 *
+						 * @param array $changes {
+						 *        An array containing the rule status changes.
+						 *
+						 * @type int[] $enabled The rules that were enabled.
+						 * @type int[] $disabled The rules that were disabled.
+						 * }
+						 * @since 8.0.0
+						 *
+						 */
+						do_action('wordfence_waf_changed_rule_status', $changes);
+					}
 					
 					$saved = true;
 					break;
 				}
 				case 'whitelistedURLParams':
 				{
+					$deleting = array();
+					$toggling = array();
+					$adding = array();
+					
 					$whitelistedURLParams = (array) $wafConfig->getConfig('whitelistedURLParams', null, 'livewaf');
 					if (isset($value['delete'])) {
-						foreach ($value['delete'] as $whitelistKey => $unused) {
+						foreach ($value['delete'] as $whitelistKey => $d) {
+							if (array_key_exists($whitelistKey, $whitelistedURLParams) && is_array($whitelistedURLParams[$whitelistKey])) {
+								//Start with the metadata for the rule (e.g., time created, description, etc)
+								$value = isset($whitelistedURLParams[$whitelistKey]['all']) ? $whitelistedURLParams[$whitelistKey]['all'] : wfUtils::array_first($whitelistedURLParams[$whitelistKey]); //It is possible that an entry may apply to multiple rules, but the values are similar enough we can grab only one
+								
+								//Add the parameters
+								$value['rule'] = (count($whitelistedURLParams[$whitelistKey]) > 1) ? array_keys($whitelistedURLParams[$whitelistKey]) : wfUtils::array_key_first($whitelistedURLParams[$whitelistKey]);
+								$components = explode('|', $whitelistKey);
+								if (count($components) >= 2) {
+									$value['path'] = base64_decode($components[0]);
+									$value['paramKey'] = base64_decode($components[1]);
+								}
+								$deleting[] = $value;
+							}
+							
 							unset($whitelistedURLParams[$whitelistKey]);
 						}
 					}
@@ -1504,6 +1573,15 @@ Options -ExecCGI
 								foreach ($whitelistedURLParams[$whitelistKey] as $ruleID => $data) {
 									$whitelistedURLParams[$whitelistKey][$ruleID]['disabled'] = !$enabled;
 								}
+								
+								$value = isset($whitelistedURLParams[$whitelistKey]['all']) ? $whitelistedURLParams[$whitelistKey]['all'] : wfUtils::array_first($whitelistedURLParams[$whitelistKey]);
+								$value['rule'] = (count($whitelistedURLParams[$whitelistKey]) > 1) ? array_keys($whitelistedURLParams[$whitelistKey]) : wfUtils::array_key_first($whitelistedURLParams[$whitelistKey]);
+								$components = explode('|', $whitelistKey);
+								if (count($components) >= 2) {
+									$value['path'] = base64_decode($components[0]);
+									$value['paramKey'] = base64_decode($components[1]);
+								}
+								$toggling[] = $value;
 							}
 						}
 					}
@@ -1526,7 +1604,53 @@ Options -ExecCGI
 								$data['userID'] = get_current_user_id();
 							}
 							$waf->whitelistRuleForParam($path, $paramKey, 'all', $data);
+							
+							$adding[] = array_merge(array('rule' => 'all', 'path' => $path, 'paramKey' => $paramKey), $data);
 						}
+					}
+					
+					if (!empty($toggling)) {
+						/**
+						 * Fires when WAF allow entries are manually enabled/disabled.
+						 *
+						 * @since 8.0.0
+						 *
+						 * @param array $toggling {
+						 * 		An array containing the entries that were enabled/disabled.
+						 *
+						 * 		@type string|array $rule The rule(s) that the entry applies to. May be `all` or rule number(s)
+						 * 		@type int $timestamp The timestamp when the entry was created.
+						 * 		@type string $description The description of the entry.
+						 * 		@type string $ip The IP address that caused the entry to be created.
+						 * 		@type bool $disabled Whether or not the entry is disabled.
+						 * 		@type int $userID (optional) The user ID that created the entry if applicable.
+						 *		@type string $path The URL path the entry applies to.
+						 * 		@type string $paramKey The parameter key the entry applies to. 
+						 * }
+						 */
+						do_action('wordfence_waf_toggled_allow_entry', $toggling);
+					}
+					
+					if (!empty($deleting)) {
+						/**
+						 * Fires when WAF allow entries are manually deleted.
+						 *
+						 * @since 8.0.0
+						 * 
+						 * @see wfConfig.php::wordfence_waf_toggled_allow_entry for the payload structure
+						 */
+						do_action('wordfence_waf_deleted_allow_entry', $deleting);
+					}
+					
+					if (!empty($adding)) {
+						/**
+						 * Fires when WAF allow entries are manually added.
+						 *
+						 * @since 8.0.0
+						 *
+						 * @see wfConfig.php::wordfence_waf_toggled_allow_entry for the payload structure
+						 */
+						do_action('wordfence_waf_created_allow_entry', $adding);
 					}
 					
 					$saved = true;
@@ -1534,6 +1658,7 @@ Options -ExecCGI
 				}
 				case 'disableWAFBlacklistBlocking':
 				{
+					$before = $wafConfig->getConfig($key);
 					$wafConfig->setConfig($key, wfUtils::truthyToInt($value));
 					if (method_exists(wfWAF::getInstance()->getStorageEngine(), 'purgeIPBlocks')) {
 						wfWAF::getInstance()->getStorageEngine()->purgeIPBlocks(wfWAFStorageInterface::IP_BLOCKS_BLACKLIST);
@@ -1550,6 +1675,18 @@ Options -ExecCGI
 						}
 						$cron[] = new wfWAFCronFetchBlacklistPrefixesEvent(time() - 1);
 						wfWAF::getInstance()->getStorageEngine()->setConfig('cron', $cron, 'livewaf');
+					}
+					
+					if (wfUtils::truthyToBoolean($before) != wfUtils::truthyToBoolean($value)) {
+						/**
+						 * Fires when the WAF mode changes.
+						 *
+						 * @param string $before The previous mode.
+						 * @param string $after The new mode. True means enabled, false means disabled.
+						 * @since 8.0.0
+						 *
+						 */
+						do_action('wordfence_waf_toggled_blocklist', !wfUtils::truthyToBoolean($before), !wfUtils::truthyToBoolean($value));
 					}
 
 					$saved = true;
@@ -2074,6 +2211,12 @@ Options -ExecCGI
 					'displayTopLevelLiveTraffic',
 				);
 				break;
+			case self::OPTIONS_TYPE_AUDIT_LOG:
+				$options = array(
+					'auditLogMode',
+					'displayTopLevelAuditLog',
+				);
+				break;
 			case self::OPTIONS_TYPE_DIAGNOSTICS:
 				$options = array(
 					'debugOn',
@@ -2247,6 +2390,979 @@ Options -ExecCGI
 		}
 		
 		return false;
+	}
+	
+	private static function _handleActionHooks($key, $newValue) {
+		switch ($key) {
+			case 'whitelisted':
+			{
+				$before = explode(',', wfConfig::get($key));
+				
+				/**
+				 * Fires when the allowed IP list changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param string[] $before The previous IP list.
+				 * @param string[] $after The new IP list.
+				 */
+				do_action('wordfence_updated_allowed_ips', $before, explode(',', $newValue));
+				break;
+			}
+			case 'whitelistedServices':
+			{
+				$before = (array) wfConfig::getJSON($key, array());
+				$after = json_decode($newValue, true);
+				
+				/**
+				 * Fires when the allowed service list changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param string[] $before The previous service list.
+				 * @param string[] $after The new service list.
+				 */
+				do_action('wordfence_updated_allowed_services', $before, $after);
+				break;
+			}
+			case 'whitelistPresets':
+			{
+				$before = (array) wfConfig::getJSON($key, array());
+				$after = json_decode($newValue, true);
+				
+				/**
+				 * Fires when the allowed service list definitions changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param array $before The previous service list definitions.
+				 * @param array $after The new service list definitions.
+				 */
+				do_action('wordfence_updated_allowed_services_definitions', $before, $after);
+				break;
+			}
+			case 'bannedURLs':
+			{
+				$before = array_filter(explode("\n", wfUtils::cleanupOneEntryPerLine(wfConfig::get($key))));
+				$after = array_filter(explode("\n", wfUtils::cleanupOneEntryPerLine($newValue)));
+				
+				/**
+				 * Fires when the banned URLs list changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param string[] $before The previous list.
+				 * @param string[] $after The new list.
+				 */
+				do_action('wordfence_updated_banned_urls', $before, $after);
+				break;
+			}
+			case 'wafAlertWhitelist':
+			{
+				$before = array_filter(explode("\n", wfUtils::cleanupOneEntryPerLine(wfConfig::get($key))));
+				$after = array_filter(explode("\n", wfUtils::cleanupOneEntryPerLine($newValue)));
+				
+				/**
+				 * Fires when the WAF alerting ignored IP list changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param string[] $before The previous list.
+				 * @param string[] $after The new list.
+				 */
+				do_action('wordfence_updated_ignored_alert_ips', $before, $after);
+				break;
+			}
+			case 'loginSecurityEnabled':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when brute force protection is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_brute_force_protection', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_maxFailures':
+			{
+				$before = intval(wfConfig::get($key));
+				$after = intval($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the login failure count threshold changes.
+					 *
+					 * @param int $before The previous count.
+					 * @param int $after The new count.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_updated_login_failure_count', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_maxForgotPasswd':
+			{
+				$before = intval(wfConfig::get($key));
+				$after = intval($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the forgot password count threshold changes.
+					 *
+					 * @param int $before The previous count.
+					 * @param int $after The new count.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_updated_forgot_password_count', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_countFailMins':
+			{
+				$before = intval(wfConfig::get($key));
+				$after = intval($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the count failures over time period value changes.
+					 *
+					 * @param int $before The previous minutes.
+					 * @param int $after The new minutes.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_updated_login_security_period', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_lockoutMins':
+			{
+				$before = intval(wfConfig::get($key));
+				$after = intval($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the duration for lockout changed.
+					 *
+					 * @param int $before The previous minutes.
+					 * @param int $after The new minutes.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_updated_login_security_duration', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_lockInvalidUsers':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the immediately lock out invalid usernames setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_lock_out_invalid', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_userBlacklist':
+			{
+				$before = array_filter(explode("\n", wfUtils::cleanupOneEntryPerLine(wfConfig::get($key))));
+				$after = array_filter(explode("\n", wfUtils::cleanupOneEntryPerLine($newValue)));
+				
+				/**
+				 * Fires when the banned username list changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param string[] $before The previous user list.
+				 * @param string[] $after The new user list.
+				 */
+				do_action('wordfence_updated_banned_usernames', $before, $after);
+				break;
+			}
+			case 'loginSec_breachPasswds_enabled':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the breached password protection setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_breached_password_protection', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_strongPasswds_enabled':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the enforce strong passwords setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_enforce_strong_passwords', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_maskLoginErrors':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the mask login errors setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_mask_login_errors', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_blockAdminReg':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the prevent `admin` as a username during registration setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_prevent_admin_username', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_disableAuthorScan':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the prevent discovery of usernames through a variety of endpoints setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_block_author_scan', $before, $after);
+				}
+				break;
+			}
+			case 'loginSec_disableApplicationPasswords':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the prevent WordPress application passwords setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_prevent_application_passwords', $before, $after);
+				}
+				break;
+			}
+			case 'other_blockBadPOST':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the block bad POST requests setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_block_bad_post', $before, $after);
+				}
+				break;
+			}
+			case 'blockCustomText':
+			{
+				$before = wfConfig::get($key);
+				$after = $newValue;
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the custom block page text changes.
+					 *
+					 * @param string $before The previous text.
+					 * @param string $after The new text.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_updated_custom_block_text', $before, $after);
+				}
+				break;
+			}
+			case 'other_pwStrengthOnUpdate':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the check password strength when changed setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_change_password_check_strength', $before, $after);
+				}
+				break;
+			}
+			case 'other_WFNet':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				/**
+				 * Fires when the participate in the Wordfence Security Network setting is enabled/disabled.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param bool $before The previous status.
+				 * @param bool $after The new status.
+				 */
+				do_action('wordfence_toggled_participate_security_network', $before, $after);
+				break;
+			}
+			case 'firewallEnabled':
+			{
+				$before = wfUtils::truthyToBoolean(wfConfig::get($key));
+				$after = wfUtils::truthyToBoolean($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the rate limiting/advanced blocking setting is enabled/disabled.
+					 *
+					 * @param bool $before The previous status.
+					 * @param bool $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_general_rate_limiting_blocking', $before, $after);
+				}
+				break;
+			}
+			case 'neverBlockBG':
+			{
+				$before = wfConfig::get($key);
+				$after = $newValue;
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the never block crawlers setting is enabled/disabled.
+					 *
+					 * @param string $before The previous status.
+					 * @param string $after The new status.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_toggled_never_block_crawlers', $before, $after);
+				}
+				break;
+			}
+			case 'maxGlobalRequests':
+			case 'maxGlobalRequests_action':
+			{
+				preg_match('/([^_]+)_?(.*)$/', $key, $matches);
+				$stem = $matches[1];
+				$sub = empty($matches[2]) ? 'threshold' : $matches[2];
+				$before = array(
+					'threshold' => wfConfig::get($stem),
+					'action' => wfConfig::get("{$stem}_action"),
+				);
+				$after = $before;
+				switch ($sub) {
+					case 'threshold':
+						$after[$sub] = $newValue;
+						break;
+					case 'action':
+						$after[$sub] = $newValue;
+						break;
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the max global requests rate limit setting changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param array $before {
+					 * 		The previous setting value.
+					 * 
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 * @param array $after {
+					 * 		The new setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 */
+					do_action('wordfence_updated_max_global_requests', $before, $after);
+				}
+				break;
+			}
+			case 'maxRequestsCrawlers':
+			case 'maxRequestsCrawlers_action':
+			{
+				preg_match('/([^_]+)_?(.*)$/', $key, $matches);
+				$stem = $matches[1];
+				$sub = empty($matches[2]) ? 'threshold' : $matches[2];
+				$before = array(
+					'threshold' => wfConfig::get($stem),
+					'action' => wfConfig::get("{$stem}_action"),
+				);
+				$after = $before;
+				switch ($sub) {
+					case 'threshold':
+						$after[$sub] = $newValue;
+						break;
+					case 'action':
+						$after[$sub] = $newValue;
+						break;
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the max crawler requests rate limit setting changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param array $before {
+					 * 		The previous setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 * @param array $after {
+					 * 		The new setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 */
+					do_action('wordfence_updated_max_crawler_requests', $before, $after);
+				}
+				break;
+			}
+			case 'max404Crawlers':
+			case 'max404Crawlers_action':
+			{
+				preg_match('/([^_]+)_?(.*)$/', $key, $matches);
+				$stem = $matches[1];
+				$sub = empty($matches[2]) ? 'threshold' : $matches[2];
+				$before = array(
+					'threshold' => wfConfig::get($stem),
+					'action' => wfConfig::get("{$stem}_action"),
+				);
+				$after = $before;
+				switch ($sub) {
+					case 'threshold':
+						$after[$sub] = $newValue;
+						break;
+					case 'action':
+						$after[$sub] = $newValue;
+						break;
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the max crawler 404s rate limit changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param array $before {
+					 * 		The previous setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 * @param array $after {
+					 * 		The new setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 */
+					do_action('wordfence_updated_max_crawler_404', $before, $after);
+				}
+				break;
+			}
+			case 'maxRequestsHumans':
+			case 'maxRequestsHumans_action':
+			{
+				preg_match('/([^_]+)_?(.*)$/', $key, $matches);
+				$stem = $matches[1];
+				$sub = empty($matches[2]) ? 'threshold' : $matches[2];
+				$before = array(
+					'threshold' => wfConfig::get($stem),
+					'action' => wfConfig::get("{$stem}_action"),
+				);
+				$after = $before;
+				switch ($sub) {
+					case 'threshold':
+						$after[$sub] = $newValue;
+						break;
+					case 'action':
+						$after[$sub] = $newValue;
+						break;
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the max human requests rate limit changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param array $before {
+					 * 		The previous setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 * @param array $after {
+					 * 		The new setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 */
+					do_action('wordfence_updated_max_human_requests', $before, $after);
+				}
+				break;
+			}
+			case 'max404Humans':
+			case 'max404Humans_action':
+			{
+				preg_match('/([^_]+)_?(.*)$/', $key, $matches);
+				$stem = $matches[1];
+				$sub = empty($matches[2]) ? 'threshold' : $matches[2];
+				$before = array(
+					'threshold' => wfConfig::get($stem),
+					'action' => wfConfig::get("{$stem}_action"),
+				);
+				$after = $before;
+				switch ($sub) {
+					case 'threshold':
+						$after[$sub] = $newValue;
+						break;
+					case 'action':
+						$after[$sub] = $newValue;
+						break;
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the max human 404s rate limit changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param array $before {
+					 * 		The previous setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 * @param array $after {
+					 * 		The new setting value.
+					 *
+					 * 		@type int|string $threshold The number of requests before the rate limit is enforced
+					 * 		@type string $action The action taken when enforcing the rate limit
+					 * }
+					 */
+					do_action('wordfence_updated_max_human_404', $before, $after);
+				}
+				break;
+			}
+			case 'blockedTime':
+			{
+				$before = intval(wfConfig::get($key));
+				$after = intval($newValue);
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the block duration changes.
+					 *
+					 * @param int $before The previous value.
+					 * @param int $after The new value.
+					 * @since 8.0.0
+					 *
+					 */
+					do_action('wordfence_updated_block_duration', $before, $after);
+				}
+				break;
+			}
+			case 'allowed404s':
+			{
+				$before = array_filter(preg_split('/[\r\n]+/', wfConfig::get($key)));
+				$after = array_filter(preg_split('/[\r\n]+/', $newValue));
+				
+				/**
+				 * Fires when the allowed 404 URL list changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param string[] $before The previous list.
+				 * @param string[] $after The new list.
+				 */
+				do_action('wordfence_updated_allowed_404', $before, $after);
+				break;
+			}
+			case 'scansEnabled_checkGSB':
+			case 'spamvertizeCheck':
+			case 'checkSpamIP':
+			case 'scansEnabled_checkHowGetIPs':
+			case 'scansEnabled_checkReadableConfig':
+			case 'scansEnabled_suspectedFiles':
+			case 'scansEnabled_core':
+			case 'scansEnabled_themes':
+			case 'scansEnabled_plugins':
+			case 'scansEnabled_coreUnknown':
+			case 'scansEnabled_malware':
+			case 'scansEnabled_fileContents':
+			case 'scansEnabled_fileContentsGSB':
+			case 'scansEnabled_posts':
+			case 'scansEnabled_comments':
+			case 'scansEnabled_suspiciousOptions':
+			case 'scansEnabled_oldVersions':
+			case 'scansEnabled_suspiciousAdminUsers':
+			case 'scansEnabled_passwds':
+			case 'scansEnabled_diskSpace':
+			case 'scansEnabled_wafStatus':
+			case 'other_scanOutside':
+			case 'scansEnabled_scanImages':
+			case 'lowResourceScansEnabled':
+			case 'scan_maxIssues':
+			case 'scan_maxDuration':
+			case 'maxMem':
+			case 'maxExecutionTime':
+			case 'scan_exclude':
+			case 'scan_include_extra':
+			case 'scan_force_ipv4_start':
+			case 'scan_max_resume_attempts':
+			{
+				$options = array(
+					'scansEnabled_checkGSB' => self::TYPE_BOOL,
+					'spamvertizeCheck' => self::TYPE_BOOL,
+					'checkSpamIP' => self::TYPE_BOOL,
+					'scansEnabled_checkHowGetIPs' => self::TYPE_BOOL,
+					'scansEnabled_checkReadableConfig' => self::TYPE_BOOL,
+					'scansEnabled_suspectedFiles' => self::TYPE_BOOL,
+					'scansEnabled_core' => self::TYPE_BOOL,
+					'scansEnabled_themes' => self::TYPE_BOOL,
+					'scansEnabled_plugins' => self::TYPE_BOOL,
+					'scansEnabled_coreUnknown' => self::TYPE_BOOL,
+					'scansEnabled_malware' => self::TYPE_BOOL,
+					'scansEnabled_fileContents' => self::TYPE_BOOL,
+					'scansEnabled_fileContentsGSB' => self::TYPE_BOOL,
+					'scansEnabled_posts' => self::TYPE_BOOL,
+					'scansEnabled_comments' => self::TYPE_BOOL,
+					'scansEnabled_suspiciousOptions' => self::TYPE_BOOL,
+					'scansEnabled_oldVersions' => self::TYPE_BOOL,
+					'scansEnabled_suspiciousAdminUsers' => self::TYPE_BOOL,
+					'scansEnabled_passwds' => self::TYPE_BOOL,
+					'scansEnabled_diskSpace' => self::TYPE_BOOL,
+					'scansEnabled_wafStatus' => self::TYPE_BOOL,
+					'other_scanOutside' => self::TYPE_BOOL,
+					'scansEnabled_scanImages' => self::TYPE_BOOL,
+					
+					'lowResourceScansEnabled' => self::TYPE_BOOL,
+					'scan_maxIssues' => self::TYPE_INT,
+					'scan_maxDuration' => self::TYPE_INT,
+					'maxMem' => self::TYPE_INT,
+					'maxExecutionTime' => self::TYPE_INT,
+					
+					'scan_exclude' => self::TYPE_MULTI_STRING,
+					'scan_include_extra' => self::TYPE_MULTI_STRING,
+					'scan_force_ipv4_start' => self::TYPE_BOOL,
+					'scan_max_resume_attempts' => self::TYPE_INT,
+				);
+				
+				$before = array();
+				$after = array();
+				foreach ($options as $k => $t) {
+					$rawBefore = wfConfig::get($k);
+					$rawAfter = ($key == $k ? $newValue : $rawBefore);
+					switch ($t) { //Not all types are implemented -- only those that we use in the array above
+						case self::TYPE_BOOL:
+							$before[$k] = wfUtils::truthyToBoolean($rawBefore);
+							$after[$k] = wfUtils::truthyToBoolean($rawAfter);
+							break;
+						case self::TYPE_INT:
+							$before[$k] = intval($rawBefore);
+							$after[$k] = intval($rawAfter);
+							break;
+						case self::TYPE_STRING:
+							$before[$k] = $rawBefore;
+							$after[$k] = $rawAfter;
+							break;
+						case self::TYPE_MULTI_STRING:
+							$before[$k] = array_filter(preg_split('/[\r\n]+/', $rawBefore));
+							$after[$k] = array_filter(preg_split('/[\r\n]+/', $rawAfter));
+							break;
+					}
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the scan options change. This may be called multiple times if multiple options are 
+					 * changed (once each).
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string[] $before The previous options.
+					 * @param string[] $after The new options.
+					 */
+					do_action('wordfence_updated_scan_options', $before, $after);
+				}
+				break;
+			}
+			case 'scheduledScansEnabled':
+			case 'schedMode':
+			case 'manualScanType':
+			case 'schedStartHour':
+			case 'scanSched':
+			{
+				$options = array(
+					'scheduledScansEnabled' => self::TYPE_BOOL,
+					'schedMode' => self::TYPE_STRING,
+					'manualScanType' => self::TYPE_STRING,
+					'schedStartHour' => self::TYPE_INT,
+					'scanSched' => self::TYPE_ARRAY,
+				);
+				
+				$before = array();
+				$after = array();
+				foreach ($options as $k => $t) {
+					switch ($t) { //Not all types are implemented -- only those that we use in the array above
+						case self::TYPE_BOOL:
+							$rawBefore = wfConfig::get($k);
+							$rawAfter = ($key == $k ? $newValue : $rawBefore);
+							$before[$k] = wfUtils::truthyToBoolean($rawBefore);
+							$after[$k] = wfUtils::truthyToBoolean($rawAfter);
+							break;
+						case self::TYPE_INT:
+							$rawBefore = wfConfig::get($k);
+							$rawAfter = ($key == $k ? $newValue : $rawBefore);
+							$before[$k] = intval($rawBefore);
+							$after[$k] = intval($rawAfter);
+							break;
+						case self::TYPE_STRING:
+							$rawBefore = wfConfig::get($k);
+							$rawAfter = ($key == $k ? $newValue : $rawBefore);
+							$before[$k] = $rawBefore;
+							$after[$k] = $rawAfter;
+							break;
+						case self::TYPE_ARRAY:
+							$rawBefore = wfConfig::get_ser($k, array());
+							$rawAfter = ($key == $k ? $newValue : $rawBefore);
+							$before[$k] = $rawBefore;
+							$after[$k] = $rawAfter;
+							break;
+					}
+				}
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the scan scheduling change. This may be called multiple times if multiple options are
+					 * changed (once each).
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string[] $before The previous schedule/options.
+					 * @param string[] $after The new schedule/options.
+					 */
+					do_action('wordfence_updated_scan_schedule', $before, $after);
+				}
+				break;
+			}
+			case 'cbl_loggedInBlocked':
+			case 'cbl_action':
+			case 'cbl_redirURL':
+			case 'cbl_bypassRedirURL':
+			case 'cbl_bypassRedirDest':
+			case 'cbl_bypassViewURL':
+			{
+				$block = wfUtils::array_first(wfBlock::countryBlocks(true)); /** @var wfBlock $block */
+				$before = array(
+					'parameters' => $block ? $block->parameters : null,
+					'bypass' => array(
+						'cbl_loggedInBlocked' => wfConfig::get('cbl_loggedInBlocked', false),
+						'cbl_action' => wfConfig::get('cbl_action'),
+						'cbl_redirURL' => wfConfig::get('cbl_redirURL', ''),
+						'cbl_bypassRedirURL' => wfConfig::get('cbl_bypassRedirURL', ''),
+						'cbl_bypassRedirDest' => wfConfig::get('cbl_bypassRedirDest', ''),
+						'cbl_bypassViewURL' => wfConfig::get('cbl_bypassViewURL', ''),
+					),
+				);
+				$after = $before;
+				$after['bypass'][$key] = $newValue;
+				
+				/**
+				 * @see wfBlock::createCountry()
+				 */
+				do_action('wordfence_updated_country_blocking', $before, $after);
+				break;
+			}
+			case 'auditLogMode':
+			{
+				$before = wfConfig::get($key);
+				$after = $newValue;
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the audit log recording mode changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string $before The previous status.
+					 * @param string $after The new status.
+					 */
+					do_action('wordfence_changed_audit_log_mode', $before, $after);
+				}
+				break;
+			}
+			case 'apiKey':
+			{
+				$before = wfConfig::get($key);
+				$after = $newValue;
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the license key changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string $before The previous key.
+					 * @param string $after The new key.
+					 */
+					do_action('wordfence_changed_license_key', $before, $after);
+				}
+				break;
+			}
+			case 'howGetIPs':
+			{
+				$before = wfConfig::get($key);
+				$after = $newValue;
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the IP source changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string $before The previous value.
+					 * @param string $after The new value.
+					 */
+					do_action('wordfence_changed_ip_source', $before, $after);
+				}
+				break;
+			}
+			case 'howGetIPs_trusted_proxies':
+			{
+				$before = array_filter(preg_split('/[\r\n]+/', wfConfig::get($key)));
+				$after = array_filter(preg_split('/[\r\n]+/', $newValue));
+				
+				if (!(count($before) == count($after) && empty(array_diff($before, $after)))) {
+					/**
+					 * Fires when the trusted proxy list changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string[] $before The previous list.
+					 * @param string[] $after The new list.
+					 */
+					do_action('wordfence_updated_trusted_proxies', $before, $after);
+				}
+				break;
+			}
+			case 'howGetIPs_trusted_proxy_preset':
+			{
+				$before = wfConfig::get($key);
+				$after = $newValue;
+				
+				if ($before != $after) {
+					/**
+					 * Fires when the trusted proxy preset changes.
+					 *
+					 * @since 8.0.0
+					 *
+					 * @param string $before The previous value.
+					 * @param string $after The new value.
+					 */
+					do_action('wordfence_changed_trusted_proxy_preset', $before, $after);
+				}
+				break;
+			}
+			case 'ipResolutionList':
+			{
+				$before = (array) wfConfig::getJSON($key, array());
+				$after = json_decode($newValue, true);
+				
+				/**
+				 * Fires when the trusted proxy list definitions changes.
+				 *
+				 * @since 8.0.0
+				 *
+				 * @param array $before The previous definitions.
+				 * @param array $after The new definitions.
+				 */
+				do_action('wordfence_updated_trusted_proxy_preset_definitions', $before, $after);
+				break;
+			}
+		}
 	}
 }
 

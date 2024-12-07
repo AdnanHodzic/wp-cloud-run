@@ -23,14 +23,14 @@ if ( ! class_exists( 'Redux_Extension_Shortcodes' ) ) {
 		 *
 		 * @var string
 		 */
-		public static $version = '4.3.6';
+		public static string $version = '4.3.6';
 
 		/**
 		 * Extension Friendly Name.
 		 *
 		 * @var string
 		 */
-		public $extension_name = 'Shortcodes';
+		public string $extension_name = 'Shortcodes';
 
 		/**
 		 * Redux_Extension_Shortcodes constructor.

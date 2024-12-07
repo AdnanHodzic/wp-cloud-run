@@ -10,6 +10,7 @@ class wfOnboardingController {
 	const TOUR_SCAN = 'scan';
 	const TOUR_BLOCKING = 'blocking';
 	const TOUR_LIVE_TRAFFIC = 'livetraffic';
+	const TOUR_AUDIT_LOG = 'auditlog';
 	const TOUR_LOGIN_SECURITY = 'loginsecurity';
 	
 	/**
@@ -18,14 +19,25 @@ class wfOnboardingController {
 	public static function migrateOnboarding() {
 		$alertEmails = wfConfig::getAlertEmails();
 		$onboardingAttempt1 = wfConfig::get('onboardingAttempt1');
-		if (!empty($alertEmails) && empty($onboardingAttempt1)) {
+		$lastOnboardingVersion = wfConfig::get('onboardingLastVersion');
+		if (!empty($alertEmails) && empty($onboardingAttempt1)) { //Wordfence 7.0 migration
 			wfConfig::set('onboardingAttempt1', self::ONBOARDING_LICENSE); //Mark onboarding as done
 			
-			$keys = array(self::TOUR_DASHBOARD, self::TOUR_FIREWALL, self::TOUR_SCAN, self::TOUR_BLOCKING, self::TOUR_LIVE_TRAFFIC);
+			$keys = array(self::TOUR_DASHBOARD, self::TOUR_FIREWALL, self::TOUR_SCAN, self::TOUR_BLOCKING, self::TOUR_LIVE_TRAFFIC, self::TOUR_AUDIT_LOG);
 			foreach ($keys as $k) {
 				wfConfig::set('needsNewTour_' . $k, 0);
 				wfConfig::set('needsUpgradeTour_' . $k, 1);
 			}
+			wfConfig::set('onboardingLastVersion', WORDFENCE_VERSION);
+		}
+		else if (!empty($alertEmails) && !empty($onboardingAttempt1) && (empty($lastOnboardingVersion) || 
+				version_compare('8.0', $lastOnboardingVersion) == 1)) { //Future new tour steps can copy this block and extend
+			$keys = array(self::TOUR_AUDIT_LOG);
+			foreach ($keys as $k) {
+				wfConfig::set('needsNewTour_' . $k, 0);
+				wfConfig::set('needsUpgradeTour_' . $k, 1);
+			}
+			wfConfig::set('onboardingLastVersion', WORDFENCE_VERSION);
 		}
 	}
 	
@@ -40,6 +52,7 @@ class wfOnboardingController {
 							self::shouldShowNewTour(self::TOUR_SCAN) || self::shouldShowUpgradeTour(self::TOUR_SCAN) ||
 							self::shouldShowNewTour(self::TOUR_BLOCKING) || self::shouldShowUpgradeTour(self::TOUR_BLOCKING) ||
 							self::shouldShowNewTour(self::TOUR_LIVE_TRAFFIC) || self::shouldShowUpgradeTour(self::TOUR_LIVE_TRAFFIC) ||
+							self::shouldShowNewTour(self::TOUR_AUDIT_LOG) || self::shouldShowUpgradeTour(self::TOUR_AUDIT_LOG) ||
 							self::shouldShowNewTour(self::TOUR_LOGIN_SECURITY) || self::shouldShowUpgradeTour(self::TOUR_LOGIN_SECURITY));
 		if (!self::shouldShowAnyAttempt() && !$willShowAnyTour) {
 			return;
@@ -60,6 +73,7 @@ class wfOnboardingController {
 			self::shouldShowNewTour(self::TOUR_SCAN) || self::shouldShowUpgradeTour(self::TOUR_SCAN) ||
 			self::shouldShowNewTour(self::TOUR_BLOCKING) || self::shouldShowUpgradeTour(self::TOUR_BLOCKING) ||
 			self::shouldShowNewTour(self::TOUR_LIVE_TRAFFIC) || self::shouldShowUpgradeTour(self::TOUR_LIVE_TRAFFIC) ||
+			self::shouldShowNewTour(self::TOUR_AUDIT_LOG) || self::shouldShowUpgradeTour(self::TOUR_AUDIT_LOG) ||
 			self::shouldShowNewTour(self::TOUR_LOGIN_SECURITY) || self::shouldShowUpgradeTour(self::TOUR_LOGIN_SECURITY));
 		
 		if (wfUtils::isAdmin() && 
@@ -90,6 +104,7 @@ class wfOnboardingController {
 							self::shouldShowNewTour(self::TOUR_SCAN) || self::shouldShowUpgradeTour(self::TOUR_SCAN) ||
 							self::shouldShowNewTour(self::TOUR_BLOCKING) || self::shouldShowUpgradeTour(self::TOUR_BLOCKING) ||
 							self::shouldShowNewTour(self::TOUR_LIVE_TRAFFIC) || self::shouldShowUpgradeTour(self::TOUR_LIVE_TRAFFIC) ||
+							self::shouldShowNewTour(self::TOUR_AUDIT_LOG) || self::shouldShowUpgradeTour(self::TOUR_AUDIT_LOG) ||
 							self::shouldShowNewTour(self::TOUR_LOGIN_SECURITY) || self::shouldShowUpgradeTour(self::TOUR_LOGIN_SECURITY));
 		
 		$screen = get_current_screen();

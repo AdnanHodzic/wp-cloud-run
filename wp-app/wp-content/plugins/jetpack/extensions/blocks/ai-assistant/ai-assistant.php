@@ -199,13 +199,15 @@ add_action(
 );
 
 /**
- * Register the `ai-logo-style-selector-support` extension.
+ * Register the `ai-list-to-table-transform` extension.
  */
 add_action(
 	'jetpack_register_gutenberg_extensions',
 	function () {
-		if ( apply_filters( 'jetpack_ai_enabled', true ) && apply_filters( 'jetpack_ai_logo_style_selector_enabled', false ) ) {
-			\Jetpack_Gutenberg::set_extension_available( 'ai-logo-style-selector-support' );
+		if ( apply_filters( 'jetpack_ai_enabled', true ) &&
+			apply_filters( 'list_to_table_transform_enabled', false )
+		) {
+			\Jetpack_Gutenberg::set_extension_available( 'ai-list-to-table-transform' );
 		}
 	}
 );

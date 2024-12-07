@@ -11,7 +11,6 @@ class SWCFPC_Html_Cache {
 	 * @var \SW_CLOUDFLARE_PAGECACHE
 	 */
 	private $main_instance              = null;
-	private $modules                    = false;
 	private $current_page_can_be_cached = false;
 
 	function __construct( $main_instance ) {
@@ -78,50 +77,33 @@ class SWCFPC_Html_Cache {
 
 		global $wp_query;
 
-		$this->modules = $this->main_instance->get_modules();
-
 		// First check for WP CLI as $_SERVER is not available for WP_CLI
 		if ( defined( 'WP_CLI' ) && WP_CLI === true ) {
-
-			if ( is_object( $this->modules['logs'] ) && $this->modules['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-				$this->modules['logs']->add_log( 'html_cache::add_current_url_to_cache', 'The URL cannot be cached due to WP CLI.' );
-			}
+			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', 'The URL cannot be cached due to WP CLI.', true );
 
 			return;
-
 		}
 
 		$parts       = parse_url( home_url() );
 		$current_url = "{$parts['scheme']}://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
 
 		if ( isset( $wp_query ) && function_exists( 'is_404' ) && is_404() ) {
-
-			if ( $this->modules['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-				$this->modules['logs']->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because it returns 404." );
-			}
+			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because it returns 404.", true );
 
 			return;
 
 		}
 
 		if ( $this->current_page_can_be_cached == false ) {
-
-			if ( is_object( $this->modules['logs'] ) && $this->modules['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-				$this->modules['logs']->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached due to caching rules." );
-			}
+			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached due to caching rules.", true );
 
 			return;
-
 		}
 
 		if ( strcasecmp( $_SERVER['HTTP_HOST'], $parts['host'] ) != 0 ) {
-
-			if ( $this->modules['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-				$this->modules['logs']->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because the host does not match with the one of home_url() function ({$parts['host']})." );
-			}
+			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because the host does not match with the one of home_url() function ({$parts['host']}).", true );
 
 			return;
-
 		}
 
 		/**
@@ -135,10 +117,7 @@ class SWCFPC_Html_Cache {
 		if ( array_key_exists( 'query', $current_url_parsed ) ) {
 
 			if ( $current_url_parsed['query'] === '' ) {
-
-				if ( $this->modules['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-					$this->modules['logs']->add_log( 'html_cache::add_current_url_to_cache', "This URL {$current_url} cannot be cached because the URL has no query param but has the question mark at the end of the URL without actually having any query params. It makes no sense to cache this page as the proper version of the URL will be considered for caching." );
-				}
+				$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "This URL {$current_url} cannot be cached because the URL has no query param but has the question mark at the end of the URL without actually having any query params. It makes no sense to cache this page as the proper version of the URL will be considered for caching.", true );
 
 				return;
 
@@ -180,11 +159,7 @@ class SWCFPC_Html_Cache {
 		// Time to add the URL to HTML cache
 		$filename = $this->add_url_to_cache( $current_url );
 
-		if ( $this->modules['logs']->get_verbosity() == SWCFPC_LOGS_HIGH_VERBOSITY ) {
-			$this->modules['logs']->add_log( 'html_cache::add_current_url_to_cache', "Created the file {$filename} for the URL {$current_url}" );
-		}
-
-
+		$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "Created the file {$filename} for the URL {$current_url}", true );
 	}
 
 
@@ -215,7 +190,6 @@ class SWCFPC_Html_Cache {
 	}
 
 
-
 	function delete_all_cached_urls() {
 
 		$cache_path = $this->init_directory();
@@ -227,7 +201,7 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 				@unlink( $single_file );
-			}       
+			}
 		}
 
 	}
@@ -245,12 +219,12 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
 
 				if ( strlen( $single_url ) > 1 ) {
 					$urls[] = $single_url;
-				}           
-			}       
+				}
+			}
 		}
 
 		return $urls;
@@ -270,12 +244,12 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
 
 				if ( $single_timestamp <= $timestamp && strlen( $single_url ) > 1 ) {
 					$urls[] = $single_url;
-				}           
-			}       
+				}
+			}
 		}
 
 		return $urls;
@@ -294,12 +268,12 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
 
 				if ( $single_timestamp <= $timestamp ) {
 					unlink( $single_file );
-				}           
-			}       
+				}
+			}
 		}
 
 	}
@@ -320,12 +294,12 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
 
 				if ( in_array( $single_url, $urls ) ) {
 					unlink( $single_file );
-				}           
-			}       
+				}
+			}
 		}
 
 	}

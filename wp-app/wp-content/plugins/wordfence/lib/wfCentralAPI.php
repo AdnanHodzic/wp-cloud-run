@@ -49,9 +49,9 @@ class wfCentralAPIRequest {
 		error_log('Wordfence stack trace: ' . $e->getTraceAsString());
 	}
 
-	public function execute() {
+	public function execute($timeout = 10) {
 		$args = array(
-			'timeout' => 10,
+			'timeout' => $timeout,
 		);
 		$args = wp_parse_args($this->getArgs(), $args);
 		$args['method'] = $this->getMethod();
@@ -78,7 +78,7 @@ class wfCentralAPIRequest {
 			// Check if site has been disconnected on Central's end, but the plugin is still trying to connect.
 			if ($statusCode === 404 && strpos($body, 'Site has been disconnected') !== false) {
 				// Increment attempt count.
-				$centralDisconnectCount = get_site_transient('wordfenceCentralDisconnectCount');
+				$centralDisconnectCount = (int) get_site_transient('wordfenceCentralDisconnectCount');
 				set_site_transient('wordfenceCentralDisconnectCount', ++$centralDisconnectCount, 86400);
 
 				// Once threshold is hit, disconnect Central.
@@ -642,7 +642,8 @@ class wfCentral {
 			));
 			try {
 				// Attempt to send the security events to Central.
-				$response = $request->execute();
+				$doing_cron = function_exists('wp_doing_cron') /* WP >= 4.8 */ ? wp_doing_cron() : (defined('DOING_CRON') && DOING_CRON);
+				$response = $request->execute($doing_cron ? 10 : 3);
 			}
 			catch (wfCentralAPIException $e) {
 				// If we didn't alert previously, notify the user now in the event Central is down.
@@ -838,13 +839,17 @@ class wfCentral {
 	}
 	
 	/**
-	 * Populates the Central record's site URL if missing locally.
+	 * Populates the Central record's site data if missing or incomplete locally.
 	 * 
 	 * @return array|bool
 	 */
-	public static function populateCentralSiteUrl() {
+	public static function populateCentralSiteData() {
+		if (!wfCentral::_isConnected()) {
+			return false;
+		}
+		
 		$siteData = json_decode(wfConfig::get('wordfenceCentralSiteData', '[]'), true);
-		if (!is_array($siteData) || !array_key_exists('site-url', $siteData)) {
+		if (!is_array($siteData) || !array_key_exists('site-url', $siteData) || !array_key_exists('audit-log-url', $siteData)) {
 			try {
 				$request = new wfCentralAuthenticatedAPIRequest('/site/' . wfConfig::get('wordfenceCentralSiteID'), 'GET', array(), array('timeout' => 2));
 				$response = $request->execute();
@@ -904,5 +909,19 @@ class wfCentral {
 			__('Dismiss', 'wordfence')
 			. '</a> '
 			. '<a class="wfhelp" target="_blank" rel="noopener noreferrer" href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_DIAGNOSTICS_REMOVE_CENTRAL_DATA) . '"><span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a></p></div>';
+	}
+	
+	/**
+	 * Returns the audit log URL for this site in Wordfence Central.
+	 *
+	 * The return value may be:
+	 *  - null if there is no `audit-log-url` key present in the stored Central data
+	 *  - a string if there is a `audit-log-url` value
+	 *
+	 * @return string|null
+	 */
+	public static function getCentralAuditLogUrl() {
+		$siteData = json_decode(wfConfig::get('wordfenceCentralSiteData', '[]'), true);
+		return (is_array($siteData) && array_key_exists('audit-log-url', $siteData)) ? (string) $siteData['audit-log-url'] : null;
 	}
 }

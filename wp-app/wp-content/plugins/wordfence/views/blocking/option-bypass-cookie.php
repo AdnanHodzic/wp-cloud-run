@@ -13,7 +13,7 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
 						<td class="wf-option-text"><input id="wf-bypass-view-url" type="text" value="<?php echo esc_attr(wfConfig::get('cbl_bypassViewURL')); ?>" placeholder="<?php esc_attr_e('/set-country-bypass/', 'wordfence'); ?>" data-option="cbl_bypassViewURL" data-original-value="<?php echo esc_attr(wfConfig::get('cbl_bypassViewURL')); ?>"></td>
 					</tr>
 					<tr>
-						<td colspan="2" class="wf-right wf-padding-add-top-small"><?php esc_html_e('then set a cookie that will bypass country blocking in future in case that user hits the site from a blocked country.', 'wordfence'); ?></td>
+						<td colspan="2" class="wf-right wf-padding-add-top-small"><?php esc_html_e('then set a cookie that will bypass country blocking in the future in case that user hits the site from a blocked country.', 'wordfence'); ?></td>
 					</tr>
 				</table>
 				<script type="application/javascript">

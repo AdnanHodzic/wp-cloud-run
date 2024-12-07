@@ -164,6 +164,8 @@ class wfSupportController {
 	const ITEM_TOOLS_TWO_FACTOR = 'tools-two-factor';
 	const ITEM_TOOLS_LIVE_TRAFFIC = 'tools-live-traffic';
 	const ITEM_TOOLS_LIVE_TRAFFIC_OPTION_ENABLE = 'tools-live-traffic-option-enable';
+	const ITEM_TOOLS_AUDIT_LOG = 'tools-audit-log';
+	const ITEM_TOOLS_AUDIT_LOG_OPTION_MODE = 'tools-audit-log-option-mode';
 	const ITEM_TOOLS_WHOIS_LOOKUP = 'tools-whois-lookup';
 	const ITEM_TOOLS_IMPORT_EXPORT = 'tools-import-export';
 	
@@ -359,6 +361,8 @@ class wfSupportController {
 			case self::ITEM_TOOLS_TWO_FACTOR:
 			case self::ITEM_TOOLS_LIVE_TRAFFIC:
 			case self::ITEM_TOOLS_LIVE_TRAFFIC_OPTION_ENABLE:
+			case self::ITEM_TOOLS_AUDIT_LOG:
+			case self::ITEM_TOOLS_AUDIT_LOG_OPTION_MODE:
 			case self::ITEM_TOOLS_WHOIS_LOOKUP:
 			case self::ITEM_TOOLS_IMPORT_EXPORT:
 				

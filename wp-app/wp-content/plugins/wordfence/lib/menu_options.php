@@ -69,6 +69,7 @@ if (isset($_GET['source']) && wfPage::isValidPage($_GET['source'])) {
 				'wf-option-displayTopLevelOptions' => __('Display All Options menu item', 'wordfence'),
 				'wf-option-displayTopLevelBlocking' => __('Display Blocking menu item', 'wordfence'),
 				'wf-option-displayTopLevelLiveTraffic' => __('Display Live Traffic menu item', 'wordfence'),
+				'wf-option-displayTopLevelAuditLog' => __('Display Audit Log menu item', 'wordfence'),
 				'wf-option-autoUpdate' => __('Update Wordfence automatically when a new version is released?', 'wordfence'),
 				'wf-option-alertEmails' => __('Where to email alerts', 'wordfence'),
 				'wf-option-howGetIPs' => __('How does Wordfence get IPs', 'wordfence'),
@@ -186,6 +187,7 @@ if (isset($_GET['source']) && wfPage::isValidPage($_GET['source'])) {
 				'wf-option-liveTraf-ignoreUA' => __('Browser user-agent to ignore', 'wordfence'),
 				'wf-option-liveTraf-maxRows' => __('Amount of Live Traffic data to store (number of rows)', 'wordfence'),
 				'wf-option-liveTraf-maxAge' => __('Maximum days to keep Live Traffic data', 'wordfence'),
+				'wf-option-auditLogMode' => __('Audit Log logging mode', 'wordfence'),
 				'wf-option-exportOptions' => __('Export this site\'s Wordfence options for import on another site', 'wordfence'),
 				'wf-option-importOptions' => __('Import Wordfence options from another site using a token', 'wordfence'),
 			);
@@ -255,6 +257,7 @@ if (!wfOnboardingController::shouldShowAttempt3() && wfConfig::get('touppPromptN
 						'wf-unified-scanner-options-custom',
 						'wf-unified-2fa-options',
 						'wf-unified-live-traffic-options',
+						'wf-unified-audit-log-options',
 					);
 					
 					echo wfView::create('options/options-title', array(
@@ -392,6 +395,15 @@ if (!wfOnboardingController::shouldShowAttempt3() && wfConfig::get('touppPromptN
 					echo wfView::create('tools/options-group-live-traffic', array(
 						'stateKey' => 'wf-unified-live-traffic-options',
 						'hideShowMenuItem' => true,
+					))->render();
+					
+					require(__DIR__ . '/wfVersionSupport.php'); /** @var $wfFeatureWPVersionAuditLog */
+					require(ABSPATH . WPINC . '/version.php'); /** @var string $wp_version */
+					$wpTooOld = version_compare($wp_version, $wfFeatureWPVersionAuditLog, '<');
+					echo wfView::create('tools/options-group-audit-log', array(
+						'stateKey' => 'wf-unified-audit-log-options',
+						'hideShowMenuItem' => true,
+						'wpTooOld' => $wpTooOld,
 					))->render();
 					?>
 

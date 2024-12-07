@@ -21,9 +21,9 @@ class wfPersistenceController {
 	 * @param $key
 	 * @return bool
 	 */
-	public function isActive($key) {
+	public function isActive($key, $default = false) {
 		if (!isset($this->_disclosureStates[$key])) {
-			return false;
+			return $default;
 		}
 		return !!$this->_disclosureStates[$key];
 	}

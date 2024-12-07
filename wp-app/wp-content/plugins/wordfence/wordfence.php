@@ -4,13 +4,13 @@ Plugin Name: Wordfence Security
 Plugin URI: https://www.wordfence.com/
 Description: Wordfence Security - Anti-virus, Firewall and Malware Scan
 Author: Wordfence
-Version: 7.11.7
+Version: 8.0.1
 Author URI: https://www.wordfence.com/
 Text Domain: wordfence
 Domain Path: /languages
 Network: true
-Requires at least: 3.9
-Requires PHP: 5.5
+Requires at least: 4.7
+Requires PHP: 7.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -38,8 +38,8 @@ if(defined('WP_INSTALLING') && WP_INSTALLING){
 if (!defined('ABSPATH')) {
 	exit;
 }
-define('WORDFENCE_VERSION', '7.11.7');
-define('WORDFENCE_BUILD_NUMBER', '1722265817');
+define('WORDFENCE_VERSION', '8.0.1');
+define('WORDFENCE_BUILD_NUMBER', '1731600600');
 define('WORDFENCE_BASENAME', function_exists('plugin_basename') ? plugin_basename(__FILE__) :
 	basename(dirname(__FILE__)) . '/' . basename(__FILE__));
 
@@ -71,6 +71,8 @@ require(dirname(__FILE__) . '/lib/wfVersionSupport.php');
 /**
  * @var string $wfPHPDeprecatingVersion
  * @var string $wfPHPMinimumVersion
+ * @var string $wfWordPressDeprecatingVersion
+ * @var string $wfWordPressMinimumVersion
  */
 
 if (!defined('WF_PHP_UNSUPPORTED')) {
@@ -82,6 +84,20 @@ if (WF_PHP_UNSUPPORTED) {
 
 	function wfUnsupportedPHPOverlay() {
 		include "views/unsupported-php/admin-message.php";
+	}
+	return;
+}
+
+if (!defined('WF_WP_UNSUPPORTED')) {
+	require(ABSPATH . 'wp-includes/version.php'); /** @var string $wp_version */
+	define('WF_WP_UNSUPPORTED', version_compare($wp_version, $wfWordPressMinimumVersion, '<'));
+}
+
+if (WF_WP_UNSUPPORTED) {
+	add_action('all_admin_notices', 'wfUnsupportedWPOverlay');
+	
+	function wfUnsupportedWPOverlay() {
+		include "views/unsupported-wp/admin-message.php";
 	}
 	return;
 }

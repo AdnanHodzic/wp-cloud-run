@@ -12,6 +12,7 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
  * @var array $states An array of the possible states for the switch. The array matches the format array('value' => <value>, 'label' => <label>)
  * @var string $helpLink If defined, the link to the corresponding external help page.
  * @var bool $premium If defined, the option will be tagged as premium only and not allow its value to change for free users.
+ * @var bool $disabled If defined and truthy, the option will be marked as disabled.
  */
 
 if (!isset($titleHTML)) {
@@ -40,8 +41,12 @@ $id = 'wf-option-' . preg_replace('/[^a-z0-9]/i', '-', $optionName);
 			</li>
 			<li class="wf-option-switch<?php if (isset($alignment)) { echo ' ' . $alignment; } ?> wf-padding-add-top-xs-small">
 				<ul class="wf-switch<?php echo (!(!wfConfig::p() && isset($premium) && $premium) ? '' : ' wf-disabled'); ?>" role="radiogroup" aria-labelledby="<?php echo esc_attr($id); ?>-label">
-				<?php foreach ($states as $s): ?>
-					<li<?php if ($s['value'] == $value) { echo ' class="wf-active"'; } ?> data-option-value="<?php echo esc_attr($s['value']); ?>" role="radio" aria-checked="<?php echo ($s['value'] == $value ? 'true' : 'false'); ?>" tabindex="0"><?php echo esc_html($s['label']); ?></li>
+				<?php foreach ($states as $s):
+					$classes = array();
+					if ($s['value'] == $value) { $classes[] = 'wf-active'; }
+					if (isset($s['disabled']) && $s['disabled']) { $classes[] = 'wf-disabled'; }
+				?>
+					<li<?php if (!empty($classes)) { echo ' class="' . implode(' ', $classes) . '"'; } ?> data-option-value="<?php echo esc_attr($s['value']); ?>" role="radio" aria-checked="<?php echo ($s['value'] == $value ? 'true' : 'false'); ?>" tabindex="0"><?php echo isset($s['labelHTML']) ? $s['labelHTML'] : esc_html($s['label']); ?></li>
 				<?php endforeach; ?>
 				</ul>
 			</li>

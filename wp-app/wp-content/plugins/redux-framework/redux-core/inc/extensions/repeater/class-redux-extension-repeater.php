@@ -7,6 +7,8 @@
  * @class   Redux_Extension_Repeater
  *
  * @version 4.3.13
+ *
+ * @noinspection PhpIgnoredClassAliasDeclaration
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -25,14 +27,14 @@ if ( ! class_exists( 'Redux_Extension_Repeater' ) ) {
 		 *
 		 * @var string
 		 */
-		public static $version = '4.3.13';
+		public static string $version = '4.3.13';
 
 		/**
 		 * Extension friendly name.
 		 *
 		 * @var string
 		 */
-		public $extension_name = 'Repeater';
+		public string $extension_name = 'Repeater';
 
 		/**
 		 * Class Constructor. Defines the args for the extensions class

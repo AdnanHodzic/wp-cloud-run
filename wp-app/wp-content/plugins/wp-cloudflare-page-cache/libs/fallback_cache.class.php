@@ -1,5 +1,8 @@
 <?php
 
+use SPC\Constants;
+use SPC\Utils\Helpers;
+
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
 class SWCFPC_Fallback_Cache {
@@ -49,10 +52,9 @@ class SWCFPC_Fallback_Cache {
 		// Ajax clear whole fallback cache
 		add_action( 'wp_ajax_swcfpc_purge_fallback_page_cache', [ $this, 'ajax_purge_whole_fallback_page_cache' ] );
 
-		if ( $this->main_instance->get_single_config( 'cf_fallback_cache', 0 ) > 0 && ! is_admin() && ! $this->main_instance->is_login_page() && $this->main_instance->get_single_config( 'cf_fallback_cache_curl', 0 ) > 0 ) {
-			add_action( 'shutdown', [ $this, 'fallback_cache_add_current_url_to_cache' ], PHP_INT_MAX );
+		if ( (int) $this->main_instance->get_single_config( 'cf_fallback_cache', 0 ) > 0 && ! is_admin() && ! $this->main_instance->is_login_page() && (int) $this->main_instance->get_single_config( 'cf_fallback_cache_curl', 0 ) > 0 ) {
+			add_action( 'shutdown', [ $this, 'shutdown_add_url_to_cache' ], PHP_INT_MAX );
 		}
-
 	}
 
 
@@ -115,7 +117,6 @@ class SWCFPC_Fallback_Cache {
 			}
 
 			if ( file_put_contents( $advanced_cache_dest, file_get_contents( $advanced_cache_source ) ) === false ) {
-				// if ( !copy($advanced_cache_source, $advanced_cache_dest) ) {
 				$this->modules['logs']->add_log( 'fallback_cache::fallback_cache_advanced_cache_enable', 'Unable to copy advanced-cache.php to wp-content directory' );
 				return false;
 			}
@@ -141,6 +142,8 @@ class SWCFPC_Fallback_Cache {
 			}       
 		}
 
+		do_action( 'swcfpc_advanced_cache_after_enable' );
+
 		return true;
 
 	}
@@ -163,6 +166,8 @@ class SWCFPC_Fallback_Cache {
 			$this->fallback_cache_purge_all();
 
 		}
+
+		do_action( 'swcfpc_advanced_cache_after_disable' );
 
 		return true;
 
@@ -280,90 +285,32 @@ class SWCFPC_Fallback_Cache {
 
 	}
 
-
 	function fallback_cache_is_wp_config_writable() {
-
 		$config_file_path = ABSPATH . 'wp-config.php';
 
 		return is_writable( $config_file_path );
-
 	}
-
 
 	function fallback_cache_is_wp_content_writable() {
-
 		return is_writable( WP_CONTENT_DIR );
-
 	}
 
-
-	/*
-	function fallback_cache_start_caching_via_hook() {
-
-		$this->objects = $this->main_instance->get_modules();
-
-		if( $this->objects['cache_controller']->is_cache_enabled() && !$this->objects['cache_controller']->is_url_to_bypass() && !$this->objects['cache_controller']->can_i_bypass_cache() )
-			$this->fallback_cache_enable();
-		else
-			$this->fallback_cache_disable();
-
-		if( $this->fallback_cache == true && isset( $_SERVER['REQUEST_METHOD'] ) &&  strcasecmp($_SERVER['REQUEST_METHOD'], 'GET') == 0 ) {
-
-			if (isset($_SERVER['HTTP_USER_AGENT']) && strcasecmp($_SERVER['HTTP_USER_AGENT'], 'ua-swcfpc-fc') == 0)
-				return;
-
-			$cache_path = $this->fallback_cache_init_directory();
-			$cache_key = $this->fallback_cache_get_current_page_cache_key();
-
-			if (!file_exists($cache_path . $cache_key) || $this->fallback_cache_is_expired_page($cache_key)) {
-
-				ob_start(array($this, 'fallback_cache_end_caching_via_hook') );
-
-			}
-
-		}
-
+	function shutdown_add_url_to_cache() {
+		$this->fallback_cache_add_current_url_to_cache();
 	}
-
-
-	function fallback_cache_end_caching_via_hook( $html ) {
-
-		$cache_path = $this->fallback_cache_init_directory();
-		$cache_key = $this->fallback_cache_get_current_page_cache_key();
-
-		if ($this->main_instance->get_single_config('cf_fallback_cache_ttl', 0) == 0)
-			$ttl = 0;
-		else
-			$ttl = time() + $this->main_instance->get_single_config('cf_fallback_cache_ttl', 0);
-
-		if( $ttl > 0 )
-			$html .= "\n<!-- Page retrieved from WP Cloudflare Super Page Cache's fallback cache - page generated @ " . date('Y-m-d H:i:s') . ' - fallback cache expiration @ ' . date('Y-m-d H:i:s', $ttl) . ' -->';
-		else
-			$html .= "\n<!-- Page retrieved from WP Cloudflare Super Page Cache's fallback cache - page generated @ " . date('Y-m-d H:i:s') . ' - fallback cache expiration @ never expires -->';
-
-		file_put_contents($cache_path . $cache_key, $html);
-
-		// Update TTL
-		$this->fallback_cache_set_single_ttl($cache_key, $ttl);
-		$this->fallback_cache_update_ttl_registry();
-
-	}
-	*/
-
 
 	function fallback_cache_add_current_url_to_cache( $url = null, $force_cache = false ) {
+		if ( ! $force_cache && (
+				! $this->fallback_cache || // Cache not enabled
+				$this->fallback_cache_is_url_to_exclude() || // URL excluded
+				! isset( $_SERVER['REQUEST_METHOD'] ) || // No request method
+				strcasecmp( $_SERVER['REQUEST_METHOD'], 'GET' ) !== 0 // Not GET
+			) ) {
+			return;
+		}
 
-		if (
-			! $force_cache &&
-			(
-				! $this->fallback_cache ||
-				$this->fallback_cache_is_url_to_exclude() ||
-				! isset( $_SERVER['REQUEST_METHOD'] ) ||
-				0 !== strcasecmp( $_SERVER['REQUEST_METHOD'], 'GET' ) ||
-				! isset( $_SERVER['HTTP_USER_AGENT'] ) ||
-				0 !== strcasecmp( $_SERVER['HTTP_USER_AGENT'], 'ua-swcfpc-fc' )
-			)
-		) {
+		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) &&
+			strcasecmp( $_SERVER['HTTP_USER_AGENT'], 'ua-swcfpc-fc' ) == 0 ) {
 			return;
 		}
 
@@ -398,12 +345,13 @@ class SWCFPC_Fallback_Cache {
 		if ( $response_code !== 200 ) {
 			return;
 		}
-
-		$ttl = $this->main_instance->get_single_config( 'cf_fallback_cache_ttl', 0 ) !== 0 ? time() + $this->main_instance->get_single_config( 'cf_fallback_cache_ttl', 0 ) : 0;
+		$ttl = (int) $this->main_instance->get_single_config( 'cf_fallback_cache_ttl', 0 ) !== 0 ? time() + $this->main_instance->get_single_config( 'cf_fallback_cache_ttl', 0 ) : 0;
 
 		$body = wp_remote_retrieve_body( $response );
 
-		$body .= "\n<!-- Page retrieved from Super Page Cache fallback cache via cURL - page generated @ " . date( 'Y-m-d H:i:s' ) . ' - fallback cache expiration @ ' . ( 0 < $ttl ? date( 'Y-m-d H:i:s', $ttl ) : 'never expires' ) . " - cache key {$cache_key} -->";
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			$body .= "\n<!-- Page retrieved from Super Page Cache fallback cache via cURL - page generated @ " . date( 'Y-m-d H:i:s' ) . ' - fallback cache expiration @ ' . ( 0 < $ttl ? date( 'Y-m-d H:i:s', $ttl ) : 'never expires' ) . " - cache key {$cache_key} -->";
+		}
 
 		// Provide a filter to modify the HTML before it is cached
 		$body = apply_filters( 'swcfpc_curl_fallback_cache_html', $body );
@@ -426,7 +374,6 @@ class SWCFPC_Fallback_Cache {
 
 
 	function fallback_cache_remove_url_parameters( $url ) {
-
 		$url_parsed       = parse_url( $url );
 		$url_query_params = [];
 
@@ -477,8 +424,7 @@ class SWCFPC_Fallback_Cache {
 	}
 
 
-	function fallback_cache_get_current_page_cache_key( $url = null ) {
-
+	function fallback_cache_get_current_page_cache_key( $url = null ) {    
 		$replacements = [ '://', '/', '?', '#', '&', '.', ',', '@', '-', '\'', '"', '%', ' ', '\\', '=' ];
 
 		if ( ! is_null( $url ) ) {
@@ -498,39 +444,25 @@ class SWCFPC_Fallback_Cache {
 			if ( $current_uri == '/' ) {
 				$current_uri = $parts['host'];
 			}       
-		} else {
-
-			$current_uri = add_query_arg( null, null );
+		} else {        
+			$current_uri = $_SERVER['REQUEST_URI'];
 
 			if ( $current_uri == '/' ) {
-				$parts       = parse_url( home_url() );
-				$current_uri = $parts['host'];
-			}       
-		}
+				$current_uri = $_SERVER['HTTP_HOST'];
+			}
 
-		if ( substr( $current_uri, 0, 1 ) == '/' ) {
-			$current_uri = substr( $current_uri, 1 );
-		}
+			$current_uri = trim( $current_uri, '/' );
 
-		if ( substr( $current_uri, -1, 1 ) == '/' ) {
-			$current_uri = substr( $current_uri, 0, -1 );
+			if ( strpos( $current_uri, '?' ) === 0 ) {
+				$current_uri = $_SERVER['HTTP_HOST'] . $current_uri;
+			}
 		}
 
 		$cache_key = str_replace( $replacements, '_', $this->fallback_cache_remove_url_parameters( $current_uri ) );
-
-		// Fix error fnmatch(): Filename exceeds the maximum allowed length
+		$cache_key = trim( $cache_key, '_' );
 		$cache_key = sha1( $cache_key );
 
-		/*
-		if( strlen($cache_key) > 250 ) {
-			$cache_key = substr($cache_key, 0, -32);
-			$cache_key .= md5( $current_uri );
-		}*/
-
-		$cache_key .= '.html';
-
-		return $cache_key;
-
+		return $cache_key . '.html';
 	}
 
 
@@ -564,13 +496,9 @@ class SWCFPC_Fallback_Cache {
 
 	}
 
-
 	function fallback_cache_update_ttl_registry() {
-
 		update_option( 'swcfpc_fc_ttl_registry', $this->fallback_cache_ttl_registry );
-
 	}
-
 
 	function fallback_cache_set_single_ttl( $name, $value ) {
 
@@ -586,9 +514,7 @@ class SWCFPC_Fallback_Cache {
 
 	}
 
-
 	function fallback_cache_get_single_ttl( $name, $default = false ) {
-
 		if ( ! is_array( $this->fallback_cache_ttl_registry ) || ! isset( $this->fallback_cache_ttl_registry[ $name ] ) ) {
 			return $default;
 		}
@@ -598,12 +524,9 @@ class SWCFPC_Fallback_Cache {
 		}
 
 		return (int) $this->fallback_cache_ttl_registry[ $name ];
-
 	}
 
-
 	function fallback_cache_is_expired_page( $cache_key ) {
-
 		$current_ttl = $this->fallback_cache_get_single_ttl( $cache_key, 0 );
 
 		if ( $current_ttl > 0 && time() > $current_ttl ) {
@@ -611,12 +534,10 @@ class SWCFPC_Fallback_Cache {
 		}
 
 		return false;
-
 	}
 
 
 	function fallback_cache_delete_expired_pages() {
-
 		if ( is_array( $this->fallback_cache_ttl_registry ) ) {
 
 			$cache_path = $this->fallback_cache_init_directory();
@@ -630,9 +551,7 @@ class SWCFPC_Fallback_Cache {
 			}
 
 			$this->fallback_cache_update_ttl_registry();
-
 		}
-
 	}
 
 
@@ -683,21 +602,25 @@ class SWCFPC_Fallback_Cache {
 
 	}
 
-
 	function fallback_cache_retrive_current_page() {
-
 		$cache_path = $this->fallback_cache_init_directory();
 		$cache_key  = $this->fallback_cache_get_current_page_cache_key();
 
-		if ( $this->main_instance->get_single_config( 'cf_fallback_cache_prevent_cache_urls_without_trailing_slash', 1 ) > 0 && $this->main_instance->does_current_url_have_trailing_slash() == false ) {
+		if ( $this->should_prevent_cache_because_of_trailingslash() ) {
+			Helpers::bypass_reason_header( 'Not a slashed URL' );
+
 			return false;
 		}
 
 		if ( $this->fallback_cache_is_cookie_to_exclude() ) {
+			Helpers::bypass_reason_header( 'Excluded cookie' );
+
 			return false;
 		}
 
 		if ( $this->fallback_cache_is_cookie_to_exclude_cf_worker() ) {
+			Helpers::bypass_reason_header( 'Excluded cookie worker' );
+
 			return false;
 		}
 
@@ -714,9 +637,8 @@ class SWCFPC_Fallback_Cache {
 			header_remove( 'Expires' );
 			header_remove( 'Cache-Control' );
 			header( 'Cache-Control: ' . $this->modules['cache_controller']->get_cache_control_value() );
-			header( 'X-WP-CF-Super-Cache: cache' );
+			header( 'X-WP-SPC-Disk-Cache: HIT' );
 			header( 'X-WP-CF-Super-Cache-Active: 1' );
-			header( 'X-WP-CF-Fallback-Cache: 1' );
 			header( 'X-WP-CF-Super-Cache-Cache-Control: ' . $this->modules['cache_controller']->get_cache_control_value() );
 			header( 'X-WP-CF-Super-Cache-Cookies-Bypass: ' . $this->modules['cache_controller']->get_cookies_to_bypass_in_worker_mode() );
 
@@ -812,7 +734,7 @@ class SWCFPC_Fallback_Cache {
 			return false;
 		}
 
-		$excluded_cookies = $this->main_instance->get_single_config( 'cf_fallback_cache_excluded_cookies', [] );
+		$excluded_cookies = $this->main_instance->get_single_config( Constants::SETTING_EXCLUDED_COOKIES, [] );
 
 		if ( count( $excluded_cookies ) == 0 ) {
 			return false;
@@ -823,6 +745,8 @@ class SWCFPC_Fallback_Cache {
 		foreach ( $excluded_cookies as $single_cookie ) {
 
 			if ( count( preg_grep( "#{$single_cookie}#", $cookies ) ) > 0 ) {
+				Helpers::bypass_reason_header( sprintf( 'Cookie - %s', $single_cookie ) );
+
 				return true;
 			}       
 		}
@@ -842,7 +766,7 @@ class SWCFPC_Fallback_Cache {
 			return false;
 		}
 
-		$excluded_cookies = $this->main_instance->get_single_config( 'cf_fallback_cache_excluded_cookies', [] );
+		$excluded_cookies = $this->main_instance->get_single_config( Constants::SETTING_EXCLUDED_COOKIES, [] );
 
 		if ( count( $excluded_cookies ) == 0 ) {
 			return false;
@@ -863,8 +787,7 @@ class SWCFPC_Fallback_Cache {
 
 
 	function fallback_cache_is_url_to_exclude( $url = false ) {
-
-		if ( $this->main_instance->get_single_config( 'cf_fallback_cache_prevent_cache_urls_without_trailing_slash', 1 ) > 0 && $this->main_instance->does_current_url_have_trailing_slash() == false ) {
+		if ( $this->should_prevent_cache_because_of_trailingslash() ) {
 			return true;
 		}
 
@@ -899,7 +822,6 @@ class SWCFPC_Fallback_Cache {
 		}
 
 		return false;
-
 	}
 
 
@@ -918,6 +840,17 @@ class SWCFPC_Fallback_Cache {
 
 		die( json_encode( $return_array ) );
 
+	}
+
+	/**
+	 * Check if the current URL should be prevented from being cached or delivered from cache because of the trailing slash.
+	 * 
+	 * @return bool
+	 */
+	private function should_prevent_cache_because_of_trailingslash() {
+		return $this->main_instance->get_single_config( 'cf_fallback_cache_prevent_cache_urls_without_trailing_slash', 1 ) > 0 &&
+		! $this->main_instance->does_current_url_have_trailing_slash() &&
+		apply_filters( 'swcfpc_fallback_cache_skip_unslashed', true, $_SERVER['REQUEST_URI'] );
 	}
 
 }

@@ -5,6 +5,8 @@
  * @class   Redux_Extension_Import_Export
  * @version 4.0.0
  * @package Redux Framework
+ *
+ * @noinspection PhpIgnoredClassAliasDeclaration
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -24,14 +26,14 @@ if ( ! class_exists( 'Redux_Extension_Import_Export', false ) ) {
 		 *
 		 * @var string
 		 */
-		public static $version = '4.0.0';
+		public static string $version = '4.0.0';
 
 		/**
 		 * Is field bit.
 		 *
 		 * @var bool
 		 */
-		public $is_field = false;
+		public bool $is_field = false;
 
 		/**
 		 * Class Constructor. Defines the args for the extensions class

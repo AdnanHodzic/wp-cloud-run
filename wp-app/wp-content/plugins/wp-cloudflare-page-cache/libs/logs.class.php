@@ -66,16 +66,26 @@ class SWCFPC_Logs {
 	}
 
 
-	function add_log( $identifier, $message ) {
-
-		if ( $this->is_logging_enabled && $this->log_file_path ) {
-
-			$log = sprintf( '[%s] [%s] %s', current_time( 'Y-m-d H:i:s' ), $identifier, $message ) . PHP_EOL;
-
-			error_log( $log, 3, $this->log_file_path );
-
+	/**
+	 * Add log line.
+	 *
+	 * @param string $identifier Identifier.
+	 * @param string $message Message.
+	 * @param bool $only_verbose Only log in high verbosity mode.
+	 *
+	 * @return void
+	 */
+	public function add_log( $identifier, $message, $only_verbose = false ) {
+		if ( ! $this->is_logging_enabled ||
+			 ! $this->log_file_path ||
+			 $only_verbose && $this->verbosity !== SWCFPC_LOGS_HIGH_VERBOSITY
+		) {
+			return;
 		}
 
+		$log = sprintf( '[%s] [%s] %s', current_time( 'Y-m-d H:i:s' ), $identifier, $message ) . PHP_EOL;
+
+		error_log( $log, 3, $this->log_file_path );
 	}
 
 
@@ -105,16 +115,21 @@ class SWCFPC_Logs {
 
 		if ( isset( $_GET['swcfpc_download_log'] ) && file_exists( $this->log_file_path ) && current_user_can( 'manage_options' ) ) {
 
-			header( 'Content-Description: File Transfer' );
-			header( 'Content-Type: application/octet-stream' );
-			header( 'Content-Disposition: attachment; filename=debug.log' );
-			header( 'Content-Transfer-Encoding: binary' );
-			header( 'Connection: Keep-Alive' );
-			header( 'Expires: 0' );
-			header( 'Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0, s-maxage=0' );
-			header( 'Pragma: public' );
-			header( 'Content-Length: ' . filesize( $this->log_file_path ) );
-			readfile( $this->log_file_path );
+			if ( $_GET['swcfpc_download_log'] !== 'view' ) {
+				header( 'Content-Description: File Transfer' );
+				header( 'Content-Type: application/octet-stream' );
+				header( 'Content-Disposition: attachment; filename=debug.log' );
+				header( 'Content-Transfer-Encoding: binary' );
+				header( 'Connection: Keep-Alive' );
+				header( 'Expires: 0' );
+				header( 'Cache-Control: no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0, s-maxage=0' );
+				header( 'Pragma: public' );
+				header( 'Content-Length: ' . filesize( $this->log_file_path ) );
+				readfile( $this->log_file_path );
+			} else {
+				echo '<pre>' . file_get_contents( $this->log_file_path ) . '</pre>';
+			}
+
 			exit;
 
 		}

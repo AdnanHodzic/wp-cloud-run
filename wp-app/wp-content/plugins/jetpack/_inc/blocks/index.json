@@ -79,7 +79,7 @@
 		"v6-video-frame-poster",
 		"videopress/video-chapters",
 		"ai-assistant-backend-prompts",
-		"ai-logo-style-selector-support"
+		"ai-list-to-table-transform"
 	],
 	"experimental": [],
 	"no-post-editor": [

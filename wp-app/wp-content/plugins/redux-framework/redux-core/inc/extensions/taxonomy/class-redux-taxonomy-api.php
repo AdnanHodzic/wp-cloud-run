@@ -26,49 +26,49 @@ if ( ! class_exists( 'Redux_Taxonomy' ) ) {
 		 *
 		 * @var array
 		 */
-		public static $terms = array();
+		public static array $terms = array();
 
 		/**
 		 * Sections array.
 		 *
 		 * @var array
 		 */
-		public static $sections = array();
+		public static array $sections = array();
 
 		/**
 		 * Fields array.
 		 *
 		 * @var array
 		 */
-		public static $fields = array();
+		public static array $fields = array();
 
 		/**
 		 * Priority array.
 		 *
 		 * @var array
 		 */
-		public static $priority = array();
+		public static array $priority = array();
 
 		/**
 		 * Errors array.
 		 *
 		 * @var array
 		 */
-		public static $errors = array();
+		public static array $errors = array();
 
 		/**
 		 * Init array.
 		 *
 		 * @var array
 		 */
-		public static $init = array();
+		public static array $init = array();
 
 		/**
 		 * Args array.
 		 *
 		 * @var array
 		 */
-		public static $args = array();
+		public static array $args = array();
 
 		/**
 		 * Load.
@@ -565,12 +565,12 @@ if ( ! class_exists( 'Redux_Taxonomy' ) ) {
 				return array();
 			}
 
-			$defaults = array();
-			foreach ( self::$fields[ $opt_name ] as $key => $field ) {
-				$defaults[ $key ] = $field['default'] ?? '';
-			}
-
-			return $defaults;
+			return array_map(
+				function ( $field ) {
+					return $field['default'] ?? '';
+				},
+				self::$fields[ $opt_name ]
+			);
 		}
 
 		/**

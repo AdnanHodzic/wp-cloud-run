@@ -1,10 +1,10 @@
 === Jetpack - WP Security, Backup, Speed, & Growth ===
 Contributors: automattic, adamkheckler, adrianmoldovanwp, aduth, akirk, allendav, alternatekev, andy, annamcphee, annezazu, apeatling, arcangelini, arsihasi, azaozz, barry, batmoo, beaulebens, bindlegirl, biskobe, bjorsch, blobaugh, brbrr, brileyhooper, cainm, cena, cfinke, cgastrell, chaselivingston, chellycat, clickysteve, csonnek, danielbachhuber, daniloercoli, davoraltman, delawski, designsimply, dkmyta, dllh, drawmyface, dsmart, dun2mis, dzver, ebinnion, egregor, eliorivero, enej, eoigal, erania-pinnera, ethitter, fgiannar, gcorne, georgestephanis, gibrown, goldsounds, hew, hugobaeta, hypertextranch, iammattthomas, iandunn, joen, jblz, jeffgolenski, jeherve, jenhooks, jenia, jessefriedman, jgs, jkudish, jmdodd, joanrho, johnjamesjacoby, jshreve, kbrownkd, keoshi, koke, kraftbj, lancewillett, leogermani, lhkowalski, lschuyler, macmanx, martinremy, matt, mattwiebe, matveb, maverick3x6, mcsf, mdawaffe, mdbitz, MichaelArestad, migueluy, miguelxavierpenha, mikeyarce, mkaz, nancythanki, nickmomrik, njweller, nunyvega, obenland, oskosk, pento, professor44, rachelsquirrel, rdcoll, renatoagds, retrofox, richardmtl, richardmuscat, robertbpugh, roccotripaldi, ryancowles, samhotchkiss, samiff, scarstocea, scottsweb, sdixon194, sdquirk, sermitr, simison, stephdau, thehenridev, tmoorewp, tyxla, Viper007Bond, westi, williamvianas, wpkaren, yoavf, zinigor
 Tags: Security, backup, malware, scan, performance
-Stable tag: 13.9.1
-Requires at least: 6.5
-Requires PHP: 7.0
-Tested up to: 6.6
+Stable tag: 14.1
+Requires at least: 6.6
+Requires PHP: 7.2
+Tested up to: 6.7
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,7 +58,7 @@ Get blazing fast site speed with Jetpack. Jetpack’s free CDN (content delivery
 = POWERFUL TOOLS FOR GROWTH =
 Create and customize your WordPress site, optimize it for visitors and revenue, and enjoy watching your stats tick up. Build it, share it, and watch it grow.
 
-* Auto publish blog posts and products to social media by simply using our tools to connect to Facebook, Tumblr, Mastodon, and LinkedIn.
+* Auto publish blog posts and products to social media by simply using our tools to connect to Facebook, Bluesky, Threads, Tumblr, Mastodon, LinkedIn, and Nextdoor.
 * Easily share Instagram posts on your pages and blog posts.
 * Collect a payment or donation, sell a product, service, or membership with simple integrations with PayPal and Stripe.
 * Grow traffic with SEO tools for Google, Bing, Facebook, and WordPress.com. XML sitemap created automatically.
@@ -114,7 +114,7 @@ Jetpack is updated monthly to ensure seamless integration with top WordPress plu
 * Built for WooCommerce: Jetpack and WooCommerce are both made by Automattic. Backup, Scan, Anti-spam, integrate perfectly for Woo / eComm stores.
 * Jetpack is fully compatible with v2.0 of the official AMP plugin for WordPress.
 * Better understand your customers and marketing with Google Analytics (GA) integration.
-* Social media platforms: Instagram, Facebook, Tumblr, LinkedIn.
+* Social media platforms: Instagram, Facebook, Tumblr, LinkedIn, Threads, Bluesky, Nextdoor.
 * Simple Blocks to customize your site: Pinterest, Whatsapp, Podcast player, GIFs, maps, tiled gallery, slideshow.
 * Payment processors: easily collect payments or donations and sell products through Stripe and PayPal.
 * Site speed and performance plugins: Works great with WP Super Cache by Automattic and Cloudflare.
@@ -303,7 +303,7 @@ Automattic actively develops [Jetpack Boost](https://wordpress.org/plugins/jetpa
 
 = What version of PHP do I need? =
 
-Sites must be built on PHP 7.0 or greater, but Jetpack always supports the latest version of PHP.
+Sites must be built on PHP 7.2 or greater, but Jetpack always supports the latest version of PHP.
 
 = Can Jetpack help my site comply with GDPR? =
 
@@ -326,42 +326,33 @@ Jetpack Backup can do a full website migration to a new host, migrate theme file
 
 
 == Changelog ==
-### 13.9.1 - 2024-10-14
-#### Security:
-- Contact Form: ensure that submitted forms can only be accessed by logged in users allowed to view form submissions.
-
-### 13.9 - 2024-10-01
-#### Major Enhancements
-- Jetpack plugin: Remove the 'WordPress.com Toolbar' module.
-
+### 14.1 - 2024-12-03
 #### Enhancements
-- Blocks: Transition from an option to a module to improve caching.
-- Jetpack AI: Add AI SEO title optimization.
-- Jetpack Stats: Do not check for capabilities if the user is not signed in when deciding whether to show the admin bar widget.
-- My Jetpack: Visual update to the GlobalNotice component for better mobile presentation.
-- Performance: Set the concatenated CSS to off by default. The era where this was helpful is passing.
-- SSO: Remove legacy codebase in favor of the newer SSO codebase introduced in Jetpack 13.5.
+- Image CDN: Use preconnect resource hints instead of dns-prefetch to improve performance.
+- Likes Block: Allow hiding avatars.
+- My Jetpack: Update the recommendations section in My Jetpack to include a slider interaction for the cards.
+- Social: Add a new toggle for Social UTM tracking.
+- Social: Add permissions warning for LinkedIn connections.
+- Social: Post share status in the editor is now immediately available on page load.
+- Subscriptions: Don't load editor functionality when the module is disabled.
+- Use wp_register_block_metadata_collection() on WordPress 6.7+ to improve block registration performance by reducing filesystem operations. (See https://core.trac.wordpress.org/changeset/59132)
 
 #### Improved compatibility
-- Dashboard: Disable portfolio toggle if theme supports portfolio for specific environments.
+- Components: Update Shortlink and Toolbar related components to ensure compatibility.
+- Dashboard: Fix toggle component to prevent console warnings.
+- General: Update minimum PHP version to 7.2.
+- General: Update minimum WordPress version to 6.6.
+- Tiled Gallery: Increase accessibility by ensuring images are not classified as interactive when they shouldn't be.
 
 #### Bug fixes
-- Ai Assistant: Do not show Jetpack AI excerpt UI outside of correct context.
-- AI Assistant: Fix Write Brief highlight position on spelling mistake following ignored special word.
-- AI Assistant: Remove autofocus on extended blocks while previewing.
-- AI Content Lens: Fix the feature of the AI Content Lens is gone.
-- Blocks: Prevent Memberships blocks from being registered when the site is not connected to Jetpack.
-- Dashboard: Display the yearly Stats plan in the Jetpack dashboard immediately after you've purchased the plan.
-- Help Center: Fix the icon color when previewing color scheme.
-- Hosting Configuration: Make the menu title under the settings the same as the destination.
-- Jetpack REST API: Fix missing requirement in admin-menu endpoint.
-- Shortcode: Fix the YouTube URL embedding failure due to the trailing question mark of the ID.
-- Shortcode: Fix the YouTube URL for the private videos.
-- Shortcode: Fix the YouTube URL for the `/embed` type.
-- Sidebar: Show correct product name for "VaultPress Backup".
-- Social: Fix social previews button sometimes not fitting all the text.
-- Subscriptions: Fix added slashes in the Follow Blog widget.
-- WooCommerce Analytics: Check whether a constant is defined before attempting to use it, for compatibility with WooCommerce <8.4.0.
+- AI Assistant: Fix bug with error message when user is not over requests limit.
+- Comments: Fix reload after posting.
+- Forms: Improve compatibility with third-party integrations.
+- Licensing: Resolve an issue where revoked licenses were incorrectly treated as unattached.
+- Social: Fix bug with scheduled resharing when sharing another admin's posts.
+- Social: Make resharing async in classic editor to fix timeout issues.
+- Subscribe block: Fix block error when editing.
+- Subscriptions: Fix template preview and edit links for three toggle settings.
 
 --------
 

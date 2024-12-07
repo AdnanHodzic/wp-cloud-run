@@ -457,8 +457,7 @@ async function swcfpc_enable_page_cache() {
   }
 }
 
-
-async function swcfpc_disable_page_cache() {
+async function swcfpc_disconnect_cloudflare() {
   try {
     const ajax_nonce = document.getElementById('swcfpc-ajax-nonce').innerText
     swcfpc_lock_screen()
@@ -468,7 +467,7 @@ async function swcfpc_disable_page_cache() {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
       },
-      body: `action=swcfpc_disable_page_cache&security=${ajax_nonce}`,
+      body: `action=swcfpc_disconnect_cloudflare&security=${ajax_nonce}`,
       credentials: 'same-origin',
       timeout: 10000
     })
@@ -839,9 +838,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
       swcfpc_enable_page_cache()
     })
 
-    document.getElementById('swcfpc_form_disable_cache')?.addEventListener('submit', (e) => {
-      e.preventDefault()
-      swcfpc_disable_page_cache()
+    document.getElementById('swcfpc_disconnect_cloudflare')?.addEventListener('click', (e) => {
+        e.preventDefault()
+
+        if (confirm("Are you sure you want to disconnect from Cloudflare?"))
+        swcfpc_disconnect_cloudflare()
     })
 
     document.getElementById('swcfpc_form_reset_all')?.addEventListener('click', (e) => {

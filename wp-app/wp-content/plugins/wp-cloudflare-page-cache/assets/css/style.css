@@ -116,26 +116,6 @@
     bottom: 0;
 }
 
-.swcfpc_plugin_active {
-    background: #47a700;
-    float: right;
-    padding: 0 5px;
-    letter-spacing: 1px;
-    border: 1px solid #47a700;
-    border-radius: 3px;
-    font-size: 12px;
-}
-
-.swcfpc_plugin_inactive {
-    background: #e60303;
-    float: right;
-    padding: 0 5px;
-    letter-spacing: 1px;
-    border: 1px solid #e60303;
-    border-radius: 3px;
-    font-size: 12px;
-}
-
 .pro_version_badge_header {
     background: #ffe000;
     float: right;
@@ -396,7 +376,7 @@
 }
 
 .main_section .description {
-    font-weight: 100;
+    font-weight: 200;
     font-size: 14px;
     line-height: 20px;
     text-shadow: none !important;
@@ -417,7 +397,7 @@
 
 .main_section .description.highlighted,
 .description_section.highlighted {
-    background: #ffe000;
+    background: #fff18c;
     padding: 8px;
     color: #000;
 }
@@ -426,7 +406,8 @@
     input:is(
         [type=text],
         [type=password],
-        [type=email]
+        [type=email],
+        [type=number]
     ),
     select
 ) {
@@ -731,6 +712,11 @@
 .swcfpc-test-response li.is-warning::before {
     content: '⚠️';
     color: #f38020;
+}
+
+.swcfpc-test-response li.is-info::before {
+    content: 'ℹ️';
+    color: #6BC2DD;
 }
 
 .swcfpc-test-response li.is-error::before {
