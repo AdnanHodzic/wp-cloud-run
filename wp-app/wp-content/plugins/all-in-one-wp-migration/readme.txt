@@ -99,13 +99,10 @@ See our [GDPR Compliant Privacy Policy here](https://www.iubenda.com/privacy-pol
 
 == Changelog ==
 = 7.87 =
-**Added**
-
-* Validation to ensure archive names contain the .wpress extension
-
 **Fixed**
 
 * Resolved a vulnerability where error logs were publicly accessible with a known name by appending random affixes to error log filenames, making them unguessable. Error logs are now automatically deleted daily and during plugin updates. Special thanks to villu164 for responsibly disclosing this issue.
+* Resolved a vulnerability where an administrator user could inject arbitrary PHP code through specific inputs. This vulnerability requires administrator-level access to exploit, ensuring that unauthorized users cannot perform this action. Special thanks to Ryan Kozak for responsibly disclosing this issue.
 
 = 7.86 =
 **Fixed**
