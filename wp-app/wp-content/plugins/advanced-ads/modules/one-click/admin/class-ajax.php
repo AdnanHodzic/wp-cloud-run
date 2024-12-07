@@ -131,8 +131,12 @@ class Ajax implements Integration_Interface {
 		$result = ( new Detector() )->backup_file();
 		if ( false === $result ) {
 			$notice = sprintf(
-				'<div class="notice notice-error flex items-center p-4">%s</div>',
-				esc_html__( 'An error has occurred please try again.', 'advanced-ads' )
+				'<div class="notice notice-error flex items-center p-4">'
+				/* translators: 1 is the opening link to the Advanced Ads website, 2 the closing link */
+				. __( 'The backup of your ads.txt file has failed. Please ensure that a manual backup is created You can find detailed instructions on how to manually back up your ads.txt file in the manual. %1$sManual%2$s', 'advanced-ads' )
+				. '</div>',
+				'<a href="https://wpadvancedads.com/manual/ads-txt/?utm_source=advanced-ads&utm_medium=link&utm_campaign=notice-ads-txt-oci#Manual_backup_of_the_adstxt_file" target="_blank" class="advads-manual-link" style="display: inline !important;">',
+				'</a>'
 			);
 			wp_send_json_error( $notice );
 		}

@@ -321,8 +321,8 @@ class Advanced_Ads_Admin_Notices {
 		}
 
 		// register Black Friday 2023 deals.
-		if ( time() > 1700654400 &&
-			time() <= 1701172800 && Conditional::is_screen_advanced_ads() ) {
+		if ( time() > 1732669200 &&
+			time() <= 1733266800 && Conditional::is_screen_advanced_ads() ) {
 			$options = $this->options();
 			$closed  = isset( $options['closed'] ) ? $options['closed'] : [];
 

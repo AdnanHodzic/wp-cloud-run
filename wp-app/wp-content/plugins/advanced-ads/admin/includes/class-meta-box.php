@@ -660,7 +660,7 @@ class Advanced_Ads_Admin_Meta_Boxes {
 			$currency    = $adsense_obj->get_currency() ?? '';
 		}
 
-		$currencies  = [ 'EUR', 'USD' ];
+		$currencies  = [ 'EUR', 'USD', 'GBP', 'CHF' ];
 		$feed_url    = 'https://wpadvancedads.com/category/tutorials/feed/';
 		$campaign    = 'dashboard';
 		if ( $adsense_num > 1000 && in_array( $currency, $currencies ) ) {

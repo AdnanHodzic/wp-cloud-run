@@ -84,6 +84,12 @@ class Advanced_Ads_In_Content_Injector {
 			$defaults['allowEmpty'] = true;
 		}
 
+		// Merge the options if possible. If there are common keys, we don't merge them to prevent overriding and unexpected behavior.
+		$common_keys = array_intersect_key( $options, $placement_opts );
+		if ( empty( $common_keys ) ) {
+			$options = array_merge( $options, $placement_opts );
+		}
+
 		// allow hooks to change some options.
 		$options = apply_filters(
 			'advanced-ads-placement-content-injection-options',

@@ -49,6 +49,10 @@ class Workflow implements Integration_Interface {
 			if ( Options::module( 'ads_txt' ) ) {
 				( new AdsTxt() )->hooks();
 			}
+
+			if ( ! function_exists( 'wp_advads_pro' ) ) {
+				add_filter( 'advanced-ads-placement-content-offsets', [ $this, 'placement_content_offsets' ], 10, 3 );
+			}
 		}
 
 		if ( Options::module( 'ads_txt' ) ) {
@@ -140,5 +144,38 @@ class Workflow implements Integration_Interface {
 	 */
 	public function auto_ad_creation(): void {
 		( new Api_Ads() )->import();
+	}
+
+	/**
+	 * Get offsets for Content placement.
+	 *
+	 * @param array $offsets        Existing Offsets.
+	 * @param array $options        Injection options.
+	 * @param array $placement_opts Placement options.
+	 *
+	 * @return array $offsets New offsets.
+	 */
+	public function placement_content_offsets( $offsets, $options, $placement_opts ) {
+		if ( ! isset( $options['paragraph_count'] ) ) {
+			return $offsets;
+		}
+
+		// "Content" placement, repeat position.
+		if (
+			( ! empty( $placement_opts['repeat'] ) || ! empty( $options['repeat'] ) ) &&
+			isset( $options['paragraph_id'] ) &&
+			isset( $options['paragraph_select_from_bottom'] )
+		) {
+
+			$offsets = [];
+			for ( $i = $options['paragraph_id'] - 1; $i < $options['paragraph_count']; $i++ ) {
+				// Select every X number.
+				if ( 0 === ( $i + 1 ) % $options['paragraph_id'] ) {
+					$offsets[] = $options['paragraph_select_from_bottom'] ? $options['paragraph_count'] - 1 - $i : $i;
+				}
+			}
+		}
+
+		return $offsets;
 	}
 }

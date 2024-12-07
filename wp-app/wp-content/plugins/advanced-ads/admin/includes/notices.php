@@ -63,7 +63,7 @@ $advanced_ads_admin_notices = apply_filters(
 				/* translators: %1$s is the markup for the discount value, %2$s starts a button link, %3$s closes the button link. */
 				__( 'Save %1$s on all products with our Black Friday / Cyber Monday offer! %2$sGet this deal%3$s', 'advanced-ads' ),
 				'<span style="font-weight: bold; font-size: 1.6em; vertical-align: sub;">30%</span>',
-				'<a class="button button-primary" target="_blank" href="https://wpadvancedads.com/pricing/?utm_source=advanced-ads&utm_medium=link&utm_campaign=bfcm-2023">',
+				'<a class="button button-primary" target="_blank" href="https://wpadvancedads.com/pricing/?utm_source=advanced-ads&utm_medium=link&utm_campaign=bfcm-2024">',
 				'</a>'
 			),
 			'global' => true,

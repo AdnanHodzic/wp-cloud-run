@@ -14,3 +14,5 @@ const FILE = __FILE__;
 if ( ! is_admin() ) {
 	return;
 }
+
+Module::get_instance();

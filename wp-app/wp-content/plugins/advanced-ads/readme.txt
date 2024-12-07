@@ -2,9 +2,9 @@
 Contributors: webzunft, advancedads
 Tags: ads, adsense, amazon, affiliate, ad manager
 Requires at least: 5.0
-Tested up to: 6.5
+Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.55.0
+Stable tag: 1.56.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -356,8 +356,11 @@ Yes. You can use plenty of [hooks](https://wpadvancedads.com/codex/) to customiz
 
 == Changelog ==
 
-= 1.55.0 (October 16, 2024) =
+= 1.56.1 (November 22, 2024) =
 
-- Improvement: add manual links to some settings
+- Fix: prevent some PHP notices with PHP 8.2
+
+= 1.56.0 (November 13, 2024) =
+
+- Improvement: optimize code structure slightly for better performance
 - Improvement: enhance PubGuru one click integration
-- Fix: correct an issue with repeating ads before a heading

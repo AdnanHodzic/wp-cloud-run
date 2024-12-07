@@ -56,6 +56,12 @@ class Advanced_Ads_Ad_Network_Ad_Unit {
 	public $active;
 
 	/**
+	 * The code of the ad unit.
+	 * @var string
+	 */
+	public $code;
+
+	/**
 	 * Advanced_Ads_Ad_Network_Ad_Unit constructor.
 	 *
 	 * @param string $raw raw ad data.

@@ -123,12 +123,16 @@
 <div id="advads_overview_pef" class="postbox position-full">
 	<div class="aa_overview_pef_upper">
 		<p class="aa_overview_pef_dismiss"><a class="dashicons dashicons-dismiss" href="#"></a></p>
-		<p class="aa_overview_pef_subhead">Shout-outs from the Advanced Ads Labs</p>
-		<h3 class="aa_overview_pef_head"><?php echo esc_html( $winner['name'] ); ?></h3>
-		<p class="aa_overview_pef_copy"><?php echo esc_html( $winner['text'] ); ?></p>
+		<p class="aa_overview_pef_subhead"><?php echo esc_html( $winner['subheading'] ); ?></p>
+		<h3 class="aa_overview_pef_head"><?php echo esc_html( $winner['heading'] ); ?></h3>
+		<p class="aa_overview_pef_copy"><?php echo wp_kses_post( $winner['text'] ); ?></p>
 	</div>
 	<div class="aa_overview_pef_lower">
-		<p class="aa_overview_pef_cta">Does this feature appeal to you?<a class="aa_overview_pef_button" href="<?php echo esc_url( $this->build_link( $winner, $screen ) ); ?>" target="_blank">Yes, focus on it!</a>
+		<p class="aa_overview_pef_cta">
+			<?php echo esc_html( $winner['cta'] ); ?>
+			<a class="aa_overview_pef_button" href="<?php echo esc_url( $this->build_link( $winner, $screen ) ); ?>" target="_blank">
+				<?php echo esc_html( $winner['cta_button'] ); ?>
+			</a>
 		</p>
 	</div>
 </div>

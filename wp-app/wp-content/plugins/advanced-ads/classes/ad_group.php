@@ -12,6 +12,7 @@ use AdvancedAds\Utilities\WordPress;
  * @link      https://wpadvancedads.com
  * @copyright 2014 Thomas Maier, Advanced Ads GmbH
  */
+#[\AllowDynamicProperties]
 class Advanced_Ads_Group {
 
 	/**

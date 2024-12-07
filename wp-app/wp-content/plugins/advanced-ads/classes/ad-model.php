@@ -5,6 +5,7 @@ use AdvancedAds\Entities;
 /**
  * Advanced Ads Model
  */
+#[\AllowDynamicProperties]
 class Advanced_Ads_Model {
 
 	/**
