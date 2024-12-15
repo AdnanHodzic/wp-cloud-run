@@ -3,11 +3,12 @@
 Plugin Name: Disable XML-RPC-API
 Plugin URI: https://neatma.com/dsxmlrpc-plugin/
 Description: Lightweight plugin to disable XML-RPC API and Pingbacks,Trackbacks for faster and more secure website.
-Version: 2.1.6
-Tested up to: 6.6
+Version: 2.1.7
+Tested up to: 6.7
 Requires at least: 5.0
 Author: Neatma
 Author URI: https://neatma.com/
+Text Domain: dsxmlrpc
 License: GPLv2
 */
 
@@ -83,7 +84,17 @@ class xmlrpcSecurity
             add_action('do_feed_rss2_comments', [$this, 'disable_feed'], 1);
             add_action('do_feed_atom_comments', [$this, 'disable_feed'], 1);
         }
+        // Load language files
+        add_action('plugins_loaded', [$this, 'loadTextdomain']);
 
+    }
+
+        /**
+     * Load plugin textdomain for translations.
+     */
+    public function loadTextdomain()
+    {
+        load_plugin_textdomain('dsxmlrpc', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
@@ -475,10 +486,16 @@ allow from all
      */
     function disable_wp_xmlrpc($data)
     {
-        if (!$this->get_option('dsxmlrpc-switcher') && empty($this->get_option('White-list-IPs'))) {
-            http_response_code(403);
-            exit('You dont have permission to access this file :)');
+        $client_ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        $ip_whitelist = $this->get_option('White-list-IPs');
+        $ip_whitelist_array = is_string($ip_whitelist) ? explode(',', $ip_whitelist) : [];
+        // Deny access if the client's IP is not in the whitelisted or global swicher is off
+        if (!in_array($client_ip, $ip_whitelist_array, true) && !$this->get_option('dsxmlrpc-switcher')) {
+            header('HTTP/1.1 403 Forbidden');
+            exit('Access to XML-RPC is disabled by site admin!');
         }
+
+
         return $data;
     }
 

@@ -461,7 +461,7 @@ class Sitemap extends Controller {
 				: time();
 
 			$this->add_url(
-				get_category_link( $term ),
+				get_term_link( $term ),
 				apply_filters( 'sitemap_term_priority', $this->get_taxonomy_settings( $term->taxonomy, 'priority' ), $term->term_id ),
 				apply_filters( 'sitemap_term_frequency', $this->get_taxonomy_settings( $term->taxonomy, 'frequency' ), $term->term_id ),
 				gmdate( DATE_W3C, $term_modified ),
