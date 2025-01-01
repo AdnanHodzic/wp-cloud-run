@@ -53,4 +53,6 @@ if ( ! class_exists( 'Redux_Extension_Accordion' ) ) {
 			$this->add_field( 'accordion' );
 		}
 	}
+
+	class_alias( Redux_Extension_Accordion::class, 'ReduxFramework_Extension_Accordion' );
 }

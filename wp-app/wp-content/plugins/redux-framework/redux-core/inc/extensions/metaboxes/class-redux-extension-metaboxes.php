@@ -1534,6 +1534,6 @@ if ( ! class_exists( 'Redux_Extension_Metaboxes', false ) ) {
 			}
 		}
 	}
-}
 
-class_alias( 'Redux_Extension_Metaboxes', 'ReduxFramework_Extension_metaboxes' );
+	class_alias( Redux_Extension_Metaboxes::class, 'ReduxFramework_Extension_metaboxes' );
+}
