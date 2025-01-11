@@ -74,6 +74,40 @@ jQuery(document).ready(function ($) {
             '</tr>');
     });
 
+    /** Add Bulk URLs */
+    $('#add_bulk_urls').on('click', function(e) {
+        e.preventDefault();
+        $('.add-bulk-urls-section').removeClass('hidden');
+    });
+
+    $('#run_add_bulk_urls').on('click', function(e) {
+        e.preventDefault();
+        const $bulk_urls = $('#bulk_urls');
+
+        // Add URLs
+        $bulk_urls.val().split('\n').forEach(url => {
+            if (url.trim() !== '') {
+                $('#additional_urls').append('<tr>' +
+                    '<td><input type="text" name="additional_urls[]" value="' + url.trim() + '"></td>' +
+                    '<td>' + $('#additional_priorities_selector').html() + '</td>' +
+                    '<td>' + $('#additional_frequencies_selector').html() + '</td>' +
+                    '<td><input type="datetime-local" name="additional_lastmods[]"></td>' +
+                    '<td><a href="#" class="remove_url">x</a></td>' +
+                    '</tr>');
+            }
+        });
+
+        $bulk_urls.val('');
+
+        $('.add-bulk-urls-section').addClass('hidden');
+    });
+
+    $('#cancel_add_bulk_urls').on('click', function(e) {
+        e.preventDefault();
+        $('#bulk_urls').val('');
+        $('.add-bulk-urls-section').addClass('hidden');
+    });
+
     /** Remove Field */
     $(document).on('click', '.remove_url', function(e) {
         e.preventDefault();

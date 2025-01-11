@@ -5,7 +5,7 @@ Tags: sitemap, xml sitemap, google news, image sitemap, video sitemap, google si
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 2.0.4
+Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -266,6 +266,9 @@ This section describes how to install the plugin and get it working.
 4. Set Up Page in **Settings -> XML Sitemaps**.
 
 == Changelog ==
+
+= 2.0.5 - 2025-01-07 =
+* Additional URLs: Add Bulk URLs feature added
 
 = 2.0.4 - 2024-12-07 =
 * get_category_link() replaced with get_term_link() for Taxonomy URLs

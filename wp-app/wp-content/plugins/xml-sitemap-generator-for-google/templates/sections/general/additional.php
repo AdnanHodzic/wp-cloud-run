@@ -53,8 +53,19 @@ $settings = $args['settings'] ?? new stdClass();
 			?>
 			</tbody>
 		</table>
+
 		<br>
+
 		<a href="#" id="add_new_url" class="button button-default"><?php esc_html_e( 'Add New URL', 'xml-sitemap-generator-for-google' ); ?></a>
+		<a href="#" id="add_bulk_urls" class="button button-default"><?php esc_html_e( 'Add Bulk URLs', 'xml-sitemap-generator-for-google' ); ?></a>
+
+		<p class="add-bulk-urls-section hidden">
+			<label for="bulk_urls"><?php esc_html_e( 'Enter URLs separated by line:', 'xml-sitemap-generator-for-google' ); ?></label>
+			<textarea id="bulk_urls" name="bulk_urls" rows="5" cols="70"></textarea>
+			<br>
+			<a href="#" id="run_add_bulk_urls" class="button button-primary"><?php esc_html_e( 'Add URLs', 'xml-sitemap-generator-for-google' ); ?></a>
+			<a href="#" id="cancel_add_bulk_urls" class="button button-default"><?php esc_html_e( 'Cancel', 'xml-sitemap-generator-for-google' ); ?></a>
+		</p>
 	</div>
 </div>
 <div class="hidden-area">
