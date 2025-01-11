@@ -1269,7 +1269,7 @@ class wfScanEngine {
 					'postBadTitle',
 					wfIssues::SEVERITY_HIGH,
 					$row['ID'],
-					md5($row['post_title']),
+					md5(wfUtils::ifnull($row['post_title'])),
 					__("Post title contains suspicious code", 'wordfence'),
 					__("This post contains code that is suspicious. Please check the title of the post and confirm that the code in the title is not malicious.", 'wordfence'),
 					array(
@@ -1326,7 +1326,7 @@ class wfScanEngine {
 					$uctype = ucfirst($type);
 					$postDate = $post['post_date'];
 					$title = $post['post_title'];
-					$contentMD5 = md5($post['post_content']);
+					$contentMD5 = md5(wfUtils::ifnull($post['post_content']));
 				}
 
 				if ($result['badList'] == 'goog-malware-shavar') {
@@ -1472,7 +1472,7 @@ class wfScanEngine {
 					$uctype = ucfirst($type);
 					$author = $comment['comment_author'];
 					$date = $comment['comment_date'];
-					$contentMD5 = md5($comment['comment_content'] . $comment['comment_author'] . $comment['comment_author_url']);
+					$contentMD5 = md5(wfUtils::ifnull($comment['comment_content'] . $comment['comment_author'] . $comment['comment_author_url']));
 				}
 
 				if ($result['badList'] == 'goog-malware-shavar') {
@@ -1786,8 +1786,8 @@ class wfScanEngine {
 		$this->statusIDX['diskSpace'] = wfIssues::statusStart(__('Scanning to check available disk space', 'wordfence'));
 		$this->scanController->startStage(wfScanner::STAGE_SERVER_STATE);
 		wfUtils::errorsOff();
-		$total = function_exists('disk_total_space')?@disk_total_space('.'):false;
-		$free = function_exists('disk_free_space')?@disk_free_space('.'):false; //Normally false if unreadable but can return 0 on some hosts even when there's space available
+		$total = wfUtils::funcEnabled('disk_total_space') ? disk_total_space('.') : false;
+		$free = wfUtils::funcEnabled('disk_free_space') ? disk_free_space('.') : false; //Normally false if unreadable but can return 0 on some hosts even when there's space available
 		wfUtils::errorsOn();
 		if (!$total || !$free) {
 			$this->status(2, 'info', __('Unable to access available disk space information', 'wordfence'));
@@ -2710,24 +2710,27 @@ class wfScanEngine {
 		if (!$staySilent) {
 			wordfence::status(4, 'info', sprintf(/* translators: PHP ini value. */ __("Got max_execution_time value from ini: %s", 'wordfence'), $ini));
 		}
-		if (is_numeric($ini) && $ini >= WORDFENCE_SCAN_MIN_EXECUTION_TIME) {
-			if ($ini > WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME) {
-				if (!$staySilent) {
-					wordfence::status(4, 'info', sprintf(
-					/* translators: 1. PHP ini setting. 2. Time in seconds. */
-						__('ini value of %1$d is higher than value for WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME (%2$d), reducing', 'wordfence'),
-						$ini,
-						WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME
-					));
+		if (is_numeric($ini)) {
+			$ini = (int) $ini;
+			if ($ini >= WORDFENCE_SCAN_MIN_EXECUTION_TIME) {
+				if ($ini > WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME) {
+					if (!$staySilent) {
+						wordfence::status(4, 'info', sprintf(
+						/* translators: 1. PHP ini setting. 2. Time in seconds. */
+							__('ini value of %1$d is higher than value for WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME (%2$d), reducing', 'wordfence'),
+							$ini,
+							WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME
+						));
+					}
+					$ini = WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME;
 				}
-				$ini = WORDFENCE_SCAN_MAX_INI_EXECUTION_TIME;
+				
+				$ini = floor($ini / 2);
+				if (!$staySilent) {
+					wordfence::status(4, 'info', sprintf(/* translators: PHP ini setting. */ __("getMaxExecutionTime() returning half ini value: %d", 'wordfence'), $ini));
+				}
+				return $ini;
 			}
-
-			$ini = floor($ini / 2);
-			if (!$staySilent) {
-				wordfence::status(4, 'info', sprintf(/* translators: PHP ini setting. */ __("getMaxExecutionTime() returning half ini value: %d", 'wordfence'), $ini));
-			}
-			return $ini;
 		}
 
 		if (!$staySilent) {

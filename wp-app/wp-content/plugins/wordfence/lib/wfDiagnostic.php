@@ -352,7 +352,7 @@ class wfDiagnostic
 		$show = $wpdb->hide_errors();
 		$val = md5(time());
 		wfConfig::set_ser('configWritingTest_ser', array($val), false, wfConfig::DONT_AUTOLOAD);
-		$testVal = @array_shift(wfConfig::get_ser('configWritingTest_ser', array(), false));
+		$testVal = wfUtils::array_first(wfConfig::get_ser('configWritingTest_ser', array(), false));
 		$wpdb->show_errors($show);
 		return array(
 			'test' => ($val === $testVal),

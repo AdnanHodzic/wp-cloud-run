@@ -5,6 +5,7 @@ if (!wfOnboardingController::shouldShowAttempt3() && wfConfig::get('touppPromptN
 }
 
 $support = @json_decode(wfConfig::get('supportContent'), true);
+if (!is_array($support)) { $support = array(); }
 ?>
 	<div class="wrap wordfence">
 		<div class="wf-container-fluid">

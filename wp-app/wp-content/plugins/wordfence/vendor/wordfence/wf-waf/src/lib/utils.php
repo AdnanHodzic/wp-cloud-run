@@ -14,7 +14,7 @@ class wfWAFUtils {
 		if (wfWAFUtils::strlen($ip) == 16 && wfWAFUtils::substr($ip, 0, 12) == "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff") {
 			$ip = wfWAFUtils::substr($ip, 12, 4);
 		}
-		return self::hasIPv6Support() ? @inet_ntop($ip) : self::_inet_ntop($ip);
+		return self::hasIPv6Support() ? inet_ntop($ip) : self::_inet_ntop($ip);
 	}
 
 	/**
@@ -25,7 +25,7 @@ class wfWAFUtils {
 	 */
 	public static function inet_pton($ip) {
 		// convert the 4 char IPv4 to IPv6 mapped version.
-		$pton = str_pad(self::hasIPv6Support() ? @inet_pton($ip) : self::_inet_pton($ip), 16,
+		$pton = str_pad(self::hasIPv6Support() ? inet_pton($ip) : self::_inet_pton($ip), 16,
 			"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff\x00\x00\x00\x00", STR_PAD_LEFT);
 		return $pton;
 	}
@@ -129,7 +129,11 @@ class wfWAFUtils {
 	 * @return bool
 	 */
 	public static function hasIPv6Support() {
-		return defined('AF_INET6');
+		static $hasSupport = null;
+		if ($hasSupport === null) {
+			$hasSupport = defined('AF_INET6') && is_callable('inet_ntop') && is_callable('inet_pton');
+		}
+		return $hasSupport;
 	}
 
 	/**
@@ -533,7 +537,11 @@ class wfWAFUtils {
 	 */
 	public static function strpos($haystack, $needle, $offset = 0) {
 		$args = func_get_args();
-		return self::callMBSafeStrFunction('strpos', $args);
+		return self::callMBSafeStrFunction('strpos', array(
+			(string)$haystack,
+			(string)$needle,
+			(int)$offset,
+		));
 	}
 
 	/**
@@ -546,7 +554,7 @@ class wfWAFUtils {
 	public static function substr_count($haystack, $needle, $offset = 0, $length = null) {
 		if ($length === null) { $length = self::strlen($haystack); }
 		return self::callMBSafeStrFunction('substr_count', array(
-			$haystack, $needle, $offset, $length
+			(string)$haystack, (string)$needle, (int)$offset, $length
 		));
 	}
 
@@ -597,7 +605,8 @@ class wfWAFUtils {
 	public static function reverseLookup($IP) {
 		$IPn = self::inet_pton($IP);
 		// This function works for IPv4 or IPv6
-		if (function_exists('gethostbyaddr')) {
+		$host = null;
+		if (function_exists('gethostbyaddr') && is_callable('gethostbyaddr')) {
 			$host = @gethostbyaddr($IP);
 		}
 		if (!$host) {
@@ -608,9 +617,9 @@ class wfWAFUtils {
 				$ptr = implode(".", array_reverse(str_split(bin2hex($IPn)))) . ".ip6.arpa";
 			}
 
-			if ($ptr && function_exists('dns_get_record')) {
+			if ($ptr && function_exists('dns_get_record') && is_callable('dns_get_record')) {
 				$host = @dns_get_record($ptr, DNS_PTR);
-				if ($host) {
+				if ($host && is_array($host) && count($host)) {
 					$host = $host[0]['target'];
 				}
 			}
@@ -636,6 +645,7 @@ class wfWAFUtils {
 	}
 
 	public static function extractBareURI($URL) {
+		$URL = (string)$URL;
 		$URL = preg_replace('/^https?:\/\/[^\/]+/i', '', $URL); //strip of method and host
 		$URL = preg_replace('/\#.*$/', '', $URL); //strip off fragment
 		$URL = preg_replace('/\?.*$/', '', $URL); //strip off query string
@@ -998,7 +1008,7 @@ class wfWAFUtils {
 
 		$parts = @parse_url($url);
 
-		if ($parts === false) { // Parsing failure
+		if ($parts === false || !is_array($parts)) { // Parsing failure
 			return $parts;
 		}
 

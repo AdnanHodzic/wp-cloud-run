@@ -108,8 +108,8 @@ class wfWAFUserIPRange {
 			return (strcmp($ip1N, $ipN) <= 0 && strcmp($ip2N, $ipN) >= 0);
 		}
 		else { //Treat as a literal IP
-			$ip1 = @wfWAFUtils::inet_pton($ip_string);
-			$ip2 = @wfWAFUtils::inet_pton($ip);
+			$ip1 = wfWAFUtils::inet_pton($ip_string);
+			$ip2 = wfWAFUtils::inet_pton($ip);
 			if ($ip1 !== false && $ip1 == $ip2) {
 				return true;
 			}
@@ -223,10 +223,15 @@ class wfWAFUserIPRange {
 		$ip_string = $this->getIPString();
 		if (preg_match('/[^0-9a-f:\.\-]/i', $ip_string)) { return false; }
 		list($ip1, $ip2) = explode("-", $ip_string);
-		$ip1N = @wfWAFUtils::inet_pton($ip1);
-		$ip2N = @wfWAFUtils::inet_pton($ip2);
 		
-		if ($ip1N === false || filter_var($ip1, FILTER_VALIDATE_IP) === false || $ip2N === false || filter_var($ip2, FILTER_VALIDATE_IP) === false) {
+		if (filter_var($ip1, FILTER_VALIDATE_IP) === false || filter_var($ip2, FILTER_VALIDATE_IP) === false) {
+			return false;
+		}
+		
+		$ip1N = wfWAFUtils::inet_pton($ip1);
+		$ip2N = wfWAFUtils::inet_pton($ip2);
+		
+		if ($ip1N === false || $ip2N === false) {
 			return false;
 		}
 		

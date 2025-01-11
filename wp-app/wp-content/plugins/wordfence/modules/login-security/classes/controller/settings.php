@@ -196,6 +196,7 @@ class Controller_Settings {
 			//Special
 			case self::OPTION_IP_TRUSTED_PROXIES:
 			case self::OPTION_2FA_WHITELISTED:
+				$value = !is_string($value) ? '' : $value;
 				$parsed = array_filter(array_map(function($s) { return trim($s); }, preg_split('/[\r\n]/', $value)));
 				foreach ($parsed as $entry) {
 					if (!Controller_Whitelist::shared()->is_valid_range($entry)) {
@@ -302,6 +303,7 @@ class Controller_Settings {
 			//Special
 			case self::OPTION_IP_TRUSTED_PROXIES:
 			case self::OPTION_2FA_WHITELISTED:
+				$value = !is_string($value) ? '' : $value;
 				$parsed = array_filter(array_map(function($s) { return trim($s); }, preg_split('/[\r\n]/', $value)));
 				$cleaned = array();
 				foreach ($parsed as $item) {
@@ -390,141 +392,161 @@ class Controller_Settings {
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when the XML-RPC 2FA requirement changes.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param bool $before The previous value.
-				 * @param bool $after The new value.
-				 */
-				do_action('wordfence_ls_xml_rpc_2fa_toggled', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when the XML-RPC 2FA requirement changes.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param bool $before The previous value.
+					 * @param bool $after The new value.
+					 */
+					do_action('wordfence_ls_xml_rpc_2fa_toggled', $before, $after);
+				}
 				break;
 			case self::OPTION_2FA_WHITELISTED:
 				$before = $this->whitelisted_ips();
 				$after = explode("\n", $value); //Already cleaned here so just re-split
-				
-				/**
-				 * Fires when the whitelist changes.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param string[] $before The previous value.
-				 * @param string[] $after The new value.
-				 */
-				do_action('wordfence_ls_updated_allowed_ips', $before, $after);
+					
+				if ($before != $after) {
+					/**
+					 * Fires when the whitelist changes.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param string[] $before The previous value.
+					 * @param string[] $after The new value.
+					 */
+					do_action('wordfence_ls_updated_allowed_ips', $before, $after);
+				}
 				break;
 			case self::OPTION_IP_SOURCE:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when the IP source changes.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param string $before The previous value.
-				 * @param string $after The new value.
-				 */
-				do_action('wordfence_ls_changed_ip_source', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when the IP source changes.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param string $before The previous value.
+					 * @param string $after The new value.
+					 */
+					do_action('wordfence_ls_changed_ip_source', $before, $after);
+				}
 				break;
 			case self::OPTION_IP_TRUSTED_PROXIES:
 				$before = $this->trusted_proxies();
 				$after = explode("\n", $value); //Already cleaned here so just re-split
 				
-				/**
-				 * Fires when the trusted proxy list changes.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param string[] $before The previous value.
-				 * @param string[] $after The new value.
-				 */
-				do_action('wordfence_ls_updated_trusted_proxies', $before, $after);
+				if (count($before) == count($after) && empty(array_diff($before, $after))) {
+					/**
+					 * Fires when the trusted proxy list changes.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param string[] $before The previous value.
+					 * @param string[] $after The new value.
+					 */
+					do_action('wordfence_ls_updated_trusted_proxies', $before, $after);
+				}
 				break;
 			case self::OPTION_REQUIRE_2FA_USER_GRACE_PERIOD:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when the grace period changes.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param int $before The previous value.
-				 * @param int $after The new value.
-				 */
-				do_action('wordfence_ls_changed_grace_period', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when the grace period changes.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param int $before The previous value.
+					 * @param int $after The new value.
+					 */
+					do_action('wordfence_ls_changed_grace_period', $before, $after);
+				}
 				break;
 			case self::OPTION_ALLOW_XML_RPC:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when the XML-RPC is enabled/disabled.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param bool $before The previous value.
-				 * @param bool $after The new value.
-				 */
-				do_action('wordfence_ls_xml_rpc_enabled_toggled', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when the XML-RPC is enabled/disabled.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param bool $before The previous value.
+					 * @param bool $after The new value.
+					 */
+					do_action('wordfence_ls_xml_rpc_enabled_toggled', $before, $after);
+				}
 				break;
 			case self::OPTION_ENABLE_AUTH_CAPTCHA:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when the login captcha is enabled/disabled.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param bool $before The previous value.
-				 * @param bool $after The new value.
-				 */
-				do_action('wordfence_ls_captcha_enabled_toggled', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when the login captcha is enabled/disabled.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param bool $before The previous value.
+					 * @param bool $after The new value.
+					 */
+					do_action('wordfence_ls_captcha_enabled_toggled', $before, $after);
+				}
 				break;
 			case self::OPTION_RECAPTCHA_THRESHOLD:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when the reCAPTCHA threshold changes.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param float $before The previous value.
-				 * @param float $after The new value.
-				 */
-				do_action('wordfence_ls_captcha_threshold_changed', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when the reCAPTCHA threshold changes.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param float $before The previous value.
+					 * @param float $after The new value.
+					 */
+					do_action('wordfence_ls_captcha_threshold_changed', $before, $after);
+				}
 				break;
 			case self::OPTION_ENABLE_WOOCOMMERCE_INTEGRATION:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when WooCommerce integration is enabled/disabled.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param bool $before The previous value.
-				 * @param bool $after The new value.
-				 */
-				do_action('wordfence_ls_woocommerce_enabled_toggled', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when WooCommerce integration is enabled/disabled.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param bool $before The previous value.
+					 * @param bool $after The new value.
+					 */
+					do_action('wordfence_ls_woocommerce_enabled_toggled', $before, $after);
+				}
 				break;
 			case self::OPTION_CAPTCHA_TEST_MODE:
 				$before = $this->get($key);
 				$after = $value;
 				
-				/**
-				 * Fires when captcha test mode is enabled/disabled.
-				 *
-				 * @since 1.1.13
-				 *
-				 * @param bool $before The previous value.
-				 * @param bool $after The new value.
-				 */
-				do_action('wordfence_ls_captcha_test_mode_toggled', $before, $after);
+				if ($before != $after) {
+					/**
+					 * Fires when captcha test mode is enabled/disabled.
+					 *
+					 * @since 1.1.13
+					 *
+					 * @param bool $before The previous value.
+					 * @param bool $after The new value.
+					 */
+					do_action('wordfence_ls_captcha_test_mode_toggled', $before, $after);
+				}
 				break;
 		}
 		
@@ -638,6 +660,10 @@ class Controller_Settings {
 	protected function _truthy_to_bool($value) {
 		if ($value === true || $value === false) {
 			return $value;
+		}
+		
+		if (is_null($value)) {
+			return false;
 		}
 		
 		if (is_numeric($value)) {

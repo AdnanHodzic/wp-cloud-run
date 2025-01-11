@@ -1358,6 +1358,8 @@ HTML
 	 * @return bool
 	 */
 	public function isRuleParamWhitelisted($ruleID, $urlPath, $paramKey) {
+		$urlPath = (string)$urlPath;
+		$paramKey = (string)$paramKey;
 		if ($this->isParamKeyURLBlacklisted($ruleID, $paramKey, $urlPath)) {
 			return false;
 		}
@@ -1632,7 +1634,7 @@ HTML
 		if ($host === null) {
 			$host = $this->getRequest()->getHost();
 		}
-		return self::AUTH_COOKIE . '-' . md5($host);
+		return self::AUTH_COOKIE . '-' . md5((string)$host);
 	}
 
 	/**

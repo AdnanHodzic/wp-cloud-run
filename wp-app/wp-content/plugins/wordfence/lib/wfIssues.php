@@ -270,8 +270,8 @@ class wfIssues {
 		}
 		
 		if (!$alreadyHashed) {
-			$ignoreP = md5($ignoreP);
-			$ignoreC = md5($ignoreC);
+			$ignoreP = md5(wfUtils::ifnull($ignoreP));
+			$ignoreC = md5(wfUtils::ifnull($ignoreC));
 		}
 		
 		$results = $this->getDB()->querySelect("SELECT id, status, ignoreP, ignoreC FROM {$table} WHERE (ignoreP = '%s' OR ignoreC = '%s')", $ignoreP, $ignoreC);

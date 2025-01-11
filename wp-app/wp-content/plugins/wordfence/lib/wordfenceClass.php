@@ -445,8 +445,8 @@ class wordfence {
 	public static function runInstall(){
 		if(self::$runInstallCalled){ return; }
 		self::$runInstallCalled = true;
-		if (function_exists('ignore_user_abort')) {
-			@ignore_user_abort(true);
+		if (wfUtils::funcEnabled('ignore_user_abort')) {
+			ignore_user_abort(true);
 		}
 		if (!defined('DONOTCACHEDB')) { define('DONOTCACHEDB', true); }
 		$previous_version = ((is_multisite() && function_exists('get_network_option')) ? get_network_option(null, 'wordfence_version', '0.0.0') : get_option('wordfence_version', '0.0.0'));
@@ -1378,7 +1378,9 @@ SQL
 
 		add_action('wordfence_processAttackData', 'wordfence::processAttackData');
 		if (!empty($_GET['wordfence_syncAttackData']) && get_site_option('wordfence_syncingAttackData') <= time() - 60 && get_site_option('wordfence_lastSyncAttackData', 0) < time() - 8) {
-			@ignore_user_abort(true);
+			if (wfUtils::funcEnabled('ignore_user_abort')) {
+				ignore_user_abort(true);
+			}
 			update_site_option('wordfence_syncingAttackData', time());
 			header('Content-Type: text/javascript');
 			define('WORDFENCE_SYNCING_ATTACK_DATA', true);
@@ -1495,7 +1497,8 @@ SQL
 	}
 
 	private static function isWordfencePage($includeWfls = true) {
-		return (isset($_GET['page']) && (preg_match('/^Wordfence/', @$_GET['page']) || ($includeWfls && $_GET['page'] == 'WFLS' && wfOnboardingController::shouldShowNewTour(wfOnboardingController::TOUR_LOGIN_SECURITY))));
+		$page = wfUtils::array_get($_GET, 'page', '');
+		return (!empty($page) && (preg_match('/^Wordfence/', $page) || ($includeWfls && $page == 'WFLS' && wfOnboardingController::shouldShowNewTour(wfOnboardingController::TOUR_LOGIN_SECURITY))));
 	}
 
 	private static function isWordfenceSubpage($page, $subpage) {
@@ -1910,7 +1913,7 @@ SQL
 		
 		self::initProtection();
 
-		$wfFunc = isset($_GET['_wfsf']) ? @$_GET['_wfsf'] : false;
+		$wfFunc = wfUtils::array_get($_GET, '_wfsf');
 		if ($wfFunc == 'unlockEmail') {
 			$nonceValid = false;
 			if (isset($_POST['nonce']) && is_string($_POST['nonce'])) {
@@ -2031,7 +2034,7 @@ SQL
 			}
 			
 			if (isset($_POST['resend'])) {
-				$email = trim(@$_POST['email']);
+				$email = trim(wfUtils::array_get($_POST, 'email', ''));
 				$found = false;
 				$alertEmails = wfConfig::getAlertEmails();
 				foreach ($alertEmails as $e) {
@@ -2320,7 +2323,7 @@ SQL
 					'siteURL'        => $siteurl,
 					'homeURL'        => $homeurl,
 					'whitelistedIPs' => (string) wfConfig::get('whitelisted'),
-					'whitelistedServiceIPs' => @json_encode(wfUtils::whitelistedServiceIPs()),
+					'whitelistedServiceIPs' => json_encode(wfUtils::whitelistedServiceIPs()),
 					'howGetIPs'      => (string) wfConfig::get('howGetIPs'),
 					'howGetIPs_trusted_proxies_unified' => implode("\n", wfUtils::unifiedTrustedProxies()),
 					'detectProxyRecommendation' => (string) wfConfig::get('detectProxyRecommendation'),
@@ -5140,7 +5143,7 @@ HTACCESS;
 			for ($offset = floor($issueCount / 100) * 100; $offset >= 0; $offset -= 100) {
 				$issues = $wfIssues->getIssues($offset, 100, 0, 0);
 				foreach ($issues['new'] as $i) {
-					if ($op == 'del' && @$i['data']['canDelete']) {
+					if ($op == 'del' && wfUtils::array_get($i['data'], 'canDelete', false)) {
 						$file = $i['data']['file'];
 						$localFile = self::resolveLocalFile($i);
 						if ($localFile === null)
@@ -5158,7 +5161,7 @@ HTACCESS;
 							$errors[] = esc_html(sprintf(/* translators: 1. File path. 2. Error message. */ __('Could not delete file %1$s. Error was: %2$s', 'wordfence'), wp_kses($file, array()), wp_kses(str_replace(ABSPATH, '{WordPress Root}/', $err['message']), array())));
 						}
 					}
-					else if ($op == 'repair' && @$i['data']['canFix']) {
+					else if ($op == 'repair' && wfUtils::array_get($i['data'], 'canFix', false)) {
 						$file = $i['data']['file'];
 						$localFile = self::resolveLocalFile($i);
 						if ($localFile === null)
@@ -5620,22 +5623,17 @@ HTACCESS;
 		echo "\n--Test complete.--\n\nCongratulations, your web host allows your PHP processes to run at least 3 minutes.\n";
 		exit();
 	}
-	private static function wfFunc_testmem(){
+	
+	private static function wfFunc_testmem() {
 		header('Content-Type: text/plain');
 		@error_reporting(E_ALL);
 		wfUtils::iniSet('display_errors','On');
 		set_error_handler('wordfence::memtest_error_handler', E_ALL);
 		
-		$maxMemory = ini_get('memory_limit');
-		$last = strtolower(substr($maxMemory, -1));
-		$maxMemory = (int) $maxMemory;
-		
-		$configuredMax = wfConfig::get('maxMem', 0);
+		$memoryLimit = wfUtils::memoryLimit(); //bytes
+		$configuredMax = wfConfig::getInt('maxMem', 0) * 1024 * 1024; //bytes
 		if ($configuredMax <= 0) {
-			if ($last == 'g') { $configuredMax = $maxMemory * 1024; }
-			else if ($last == 'm') { $configuredMax = $maxMemory; }
-			else if ($last == 'k') { $configuredMax = $maxMemory / 1024; }
-			$configuredMax = floor($configuredMax);
+			$configuredMax = $memoryLimit;
 		}
 		
 		$stepSize = 5242880; //5 MB
@@ -5644,9 +5642,9 @@ HTACCESS;
 		echo "This utility tests if your WordPress host respects the maximum memory configured\nin their php.ini file, or if they are using other methods to limit your access to memory.\n\n--Starting test--\n";
 		echo "Current maximum memory configured in php.ini: " . ini_get('memory_limit') . "\n";
 		echo "Current memory usage: " . sprintf('%.2f', memory_get_usage(true) / (1024 * 1024)) . "M\n";
-		echo "Attempting to set max memory to {$configuredMax}M.\n";
-		wfUtils::iniSet('memory_limit', ($configuredMax + 5) . 'M'); //Allow a little extra for testing overhead
-		echo "Starting memory benchmark. Seeing an error after this line is not unusual. Read the error carefully\nto determine how much memory your host allows. We have requested {$configuredMax} megabytes.\n";
+		echo sprintf("Attempting to set max memory to %s.\n", wfUtils::formatBytes($configuredMax)); 
+		wfUtils::iniSet('memory_limit', ($configuredMax + $stepSize)); //Allow a little extra for testing overhead
+		echo sprintf("Starting memory benchmark. Seeing an error after this line is not unusual. Read the error carefully\nto determine how much memory your host allows. We have requested %s.\n", wfUtils::formatBytes($configuredMax));
 		
 		if (memory_get_usage(true) < 1) {
 			echo "Exiting test because memory_get_usage() returned a negative number\n";
@@ -5663,7 +5661,6 @@ HTACCESS;
 		$currentUsage = memory_get_usage(true);
 		$tenMB = 10 * 1024 * 1024;
 		$start = ceil($currentUsage / $tenMB) * $tenMB - $currentUsage; //Start at the closest 10 MB increment to the current usage
-		$configuredMax = $configuredMax * 1048576; //Bytes
 		$testLimit = $configuredMax - memory_get_usage(true);
 		$finalUsage = '0';
 		$previous = 0;
@@ -7841,10 +7838,13 @@ SQL
 				}
 				else {
 					$jsonData = @json_decode($response->getBody(), true);
-					if (isset($jsonData['errorMessage']) && strpos($jsonData['errorMessage'], 'rate limit') !== false) {
+					if (is_array($jsonData) && isset($jsonData['errorMessage']) && strpos($jsonData['errorMessage'], 'rate limit') !== false) {
 						$failureReason = wfFirewall::UPDATE_FAILURE_RATELIMIT;
 					}
-					else if (isset($jsonData['data']['signature'])) {
+					else if (is_array($jsonData) && isset($jsonData['data']['signature'])) {
+						$failureReason = wfFirewall::UPDATE_FAILURE_FILESYSTEM;
+					}
+					else {
 						$failureReason = wfFirewall::UPDATE_FAILURE_FILESYSTEM;
 					}
 				}
@@ -8172,7 +8172,7 @@ SQL
 			$active = false;
 			if (!is_wp_error($response)) {
 				$wafStatus = @json_decode(wp_remote_retrieve_body($response), true);
-				if (isset($wafStatus['active']) && isset($wafStatus['subdirectory'])) {
+				if (is_array($wafStatus) && isset($wafStatus['active']) && isset($wafStatus['subdirectory'])) {
 					$active = $wafStatus['active'] && !$wafStatus['subdirectory'];
 				}
 			}
@@ -8371,7 +8371,7 @@ SQL
 				$subdirectory = WFWAF_SUBDIRECTORY_INSTALL;
 				if (!is_wp_error($response)) {
 					$wafStatus = @json_decode(wp_remote_retrieve_body($response), true);
-					if (isset($wafStatus['active']) && isset($wafStatus['subdirectory'])) {
+					if (is_array($wafStatus) && isset($wafStatus['active']) && isset($wafStatus['subdirectory'])) {
 						$active = $wafStatus['active'] && !$wafStatus['subdirectory'];
 						$subdirectory = $wafStatus['subdirectory'];
 					}
@@ -8574,7 +8574,7 @@ SQL;
 					continue;
 				}
 				
-				$packed = @wfUtils::inet_pton($entry);
+				$packed = wfUtils::inet_pton($entry);
 				if ($packed === false) {
 					unset($wafAlertWhitelist[$index]);
 					continue;

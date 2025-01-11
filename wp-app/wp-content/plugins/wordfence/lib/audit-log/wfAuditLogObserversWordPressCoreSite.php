@@ -163,6 +163,7 @@ abstract class wfAuditLogObserversWordPressCoreSite extends wfAuditLog {
 		
 		if ($auditLog->mode() == self::AUDIT_LOG_MODE_ALL) {
 			$auditLog->_addObserver('wp_mail_succeeded', function($args) use ($auditLog) { //Mail sent
+				if (isset($args['to']) && !is_array($args['to'])) { $args['to'] = array($args['to']); } //$args['to'] is supposed to be an array per the docs, but some plugins call it incorrectly
 				$payload = array(
 					'to_count' => isset($args['to']) ? count($args['to']) : 0,
 					'subject' => isset($args['subject']) ? $args['subject'] : null,
@@ -173,6 +174,7 @@ abstract class wfAuditLogObserversWordPressCoreSite extends wfAuditLog {
 			
 			$auditLog->_addObserver('wp_mail_failed', function($error /** @var WP_Error $error */) use ($auditLog) { //Mail failed sending
 				$args = $error->get_error_data();
+				if (isset($args['to']) && !is_array($args['to'])) { $args['to'] = array($args['to']); } //$args['to'] is supposed to be an array per the docs, but some plugins call it incorrectly
 				$payload = array(
 					'to_count' => isset($args['to']) ? count($args['to']) : 0,
 					'subject' => isset($args['subject']) ? $args['subject'] : null,

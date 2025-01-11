@@ -131,7 +131,11 @@ class wfAPI {
 			throw new wfAPICallFailedException($apiExceptionMessage);
 		}
 		
-		$dateHeader = @$response['headers']['date'];
+		$dateHeader = null;
+		if (isset($response['headers']['date'])) {
+			$dateHeader = $response['headers']['date'];
+		}
+		
 		if (!empty($dateHeader) && (time() - wfConfig::get('timeoffset_wf_updated', 0) > 3600)) {
 			if (function_exists('date_create_from_format')) {
 				$dt = DateTime::createFromFormat('D, j M Y G:i:s O', $dateHeader);

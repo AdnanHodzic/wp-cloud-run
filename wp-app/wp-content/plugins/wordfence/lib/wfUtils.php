@@ -321,6 +321,26 @@ class wfUtils {
 	}
 	
 	/**
+	 * If $value is not null, this returns $value unchanged. Otherwise it returns one of two values:
+	 * 1. If $orCallable is a valid callable, it returns the result
+	 * 2. Otherwise it returns $default 
+	 * 
+	 * @param mixed $value
+	 * @param mixed $default
+	 * @param callable|null $orCallable
+	 * @return mixed
+	 */
+	public static function ifnull($value, $default = '', $orCallable = null) {
+		if (is_null($value)) {
+			if (is_callable($orCallable)) {
+				return $orCallable();
+			}
+			return $default;
+		}
+		return $value;
+	}
+	
+	/**
 	 * Returns a diff on the passed arrays. The behavior varies based on the content of the arrays themselves and any
 	 * flags passed. The resulting structure will be some variant of:
 	 * 
@@ -397,12 +417,20 @@ class wfUtils {
 	 * @param array $array
 	 * @param array|string $keys
 	 * @param bool $single Return single-value as-is instead of a one-element array.
-	 * @param mixed $default Value to return when $single is true and nothing is found.
+	 * @param mixed|null $default Value to return when $single is true and nothing is found.
 	 * @return array|mixed
 	 */
 	public static function array_choose($array, $keys, $single = false, $default = null) {
 		if (!is_array($keys)) {
 			$keys = array($keys);
+		}
+		
+		if (is_object($array) && (
+			$array instanceof ArrayAccess ||
+				$array instanceof Traversable ||
+				$array instanceof Serializable ||
+				$array instanceof Countable)) {
+			$array = (array) $array;
 		}
 		
 		$matches = array_filter($array, function($k) use ($keys) {
@@ -417,6 +445,18 @@ class wfUtils {
 			return $default;
 		}
 		return $matches;
+	}
+	
+	/**
+	 * Convenience function for `array_choose` in its single return value mode for better code readability.
+	 * 
+	 * @param array $array
+	 * @param string $key
+	 * @param mixed|null $default
+	 * @return mixed
+	 */
+	public static function array_get($array, $key, $default = null) {
+		return self::array_choose($array, $key, true, $default);
 	}
 	
 	/**
@@ -981,7 +1021,11 @@ class wfUtils {
 	 * @return bool
 	 */
 	public static function hasIPv6Support() {
-		return defined('AF_INET6');
+		static $hasSupport = null;
+		if ($hasSupport === null) {
+			$hasSupport = defined('AF_INET6') && self::funcEnabled('inet_ntop') && self::funcEnabled('inet_pton');
+		}
+		return $hasSupport;
 	}
 
 	public static function hasLoginCookie(){
@@ -1019,6 +1063,7 @@ class wfUtils {
 	/**
 	 * Converts a truthy value to a boolean, checking in this order:
 	 * - already a boolean
+	 * - is null => false
 	 * - numeric (0 => false, otherwise true)
 	 * - 'false', 'f', 'no', 'n', or 'off' => false
 	 * - 'true', 't', 'yes', 'y', or 'on' => true
@@ -1030,6 +1075,10 @@ class wfUtils {
 	public static function truthyToBoolean($value) {
 		if ($value === true || $value === false) {
 			return $value;
+		}
+		
+		if (is_null($value)) {
+			return false;
 		}
 		
 		if (is_numeric($value)) {
@@ -1394,9 +1443,13 @@ class wfUtils {
 					$cnameRaw = @dns_get_record($host, DNS_CNAME);
 					$cnames = array();
 					$cnamesTargets = array();
-					if ($cnameRaw) {
+					if ($cnameRaw && is_array($cnameRaw)) {
 						foreach ($cnameRaw as $elem) {
-							if ($elem['host'] == $host) {
+							if (is_array($elem) && 
+								array_key_exists('host', $elem) && 
+								array_key_exists('target', $elem) && 
+								$elem['host'] == $host
+							) {
 								$cnames[] = $elem;
 								$cnamesTargets[] = $elem['target'];
 							}
@@ -1405,9 +1458,14 @@ class wfUtils {
 					
 					$aRaw = @dns_get_record($host, DNS_A);
 					$a = array();
-					if ($aRaw) {
+					if ($aRaw && is_array($aRaw)) {
 						foreach ($aRaw as $elem) {
-							if ($elem['host'] == $host || in_array($elem['host'], $cnamesTargets)) {
+							if (is_array($elem) && 
+								array_key_exists('host', $elem) &&
+								array_key_exists('ttl', $elem) &&
+								array_key_exists('ip', $elem) &&
+								($elem['host'] == $host || in_array($elem['host'], $cnamesTargets))
+							) {
 								$a[] = $elem;
 							}
 						}
@@ -1558,6 +1616,10 @@ class wfUtils {
 		return true;
 	}
 	public static function isValidEmail($email, $strict = false) {
+		if (empty($email)) {
+			return false;
+		}
+		
 		//We don't default to strict, full validation because poorly-configured servers can crash due to the regex PHP uses in filter_var($email, FILTER_VALIDATE_EMAIL)
 		if ($strict) {
 			return (filter_var($email, FILTER_VALIDATE_EMAIL) !== false);
@@ -1746,16 +1808,37 @@ class wfUtils {
 		}
 		return $max;
 	}
-	public static function requestMaxMemory(){
-		if(wfConfig::get('maxMem', false) && (int) wfConfig::get('maxMem') > 0){
-			$maxMem = (int) wfConfig::get('maxMem');
-		} else {
+	
+	/**
+	 * Returns the current PHP memory limit in bytes.
+	 * 
+	 * Note: This is duplicated in wordfence.php to avoid needing to include this class early.
+	 * 
+	 * @return int
+	 */
+	public static function memoryLimit() {
+		$maxMemory = ini_get('memory_limit');
+		if (!(is_string($maxMemory) || is_numeric($maxMemory)) || !preg_match('/^\s*\d+[GMK]?\s*$/i', $maxMemory)) { $maxMemory = '128M'; } //Invalid or unreadable value, default to our minimum
+		$last = strtolower(substr($maxMemory, -1));
+		$maxMemory = (int) $maxMemory;
+		
+		if ($last == 'g') { $maxMemory = $maxMemory * 1024 * 1024 * 1024; }
+		else if ($last == 'm') { $maxMemory = $maxMemory * 1024 * 1024; }
+		else if ($last == 'k') { $maxMemory = $maxMemory * 1024; }
+		return floor($maxMemory);
+	}
+	
+	public static function requestMaxMemory() {
+		$maxMem = wfConfig::getInt('maxMem', 256);
+		if ($maxMem <= 0) {
 			$maxMem = 256;
 		}
-		if( function_exists('memory_get_usage') && ( (int) @ini_get('memory_limit') < $maxMem ) ){
+		
+		if (self::funcEnabled('memory_get_usage') && self::memoryLimit() < ($maxMem * 1024 * 1024)){
 			self::iniSet('memory_limit', $maxMem . 'M');
 		}
 	}
+	
 	public static function isAdmin($user = false){
 		if($user){
 			if(is_multisite()){
@@ -1813,6 +1896,7 @@ class wfUtils {
 		return self::$isWindows == 'yes' ? true : false;
 	}
 	public static function cleanupOneEntryPerLine($string) {
+		$string = !is_string($string) ? '' : $string;
 		$string = str_replace(",", "\n", $string); // fix old format
 		return implode("\n", array_unique(array_filter(array_map('trim', explode("\n", $string)))));
 	}
@@ -1982,8 +2066,8 @@ class wfUtils {
 
 				if ($ptr && function_exists('dns_get_record')) {
 					$host = @dns_get_record($ptr, DNS_PTR);
-					if ($host) {
-						$host = $host[0]['target'];
+					if ($host && is_array($host) && count($host)) {
+						$host = wfUtils::array_get($host[0], 'target');
 					}
 				}
 			}
@@ -2255,11 +2339,14 @@ class wfUtils {
 		die();
 	}
 
-	public static function setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly){
-		if(version_compare(PHP_VERSION, '5.2.0') >= 0){
-			@setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
-		} else {
-			@setcookie($name, $value, $expire, $path);
+	public static function setcookie($name, $value = '', $expire = 0, $path = '', $domain = '', $secure = false, $httpOnly = false) {
+		if (empty($path)) { $path = COOKIEPATH; }
+		if (empty($domain)) { $domain = COOKIE_DOMAIN; }
+		if (version_compare(PHP_VERSION, '5.2.0') >= 0) {
+			setcookie($name, $value, $expire, $path, $domain, $secure, $httpOnly);
+		}
+		else {
+			setcookie($name, $value, $expire, $path);
 		}
 	}
 	public static function isNginx(){
@@ -2320,9 +2407,11 @@ class wfUtils {
 		$ips = array();
 		foreach ($recordTypes as $type => $key) {
 			$records = @dns_get_record($host, $type);
-			if ($records !== false) {
+			if ($records !== false && is_array($records)) {
 				foreach ($records as $record) {
-					$ips[] = $record[$key];
+					if (array_key_exists($key, $record)) {
+						$ips[] = $record[$key];
+					}
 				}
 			}
 		}
@@ -3503,7 +3592,7 @@ class wfUtils {
 		
 		$json = self::base64url_decode($components[1]);
 		$payload = @json_decode($json, true);
-		if (isset($payload['_exp']) && $payload['_exp'] < time()) {
+		if (!is_array($payload) || (isset($payload['_exp']) && $payload['_exp'] < time())) {
 			return false;
 		}
 		return $payload;
@@ -3604,7 +3693,7 @@ class wfUtils {
 	}
 
 	public static function includeOnceIfPresent($path) {
-		if (file_exists($path)) {
+		if (file_exists($path) && is_readable($path)) {
 			@include_once($path);
 			return @include_once($path); //Calling `include_once` for an already included file will return true
 		}

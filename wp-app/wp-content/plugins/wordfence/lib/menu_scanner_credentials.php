@@ -3,13 +3,13 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
 $scanner = wfScanner::shared();
 $scanURL = network_admin_url('admin.php?page=WordfenceScan');
 
-$action = @$_GET['action'];
-if (!in_array($action, array('restoreFile', 'deleteFile'))) { $action = ''; }
+$action = wfUtils::array_get($_GET, 'action');
+if (!is_string($action) || !in_array($action, array('restoreFile', 'deleteFile'))) { $action = ''; }
 $filesystemCredentialsAdminURL = network_admin_url('admin.php?' . http_build_query(array(
 		'page'               => 'WordfenceScan',
 		'subpage'       	 => 'scan_credentials',
 		'action' 			 => $action,
-		'issueID'            => (int) @$_GET['issueID'],
+		'issueID'            => (int) wfUtils::array_get($_GET, 'issueID', 0),
 		'nonce'              => wp_create_nonce('wp-ajax'),
 	)));
 

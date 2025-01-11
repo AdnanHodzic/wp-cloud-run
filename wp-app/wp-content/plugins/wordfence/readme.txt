@@ -4,7 +4,7 @@ Tags: security, malware, 2fa, firewall, scanner
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.7
-Stable tag: 8.0.1
+Stable tag: 8.0.2
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -194,6 +194,12 @@ Secure your website with Wordfence.
 9. Logging in is easy with Wordfence 2FA.
 
 == Changelog ==
+
+= 8.0.2 - January 2, 2025 =
+* Improvement: General compatibility improvements and better error handling for PHP 8+
+* Improvement: Added audit log status to the plugin dashboard
+* Change: Increased width of diagnostics text export for better legibility
+* Fix: Addressed an error with mail hooks and the audit log when third party plugins send unexpected value types
 
 = 8.0.1 - November 14, 2024 =
 * Improvement: Updated GeoIP database

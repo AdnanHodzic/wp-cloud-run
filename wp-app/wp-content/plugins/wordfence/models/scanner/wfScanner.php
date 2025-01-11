@@ -481,17 +481,17 @@ class wfScanner {
 		
 		if ($this->schedulingMode() == wfScanner::SCAN_SCHEDULING_MODE_MANUAL) {
 			$manualType = $this->manualSchedulingType();
-			$preferredHourUTC = round(($this->manualSchedulingStartHour() * 3600 - $tzOffset) / 3600, 2) % 24; //round() rather than floor() to account for fractional time zones
+			$preferredHourUTC = fmod(round(($this->manualSchedulingStartHour() * 3600 - $tzOffset) / 3600, 2), 24); //round() rather than floor() to account for fractional time zones
 			switch ($manualType) {
 				case self::MANUAL_SCHEDULING_ONCE_DAILY:
 				case self::MANUAL_SCHEDULING_EVERY_OTHER_DAY:
 				case self::MANUAL_SCHEDULING_WEEKDAYS:
 				case self::MANUAL_SCHEDULING_WEEKENDS:
 				case self::MANUAL_SCHEDULING_ODD_DAYS_WEEKENDS:
-					$preferredHourUTC = ($preferredHourUTC + 12) % 24;
+					$preferredHourUTC = fmod($preferredHourUTC + 12, 24);
 					break;
 				case self::MANUAL_SCHEDULING_TWICE_DAILY:
-					$preferredHourUTC = ($preferredHourUTC + 6) % 24; //When automatic scans run twice daily, possibly run a quick scan 6 hours offset (will only run if either scheduled one fails for some reason)
+					$preferredHourUTC = fmod($preferredHourUTC + 6, 24); //When automatic scans run twice daily, possibly run a quick scan 6 hours offset (will only run if either scheduled one fails for some reason)
 					break;
 				case self::MANUAL_SCHEDULING_CUSTOM: //Iterate from the current day backwards and base it on the first time found, may or may not actually run depending on the spacing of the custom schedule
 					$preferredHourUTC = false;
@@ -501,7 +501,7 @@ class wfScanner {
 						$day = $oneWeekSchedule[$checkingDayNumber];
 						$dayHour = array_search(1, $day);
 						if ($dayHour !== false) {
-							$preferredHourUTC = (round(($dayHour * 3600 - $tzOffset) / 3600, 2) + 12) % 24;
+							$preferredHourUTC = fmod(round(($dayHour * 3600 - $tzOffset) / 3600, 2) + 12, 24);
 							break;
 						}
 					}
@@ -515,7 +515,7 @@ class wfScanner {
 		
 		$noc1ScanSchedule = wfConfig::get_ser('noc1ScanSchedule', array());
 		if (count($noc1ScanSchedule)) {
-			$preferredHourUTC = (((int) (($noc1ScanSchedule[0] % 86400) / 3600)) + 12) % 24;
+			$preferredHourUTC = (int) fmod( (fmod($noc1ScanSchedule[0], 86400) / 3600) + 12, 24);
 			return ($currentHourUTC >= $preferredHourUTC);
 		}
 		
@@ -1216,7 +1216,7 @@ class wfScanner {
 					$schedule = array_fill(0, 14, array_fill(0, 24, 0));
 					foreach ($schedule as $dayNumber => &$day) {
 						$day[$preferredHour] = 1;
-						$day[($preferredHour + 12) % 24] = 1;
+						$day[fmod($preferredHour + 12, 24)] = 1;
 					}
 					break;
 				case self::MANUAL_SCHEDULING_EVERY_OTHER_DAY:
@@ -1268,8 +1268,8 @@ class wfScanner {
 			foreach ($schedule as $dayNumber => $day) {
 				foreach ($day as $hourNumber => $enabled) {
 					if ($enabled) {
-						$effectiveHour = round(($hourNumber * 3600 - $tzOffset) / 3600, 2); //round() rather than floor() to account for fractional time zones
-						$wrappedHour = ($effectiveHour + 24) % 24;
+						$effectiveHour = round(($hourNumber * 3600 - $tzOffset) / 3600); //round() rather than floor() to account for fractional time zones
+						$wrappedHour = (int) fmod($effectiveHour + 24, 24);
 						if ($effectiveHour < 0) {
 							if ($dayNumber > 0) {
 								$shiftedSchedule[$dayNumber - 1][$wrappedHour] = 1;

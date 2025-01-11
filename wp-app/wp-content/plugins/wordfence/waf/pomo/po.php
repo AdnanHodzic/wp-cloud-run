@@ -155,21 +155,21 @@ if ( ! class_exists( 'wfPO', false ) ) :
 			$newline = "\n";
 
 			$replaces = array(
-				"$slash" => "$slash$slash",
-				"$quote" => "$slash$quote",
+				"$slash" => "{$slash}{$slash}",
+				"$quote" => "{$slash}{$quote}",
 				"\t"     => '\t',
 			);
 
 			$string = str_replace( array_keys( $replaces ), array_values( $replaces ), $string );
 
-			$po = $quote . implode( "${slash}n$quote$newline$quote", explode( $newline, $string ) ) . $quote;
+			$po = $quote . implode( "{$slash}n{$quote}{$newline}{$quote}", explode( $newline, $string ) ) . $quote;
 			// Add empty string on first line for readbility.
 			if ( false !== strpos( $string, $newline ) &&
 				( substr_count( $string, $newline ) > 1 || substr( $string, -strlen( $newline ) ) !== $newline ) ) {
-				$po = "$quote$quote$newline$po";
+				$po = "{$quote}{$quote}{$newline}{$po}";
 			}
 			// Remove empty strings.
-			$po = str_replace( "$newline$quote$quote", '', $po );
+			$po = str_replace( "{$newline}{$quote}{$quote}", '', $po );
 			return $po;
 		}
 

@@ -176,7 +176,7 @@ class wfBlock {
 		if (!isset($payload['reason']) || empty($payload['reason'])) { return __('A block reason must be provided.', 'wordfence'); }
 		
 		if ($payload['type'] == 'ip-address') {
-			if (!isset($payload['ip']) || !filter_var(trim($payload['ip']), FILTER_VALIDATE_IP) || @wfUtils::inet_pton(trim($payload['ip'])) === false) { return __('Invalid IP address.', 'wordfence'); }
+			if (!isset($payload['ip']) || !filter_var(trim($payload['ip']), FILTER_VALIDATE_IP) || wfUtils::inet_pton(trim($payload['ip'])) === false) { return __('Invalid IP address.', 'wordfence'); }
 			if (self::isWhitelisted(trim($payload['ip']))) { return wp_kses(sprintf(/* translators: Support URL */ __('This IP address is in a range of addresses that Wordfence does not block. The IP range may be internal or belong to a service that is always allowed. Allowlisting of external services can be disabled. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'), wfSupportController::supportURL(wfSupportController::ITEM_FIREWALL_WAF_OPTION_WHITELISTED_SERVICES)), array('a'=>array('href'=>array(), 'target'=>array(), 'rel'=>array()), 'span'=>array('class'=>array()))); }
 		}
 		else if ($payload['type'] == 'country') {
@@ -475,6 +475,7 @@ class wfBlock {
 		$after['parameters'] = $parameters;
 		if ($existing) {
 			$before['parameters'] = @json_decode($existing['parameters'], true);
+			if (!is_array($before['parameters'])) { $before['parameters'] = array(); }
 			$wpdb->query($wpdb->prepare("UPDATE `{$blocksTable}` SET `reason` = %s, `parameters` = %s WHERE `id` = %d", $reason, json_encode($parameters), $existing['id']));
 		}
 		else {
@@ -596,7 +597,7 @@ class wfBlock {
 		if (!isset($b['type']) || !isset($b['IP']) || !isset($b['blockedTime']) || !isset($b['reason']) || !isset($b['lastAttempt']) || !isset($b['blockedHits'])) { return false; }
 		if (empty($b['IP']) || empty($b['reason'])) { return false; }
 		
-		$ip = @wfUtils::inet_ntop(wfUtils::hex2bin($b['IP']));
+		$ip = wfUtils::inet_ntop(wfUtils::hex2bin($b['IP']));
 		if (!wfUtils::isValidIP($ip)) { return false; }
 		
 		switch ($b['type']) {
@@ -622,6 +623,7 @@ class wfBlock {
 				if (!isset($b['parameters'])) { return false; }
 				if (wfUtils::inet_pton($ip) != self::MARKER_COUNTRY) { return false; }
 				$parameters = @json_decode($b['parameters'], true);
+				if (!is_array($parameters)) { $parameters = array(); }
 				if (!isset($parameters['blockLogin']) || !isset($parameters['blockSite']) || !isset($parameters['countries'])) { return false; }
 				$parameters['blockLogin'] = wfUtils::truthyToInt($parameters['blockLogin']);
 				$parameters['blockSite'] = wfUtils::truthyToInt($parameters['blockSite']);
@@ -660,6 +662,7 @@ class wfBlock {
 				if (!isset($b['parameters'])) { return false; }
 				if (wfUtils::inet_pton($ip) != self::MARKER_PATTERN) { return false; }
 				$parameters = @json_decode($b['parameters'], true);
+				if (!is_array($parameters)) { $parameters = array(); }
 				if (!isset($parameters['ipRange']) || !isset($parameters['hostname']) || !isset($parameters['userAgent']) || !isset($parameters['referrer'])) { return false; }
 				
 				$hasOne = false;
@@ -825,6 +828,7 @@ END AS `detailSort`
 				$parameters = null;
 				if ($r['type'] == self::TYPE_PATTERN || $r['type'] == self::TYPE_COUNTRY) {
 					$parameters = @json_decode($r['parameters'], true);
+					if (!is_array($parameters)) { $parameters = array(); }
 				}
 				
 				$result[] = new wfBlock($r['id'], $r['type'], $ip, $r['blockedTime'], $r['reason'], $r['lastAttempt'], $r['blockedHits'], $r['expiration'], $parameters);
@@ -1407,6 +1411,7 @@ END AS `detailSort`
 		}
 		else {
 			$this->_parameters = @json_decode($parameters, true);
+			if (!is_array($this->_parameters)) { $this->_parameters = array(); }
 		}
 	}
 	

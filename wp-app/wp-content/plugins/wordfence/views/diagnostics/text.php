@@ -210,7 +210,7 @@ foreach ($plugins as $plugin => $pluginData) {
 	);
 }
 
-echo wfHelperString::plainTextTable($table) . "\n\n";
+echo wfHelperString::plainTextTable($table, 100) . "\n\n";
 
 ?>
 
@@ -248,7 +248,7 @@ if (!empty($muPlugins)) {
 	);
 }
 
-echo wfHelperString::plainTextTable($table) . "\n\n";
+echo wfHelperString::plainTextTable($table, 100) . "\n\n";
 
 ?>
 
@@ -284,7 +284,7 @@ foreach ($dropins as $file => $data) {
 	);
 }
 
-echo wfHelperString::plainTextTable($table) . "\n\n";
+echo wfHelperString::plainTextTable($table, 100) . "\n\n";
 
 ?>
 
@@ -477,14 +477,14 @@ if (count($errorLogs) < 1) {
 } else {
 	foreach ($errorLogs as $log => $readable) {
 		$metadata = array();
-		if (is_callable('filesize')) {
+		if (wfUtils::funcEnabled('filesize')) {
 			$rawSize = @filesize($log);
 			if ($rawSize !== false) {
-				$metadata[] = wfUtils::formatBytes(filesize($log));
+				$metadata[] = wfUtils::formatBytes($rawSize);
 			}
 		}
 
-		if (is_callable('lstat')) {
+		if (wfUtils::funcEnabled('lstat')) {
 			$rawStat = @lstat($log);
 			if (is_array($rawStat) && isset($rawStat['mtime'])) {
 				$ts = $rawStat['mtime'];

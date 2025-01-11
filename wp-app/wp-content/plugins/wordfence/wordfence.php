@@ -4,7 +4,7 @@ Plugin Name: Wordfence Security
 Plugin URI: https://www.wordfence.com/
 Description: Wordfence Security - Anti-virus, Firewall and Malware Scan
 Author: Wordfence
-Version: 8.0.1
+Version: 8.0.2
 Author URI: https://www.wordfence.com/
 Text Domain: wordfence
 Domain Path: /languages
@@ -38,8 +38,8 @@ if(defined('WP_INSTALLING') && WP_INSTALLING){
 if (!defined('ABSPATH')) {
 	exit;
 }
-define('WORDFENCE_VERSION', '8.0.1');
-define('WORDFENCE_BUILD_NUMBER', '1731600600');
+define('WORDFENCE_VERSION', '8.0.2');
+define('WORDFENCE_BUILD_NUMBER', '1735836787');
 define('WORDFENCE_BASENAME', function_exists('plugin_basename') ? plugin_basename(__FILE__) :
 	basename(dirname(__FILE__)) . '/' . basename(__FILE__));
 
@@ -106,7 +106,9 @@ if(get_option('wordfenceActivated') != 1){
 	add_action('activated_plugin','wordfence_save_activation_error'); function wordfence_save_activation_error(){ update_option('wf_plugin_act_error',  ob_get_contents()); }
 }
 if(! defined('WORDFENCE_VERSIONONLY_MODE')){ //Used to get version from file.
-	$maxMemory = @ini_get('memory_limit');
+	//Duplicate block of wfUtils::memoryLimit(), copied here to avoid needing to include the class at this point of execution
+	$maxMemory = ini_get('memory_limit');
+	if (!(is_string($maxMemory) || is_numeric($maxMemory)) || !preg_match('/^\s*\d+[GMK]?\s*$/i', $maxMemory)) { $maxMemory = '128M'; } //Invalid or unreadable value, default to our minimum
 	$last = strtolower(substr($maxMemory, -1));
 	$maxMemory = (int) $maxMemory;
 	
@@ -115,7 +117,8 @@ if(! defined('WORDFENCE_VERSIONONLY_MODE')){ //Used to get version from file.
 	else if ($last == 'k') { $maxMemory = $maxMemory * 1024; }
 	
 	if ($maxMemory < 134217728 /* 128 MB */ && $maxMemory > 0 /* Unlimited */) {
-		if (strpos(ini_get('disable_functions'), 'ini_set') === false) {
+		$disabled = ini_get('disable_functions');
+		if (!is_string($disabled) || strpos(ini_get('disable_functions'), 'ini_set') === false) {
 			@ini_set('memory_limit', '128M'); //Some hosts have ini set at as little as 32 megs. 128 is the min sane amount of memory.
 		}
 	}

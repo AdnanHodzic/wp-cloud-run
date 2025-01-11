@@ -907,8 +907,8 @@ class wfUserIPRange {
 			return (strcmp($ip1N, $ipN) <= 0 && strcmp($ip2N, $ipN) >= 0);
 		}
 		else { //Treat as a literal IP
-			$ip1 = @wfUtils::inet_pton($ip_string);
-			$ip2 = @wfUtils::inet_pton($ip);
+			$ip1 = wfUtils::inet_pton($ip_string);
+			$ip2 = wfUtils::inet_pton($ip);
 			if ($ip1 !== false && $ip1 == $ip2) {
 				return true;
 			}
@@ -1007,10 +1007,15 @@ class wfUserIPRange {
 		$ip_string = $this->getIPString();
 		if (preg_match('/[^0-9a-f:\.\-]/i', $ip_string)) { return false; }
 		list($ip1, $ip2) = explode("-", $ip_string);
-		$ip1N = @wfUtils::inet_pton($ip1);
-		$ip2N = @wfUtils::inet_pton($ip2);
 		
-		if ($ip1N === false || !wfUtils::isValidIP($ip1) || $ip2N === false || !wfUtils::isValidIP($ip2)) {
+		if (!wfUtils::isValidIP($ip1) || !wfUtils::isValidIP($ip2)) {
+			return false;
+		}
+		
+		$ip1N = wfUtils::inet_pton($ip1);
+		$ip2N = wfUtils::inet_pton($ip2);
+		
+		if ($ip1N === false || $ip2N === false) {
 			return false;
 		}
 		

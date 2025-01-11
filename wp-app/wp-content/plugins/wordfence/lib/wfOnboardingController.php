@@ -76,10 +76,14 @@ class wfOnboardingController {
 			self::shouldShowNewTour(self::TOUR_AUDIT_LOG) || self::shouldShowUpgradeTour(self::TOUR_AUDIT_LOG) ||
 			self::shouldShowNewTour(self::TOUR_LOGIN_SECURITY) || self::shouldShowUpgradeTour(self::TOUR_LOGIN_SECURITY));
 		
+		$page = wfUtils::array_get($_GET, 'page', '');
 		if (wfUtils::isAdmin() && 
-			(($willShowAnyPluginOnboarding && preg_match('~(?:^|/)wp-admin(?:/network)?/plugins\.php~i', $_SERVER['REQUEST_URI'])) || 
-				(isset($_GET['page']) && 
-					(preg_match('/^Wordfence/', @$_GET['page']) || preg_match('/^WFLS/', @$_GET['page']))
+			(
+				(
+					$willShowAnyPluginOnboarding && preg_match('~(?:^|/)wp-admin(?:/network)?/plugins\.php~i', $_SERVER['REQUEST_URI'])
+				) || 
+				(
+					!empty($page) && (preg_match('/^Wordfence/', $page) || preg_match('/^WFLS/', $page))
 				)
 			)
 		) {

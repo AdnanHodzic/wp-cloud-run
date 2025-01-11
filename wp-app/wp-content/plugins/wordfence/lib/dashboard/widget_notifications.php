@@ -35,7 +35,21 @@
 					<img class="wf-central-dashboard-logo" src="<?php echo wfUtils::getBaseURL() ?>images/wf-central-logo.svg" alt="Wordfence Central">
 					<div class="wf-central-dashboard-copy">
 						<p id="wf-central-status"><strong><?php esc_html_e('Wordfence Central Status', 'wordfence') ?></strong></p>
+						<?php
+						if (!($d->wordfenceCentralConnected || $d->wordfenceCentralDisconnected)) {
+						?>
 						<p><?php
+								if (wfCentral::isPartialConnection()) {
+									_e('It looks like you\'ve tried to connect this site to Wordfence Central, but the installation did not finish.', 'wordfence');
+								}
+								else {
+									_e('Wordfence Central allows you to manage Wordfence on multiple sites from one location. It makes security monitoring and configuring Wordfence easier.', 'wordfence');
+								}
+						?></p>
+						<?php
+						}
+						?>
+						<p class="wf-no-bottom"><strong><?php esc_html_e('Connection:', 'wordfence') ?></strong> <?php
 							if ($d->wordfenceCentralConnected) {
 								echo esc_html(sprintf(
 								/* translators: 1. Email address. 2. Localized date. */
@@ -45,11 +59,36 @@
 								/* translators: 1. Email address. 2. Localized date. */
 										__('Disconnected by %1$s on %2$s', 'wordfence'), $d->wordfenceCentralDisconnectEmail, date_i18n(get_option('date_format'), $d->wordfenceCentralDisconnectTime)));
 							} elseif (wfCentral::isPartialConnection()) {
-								_e('It looks like you\'ve tried to connect this site to Wordfence Central, but the installation did not finish.', 'wordfence');
+								_e('Connection not finished', 'wordfence');
 							} else {
-								_e('Wordfence Central allows you to manage Wordfence on multiple sites from one location. It makes security monitoring and configuring Wordfence easier.', 'wordfence');
+								_e('Not connected', 'wordfence');
 							}
 						?></p>
+						<p class="wf-add-top-small wf-no-bottom"><strong><?php esc_html_e('Audit Log:', 'wordfence') ?></strong> <?php
+							$auditLogMode = wfAuditLog::shared()->mode();
+							$isPaid = wfLicense::current()->isAtLeastPremium();
+							if (!$isPaid) {
+								echo esc_html(__('Disabled (premium feature)', 'wordfence'));
+							}
+							else {
+								if (!$d->wordfenceCentralConnected) {
+									echo esc_html(__('Not recording (Central disconnected)', 'wordfence'));
+								}
+								else if ($auditLogMode == wfAuditLog::AUDIT_LOG_MODE_DISABLED || $auditLogMode == wfAuditLog::AUDIT_LOG_MODE_PREVIEW) {
+									echo esc_html(__('Not recording', 'wordfence'));
+								}
+								else if ($auditLogMode == wfAuditLog::AUDIT_LOG_MODE_SIGNIFICANT) {
+									echo esc_html(__('Recording (significant events only)', 'wordfence'));
+								}
+								else if ($auditLogMode == wfAuditLog::AUDIT_LOG_MODE_ALL) {
+									echo esc_html(__('Recording (all events)', 'wordfence'));
+								}
+							}
+							
+							if (function_exists('network_admin_url') && is_multisite()) { $auditLogURL = network_admin_url('admin.php?page=WordfenceAuditLog'); }
+							else { $auditLogURL = admin_url('admin.php?page=WordfenceAuditLog'); }
+						?>&nbsp;&nbsp;<a href="<?php echo esc_url($auditLogURL); ?>"><?php esc_html_e('Manage', 'wordfence'); ?></a>
+						</p>
 						<div class="wf-flex-row">
 							<?php if (wfCentral::isPartialConnection()): ?>
 								<p>
