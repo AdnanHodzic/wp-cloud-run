@@ -1,0 +1,113 @@
+.wp-headers-and-footers .group h3 {
+    display: none;
+}
+
+.wp-headers-and-footers textarea {
+    width: 35em;
+}
+
+.wp_header_textarea .CodeMirror, .wp_body_textarea .CodeMirror, .wp_footer_textarea .CodeMirror {
+    border: 1px solid #ccd0d4;
+}
+
+.header-and-footer-setting input[type=number]{
+    padding: 13px 15px;
+    min-height: 30px;
+    border: 2px solid #D2DDF2;
+    height: 50px;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+    max-width: 450px;
+    color: #5C7697;
+    font-size: 14px;
+    line-height: 24px;
+    border-radius: 5px;
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: #fff;
+}
+.header-and-footer-setting input[type=number]::placeholder{
+    color: #D2DDF2;
+}
+#wpheaderandfooter_settings td .description {
+    font-family: "Poppins", sans-serif;
+    color: #5C7697;
+    font-size: 13px;
+    line-height: 24px;
+    margin: 4px 0 0 5px;
+    max-width: 750px;
+}
+/*--Side bar style--*/
+
+.header-and-footer-setting {
+    width: calc( 100% - 325px);
+    float: left;
+    padding-right: 30px;
+    padding-top: 30px;
+}
+
+.wp-headers-and-footers .wpbr-sidebar {
+    padding-top: 30px;
+    width: 295px;
+    float: right;
+    box-sizing: border-box;
+}
+
+.wp-headers-and-footers .postbox {
+    padding: 0 10px 10px 10px;
+}
+
+.wp-headers-and-footers .wpbr-sidebar h2 {
+    margin: 0;
+    padding: 10px 10px 10px 30px;
+    border-bottom: 1px solid #000;
+    color: #000;
+}
+
+.wp-headers-and-footers .wpbr-sidebar ul.plugins_lists li {
+    padding-left: 10px;
+}
+
+.wp-headers-and-footers .wpbr-sidebar ul li a {
+    width: 100%;
+    display: block;
+    position: relative;
+}
+
+.wp-headers-and-footers .wpbr-sidebar ul li a:hover {
+    text-decoration: underline;
+}
+
+.wp-headers-and-footers .wpbr-sidebar .dashicons {
+    position: absolute;
+    right: 10px;
+    margin-top: 3px;
+}
+
+.wp-headers-and-footers .wpbr-sidebar .button {
+    color: #000;
+    border-color: transparent;
+}
+
+.wp-headers-and-footers .wpbr-sidebar .button:hover {
+    border-color: #000;
+}
+
+.wp-headers-and-footers .wpbr-sidebar h2 .dashicons {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+    font-size: 23px;
+}
+
+.wp-headers-and-footers .plugins_lists a {
+    color: #000;
+    font-size: 14px;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.wp-headers-and-footers .plugins_lists a:hover {
+    text-decoration: underline;
+}
