@@ -49,7 +49,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 								<?php _e( 'Refreshing backup list...', AI1WM_PLUGIN_NAME ); ?>
 							</p>
 							<p class="ai1wm-backups-empty <?php echo empty( $backups ) ? null : 'ai1wm-hide'; ?>">
-								<?php _e( 'There are no backups available at this time, why not create a new one?', AI1WM_PLUGIN_NAME ); ?>
+								<?php _e( 'No backups found. Create a new one?', AI1WM_PLUGIN_NAME ); ?>
 							</p>
 							<p>
 								<a href="#" id="ai1wm-create-backup" class="ai1wm-button-green">

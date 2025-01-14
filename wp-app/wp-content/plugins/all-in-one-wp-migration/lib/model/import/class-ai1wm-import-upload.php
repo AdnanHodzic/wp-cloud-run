@@ -31,15 +31,15 @@ class Ai1wm_Import_Upload {
 
 	private static function validate() {
 		if ( ! array_key_exists( 'upload-file', $_FILES ) || ! is_array( $_FILES['upload-file'] ) ) {
-			throw new Ai1wm_Import_Retry_Exception( __( 'Missing upload file.', AI1WM_PLUGIN_NAME ), 400 );
+			throw new Ai1wm_Import_Retry_Exception( __( 'No file was uploaded. Please select a file and try again.', AI1WM_PLUGIN_NAME ), 400 );
 		}
 
 		if ( ! array_key_exists( 'error', $_FILES['upload-file'] ) ) {
-			throw new Ai1wm_Import_Retry_Exception( __( 'Missing error key in upload file.', AI1WM_PLUGIN_NAME ), 400 );
+			throw new Ai1wm_Import_Retry_Exception( __( 'The uploaded file is missing an error code. The process cannot continue.', AI1WM_PLUGIN_NAME ), 400 );
 		}
 
 		if ( ! array_key_exists( 'tmp_name', $_FILES['upload-file'] ) ) {
-			throw new Ai1wm_Import_Retry_Exception( __( 'Missing tmp_name in upload file.', AI1WM_PLUGIN_NAME ), 400 );
+			throw new Ai1wm_Import_Retry_Exception( __( 'The uploaded file is missing a temporary path. The process cannot continue.', AI1WM_PLUGIN_NAME ), 400 );
 		}
 	}
 
@@ -53,8 +53,7 @@ class Ai1wm_Import_Upload {
 		if ( ! ai1wm_is_filename_supported( ai1wm_archive_path( $params ) ) ) {
 			throw new Ai1wm_Import_Exception(
 				__(
-					'The file type that you have tried to upload is not compatible with this plugin. ' .
-					'Please ensure that your file is a <strong>.wpress</strong> file that was created with the All-in-One WP migration plugin. ' .
+					'Invalid file type. Please ensure your file is a <strong>.wpress</strong> backup created with All-in-One WP Migration. ' .
 					'<a href="https://help.servmask.com/knowledgebase/invalid-backup-file/" target="_blank">Technical details</a>',
 					AI1WM_PLUGIN_NAME
 				)
@@ -67,7 +66,7 @@ class Ai1wm_Import_Upload {
 					ai1wm_copy( $upload, ai1wm_archive_path( $params ) );
 					ai1wm_unlink( $upload );
 				} catch ( Exception $e ) {
-					throw new Ai1wm_Import_Retry_Exception( sprintf( __( 'Unable to upload the file because %s', AI1WM_PLUGIN_NAME ), $e->getMessage() ), 400 );
+					throw new Ai1wm_Import_Retry_Exception( sprintf( __( 'Could not upload the file because %s. The process cannot continue.', AI1WM_PLUGIN_NAME ), $e->getMessage() ), 400 );
 				}
 				break;
 
@@ -76,19 +75,19 @@ class Ai1wm_Import_Upload {
 			case UPLOAD_ERR_PARTIAL:
 			case UPLOAD_ERR_NO_FILE:
 				// File is too large
-				throw new Ai1wm_Import_Retry_Exception( __( 'The file is too large for this server.', AI1WM_PLUGIN_NAME ), 413 );
+				throw new Ai1wm_Import_Retry_Exception( __( 'The uploaded file is too large for this server. The process cannot continue.', AI1WM_PLUGIN_NAME ), 413 );
 
 			case UPLOAD_ERR_NO_TMP_DIR:
-				throw new Ai1wm_Import_Retry_Exception( __( 'Missing a temporary folder.', AI1WM_PLUGIN_NAME ), 400 );
+				throw new Ai1wm_Import_Retry_Exception( __( 'No temporary folder is available on the server. The process cannot continue.', AI1WM_PLUGIN_NAME ), 400 );
 
 			case UPLOAD_ERR_CANT_WRITE:
-				throw new Ai1wm_Import_Retry_Exception( __( 'Failed to write file to disk.', AI1WM_PLUGIN_NAME ), 400 );
+				throw new Ai1wm_Import_Retry_Exception( __( 'Could not save the uploaded file. Please check file permissions and try again.', AI1WM_PLUGIN_NAME ), 400 );
 
 			case UPLOAD_ERR_EXTENSION:
-				throw new Ai1wm_Import_Retry_Exception( __( 'A PHP extension stopped the file upload.', AI1WM_PLUGIN_NAME ), 400 );
+				throw new Ai1wm_Import_Retry_Exception( __( 'A PHP extension blocked this file upload. The process cannot continue.', AI1WM_PLUGIN_NAME ), 400 );
 
 			default:
-				throw new Ai1wm_Import_Retry_Exception( sprintf( __( 'Unrecognized error %s during upload.', AI1WM_PLUGIN_NAME ), $error ), 400 );
+				throw new Ai1wm_Import_Retry_Exception( sprintf( __( 'An unknown error (code: %s) occurred during the file upload. The process cannot continue.', AI1WM_PLUGIN_NAME ), $error ), 400 );
 		}
 
 		ai1wm_json_response( array( 'errors' => array() ) );

@@ -156,7 +156,7 @@ class Ai1wm_Export_Database {
 		if ( $db_client->export( ai1wm_database_path( $params ), $query_offset, $table_index, $table_offset, $table_rows ) ) {
 
 			// Set progress
-			Ai1wm_Status::info( __( 'Done exporting database.', AI1WM_PLUGIN_NAME ) );
+			Ai1wm_Status::info( __( 'Database exported.', AI1WM_PLUGIN_NAME ) );
 
 			// Unset query offset
 			unset( $params['query_offset'] );

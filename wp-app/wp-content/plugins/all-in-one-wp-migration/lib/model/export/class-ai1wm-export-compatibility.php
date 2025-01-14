@@ -32,7 +32,7 @@ class Ai1wm_Export_Compatibility {
 	public static function execute( $params ) {
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Checking extensions compatibility...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Checking for compatibility...', AI1WM_PLUGIN_NAME ) );
 
 		// Get messages
 		$messages = Ai1wm_Compatibility::get( $params );

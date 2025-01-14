@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<p>
 		<?php
 		_e(
-			'All-in-One WP Migration: Your current profile role does not have Export/Import capabilities enabled. ' .
+			'Your current profile role does not have Export/Import capabilities enabled. ' .
 			'<a href="https://help.servmask.com/knowledgebase/how-to-add-import-and-export-capabilities-to-wordpress-users/" target="_blank">Technical details</a>',
 			AI1WM_PLUGIN_NAME
 		);

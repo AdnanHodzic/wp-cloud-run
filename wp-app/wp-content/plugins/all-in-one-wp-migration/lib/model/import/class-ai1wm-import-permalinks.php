@@ -33,13 +33,13 @@ class Ai1wm_Import_Permalinks {
 		global $wp_rewrite;
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Getting WordPress permalinks settings...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Retrieving WordPress permalinks settings...', AI1WM_PLUGIN_NAME ) );
 
 		// Get using permalinks
 		$params['using_permalinks'] = (int) $wp_rewrite->using_permalinks();
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Done getting WordPress permalinks settings.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'WordPress permalinks settings retrieved.', AI1WM_PLUGIN_NAME ) );
 
 		return $params;
 	}

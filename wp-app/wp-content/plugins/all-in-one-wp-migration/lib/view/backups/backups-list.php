@@ -61,7 +61,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</span>
 						<span class="ai1wm-backup-label-description ai1wm-hide <?php echo empty( $labels[ $backup['filename'] ] ) ? null : 'ai1wm-backup-label-selected'; ?>">
 							<br />
-							<?php _e( 'Click to set a label for this backup', AI1WM_PLUGIN_NAME ); ?>
+							<?php _e( 'Click to label this backup', AI1WM_PLUGIN_NAME ); ?>
 							<i class="ai1wm-icon-edit-pencil ai1wm-hide"></i>
 						</span>
 						<span class="ai1wm-backup-label-text <?php echo empty( $labels[ $backup['filename'] ] ) ? 'ai1wm-hide' : null; ?>">
@@ -85,7 +85,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						<?php if ( ! is_null( $backup['size'] ) ) : ?>
 							<?php echo ai1wm_size_format( $backup['size'], 2 ); ?>
 						<?php else : ?>
-							<?php _e( '2GB+', AI1WM_PLUGIN_NAME ); ?>
+							<?php _e( 'Over 2GB', AI1WM_PLUGIN_NAME ); ?>
 						<?php endif; ?>
 					</td>
 					<td class="ai1wm-column-actions ai1wm-backup-actions">

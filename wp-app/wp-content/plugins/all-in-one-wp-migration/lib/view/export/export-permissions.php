@@ -32,8 +32,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<?php
 	printf(
 		__(
-			'<h3>Site could not be exported</h3>' .
-			'<p>Please make sure that storage directory <strong>%s</strong> has read and write permissions.</p>' .
+			'<h3>Could not export site</h3>' .
+			'<p>Please ensure the directory <strong>%s</strong> has read/write permissions.</p>' .
 			'<p><a href="https://help.servmask.com/knowledgebase/invalid-file-permissions/" target="_blank">Technical details</a></p>',
 			AI1WM_PLUGIN_NAME
 		),

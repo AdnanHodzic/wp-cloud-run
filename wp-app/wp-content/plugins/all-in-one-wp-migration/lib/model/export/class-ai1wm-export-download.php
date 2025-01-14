@@ -32,7 +32,7 @@ class Ai1wm_Export_Download {
 	public static function execute( $params ) {
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Renaming exported file...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Renaming export file...', AI1WM_PLUGIN_NAME ) );
 
 		// Open the archive file for writing
 		$archive = new Ai1wm_Compressor( ai1wm_archive_path( $params ) );

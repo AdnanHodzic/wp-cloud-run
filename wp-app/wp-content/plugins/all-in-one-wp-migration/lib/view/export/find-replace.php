@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<li class="ai1wm-query ai1wm-expandable">
 		<p>
 			<span>
-				<strong><?php _e( 'Find', AI1WM_PLUGIN_NAME ); ?></strong>
+				<strong><?php _e( 'Search for', AI1WM_PLUGIN_NAME ); ?></strong>
 				<small class="ai1wm-query-find-text ai1wm-tooltip" title="Search the database for this text"><?php echo esc_html( __( '<text>', AI1WM_PLUGIN_NAME ) ); ?></small>
 				<strong><?php _e( 'Replace with', AI1WM_PLUGIN_NAME ); ?></strong>
 				<small class="ai1wm-query-replace-text ai1wm-tooltip" title="Replace the database with this text"><?php echo esc_html( __( '<another-text>', AI1WM_PLUGIN_NAME ) ); ?></small>
@@ -41,7 +41,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<span class="ai1wm-query-arrow ai1wm-icon-chevron-right"></span>
 		</p>
 		<div>
-			<input class="ai1wm-query-find-input" type="text" placeholder="<?php _e( 'Find', AI1WM_PLUGIN_NAME ); ?>" name="options[replace][old_value][]" />
+			<input class="ai1wm-query-find-input" type="text" placeholder="<?php _e( 'Search for', AI1WM_PLUGIN_NAME ); ?>" name="options[replace][old_value][]" />
 			<input class="ai1wm-query-replace-input" type="text" placeholder="<?php _e( 'Replace with', AI1WM_PLUGIN_NAME ); ?>" name="options[replace][new_value][]" />
 		</div>
 	</li>

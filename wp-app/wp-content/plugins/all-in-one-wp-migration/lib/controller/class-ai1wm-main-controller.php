@@ -727,10 +727,7 @@ class Ai1wm_Main_Controller {
 			'ai1wm_settings',
 			'ai1wm_locale',
 			array(
-				'leave_feedback'                      => __( 'Leave plugin developers any feedback here', AI1WM_PLUGIN_NAME ),
-				'how_may_we_help_you'                 => __( 'How may we help you?', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_feedback' => __( 'Thanks for submitting your feedback!', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_request'  => __( 'Thanks for submitting your request!', AI1WM_PLUGIN_NAME ),
+				'thanks_for_submitting_your_feedback' => __( 'Thank you! We have received your request and will be in touch soon.', AI1WM_PLUGIN_NAME ),
 			)
 		);
 	}
@@ -808,22 +805,19 @@ class Ai1wm_Main_Controller {
 			'ai1wm_export',
 			'ai1wm_locale',
 			array(
-				'stop_exporting_your_website'         => __( 'You are about to stop exporting your website, are you sure?', AI1WM_PLUGIN_NAME ),
+				'stop_exporting_your_website'         => __( 'Are you sure you want to stop the export?', AI1WM_PLUGIN_NAME ),
 				'preparing_to_export'                 => __( 'Preparing to export...', AI1WM_PLUGIN_NAME ),
-				'unable_to_export'                    => __( 'Unable to export', AI1WM_PLUGIN_NAME ),
-				'unable_to_start_the_export'          => __( 'Unable to start the export. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_run_the_export'            => __( 'Unable to run the export. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_stop_the_export'           => __( 'Unable to stop the export. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'please_wait_stopping_the_export'     => __( 'Please wait, stopping the export...', AI1WM_PLUGIN_NAME ),
+				'unable_to_export'                    => __( 'Export failed', AI1WM_PLUGIN_NAME ),
+				'unable_to_start_the_export'          => __( 'Could not start the export. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'unable_to_run_the_export'            => __( 'Could not run the export. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'unable_to_stop_the_export'           => __( 'Could not stop the export. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'please_wait_stopping_the_export'     => __( 'Stopping the export, please wait...', AI1WM_PLUGIN_NAME ),
 				'close_export'                        => __( 'Close', AI1WM_PLUGIN_NAME ),
 				'stop_export'                         => __( 'Stop export', AI1WM_PLUGIN_NAME ),
-				'leave_feedback'                      => __( 'Leave plugin developers any feedback here', AI1WM_PLUGIN_NAME ),
-				'how_may_we_help_you'                 => __( 'How may we help you?', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_feedback' => __( 'Thanks for submitting your feedback!', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_request'  => __( 'Thanks for submitting your request!', AI1WM_PLUGIN_NAME ),
+				'thanks_for_submitting_your_feedback' => __( 'Thank you! We have received your request and will be in touch soon.', AI1WM_PLUGIN_NAME ),
 				'backups_count_singular'              => __( 'You have %d backup', AI1WM_PLUGIN_NAME ),
 				'backups_count_plural'                => __( 'You have %d backups', AI1WM_PLUGIN_NAME ),
-				'archive_browser_download_error'      => __( 'Error while downloading file', AI1WM_PLUGIN_NAME ),
+				'archive_browser_download_error'      => __( 'Could not download file', AI1WM_PLUGIN_NAME ),
 				'view_error_log_button'               => __( 'View Error Log', AI1WM_PLUGIN_NAME ),
 			)
 		);
@@ -926,19 +920,35 @@ class Ai1wm_Main_Controller {
 			)
 		);
 
+		$upload_limit_text = sprintf(
+			__(
+				'Your file exceeds the <strong>%s</strong> upload limit set by your host.<br />%s<br />%s',
+				AI1WM_PLUGIN_NAME
+			),
+			esc_html( ai1wm_size_format( wp_max_upload_size() ) ),
+			sprintf(
+				__( 'Our <a href="%s" target="_blank">Unlimited Extension</a> bypasses this!', AI1WM_PLUGIN_NAME ),
+				'https://servmask.com/products/unlimited-extension?utm_source=file-import&utm_medium=plugin&utm_campaign=ai1wm'
+			),
+			sprintf(
+				__( 'If you prefer a manual fix, follow our step-by-step guide on <a href="%s" target="_blank">raising your upload limit</a>.', AI1WM_PLUGIN_NAME ),
+				'https://help.servmask.com/2018/10/27/how-to-increase-maximum-upload-file-size-in-wordpress/'
+			)
+		);
+
 		wp_localize_script(
 			'ai1wm_import',
 			'ai1wm_locale',
 			array(
-				'stop_importing_your_website'         => __( 'You are about to stop importing your website, are you sure?', AI1WM_PLUGIN_NAME ),
+				'stop_importing_your_website'         => __( 'Are you sure you want to stop the import?', AI1WM_PLUGIN_NAME ),
 				'preparing_to_import'                 => __( 'Preparing to import...', AI1WM_PLUGIN_NAME ),
-				'unable_to_import'                    => __( 'Unable to import', AI1WM_PLUGIN_NAME ),
-				'unable_to_start_the_import'          => __( 'Unable to start the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_confirm_the_import'        => __( 'Unable to confirm the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_check_decryption_password' => __( 'Unable to check decryption password. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_prepare_blogs_on_import'   => __( 'Unable to prepare blogs on import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_stop_the_import'           => __( 'Unable to stop the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'please_wait_stopping_the_import'     => __( 'Please wait, stopping the import...', AI1WM_PLUGIN_NAME ),
+				'unable_to_import'                    => __( 'Import failed', AI1WM_PLUGIN_NAME ),
+				'unable_to_start_the_import'          => __( 'Could not start the import. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'unable_to_confirm_the_import'        => __( 'Could not confirm the import. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'unable_to_check_decryption_password' => __( 'Could not check the decryption password. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'unable_to_prepare_blogs_on_import'   => __( 'Could not prepare blogs for import. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'unable_to_stop_the_import'           => __( 'Could not stop the import. Please refresh and try again.', AI1WM_PLUGIN_NAME ),
+				'please_wait_stopping_the_import'     => __( 'Stopping the import, please wait...', AI1WM_PLUGIN_NAME ),
 				'close_import'                        => __( 'Close', AI1WM_PLUGIN_NAME ),
 				'finish_import'                       => __( 'Finish', AI1WM_PLUGIN_NAME ),
 				'stop_import'                         => __( 'Stop import', AI1WM_PLUGIN_NAME ),
@@ -946,10 +956,7 @@ class Ai1wm_Main_Controller {
 				'confirm_disk_space'                  => __( 'I have enough disk space', AI1WM_PLUGIN_NAME ),
 				'continue_import'                     => __( 'Continue', AI1WM_PLUGIN_NAME ),
 				'please_do_not_close_this_browser'    => __( 'Please do not close this browser window or your import will fail', AI1WM_PLUGIN_NAME ),
-				'leave_feedback'                      => __( 'Leave plugin developers any feedback here', AI1WM_PLUGIN_NAME ),
-				'how_may_we_help_you'                 => __( 'How may we help you?', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_feedback' => __( 'Thanks for submitting your feedback!', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_request'  => __( 'Thanks for submitting your request!', AI1WM_PLUGIN_NAME ),
+				'thanks_for_submitting_your_feedback' => __( 'Thank you! We have received your request and will be in touch soon.', AI1WM_PLUGIN_NAME ),
 				'backup_encrypted'                    => __( 'The backup is encrypted', AI1WM_PLUGIN_NAME ),
 				'backup_encrypted_message'            => __( 'Please enter a password to import the file', AI1WM_PLUGIN_NAME ),
 				'submit'                              => __( 'Submit', AI1WM_PLUGIN_NAME ),
@@ -957,39 +964,33 @@ class Ai1wm_Main_Controller {
 				'repeat_password'                     => __( 'Repeat the password', AI1WM_PLUGIN_NAME ),
 				'passwords_do_not_match'              => __( 'The passwords do not match', AI1WM_PLUGIN_NAME ),
 				'view_error_log_button'               => __( 'View Error Log', AI1WM_PLUGIN_NAME ),
-				'import_from_file'                    => sprintf(
+				'upload_failed_connection_lost'       => __( 'Upload failed - connection lost or timeout. Try uploading the file again.', AI1WM_PLUGIN_NAME ),
+				'upload_failed'                       => __( 'Upload failed', AI1WM_PLUGIN_NAME ),
+				'file_too_large'                      => sprintf(
 					__(
-						'Your file exceeds the maximum upload size for this site: <strong>%s</strong><br />%s%s',
+						'Your file exceeds the upload limit set by your host web server.<br />%s<br />%s',
 						AI1WM_PLUGIN_NAME
 					),
-					esc_html( ai1wm_size_format( wp_max_upload_size() ) ),
-					__(
-						'<a href="https://help.servmask.com/2018/10/27/how-to-increase-maximum-upload-file-size-in-wordpress/" target="_blank">How-to: Increase maximum upload file size</a> or ',
-						AI1WM_PLUGIN_NAME
+					sprintf(
+						__( 'Our <a href="%s" target="_blank">Unlimited Extension</a> bypasses this!', AI1WM_PLUGIN_NAME ),
+						'https://servmask.com/products/unlimited-extension?utm_source=file-upload-webserver&utm_medium=plugin&utm_campaign=ai1wm'
 					),
-					__(
-						'<a href="https://servmask.com/products/unlimited-extension" target="_blank">Get unlimited</a>',
-						AI1WM_PLUGIN_NAME
+					sprintf(
+						__( 'If you prefer a manual fix, follow our step-by-step guide on <a href="%s" target="_blank">raising your upload limit</a>.', AI1WM_PLUGIN_NAME ),
+						'https://help.servmask.com/2018/10/27/how-to-increase-maximum-upload-file-size-in-wordpress/'
 					)
 				),
+
+				'import_from_file'                    => $upload_limit_text,
 				'invalid_archive_extension'           => __(
-					'The file type that you have tried to upload is not compatible with this plugin. ' .
-					'Please ensure that your file is a <strong>.wpress</strong> file that was created with the All-in-One WP migration plugin. ' .
+					'Invalid file type. Please ensure that your file is a <strong>.wpress</strong> file created with All-in-One WP Migration. ' .
 					'<a href="https://help.servmask.com/knowledgebase/invalid-backup-file/" target="_blank">Technical details</a>',
 					AI1WM_PLUGIN_NAME
 				),
-				'upgrade'                             => sprintf(
-					__(
-						'The file that you are trying to import is over the maximum upload file size limit of <strong>%s</strong>.<br />' .
-						'You can remove this restriction by purchasing our ' .
-						'<a href="https://servmask.com/products/unlimited-extension" target="_blank">Unlimited Extension</a>.',
-						AI1WM_PLUGIN_NAME
-					),
-					'512MB'
-				),
+				'upgrade'                             => $upload_limit_text,
 				'out_of_disk_space'                   => __(
-					'There is not enough space available on the disk.<br />' .
-					'Free up %s of disk space.',
+					'Not enough disk space.<br />' .
+					'Free up %s before importing.',
 					AI1WM_PLUGIN_NAME
 				),
 			)
@@ -1119,23 +1120,23 @@ class Ai1wm_Main_Controller {
 			'ai1wm_backups',
 			'ai1wm_locale',
 			array(
-				'stop_exporting_your_website'         => __( 'You are about to stop exporting your website, are you sure?', AI1WM_PLUGIN_NAME ),
+				'stop_exporting_your_website'         => __( 'Are you sure you want to stop the export?', AI1WM_PLUGIN_NAME ),
 				'preparing_to_export'                 => __( 'Preparing to export...', AI1WM_PLUGIN_NAME ),
-				'unable_to_export'                    => __( 'Unable to export', AI1WM_PLUGIN_NAME ),
-				'unable_to_start_the_export'          => __( 'Unable to start the export. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_run_the_export'            => __( 'Unable to run the export. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_stop_the_export'           => __( 'Unable to stop the export. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'please_wait_stopping_the_export'     => __( 'Please wait, stopping the export...', AI1WM_PLUGIN_NAME ),
+				'unable_to_export'                    => __( 'Export failed', AI1WM_PLUGIN_NAME ),
+				'unable_to_start_the_export'          => __( 'Could not start the export. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'unable_to_run_the_export'            => __( 'Could not run the export. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'unable_to_stop_the_export'           => __( 'Could not stop the export. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'please_wait_stopping_the_export'     => __( 'Stopping the export, please wait...', AI1WM_PLUGIN_NAME ),
 				'close_export'                        => __( 'Close', AI1WM_PLUGIN_NAME ),
 				'stop_export'                         => __( 'Stop export', AI1WM_PLUGIN_NAME ),
-				'stop_importing_your_website'         => __( 'You are about to stop importing your website, are you sure?', AI1WM_PLUGIN_NAME ),
+				'stop_importing_your_website'         => __( 'Are you sure you want to stop the import?', AI1WM_PLUGIN_NAME ),
 				'preparing_to_import'                 => __( 'Preparing to import...', AI1WM_PLUGIN_NAME ),
-				'unable_to_import'                    => __( 'Unable to import', AI1WM_PLUGIN_NAME ),
-				'unable_to_start_the_import'          => __( 'Unable to start the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_confirm_the_import'        => __( 'Unable to confirm the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_prepare_blogs_on_import'   => __( 'Unable to prepare blogs on import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'unable_to_stop_the_import'           => __( 'Unable to stop the import. Refresh the page and try again', AI1WM_PLUGIN_NAME ),
-				'please_wait_stopping_the_import'     => __( 'Please wait, stopping the import...', AI1WM_PLUGIN_NAME ),
+				'unable_to_import'                    => __( 'Import failed', AI1WM_PLUGIN_NAME ),
+				'unable_to_start_the_import'          => __( 'Could not start the import. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'unable_to_confirm_the_import'        => __( 'Could not confirm the import. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'unable_to_prepare_blogs_on_import'   => __( 'Could not prepare blogs on import. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'unable_to_stop_the_import'           => __( 'Could not stop the import. Please refresh and try again', AI1WM_PLUGIN_NAME ),
+				'please_wait_stopping_the_import'     => __( 'Stopping the import, please wait...', AI1WM_PLUGIN_NAME ),
 				'finish_import'                       => __( 'Finish', AI1WM_PLUGIN_NAME ),
 				'close_import'                        => __( 'Close', AI1WM_PLUGIN_NAME ),
 				'stop_import'                         => __( 'Stop import', AI1WM_PLUGIN_NAME ),
@@ -1143,27 +1144,27 @@ class Ai1wm_Main_Controller {
 				'confirm_disk_space'                  => __( 'I have enough disk space', AI1WM_PLUGIN_NAME ),
 				'continue_import'                     => __( 'Continue', AI1WM_PLUGIN_NAME ),
 				'please_do_not_close_this_browser'    => __( 'Please do not close this browser window or your import will fail', AI1WM_PLUGIN_NAME ),
-				'leave_feedback'                      => __( 'Leave plugin developers any feedback here', AI1WM_PLUGIN_NAME ),
-				'how_may_we_help_you'                 => __( 'How may we help you?', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_feedback' => __( 'Thanks for submitting your feedback!', AI1WM_PLUGIN_NAME ),
-				'thanks_for_submitting_your_request'  => __( 'Thanks for submitting your request!', AI1WM_PLUGIN_NAME ),
-				'want_to_delete_this_file'            => __( 'Are you sure you want to delete this file?', AI1WM_PLUGIN_NAME ),
-				'unlimited'                           => __( 'Restoring a backup is available via Unlimited extension. <a href="https://servmask.com/products/unlimited-extension" target="_blank">Get it here</a>', AI1WM_PLUGIN_NAME ),
-				'restore_from_file'                   => __( '"Restore" functionality is available in a <a href="https://servmask.com/products/unlimited-extension" target="_blank">paid extension</a>.<br />You could also download the backup and then use "Import from file".', AI1WM_PLUGIN_NAME ),
+				'thanks_for_submitting_your_feedback' => __( 'Thank you! We have received your request and will be in touch soon.', AI1WM_PLUGIN_NAME ),
+				'want_to_delete_this_file'            => __( 'Are you sure you want to delete this backup?', AI1WM_PLUGIN_NAME ),
+				'unlimited'                           => __( 'Backup restore requires the Unlimited extension. <a href="https://servmask.com/products/unlimited-extension" target="_blank">Get it here</a>', AI1WM_PLUGIN_NAME ),
+				'restore_from_file'                   => sprintf(
+					__( '"Restore" functionality is available in our <a href="%s" target="_blank">Unlimited Extension</a>.<br /> If you would rather go the manual route, you can still restore by downloading your backup and using "Import from file".', AI1WM_PLUGIN_NAME ),
+					'https://servmask.com/products/unlimited-extension?utm_source=restore-from-file&utm_medium=plugin&utm_campaign=ai1wm'
+				),
 				'out_of_disk_space'                   => __(
-					'There is not enough space available on the disk.<br />' .
-					'Free up %s of disk space.',
+					'Not enough disk space.<br />' .
+					'Free up %s before restoring.',
 					AI1WM_PLUGIN_NAME
 				),
 				'backups_count_singular'              => __( 'You have %d backup', AI1WM_PLUGIN_NAME ),
 				'backups_count_plural'                => __( 'You have %d backups', AI1WM_PLUGIN_NAME ),
 				'archive_browser_error'               => __( 'Error', AI1WM_PLUGIN_NAME ),
-				'archive_browser_list_error'          => __( 'Error while reading backup content', AI1WM_PLUGIN_NAME ),
-				'archive_browser_download_error'      => __( 'Error while downloading file', AI1WM_PLUGIN_NAME ),
+				'archive_browser_list_error'          => __( 'Could not read backup content', AI1WM_PLUGIN_NAME ),
+				'archive_browser_download_error'      => __( 'Could not download backup', AI1WM_PLUGIN_NAME ),
 				'archive_browser_title'               => __( 'List the content of the backup', AI1WM_PLUGIN_NAME ),
 				'progress_bar_title'                  => __( 'Reading...', AI1WM_PLUGIN_NAME ),
 				'backup_encrypted'                    => __( 'The backup is encrypted', AI1WM_PLUGIN_NAME ),
-				'backup_encrypted_message'            => __( 'Please enter a password to import the file', AI1WM_PLUGIN_NAME ),
+				'backup_encrypted_message'            => __( 'Please enter a password to restore the backup', AI1WM_PLUGIN_NAME ),
 				'submit'                              => __( 'Submit', AI1WM_PLUGIN_NAME ),
 				'enter_password'                      => __( 'Enter a password', AI1WM_PLUGIN_NAME ),
 				'repeat_password'                     => __( 'Repeat the password', AI1WM_PLUGIN_NAME ),
@@ -1287,7 +1288,7 @@ class Ai1wm_Main_Controller {
 			'ai1wm_locale',
 			array(
 				'check_for_updates'   => __( 'Check for updates', AI1WM_PLUGIN_NAME ),
-				'invalid_purchase_id' => __( 'Your purchase ID is invalid, please <a href="mailto:support@servmask.com">contact us</a>', AI1WM_PLUGIN_NAME ),
+				'invalid_purchase_id' => __( 'Your purchase ID is invalid. Please <a href="mailto:support@servmask.com">contact us</a>.', AI1WM_PLUGIN_NAME ),
 			)
 		);
 	}

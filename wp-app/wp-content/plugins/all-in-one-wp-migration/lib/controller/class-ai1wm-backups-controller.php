@@ -182,7 +182,7 @@ class Ai1wm_Backups_Controller {
 		} catch ( Exception $e ) {
 			ai1wm_json_response(
 				array(
-					'error' => __( 'Unable to list backup content', AI1WM_PLUGIN_NAME ),
+					'error' => __( 'Could not list the backup content. Please ensure the backup file is accessible and not corrupted.', AI1WM_PLUGIN_NAME ),
 				)
 			);
 		}

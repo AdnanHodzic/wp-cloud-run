@@ -48,7 +48,7 @@ class Ai1wm_Export_Enumerate_Plugins {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Retrieving a list of WordPress plugin files...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Gathering plugin files...', AI1WM_PLUGIN_NAME ) );
 
 		// Exclude inactive plugins
 		if ( isset( $params['options']['no_inactive_plugins'] ) ) {
@@ -97,7 +97,7 @@ class Ai1wm_Export_Enumerate_Plugins {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Done retrieving a list of WordPress plugin files.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Plugin files gathered.', AI1WM_PLUGIN_NAME ) );
 
 		// Set total plugins files count
 		$params['total_plugins_files_count'] = $total_plugins_files_count;

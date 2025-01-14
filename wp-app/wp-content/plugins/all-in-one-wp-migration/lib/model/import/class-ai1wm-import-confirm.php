@@ -45,16 +45,24 @@ class Ai1wm_Import_Confirm {
 
 		// Confirm message
 		if ( defined( 'WP_CLI' ) ) {
-			$messages[] = __(
-				'The import process will overwrite your website including the database, media, plugins, and themes. ' .
-				'Are you sure to proceed?',
-				AI1WM_PLUGIN_NAME
+			$messages[] = sprintf(
+				__(
+					'Importing this file will only replace matching content. Other items stay unchanged. ' .
+					'Need a full reset first? Try Reset Hub in our Unlimited Extension (%s). ' .
+					'Ensure you have a current backup. Proceed?',
+					AI1WM_PLUGIN_NAME
+				),
+				'https://servmask.com/products/unlimited-extension'
 			);
 		} else {
-			$messages[] = __(
-				'The import process will overwrite your website including the database, media, plugins, and themes. ' .
-				'Please ensure that you have a backup of your data before proceeding to the next step.',
-				AI1WM_PLUGIN_NAME
+			$messages[] = sprintf(
+				__(
+					'Importing this file will only replace matching content. Other items stay unchanged. ' .
+					'Need a full reset first? Try Reset Hub in our <a href="%s" target="_blank">Unlimited Extension</a>.<br />' .
+					'Ensure you have a current backup. Proceed?',
+					AI1WM_PLUGIN_NAME
+				),
+				'https://servmask.com/products/unlimited-extension?utm_source=import-confirm&utm_medium=plugin&utm_campaign=ai1wm'
 			);
 		}
 

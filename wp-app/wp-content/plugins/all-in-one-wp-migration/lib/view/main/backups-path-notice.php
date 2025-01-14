@@ -33,9 +33,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php
 		printf(
 			__(
-				'All-in-One WP Migration is not able to create <strong>%s</strong> folder. ' .
-				'You will need to create this folder and grant it read/write/execute permissions (0777) ' .
-				'for the All-in-One WP Migration plugin to function properly.',
+				'Could not create <strong>%s</strong> folder. Please ensure the parent folder has read/write/execute permissions (0777).',
 				AI1WM_PLUGIN_NAME
 			),
 			AI1WM_BACKUPS_PATH

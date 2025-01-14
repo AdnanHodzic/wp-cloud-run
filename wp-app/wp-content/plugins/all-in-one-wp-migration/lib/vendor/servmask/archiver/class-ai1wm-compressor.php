@@ -79,10 +79,10 @@ class Ai1wm_Compressor extends Ai1wm_Archiver {
 				if ( $file_offset === 0 ) {
 					if ( ( $file_bytes = @fwrite( $this->file_handle, $block ) ) !== false ) {
 						if ( strlen( $block ) !== $file_bytes ) {
-							throw new Ai1wm_Quota_Exceeded_Exception( sprintf( __( 'Out of disk space. Unable to write header to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
+							throw new Ai1wm_Quota_Exceeded_Exception( sprintf( __( 'Out of disk space. Could not write header to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
 						}
 					} else {
-						throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Unable to write header to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
+						throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Could not write header to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
 					}
 				}
 
@@ -101,10 +101,10 @@ class Ai1wm_Compressor extends Ai1wm_Archiver {
 
 							if ( ( $file_bytes = @fwrite( $this->file_handle, $file_content ) ) !== false ) {
 								if ( strlen( $file_content ) !== $file_bytes ) {
-									throw new Ai1wm_Quota_Exceeded_Exception( sprintf( __( 'Out of disk space. Unable to write content to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
+									throw new Ai1wm_Quota_Exceeded_Exception( sprintf( __( 'Out of disk space. Could not write content to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
 								}
 							} else {
-								throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Unable to write content to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
+								throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Could not write content to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
 							}
 
 							// Set file written
@@ -135,10 +135,10 @@ class Ai1wm_Compressor extends Ai1wm_Archiver {
 					// Write file size to file header
 					if ( ( $file_bytes = @fwrite( $this->file_handle, $block ) ) !== false ) {
 						if ( strlen( $block ) !== $file_bytes ) {
-							throw new Ai1wm_Quota_Exceeded_Exception( sprintf( __( 'Out of disk space. Unable to write size to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
+							throw new Ai1wm_Quota_Exceeded_Exception( sprintf( __( 'Out of disk space. Could not write size to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
 						}
 					} else {
-						throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Unable to write size to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
+						throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Could not write size to file. File: %s', AI1WM_PLUGIN_NAME ), $this->file_name ) );
 					}
 
 					// Seek to end of file content

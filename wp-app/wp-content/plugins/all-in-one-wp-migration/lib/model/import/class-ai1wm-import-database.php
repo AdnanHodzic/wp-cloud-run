@@ -982,7 +982,7 @@ class Ai1wm_Import_Database {
 		if ( $db_client->import( ai1wm_database_path( $params ), $query_offset ) ) {
 
 			// Set progress
-			Ai1wm_Status::info( __( 'Done restoring database.', AI1WM_PLUGIN_NAME ) );
+			Ai1wm_Status::info( __( 'Database restored.', AI1WM_PLUGIN_NAME ) );
 
 			// Unset query offset
 			unset( $params['query_offset'] );

@@ -78,7 +78,7 @@ class Ai1wm_Import_Controller {
 							do_action( 'ai1wm_status_import_error', $params, $e );
 
 							if ( defined( 'WP_CLI' ) ) {
-								WP_CLI::error( sprintf( __( 'Unable to import. Error code: %s. %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
+								WP_CLI::error( sprintf( __( 'Import failed. Code: %s. %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
 							}
 
 							status_header( $e->getCode() );
@@ -88,7 +88,7 @@ class Ai1wm_Import_Controller {
 							do_action( 'ai1wm_status_import_error', $params, $e );
 
 							if ( defined( 'WP_CLI' ) ) {
-								WP_CLI::error( sprintf( __( 'Unable to import. Error code: %s. %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
+								WP_CLI::error( sprintf( __( 'Import failed (database error). Code: %s. %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
 							}
 
 							status_header( $e->getCode() );
@@ -99,11 +99,11 @@ class Ai1wm_Import_Controller {
 							do_action( 'ai1wm_status_import_error', $params, $e );
 
 							if ( defined( 'WP_CLI' ) ) {
-								WP_CLI::error( sprintf( __( 'Unable to import: %s', AI1WM_PLUGIN_NAME ), $e->getMessage() ) );
+								WP_CLI::error( sprintf( __( 'Import failed: %s', AI1WM_PLUGIN_NAME ), $e->getMessage() ) );
 							}
 
-							Ai1wm_Status::error( __( 'Unable to import', AI1WM_PLUGIN_NAME ), $e->getMessage() );
-							Ai1wm_Notification::error( __( 'Unable to import', AI1WM_PLUGIN_NAME ), $e->getMessage() );
+							Ai1wm_Status::error( __( 'Import failed', AI1WM_PLUGIN_NAME ), $e->getMessage() );
+							Ai1wm_Notification::error( __( 'Import failed', AI1WM_PLUGIN_NAME ), $e->getMessage() );
 
 							exit;
 						}

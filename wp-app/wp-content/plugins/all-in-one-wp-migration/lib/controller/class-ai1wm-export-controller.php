@@ -78,7 +78,7 @@ class Ai1wm_Export_Controller {
 							do_action( 'ai1wm_status_export_error', $params, $e );
 
 							if ( defined( 'WP_CLI' ) ) {
-								WP_CLI::error( sprintf( __( 'Unable to export. Error code: %s. %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
+								WP_CLI::error( sprintf( __( 'Export failed (database error). Code: %s. Message: %s', AI1WM_PLUGIN_NAME ), $e->getCode(), $e->getMessage() ) );
 							}
 
 							status_header( $e->getCode() );
@@ -88,11 +88,11 @@ class Ai1wm_Export_Controller {
 							do_action( 'ai1wm_status_export_error', $params, $e );
 
 							if ( defined( 'WP_CLI' ) ) {
-								WP_CLI::error( sprintf( __( 'Unable to export: %s', AI1WM_PLUGIN_NAME ), $e->getMessage() ) );
+								WP_CLI::error( sprintf( __( 'Export failed: %s', AI1WM_PLUGIN_NAME ), $e->getMessage() ) );
 							}
 
-							Ai1wm_Status::error( __( 'Unable to export', AI1WM_PLUGIN_NAME ), $e->getMessage() );
-							Ai1wm_Notification::error( __( 'Unable to export', AI1WM_PLUGIN_NAME ), $e->getMessage() );
+							Ai1wm_Status::error( __( 'Export failed', AI1WM_PLUGIN_NAME ), $e->getMessage() );
+							Ai1wm_Notification::error( __( 'Export failed', AI1WM_PLUGIN_NAME ), $e->getMessage() );
 							exit;
 						}
 					}

@@ -31,7 +31,7 @@ class Ai1wm_Import_Options {
 
 	public static function execute( $params ) {
 		// Set progress
-		Ai1wm_Status::info( __( 'Preparing options...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Preparing WordPress options...', AI1WM_PLUGIN_NAME ) );
 
 		// Get database client
 		$db_client = Ai1wm_Database_Utility::create_client();
@@ -70,7 +70,7 @@ class Ai1wm_Import_Options {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Done preparing options.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'WordPress options prepared.', AI1WM_PLUGIN_NAME ) );
 
 		return $params;
 	}

@@ -48,7 +48,7 @@ class Ai1wm_Export_Enumerate_Content {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Retrieving a list of WordPress content files...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Gathering content files...', AI1WM_PLUGIN_NAME ) );
 
 		// Exclude cache
 		if ( isset( $params['options']['no_cache'] ) ) {
@@ -108,7 +108,7 @@ class Ai1wm_Export_Enumerate_Content {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Done retrieving a list of WordPress content files.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Content files gathered.', AI1WM_PLUGIN_NAME ) );
 
 		// Set total content files count
 		$params['total_content_files_count'] = $total_content_files_count;

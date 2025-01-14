@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<li class="ai1wm-encrypt-backups-container">
 					<label for="ai1wm-encrypt-backups">
 						<input type="checkbox" id="ai1wm-encrypt-backups" name="options[encrypt_backups]" />
-						<?php _e( 'Protect this backup with a password', AI1WM_PLUGIN_NAME ); ?>
+						<?php _e( 'Encrypt this backup with a password', AI1WM_PLUGIN_NAME ); ?>
 					</label>
 					<div class="ai1wm-encrypt-backups-passwords-toggle">
 						<div class="ai1wm-encrypt-backups-passwords-container">
@@ -67,25 +67,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<li>
 				<label for="ai1wm-no-spam-comments">
 					<input type="checkbox" id="ai1wm-no-spam-comments" name="options[no_spam_comments]" />
-					<?php _e( 'Do <strong>not</strong> export spam comments', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude spam comments', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 			<li>
 				<label for="ai1wm-no-post-revisions">
 					<input type="checkbox" id="ai1wm-no-post-revisions" name="options[no_post_revisions]" />
-					<?php _e( 'Do <strong>not</strong> export post revisions', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude post revisions', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 			<li>
 				<label for="ai1wm-no-media">
 					<input type="checkbox" id="ai1wm-no-media" name="options[no_media]" />
-					<?php _e( 'Do <strong>not</strong> export media library (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude media library (files)', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 			<li>
 				<label for="ai1wm-no-themes">
 					<input type="checkbox" id="ai1wm-no-themes" name="options[no_themes]" />
-					<?php _e( 'Do <strong>not</strong> export themes (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude themes (files)', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 
@@ -94,14 +94,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<li>
 				<label for="ai1wm-no-muplugins">
 					<input type="checkbox" id="ai1wm-no-muplugins" name="options[no_muplugins]" />
-					<?php _e( 'Do <strong>not</strong> export must-use plugins (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude must-use plugins (files)', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 
 			<li>
 				<label for="ai1wm-no-plugins">
 					<input type="checkbox" id="ai1wm-no-plugins" name="options[no_plugins]" />
-					<?php _e( 'Do <strong>not</strong> export plugins (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude plugins (files)', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 
@@ -112,7 +112,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<li>
 				<label for="ai1wm-no-database">
 					<input type="checkbox" id="ai1wm-no-database" name="options[no_database]" />
-					<?php _e( 'Do <strong>not</strong> export database (sql)', AI1WM_PLUGIN_NAME ); ?>
+					<?php _e( 'Exclude database (sql)', AI1WM_PLUGIN_NAME ); ?>
 				</label>
 			</li>
 			<li>

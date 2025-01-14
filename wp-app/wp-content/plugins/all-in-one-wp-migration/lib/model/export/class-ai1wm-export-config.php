@@ -33,7 +33,7 @@ class Ai1wm_Export_Config {
 		global $table_prefix, $wp_version;
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Preparing configuration file...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Preparing configuration...', AI1WM_PLUGIN_NAME ) );
 
 		// Get options
 		$options = wp_load_alloptions();
@@ -177,7 +177,7 @@ class Ai1wm_Export_Config {
 		ai1wm_close( $handle );
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Done preparing configuration file.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Configuration prepared.', AI1WM_PLUGIN_NAME ) );
 
 		return $params;
 	}
