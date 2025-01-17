@@ -85,6 +85,7 @@ class wfDiagnostic
 					'wafActiveStorageEngine' => __('Active WAF storage engine', 'wordfence'),
 					'wafLogPath' => __('WAF log path', 'wordfence'),
 					'wafSubdirectoryInstall' => __('WAF subdirectory installation', 'wordfence'),
+					'wafAutoPrependPathOverride' => __('WORDFENCE_WAF_PREPEND_DIRECTORY path constant', 'wordfence'),
 					'wafAutoPrependFilePath' => __('wordfence-waf.php path', 'wordfence'),
 					'wafFilePermissions' => __('WAF File Permissions', 'wordfence'),
 					'wafRecentlyRemoved' => __('Recently removed wflogs files', 'wordfence'),
@@ -466,6 +467,15 @@ class wfDiagnostic
 	
 	public function wafSubdirectoryInstall() {
 		return array('test' => true, 'infoOnly' => true, 'message' => (defined('WFWAF_SUBDIRECTORY_INSTALL') && WFWAF_SUBDIRECTORY_INSTALL ? __('Yes', 'wordfence') : __('No', 'wordfence')));
+	}
+	
+	public function wafAutoPrependPathOverride() {
+		$value = __('(not set)', 'wordfence');
+		if (defined('WORDFENCE_WAF_PREPEND_DIRECTORY')) {
+			$value = WORDFENCE_WAF_PREPEND_DIRECTORY;
+		}
+		
+		return array('test' => true, 'infoOnly' => true, 'message' => $value);
 	}
 	
 	public function wafAutoPrependFilePath() {

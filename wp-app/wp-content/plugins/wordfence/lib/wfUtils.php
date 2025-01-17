@@ -3701,9 +3701,21 @@ class wfUtils {
 	}
 
 	public static function isCurlSupported() {
-		if (self::includeOnceIfPresent(ABSPATH . 'wp-includes/class-wp-http-curl.php'))
-			return WP_Http_Curl::test();
-		return false;
+		if (!function_exists('curl_init') || !function_exists('curl_exec')) {
+			return false;
+		}
+		
+		$is_ssl = isset($args['ssl']) && $args['ssl'];
+		
+		if ($is_ssl) {
+			$curl_version = curl_version();
+			// Check whether this cURL version support SSL requests.
+			if (!(CURL_VERSION_SSL & $curl_version['features'])) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	private static function isValidJsonValue($value) {

@@ -331,19 +331,6 @@ class wfWAFWordPressObserver extends wfWAFBaseObserver {
 			}
 		}
 		
-		$watchedIPs = wfWAF::getInstance()->getStorageEngine()->getConfig('watchedIPs', null, 'transient');
-		if ($watchedIPs) {
-			if (!is_array($watchedIPs)) {
-				$watchedIPs = explode(',', $watchedIPs);
-			}
-			foreach ($watchedIPs as $watchedIP) {
-				$ipRange = new wfWAFUserIPRange($watchedIP);
-				if ($ipRange->isIPInRange(wfWAF::getInstance()->getRequest()->getIP())) {
-					$this->waf->recordLogEvent(new wfWAFLogEvent());
-				}
-			}
-		}
-		
 		if ($reason = wfWAF::getInstance()->getRequest()->getMetadata('finalAction')) {
 			$e = new wfWAFBlockException($reason['action']);
 			$e->setRequest(wfWAF::getInstance()->getRequest());
@@ -511,8 +498,8 @@ class wfWAFWordPress extends wfWAF {
 					if ($event->isInPast()) {
 						$run[$index] = $event;
 						$newEvent = $event->reschedule();
-						$className = get_class($newEvent);
-						if ($newEvent instanceof wfWAFCronEvent && $newEvent !== $event && !in_array($className, $cronDeduplication)) {
+						$className = is_object($newEvent) ? get_class($newEvent) : null;
+						if ($newEvent && $newEvent instanceof wfWAFCronEvent && $newEvent !== $event && !in_array($className, $cronDeduplication)) {
 							$cron[$index] = $newEvent;
 							$cronDeduplication[] = $className;
 							$updated = true;

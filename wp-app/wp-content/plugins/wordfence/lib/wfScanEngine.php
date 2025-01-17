@@ -2771,7 +2771,8 @@ class wfScanEngine {
 					'Name'     => $data['Name'],
 					'Version'  => $data['Version'],
 					'ShortDir' => $pluginDir,
-					'FullDir'  => $pluginFullDir
+					'FullDir'  => $pluginFullDir,
+					'UpdateURI' => isset($data['UpdateURI']) ? $data['UpdateURI'] : '', //WP 5.8+
 				);
 			}
 			if (!$this->pluginsCounted) {
@@ -2805,7 +2806,8 @@ class wfScanEngine {
 					'Name'     => $themeVal['Name'],
 					'Version'  => $themeVal['Version'],
 					'ShortDir' => $shortDir,
-					'FullDir'  => $fullDir
+					'FullDir'  => $fullDir,
+					'UpdateURI' => $themeVal->get('UpdateURI') === false ? '' : $themeVal->get('UpdateURI'), //WP 6.1+
 				);
 			}
 			if (!$this->themesCounted) {

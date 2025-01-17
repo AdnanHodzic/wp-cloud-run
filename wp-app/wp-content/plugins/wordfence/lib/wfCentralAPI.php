@@ -83,7 +83,7 @@ class wfCentralAPIRequest {
 
 				// Once threshold is hit, disconnect Central.
 				if ($centralDisconnectCount > 3) {
-					wfRESTConfigController::disconnectConfig();
+					wfRESTConfigController::disconnectConfig(wfRESTConfigController::WF_CENTRAL_FAILURE_MARKER);
 				}
 			}
 		}
@@ -443,6 +443,7 @@ class wfCentral {
 	 * @return bool|wfCentralAPIResponse
 	 */
 	public static function deleteIssues($issues) {
+		if (empty($issues)) { return true; }
 		$siteID = wfConfig::get('wordfenceCentralSiteID');
 		$request = new wfCentralAuthenticatedAPIRequest('/site/' . $siteID . '/issues', 'DELETE', array(
 			'data' => array(

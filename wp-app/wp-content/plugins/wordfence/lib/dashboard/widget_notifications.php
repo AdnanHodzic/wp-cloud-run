@@ -55,9 +55,25 @@
 								/* translators: 1. Email address. 2. Localized date. */
 										__('Connected by %1$s on %2$s', 'wordfence'), $d->wordfenceCentralConnectEmail, date_i18n(get_option('date_format'), $d->wordfenceCentralConnectTime)));
 							} elseif ($d->wordfenceCentralDisconnected) {
-								echo esc_html(sprintf(
-								/* translators: 1. Email address. 2. Localized date. */
-										__('Disconnected by %1$s on %2$s', 'wordfence'), $d->wordfenceCentralDisconnectEmail, date_i18n(get_option('date_format'), $d->wordfenceCentralDisconnectTime)));
+								if ($d->wordfenceCentralDisconnectEmail === null) {
+									echo esc_html(sprintf(
+									/* translators: 1. Localized date. */
+										__('Disconnected on %1$s', 'wordfence'), date_i18n(get_option('date_format'), $d->wordfenceCentralDisconnectTime)));
+								}
+								else {
+									if ($d->wordfenceCentralDisconnectEmail == wfRESTConfigController::WF_CENTRAL_USER_MARKER) {
+										$identifier = __('a Wordfence Central user', 'wordfence');
+									}
+									else if ($d->wordfenceCentralDisconnectEmail == wfRESTConfigController::WF_CENTRAL_FAILURE_MARKER) {
+										$identifier = __('Wordfence Central', 'wordfence');
+									}
+									else {
+										$identifier = $d->wordfenceCentralDisconnectEmail;
+									}
+									echo esc_html(sprintf(
+									/* translators: 1. Email address or placeholder. 2. Localized date. */
+											__('Disconnected by %1$s on %2$s', 'wordfence'), $identifier, date_i18n(get_option('date_format'), $d->wordfenceCentralDisconnectTime)));
+								}
 							} elseif (wfCentral::isPartialConnection()) {
 								_e('Connection not finished', 'wordfence');
 							} else {

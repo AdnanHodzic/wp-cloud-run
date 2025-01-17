@@ -198,7 +198,7 @@ class wordfence {
 		}
 	}
 	private static function keyAlert($msg){
-		self::alert($msg, $msg . " " . __("To ensure uninterrupted Premium Wordfence protection on your site,\nplease renew your license by visiting http://www.wordfence.com/ Sign in, go to your dashboard,\nselect the license about to expire and click the button to renew that license.", 'wordfence'), false);
+		self::alert($msg, $msg . " " . __("To ensure uninterrupted Premium Wordfence protection on your site,\nplease renew your license by visiting https://www.wordfence.com/ Sign in, go to your dashboard,\nselect the license about to expire and click the button to renew that license.", 'wordfence'), false);
 	}
 	private static function pingApiKey() {
 		$apiKey = wfConfig::get('apiKey');
@@ -225,7 +225,7 @@ class wordfence {
 					} else if ($keyExpDays <= 12 && $keyExpDays > 0 && !wfConfig::get('keyAutoRenew10Sent')) {
 						wfConfig::set('keyAutoRenew10Sent', 1);
 						$email = __("Your Premium Wordfence License is set to auto-renew in 10 days.", 'wordfence');
-						self::alert($email, $email . " " . __("To update your license settings please visit http://www.wordfence.com/zz9/dashboard", 'wordfence'), false);
+						self::alert($email, $email . " " . __("To update your license settings please visit https://www.wordfence.com/zz9/dashboard", 'wordfence'), false);
 					}
 				} else {
 					if($keyExpDays > 15){
@@ -368,6 +368,7 @@ class wordfence {
 		wfConfig::remove('lastPermissionsTemplateCheck');
 	}
 	public static function _scheduleRefreshUpdateNotification($upgrader = null, $options = null) {
+		static $destructRegistered = false;
 		$defer = false;
 		if (is_array($options) && isset($options['type']) && $options['type'] == 'core') {
 			$defer = true;
@@ -378,7 +379,10 @@ class wordfence {
 			wp_schedule_single_event(time(), 'wordfence_refreshUpdateNotification');
 		}
 		else {
-			self::_refreshUpdateNotification();
+			if (!$destructRegistered) {
+				register_shutdown_function(array(self::class, '_refreshUpdateNotification'));
+				$destructRegistered = true;
+			}
 		}
 	}
 	public static function _refreshUpdateNotification($report = null, $useCachedValued = false) {
@@ -5077,7 +5081,7 @@ HTACCESS;
 				break;
 			case wfIssues::SCAN_FAILED_API_CALL_FAILED:
 				$scanFailedHTML = wfView::create('scanner/scan-failed', array(
-					'messageHTML' => __('The scan has failed because we were unable to contact the Wordfence servers. Some sites may need adjustments to run scans reliably.', 'wordfence') . ' <a href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_FAILS) . '" target="_blank" rel="noopener noreferrer">' . __('Click here for steps you can try.', 'wordfence') . '<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>',
+					'messageHTML' => __('The scan has failed because we were unable to contact the Wordfence servers. Some sites may need adjustments to run scans reliably.', 'wordfence') . ' <a href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_FAILS) . '" target="_blank" rel="noopener noreferrer">' . __('Click here for steps you can try', 'wordfence') . '</a> or <a href="https://status.wordfence.com" target="_blank" rel="noopener noreferrer">' . __('check for a server outage', 'wordfence') . '</a>.<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span>',
 					'rawErrorHTML' => esc_html(wfConfig::get('lastScanCompleted', '')),
 					'buttonTitle' => __('Close', 'wordfence'),
 				))->render();
@@ -5085,8 +5089,8 @@ HTACCESS;
 			case wfIssues::SCAN_FAILED_API_INVALID_RESPONSE:
 			case wfIssues::SCAN_FAILED_API_ERROR_RESPONSE:
 				$scanFailedHTML = wfView::create('scanner/scan-failed', array(
-					'messageHTML' => __('The scan has failed because we received an unexpected response from the Wordfence servers. This may be a temporary error, though some sites may need adjustments to run scans reliably.', 'wordfence') . ' <a href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_FAILS) . '" target="_blank" rel="noopener noreferrer">' . __('Click here for steps you can try.', 'wordfence') . '<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>',
-					'rawErrorHTML' => esc_html(wfConfig::get('lastScanCompleted'), ''),
+					'messageHTML' => __('The scan has failed because we received an unexpected response from the Wordfence servers. This may be a temporary error, though some sites may need adjustments to run scans reliably.', 'wordfence') . ' <a href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_FAILS) . '" target="_blank" rel="noopener noreferrer">' . __('Click here for steps you can try', 'wordfence') . '</a> or <a href="https://status.wordfence.com" target="_blank" rel="noopener noreferrer">' . __('check for a server outage', 'wordfence') . '</a>.<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span>',
+					'rawErrorHTML' => esc_html(wfConfig::get('lastScanCompleted', '')),
 					'buttonTitle' => __('Close', 'wordfence'),
 				))->render();
 				break;
@@ -8810,10 +8814,6 @@ SQL;
 								if (count($dataToSend) < $totalRows) {
 									self::scheduleSendAttackData();
 								}
-								
-								if (array_key_exists('data', $jsonData) && array_key_exists('watchedIPList', $jsonData['data'])) {
-									$waf->getStorageEngine()->setConfig('watchedIPs', $jsonData['data']['watchedIPList'], 'transient');
-								}
 							}
 						}
 						else{
@@ -9281,10 +9281,7 @@ SQL;
 	}
 
 	public static function getWAFBootstrapPath() {
-		if (WF_IS_PRESSABLE || WF_IS_FLYWHEEL) {
-			return WP_CONTENT_DIR . '/wordfence-waf.php';
-		}
-		return ABSPATH . 'wordfence-waf.php';
+		return untrailingslashit(WORDFENCE_WAF_PREPEND_DIRECTORY) . '/wordfence-waf.php';
 	}
 
 	public static function getWAFBootstrapContent($currentAutoPrependedFile = null) {

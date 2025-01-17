@@ -24,14 +24,9 @@ class wfConfig {
 	const OPTIONS_TYPE_DIAGNOSTICS = 'diagnostics';
 	const OPTIONS_TYPE_ALL = 'all';
 	
-	public static $diskCache = array();
-	private static $diskCacheDisabled = false; //enables if we detect a write fail so we don't keep calling stat()
-	private static $cacheDisableCheckDone = false;
 	private static $tableExists = true;
 	private static $cache = array();
 	private static $DB = false;
-	private static $tmpFileHeader = "<?php\n/* Wordfence temporary file security header */\necho \"Nothing to see here!\\n\"; exit(0);\n?>";
-	private static $tmpDirCache = false;
 	public static $defaultConfig = array(
 		//All exportable boolean options
 		"checkboxes" => array(
@@ -296,8 +291,7 @@ class wfConfig {
 	public static function loadAllOptions() {
 		global $wpdb;
 		
-		$options = wp_cache_get('alloptions', 'wordfence');
-		if (!$options) {
+		if (empty(self::$cache)) {
 			$table = self::table();
 			self::updateTableExists();
 			$suppress = $wpdb->suppress_errors();
@@ -318,11 +312,10 @@ class wfConfig {
 				}
 			}
 			
-			wp_cache_add_non_persistent_groups('wordfence');
-			wp_cache_add('alloptions', $options, 'wordfence');
+			self::$cache = $options;
 		}
 		
-		return $options;
+		return self::$cache;
 	}
 	
 	/**
@@ -366,13 +359,13 @@ class wfConfig {
 	private static function updateCachedOption($name, $val) {
 		$options = self::loadAllOptions();
 		$options[$name] = $val;
-		wp_cache_set('alloptions', $options, 'wordfence');
+		self::$cache = $options;
 	}
 	private static function removeCachedOption($name) {
 		$options = self::loadAllOptions();
 		if (isset($options[$name])) {
 			unset($options[$name]);
-			wp_cache_set('alloptions', $options, 'wordfence');
+			self::$cache = $options;
 		}
 	}
 	private static function getCachedOption($name) {
@@ -385,7 +378,7 @@ class wfConfig {
 		$val = self::getDB()->querySingle("SELECT val FROM {$table} WHERE name='%s'", $name);
 		if ($val !== null) {
 			$options[$name] = $val;
-			wp_cache_set('alloptions', $options, 'wordfence');
+			self::$cache = $options;
 		}
 		return $val;
 	}

@@ -4,7 +4,7 @@ Tags: security, malware, 2fa, firewall, scanner
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.7
-Stable tag: 8.0.2
+Stable tag: 8.0.3
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -86,7 +86,7 @@ To install Wordfence on WordPress Multi-Site installations:
 
 == Frequently Asked Questions ==
 
-[Visit our website to access our official documentation which includes security feature descriptions, common solutions and comprehensive help.](https://wordfence.com/help/)
+[Visit our website to access our official documentation which includes security feature descriptions, common solutions and comprehensive help.](https://www.wordfence.com/help/)
 
 = How does Wordfence Security protect sites from attackers? =
 
@@ -194,6 +194,19 @@ Secure your website with Wordfence.
 9. Logging in is easy with Wordfence 2FA.
 
 == Changelog ==
+
+= 8.0.3 - January 15, 2025 =
+* Improvement: Added support for hosts relocating the WAF's auto-prepend file via the constant/envvar WORDFENCE_WAF_PREPEND_DIRECTORY
+* Improvement: Added detection for non-repo plugins and themes to avoid the scanner reporting changes when the same slug + version exists within the wordpress.org repo
+* Improvement: Messaging for Central disconnections now better reflects the user making the change
+* Improvement: Scan errors due to unreachable Wordfence servers will now provide a link to our status page to check for outages
+* Improvement: Reduced the number of network calls created to sync scan issues when updates are performed in bulk
+* Change: Reworked setting caching to avoid issues with some object caches
+* Change: Reworked cURL check to avoid using WP_Http_Curl, which has been deprecated
+* Fix: Normalized all wordfence.com links to be https
+* Fix: Fixed a rare error that could occur on the diagnostics page when displaying a list of error logs
+* Fix: Removed the "back to top" button and related script block from emailed diagnostics
+* Fix: Fixed some UI coloring that did not correctly reflect the license type in use
 
 = 8.0.2 - January 2, 2025 =
 * Improvement: General compatibility improvements and better error handling for PHP 8+

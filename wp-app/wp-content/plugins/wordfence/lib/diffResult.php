@@ -41,6 +41,6 @@
 ?>
 
 
-<div class="diffFooter"><?php echo wp_kses(sprintf(__('&copy;&nbsp;%1$d to %2$d Wordfence &mdash; Visit <a href="http://wordfence.com/">Wordfence.com</a> for help, security updates and more.', 'wordfence'), date_i18n('Y', WORDFENCE_EPOCH), date_i18n('Y')), array('a'=>array('href'=>array()))) ?></div>
+<div class="diffFooter"><?php echo wp_kses(sprintf(__('&copy;&nbsp;%1$d to %2$d Wordfence &mdash; Visit <a href="https://www.wordfence.com/">Wordfence.com</a> for help, security updates and more.', 'wordfence'), date_i18n('Y', WORDFENCE_EPOCH), date_i18n('Y')), array('a'=>array('href'=>array()))) ?></div>
 </body>
 </html>

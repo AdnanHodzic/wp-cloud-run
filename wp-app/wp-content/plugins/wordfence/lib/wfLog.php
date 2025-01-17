@@ -2062,6 +2062,10 @@ class wfErrorLogHandler {
 		}
 		
 		$path = untrailingslashit($path);
+		if (empty($path)) {
+			return array();
+		}
+		
 		$contents = @scandir($path);
 		if (!is_array($contents)) {
 			return array();

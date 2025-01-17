@@ -11,6 +11,6 @@
 		__('Wordfence: All recent hits for IP address %s', 'wordfence'), wp_kses($IP, array()) . (($reverseLookup) ? '[' . wp_kses($reverseLookup, array()) . ']' : ''))) ?></h1>
 <div class="footer"><?php echo wp_kses(sprintf(
 	/* translators: 1. year (2011). 2. year (2020) */
-		__('&copy;&nbsp;%d to %d Wordfence &mdash; Visit <a href="http://wordfence.com/">Wordfence.com</a> for help, security updates and more.', 'wordfence'), date_i18n('Y', WORDFENCE_EPOCH), date_i18n('Y')), array('a'=>array('href'=>array()))) ?></div>
+		__('&copy;&nbsp;%d to %d Wordfence &mdash; Visit <a href="https://www.wordfence.com/">Wordfence.com</a> for help, security updates and more.', 'wordfence'), date_i18n('Y', WORDFENCE_EPOCH), date_i18n('Y')), array('a'=>array('href'=>array()))) ?></div>
 </body>
 </html>
