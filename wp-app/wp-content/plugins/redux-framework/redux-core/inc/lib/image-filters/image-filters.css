@@ -1,0 +1,32 @@
+.redux-main .filter .redux-filter {
+	width: 40%;
+	display: inline-block;
+	margin-left: 30px;
+}
+.redux-main div[class^=redux-][class$=-filter-container] {
+	padding-top: 20px;
+}
+.redux-main div[class^=redux-][class$=-filter-container] .container-label {
+	margin-bottom: 20px;
+	padding-bottom: 1px;
+	border-bottom: 1px solid #E7E7E7;
+	font-weight: 600;
+	font-size: 12px;
+	color: #999;
+}
+.redux-main div[class^=redux-][class$=-filter-container] .filter {
+	display: inline-block;
+	width: 47%;
+	margin-bottom: 5px;
+}
+.redux-main div[class^=redux-][class$=-filter-container] .filter label {
+	display: inline-block;
+	width: 135px;
+	color: #999999;
+}
+.redux-main div[class^=redux-][class$=-filter-container] .filter label.filters-disabled .filter-value {
+	color: #cccccc;
+}
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImltYWdlLWZpbHRlcnMuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDSTtDQUNJO0NBQ0E7Q0FDQTs7QUFHSjtDQUNJOztBQUVBO0NBQ0k7Q0FDQTtDQUNBO0NBQ0E7Q0FDQTtDQUNBOztBQUdKO0NBQ0k7Q0FDQTtDQUNBOztBQUVBO0NBQ0k7Q0FDQTtDQUNBOztBQUlJO0NBQ0kiLCJmaWxlIjoiaW1hZ2UtZmlsdGVycy5jc3MifQ== */
+
+/*# sourceMappingURL=image-filters.css.map */

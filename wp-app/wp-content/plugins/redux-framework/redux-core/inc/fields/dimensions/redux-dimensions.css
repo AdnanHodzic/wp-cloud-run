@@ -1,0 +1,27 @@
+.redux-dimensions-container select,
+.redux-dimensions-container .select_wrapper {
+	width: 80px !important;
+	float: left;
+}
+.redux-dimensions-container .field-dimensions-input {
+	margin-right: 10px;
+	margin-bottom: 7px;
+}
+
+@media screen and (max-width: 782px) {
+	.redux-dimensions-container .field-dimensions-input input {
+		display: inline-block !important;
+		width: 100px !important;
+	}
+	.redux-dimensions-container .field-dimensions-input .add-on {
+		padding: 7px 4px;
+		font-size: 16px;
+		line-height: 1.5;
+	}
+	.redux-dimensions-container .select_wrapper {
+		margin-top: 6px;
+	}
+}
+/*# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInJlZHV4LWRpbWVuc2lvbnMuc2NzcyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFDSTtBQUFBO0NBRUk7Q0FDQTs7QUFHSjtDQUNJO0NBQ0E7OztBQUlSO0NBR1k7RUFDSTtFQUNBOztDQUdKO0VBQ0k7RUFDQTtFQUNBOztDQUlSO0VBQ0kiLCJmaWxlIjoicmVkdXgtZGltZW5zaW9ucy5jc3MifQ== */
+
+/*# sourceMappingURL=redux-dimensions.css.map */
