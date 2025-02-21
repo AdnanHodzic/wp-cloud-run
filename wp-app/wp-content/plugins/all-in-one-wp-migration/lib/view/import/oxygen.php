@@ -33,10 +33,10 @@ if ( $should_reset_permalinks ) {
 			'» Permalinks are set to default. <a class="ai1wm-no-underline" href="https://help.servmask.com/knowledgebase/permalinks-are-set-to-default/" target="_blank">Why?</a><br />' .
 			'» <a class="ai1wm-no-underline" href="https://oxygenbuilder.com/documentation/other/importing-exporting/#resigning" target="_blank">Re-sign Oxygen Builder shortcodes</a>.<br />' .
 			'» <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Review your migration experience</a>.<br />' .
-			'» Protect your site with automatic backups - upgrade to <a href="%s" target="_blank">Unlimited Extension</a>',
+			'» <a class="ai1wm-no-underline" href="%s" target="_blank">Protect your site with real-time threat protection</a>',
 			AI1WM_PLUGIN_NAME
 		),
-		'https://servmask.com/products/unlimited-extension?utm_source=import-success&utm_medium=plugin&utm_campaign=ai1wm'
+		'https://servmask.com/protect'
 	);
 } else {
 	printf(
@@ -44,10 +44,10 @@ if ( $should_reset_permalinks ) {
 			'» <a class="ai1wm-no-underline" href="%s" target="_blank">Save permalinks structure</a>.<br />' .
 			'» <a class="ai1wm-no-underline" href="https://oxygenbuilder.com/documentation/other/importing-exporting/#resigning" target="_blank">Re-sign Oxygen Builder shortcodes</a>.<br />' .
 			'» <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Review your migration experience</a>.<br />' .
-			'» Protect your site with automatic backups - upgrade to <a href="%s" target="_blank">Unlimited Extension</a>',
+			'» <a class="ai1wm-no-underline" href="%s" target="_blank">Protect your site with real-time threat protection</a>',
 			AI1WM_PLUGIN_NAME
 		),
 		admin_url( 'options-permalink.php#submit' ),
-		'https://servmask.com/products/unlimited-extension?utm_source=import-success&utm_medium=plugin&utm_campaign=ai1wm'
+		'https://servmask.com/protect'
 	);
 }

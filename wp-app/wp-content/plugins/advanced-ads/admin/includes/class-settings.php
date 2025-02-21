@@ -1,6 +1,7 @@
 <?php
 
 use AdvancedAds\Utilities\WordPress;
+use AdvancedAds\Framework\Utilities\Arr;
 
 /**
  * Class Advanced_Ads_Admin_Settings
@@ -383,6 +384,8 @@ class Advanced_Ads_Admin_Settings {
 	 * Render licenses settings section
 	 */
 	public function render_settings_licenses_section_callback() {
+		$no_weekly_reminder = Arr::get( Advanced_Ads_Admin_Licenses::get_instance()->get_licenses(), 'no-weekly-reminder', 0 );
+
 		include ADVADS_ABSPATH . 'admin/views/settings/license/section.php';
 	}
 

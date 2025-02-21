@@ -34,8 +34,10 @@ class Entities implements Integration_Interface {
 
 	/**
 	 * Hook into WordPress.
+	 *
+	 * @return void
 	 */
-	public function hooks() {
+	public function hooks(): void {
 		$this->register_ad_post_type();
 		$this->register_group_taxonomy();
 	}

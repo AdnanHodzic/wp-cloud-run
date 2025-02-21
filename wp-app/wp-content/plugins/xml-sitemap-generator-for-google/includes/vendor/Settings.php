@@ -64,7 +64,17 @@ class Settings extends Controller {
 	public $cache_timeout_period     = 3600;
 	public $clear_cache_on_save_post = false;
 	public $enable_video_api_cache   = true;
+
 	public $minimize_sitemap         = false;
+	public $hide_branding            = true;
+	public $colors                   = array(
+		'header_background_color'  => '#82a745',
+		'header_text_color'        => '#ffffff',
+		'sitemap_background_color' => '#ecf4db',
+		'sitemap_text_color'       => '#444444',
+		'sitemap_link_color'       => '#2d89c7',
+		'footer_text_color'        => '#666666',
+	);
 
 	/**
 	 * Settings constructor.

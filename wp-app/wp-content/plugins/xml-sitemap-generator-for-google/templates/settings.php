@@ -98,6 +98,9 @@ settings_errors( Dashboard::$slug );
 								<!-- Minimize -->
 								<?php Dashboard::render( 'sections/advanced/optimize.php', $args ); ?>
 
+								<!-- Styles -->
+								<?php Dashboard::render( 'sections/advanced/styles.php', $args ); ?>
+
 								<!-- Import & Export -->
 								<?php Dashboard::render( 'sections/advanced/import-export.php', $args ); ?>
 							</div>

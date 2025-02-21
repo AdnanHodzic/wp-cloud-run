@@ -4,7 +4,7 @@ Tags: ads, adsense, amazon, affiliate, ad manager
 Requires at least: 5.0
 Tested up to: 6.6
 Requires PHP: 7.2
-Stable tag: 1.56.1
+Stable tag: 1.56.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -355,6 +355,11 @@ Yes. You can use plenty of [hooks](https://wpadvancedads.com/codex/) to customiz
 10. Convert AdSense ads into AMP automatically (AMP Ads add-on)
 
 == Changelog ==
+
+= 1.56.2 (February 19, 2025) =
+
+- Fix: resolve an issue occurring when setting an expiration date
+- Fix: update the licence status of premium plugins correctly
 
 = 1.56.1 (November 22, 2024) =
 

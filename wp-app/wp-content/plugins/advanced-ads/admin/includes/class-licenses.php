@@ -712,7 +712,7 @@ class Advanced_Ads_Admin_Licenses {
 		// look for the add-on with the appropriate license key
 		foreach ( $add_ons as $_add_on_key => $_add_on ) {
 			// identify the add-on based on the name
-			if ( ! isset( $add_on['name'] ) || $params->name !== $add_on['name'] ) {
+			if ( ! isset( $_add_on['name'] ) || $params->name !== $_add_on['name'] ) {
 				continue;
 			}
 

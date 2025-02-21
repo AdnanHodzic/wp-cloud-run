@@ -171,6 +171,8 @@ class Plugin extends Loader {
 	private function includes(): void {
 		// Common.
 		$this->register_initializer( Install::class );
+		$this->register_initializer( Crons\License_Reminder::class );
+
 		$this->register_integration( Entities::class );
 		$this->register_integration( Assets_Registry::class, 'registry' );
 		$this->register_integration( Framework\JSON::class, 'json', [ 'advancedAds' ] );

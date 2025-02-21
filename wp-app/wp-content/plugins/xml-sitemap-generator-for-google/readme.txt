@@ -5,7 +5,7 @@ Tags: sitemap, xml sitemap, google news, image sitemap, video sitemap, google si
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.7.1
-Stable tag: 2.0.5
+Stable tag: 2.0.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -149,6 +149,7 @@ You can also customize your HTML Sitemap by choosing which Post Types to display
 -- Gutenberg block
 -- WPBakery (Visual Composer) widget
 -- **[html-sitemap post-types="page,post,.." ..]**
+* Sitemap Custom Colors [NEW]
 * No Branding Marks 🔥
 * Premium Support
 
@@ -266,6 +267,11 @@ This section describes how to install the plugin and get it working.
 4. Set Up Page in **Settings -> XML Sitemaps**.
 
 == Changelog ==
+
+= 2.0.6 - 2025-02-10 =
+* **sgg_sitemap_colors** filter added for customizing Sitemap Colors
+* Pro Version: Sitemap Colors feature added with Color Pickers
+* Pro Version: Toggle Branding Marks feature added
 
 = 2.0.5 - 2025-01-07 =
 * Additional URLs: Add Bulk URLs feature added

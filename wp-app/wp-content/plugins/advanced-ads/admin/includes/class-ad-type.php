@@ -638,17 +638,15 @@ class Advanced_Ads_Admin_Ad_Type {
 			$hour   = absint( $_POST['advanced_ad']['expiry_date']['hour'] );
 			$minute = absint( $_POST['advanced_ad']['expiry_date']['minute'] );
 
-			$expiration_date = sprintf( '%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, '00' );
-			$valid_date      = wp_checkdate( $month, $day, $year, $expiration_date );
+			$expiration_date = date_create( sprintf( '%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, '00' ), Advanced_Ads_Utils::get_wp_timezone() );
 
-			if ( ! $valid_date ) {
+			if ( ! $expiration_date ) {
 				$ad->expiry_date = 0;
 			} else {
-				$gm_date = date_create( $expiration_date, Advanced_Ads_Utils::get_wp_timezone() );
-				$gm_date->setTimezone( new DateTimeZone( 'UTC' ) );
-				$gm_date                                    = $gm_date->format( 'Y-m-d-H-i' );
-				list( $year, $month, $day, $hour, $minute ) = explode( '-', $gm_date );
-				$ad->expiry_date                            = gmmktime( $hour, $minute, 0, $month, $day, $year );
+				$expiration_date->setTimezone( new DateTimeZone( 'UTC' ) );
+				$gm_date = $expiration_date->format( 'Y-m-d-H-i' );
+				[ $year, $month, $day, $hour, $minute ] = explode( '-', $gm_date );
+				$ad->expiry_date = gmmktime( $hour, $minute, 0, $month, $day, $year );
 			}
 		} else {
 			$ad->expiry_date = 0;

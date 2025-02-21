@@ -203,6 +203,8 @@ class Dashboard extends Controller {
 		$settings->clear_cache_on_save_post = sanitize_text_field( $_POST['clear_cache_on_save_post'] ?? 0 );
 		$settings->enable_video_api_cache   = sanitize_text_field( $_POST['enable_video_api_cache'] ?? 0 );
 		$settings->minimize_sitemap         = sanitize_text_field( $_POST['minimize_sitemap'] ?? 0 );
+		$settings->colors                   = apply_filters( 'sanitize_post_array', $_POST['colors'] ?? $settings->colors );
+		$settings->hide_branding            = sanitize_text_field( $_POST['hide_branding'] ?? 0 );
 
 		$settings->home          = $settings->get_row_value( 'home' );
 		$settings->page          = $settings->get_row_value( 'page' );

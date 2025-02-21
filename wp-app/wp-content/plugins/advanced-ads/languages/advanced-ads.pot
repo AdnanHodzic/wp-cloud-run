@@ -1,15 +1,15 @@
-# Copyright (C) 2024 Advanced Ads
+# Copyright (C) 2025 Advanced Ads
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Advanced Ads 1.56.0\n"
+"Project-Id-Version: Advanced Ads 1.56.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/advanced-ads/\n"
 "Last-Translator: Thomas Maier <post@webzunft.de>\n"
 "Language-Team: webgilde <support@wpadvancedads.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-11-22T08:20:46+00:00\n"
+"POT-Creation-Date: 2025-02-19T11:41:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: advanced-ads\n"
@@ -249,70 +249,70 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: %s is the time the ad was first saved.
-#: admin/includes/class-ad-type.php:697
+#: admin/includes/class-ad-type.php:695
 msgid "Ad created on %s"
 msgstr ""
 
-#: admin/includes/class-ad-type.php:884
-#: admin/includes/class-ad-type.php:885
+#: admin/includes/class-ad-type.php:882
+#: admin/includes/class-ad-type.php:883
 msgid "Ad updated."
 msgstr ""
 
 #. translators: %s: date and time of the revision
-#: admin/includes/class-ad-type.php:886
+#: admin/includes/class-ad-type.php:884
 msgid "Ad restored to revision from %s"
 msgstr ""
 
-#: admin/includes/class-ad-type.php:887
-#: admin/includes/class-ad-type.php:888
+#: admin/includes/class-ad-type.php:885
+#: admin/includes/class-ad-type.php:886
 msgid "Ad saved."
 msgstr ""
 
-#: admin/includes/class-ad-type.php:889
+#: admin/includes/class-ad-type.php:887
 msgid "Ad submitted."
 msgstr ""
 
 #. translators: %1$s is a date.
-#: admin/includes/class-ad-type.php:892
+#: admin/includes/class-ad-type.php:890
 msgid "Ad scheduled for: <strong>%1$s</strong>."
 msgstr ""
 
 #. translators: Publish box date format, see http://php.net/date.
-#: admin/includes/class-ad-type.php:894
+#: admin/includes/class-ad-type.php:892
 msgid "M j, Y @ G:i"
 msgstr ""
 
-#: admin/includes/class-ad-type.php:896
+#: admin/includes/class-ad-type.php:894
 msgid "Ad draft updated."
 msgstr ""
 
-#: admin/includes/class-ad-type.php:952
+#: admin/includes/class-ad-type.php:950
 msgid "You don’t have access to ads. Please deactivate and re-enable Advanced Ads again to fix this."
 msgstr ""
 
-#: admin/includes/class-ad-type.php:953
+#: admin/includes/class-ad-type.php:951
 #: classes/frontend_checks.php:546
 msgid "Get help"
 msgstr ""
 
 #. translators: %s is a date.
-#: admin/includes/class-ad-type.php:1174
+#: admin/includes/class-ad-type.php:1172
 #: admin/views/ad-list/timing.php:21
 msgid "starts %s"
 msgstr ""
 
 #. translators: %s is a date.
-#: admin/includes/class-ad-type.php:1195
+#: admin/includes/class-ad-type.php:1193
 #: admin/views/ad-list/timing.php:59
 msgid "expires %s"
 msgstr ""
 
 #. translators: %s is a date.
-#: admin/includes/class-ad-type.php:1199
+#: admin/includes/class-ad-type.php:1197
 msgid "expired %s"
 msgstr ""
 
-#: admin/includes/class-ad-type.php:1205
+#: admin/includes/class-ad-type.php:1203
 msgid "Published"
 msgstr ""
 
@@ -460,7 +460,7 @@ msgid "Ad Parameters"
 msgstr ""
 
 #: admin/includes/class-meta-box.php:153
-#: admin/includes/class-settings.php:73
+#: admin/includes/class-settings.php:74
 msgid "Layout / Output"
 msgstr ""
 
@@ -571,7 +571,7 @@ msgid "Manual and Support"
 msgstr ""
 
 #: admin/includes/class-overview-widgets.php:75
-#: includes/admin/class-action-links.php:59
+#: includes/admin/class-action-links.php:60
 msgid "Add-Ons"
 msgstr ""
 
@@ -789,98 +789,98 @@ msgstr ""
 msgid "Ads in content disabled"
 msgstr ""
 
-#: admin/includes/class-settings.php:57
+#: admin/includes/class-settings.php:58
 msgid "Admin"
 msgstr ""
 
-#: admin/includes/class-settings.php:65
-#: admin/includes/class-settings.php:146
+#: admin/includes/class-settings.php:66
+#: admin/includes/class-settings.php:147
 #: views/admin/page-bulk-edit.php:15
 msgid "Disable ads"
 msgstr ""
 
-#: admin/includes/class-settings.php:81
+#: admin/includes/class-settings.php:82
 msgid "Content injection"
 msgstr ""
 
-#: admin/includes/class-settings.php:154
+#: admin/includes/class-settings.php:155
 msgid "Hide ads for user roles"
 msgstr ""
 
-#: admin/includes/class-settings.php:162
+#: admin/includes/class-settings.php:163
 msgid "Content placement in post lists"
 msgstr ""
 
-#: admin/includes/class-settings.php:170
+#: admin/includes/class-settings.php:171
 msgid "Priority of content injection filter"
 msgstr ""
 
-#: admin/includes/class-settings.php:178
+#: admin/includes/class-settings.php:179
 #: classes/in-content-injector.php:617
 msgid "Disable level limitation"
 msgstr ""
 
-#: admin/includes/class-settings.php:186
+#: admin/includes/class-settings.php:187
 msgid "Hide ads from bots"
 msgstr ""
 
-#: admin/includes/class-settings.php:195
+#: admin/includes/class-settings.php:196
 msgid "Disable ads for post types"
 msgstr ""
 
-#: admin/includes/class-settings.php:204
+#: admin/includes/class-settings.php:205
 msgid "Disable Ad Health and other notices"
 msgstr ""
 
-#: admin/includes/class-settings.php:212
+#: admin/includes/class-settings.php:213
 msgid "ID prefix"
 msgstr ""
 
-#: admin/includes/class-settings.php:220
+#: admin/includes/class-settings.php:221
 msgid "Allow editors to manage ads"
 msgstr ""
 
 #. translators: unfiltered_html
-#: admin/includes/class-settings.php:231
+#: admin/includes/class-settings.php:232
 msgid "Add the %s capability to user roles on multisite"
 msgstr ""
 
-#: admin/includes/class-settings.php:241
+#: admin/includes/class-settings.php:242
 msgid "Ad label"
 msgstr ""
 
-#: admin/includes/class-settings.php:250
+#: admin/includes/class-settings.php:251
 msgid "Open links in a new window"
 msgstr ""
 
-#: admin/includes/class-settings.php:258
+#: admin/includes/class-settings.php:259
 msgid "Use advanced JavaScript"
 msgstr ""
 
-#: admin/includes/class-settings.php:268
+#: admin/includes/class-settings.php:269
 msgid "Delete data on uninstall"
 msgstr ""
 
-#: admin/includes/class-settings.php:311
+#: admin/includes/class-settings.php:312
 #: includes/admin/class-admin-menu.php:103
 #: includes/admin/class-admin-menu.php:107
 msgid "Licenses"
 msgstr ""
 
-#: admin/includes/class-settings.php:330
+#: admin/includes/class-settings.php:331
 msgid "Pro"
 msgstr ""
 
-#: admin/includes/class-settings.php:348
+#: admin/includes/class-settings.php:349
 #: admin/views/upgrades/tracking.php:2
 msgid "Tracking"
 msgstr ""
 
-#: admin/includes/class-settings.php:394
+#: admin/includes/class-settings.php:397
 msgid "Are you missing something?"
 msgstr ""
 
-#: admin/includes/class-settings.php:590
+#: admin/includes/class-settings.php:593
 msgctxt "label before ads"
 msgid "Advertisements"
 msgstr ""
@@ -897,7 +897,7 @@ msgstr ""
 #: includes/admin/class-groups-list-table.php:132
 #: includes/admin/pages/class-ads.php:35
 #: includes/admin/pages/class-ads.php:36
-#: includes/class-entities.php:55
+#: includes/class-entities.php:57
 #: modules/gutenberg/includes/class-gutenberg.php:137
 #: modules/import-export/views/page.php:23
 #: views/admin/tables/groups/edit-form-modal.php:107
@@ -1799,13 +1799,17 @@ msgstr ""
 msgid "Clean up all data related to Advanced Ads when removing the plugin."
 msgstr ""
 
-#: admin/views/settings/license/section.php:3
+#: admin/views/settings/license/section.php:13
 msgid "How to install and activate an add-on."
 msgstr ""
 
 #. translators: %s is a URL.
-#: admin/views/settings/license/section.php:9
+#: admin/views/settings/license/section.php:19
 msgid "See also <a href=\"%s\" target=\"_blank\">Issues and questions about licenses</a>."
+msgstr ""
+
+#: admin/views/settings/license/section.php:34
+msgid "Disable weekly reminders about missing licenses."
 msgstr ""
 
 #: admin/views/support-callout.php:3
@@ -2034,7 +2038,7 @@ msgstr ""
 #: classes/ad-debug.php:118
 #: classes/ad-debug.php:167
 #: classes/ad-debug.php:169
-#: includes/class-entities.php:56
+#: includes/class-entities.php:58
 #: modules/ad-positioning/views/ad-spacing.php:40
 #: views/admin/screens/placements.php:366
 #: views/admin/tables/groups/list-row-option-ads.php:19
@@ -2042,7 +2046,7 @@ msgid "Ad"
 msgstr ""
 
 #: classes/ad-debug.php:121
-#: includes/class-entities.php:128
+#: includes/class-entities.php:130
 msgctxt "ad group singular name"
 msgid "Ad Group"
 msgstr ""
@@ -2739,20 +2743,28 @@ msgstr ""
 msgid "Title:"
 msgstr ""
 
-#: includes/admin/class-action-links.php:54
+#: includes/admin/class-action-links.php:55
 #: includes/admin/class-admin-menu.php:88
 #: includes/admin/class-admin-menu.php:91
 #: views/admin/screens/settings.php:32
 msgid "Support"
 msgstr ""
 
-#: includes/admin/class-action-links.php:60
+#: includes/admin/class-action-links.php:61
 msgid "See Pro Features"
 msgstr ""
 
 #. translators: %1$s is the URL to add a new review
-#: includes/admin/class-action-links.php:102
+#: includes/admin/class-action-links.php:103
 msgid "Thank the developer with a &#9733;&#9733;&#9733;&#9733;&#9733; review on <a href=\"%1$s\" target=\"_blank\">wordpress.org</a>"
+msgstr ""
+
+#: includes/admin/class-action-links.php:193
+msgid "You have successfully rolled back to Advanced Ads %s"
+msgstr ""
+
+#: includes/admin/class-action-links.php:194
+msgid "You have successfully rolled back to a previous version of Advanced Ads."
 msgstr ""
 
 #: includes/admin/class-assets.php:84
@@ -2825,7 +2837,7 @@ msgid "Details"
 msgstr ""
 
 #: includes/admin/class-groups-list-table.php:204
-#: includes/class-entities.php:138
+#: includes/class-entities.php:140
 msgid "No Ad Group found"
 msgstr ""
 
@@ -2846,7 +2858,7 @@ msgstr ""
 
 #: includes/admin/class-groups-list-table.php:345
 #: includes/admin/class-groups-list-table.php:420
-#: includes/class-entities.php:59
+#: includes/class-entities.php:61
 #: modules/import-export/classes/import.php:168
 #: modules/import-export/classes/import.php:211
 #: modules/import-export/classes/import.php:626
@@ -2892,8 +2904,8 @@ msgstr[1] ""
 
 #: includes/admin/class-header.php:55
 #: includes/admin/class-header.php:61
-#: includes/class-entities.php:57
-#: includes/class-entities.php:61
+#: includes/class-entities.php:59
+#: includes/class-entities.php:63
 #: views/admin/tables/groups/list-row-option-ads.php:39
 msgid "New Ad"
 msgstr ""
@@ -2907,7 +2919,7 @@ msgid "Your Groups"
 msgstr ""
 
 #: includes/admin/class-header.php:70
-#: includes/class-entities.php:135
+#: includes/class-entities.php:137
 #: views/admin/screens/groups.php:38
 msgid "New Ad Group"
 msgstr ""
@@ -3014,82 +3026,86 @@ msgstr ""
 msgid "The %s constant is no longer supported."
 msgstr ""
 
-#: includes/class-entities.php:58
+#: includes/class-entities.php:60
 msgid "Add New Ad"
 msgstr ""
 
-#: includes/class-entities.php:60
+#: includes/class-entities.php:62
 msgid "Edit Ad"
 msgstr ""
 
-#: includes/class-entities.php:62
+#: includes/class-entities.php:64
 msgid "View"
 msgstr ""
 
-#: includes/class-entities.php:63
+#: includes/class-entities.php:65
 msgid "View the Ad"
 msgstr ""
 
-#: includes/class-entities.php:64
+#: includes/class-entities.php:66
 msgid "Search Ads"
 msgstr ""
 
-#: includes/class-entities.php:65
+#: includes/class-entities.php:67
 msgid "No Ads found"
 msgstr ""
 
-#: includes/class-entities.php:66
+#: includes/class-entities.php:68
 msgid "No Ads found in Trash"
 msgstr ""
 
-#: includes/class-entities.php:67
+#: includes/class-entities.php:69
 msgid "Parent Ad"
 msgstr ""
 
-#: includes/class-entities.php:127
+#: includes/class-entities.php:129
 msgctxt "ad group general name"
 msgid "Ad Groups & Rotations"
 msgstr ""
 
-#: includes/class-entities.php:129
+#: includes/class-entities.php:131
 msgid "Search Ad Groups"
 msgstr ""
 
-#: includes/class-entities.php:130
+#: includes/class-entities.php:132
 msgid "All Ad Groups"
 msgstr ""
 
-#: includes/class-entities.php:131
+#: includes/class-entities.php:133
 msgid "Parent Ad Groups"
 msgstr ""
 
-#: includes/class-entities.php:132
+#: includes/class-entities.php:134
 msgid "Parent Ad Groups:"
 msgstr ""
 
-#: includes/class-entities.php:133
+#: includes/class-entities.php:135
 msgid "Edit Ad Group"
 msgstr ""
 
-#: includes/class-entities.php:134
+#: includes/class-entities.php:136
 msgid "Update Ad Group"
 msgstr ""
 
-#: includes/class-entities.php:136
+#: includes/class-entities.php:138
 msgid "New Ad Groups Name"
 msgstr ""
 
-#: includes/class-entities.php:137
+#: includes/class-entities.php:139
 #: modules/import-export/views/page.php:24
 msgid "Groups"
 msgstr ""
 
-#: includes/class-entities.php:173
+#: includes/class-entities.php:175
 msgid "Placements are customizable ad spots on your site. Use them to see and change all the assigned ads and groups on this page. Furthermore, you can set up exclusive features like Cache Busting, Lazy Loading, AdBlocker fallbacks, or Parallax effects."
 msgstr ""
 
-#: includes/class-entities.php:182
+#: includes/class-entities.php:184
 msgid "Ad Groups are a flexible method to bundle ads. Use them to create ad rotations, run split tests, and organize your ads in the backend. An ad can belong to multiple ad groups."
+msgstr ""
+
+#: includes/crons/class-license-reminder.php:48
+msgid "Reminder: Activate your Advanced Ads licenses for updates"
 msgstr ""
 
 #: includes/groups/types/type-grid.php:36
@@ -4339,6 +4355,38 @@ msgstr ""
 
 #: public/views/ad-debug.php:8
 msgid "Find solutions in the manual"
+msgstr ""
+
+#: templates/emails/license-reminder.php:10
+msgid "Hi there,"
+msgstr ""
+
+#. translators: %s: Website URL
+#: templates/emails/license-reminder.php:16
+msgid "This is a weekly reminder that one or more of your Advanced Ads add-ons on %s doesn’t have a license key enabled."
+msgstr ""
+
+#. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag
+#: templates/emails/license-reminder.php:26
+msgid "%1$sPlease visit the license page%2$s to make sure that all add-ons have valid licenses and that the keys are activated."
+msgstr ""
+
+#. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag
+#: templates/emails/license-reminder.php:37
+msgid "This email is sent in preparation for the upcoming Advanced Ads 2.0 update, to ensure compatibility and avoid potential issues caused by outdated plugin versions. %1$sRead more on the Advanced Ads website.%2$s"
+msgstr ""
+
+#. translators: %1$s: Opening anchor tag, %2$s: Closing anchor tag
+#: templates/emails/license-reminder.php:48
+msgid "%1$sYou can disable this reminder here.%2$s"
+msgstr ""
+
+#: templates/emails/license-reminder.php:55
+msgid "Kind regards"
+msgstr ""
+
+#: templates/emails/license-reminder.php:55
+msgid "The Advanced Ads team"
 msgstr ""
 
 #: views/admin/feedback-disable.php:16

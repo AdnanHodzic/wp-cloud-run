@@ -14,6 +14,7 @@ return array(
     'AdvancedAds\\Admin\\Assets' => $baseDir . '/includes/admin/class-assets.php',
     'AdvancedAds\\Admin\\Groups_List_Table' => $baseDir . '/includes/admin/class-groups-list-table.php',
     'AdvancedAds\\Admin\\Header' => $baseDir . '/includes/admin/class-header.php',
+    'AdvancedAds\\Admin\\License_Reminder' => $baseDir . '/includes/admin/class-license-reminder.php',
     'AdvancedAds\\Admin\\Page_Quick_Edit' => $baseDir . '/includes/admin/class-page-quick-edit.php',
     'AdvancedAds\\Admin\\Pages\\Ads' => $baseDir . '/includes/admin/pages/class-ads.php',
     'AdvancedAds\\Admin\\Pages\\Dashboard' => $baseDir . '/includes/admin/pages/class-dashboard.php',

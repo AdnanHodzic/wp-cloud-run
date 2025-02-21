@@ -43,6 +43,7 @@ class ComposerStaticInit_AdvancedAds
         'AdvancedAds\\Admin\\Assets' => __DIR__ . '/../..' . '/includes/admin/class-assets.php',
         'AdvancedAds\\Admin\\Groups_List_Table' => __DIR__ . '/../..' . '/includes/admin/class-groups-list-table.php',
         'AdvancedAds\\Admin\\Header' => __DIR__ . '/../..' . '/includes/admin/class-header.php',
+        'AdvancedAds\\Admin\\License_Reminder' => __DIR__ . '/../..' . '/includes/admin/class-license-reminder.php',
         'AdvancedAds\\Admin\\Page_Quick_Edit' => __DIR__ . '/../..' . '/includes/admin/class-page-quick-edit.php',
         'AdvancedAds\\Admin\\Pages\\Ads' => __DIR__ . '/../..' . '/includes/admin/pages/class-ads.php',
         'AdvancedAds\\Admin\\Pages\\Dashboard' => __DIR__ . '/../..' . '/includes/admin/pages/class-dashboard.php',

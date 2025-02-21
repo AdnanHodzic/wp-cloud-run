@@ -42,7 +42,7 @@ $setting_tabs = apply_filters(
 					do_settings_sections( $_setting_tab['page'] );
 
 					do_action( 'advanced-ads-settings-form', $_setting_tab_id, $_setting_tab );
-					if ( isset( $_setting_tab['group'] ) && 'advanced-ads-licenses' !== $_setting_tab['group'] ) {
+					if ( isset( $_setting_tab['group'] ) ) {
 						submit_button( __( 'Save settings on this page', 'advanced-ads' ) );
 					}
 					?>

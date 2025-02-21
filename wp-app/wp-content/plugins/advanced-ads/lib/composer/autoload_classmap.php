@@ -55,6 +55,7 @@ return array(
     'AdvancedAds\\BuildTools\\Values\\SemanticVersion' => $vendorDir . '/advanced-ads/build-tools/src/Values/SemanticVersion.php',
     'AdvancedAds\\BuildTools\\Values\\Translation' => $vendorDir . '/advanced-ads/build-tools/src/Values/Translation.php',
     'AdvancedAds\\Constants' => $baseDir . '/includes/class-constants.php',
+    'AdvancedAds\\Crons\\License_Reminder' => $baseDir . '/includes/crons/class-license-reminder.php',
     'AdvancedAds\\Entities' => $baseDir . '/includes/class-entities.php',
     'AdvancedAds\\Groups\\Manager' => $baseDir . '/includes/groups/class-manager.php',
     'AdvancedAds\\Groups\\Types\\Grid' => $baseDir . '/includes/groups/types/type-grid.php',

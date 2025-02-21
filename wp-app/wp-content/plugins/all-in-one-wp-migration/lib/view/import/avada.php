@@ -39,5 +39,5 @@ if ( ai1wm_validate_plugin_basename( 'oxygen/functions.php' ) ) {
 
 print( __( '» <a class="ai1wm-no-underline" href="https://theme-fusion.com/documentation/avada/installation-maintenance/important-update-information/#clear-caches" target="_blank">Reset Avada Fusion Builder cache</a>.<br />', AI1WM_PLUGIN_NAME ) );
 print( __( '» <a class="ai1wm-no-underline" href="https://wordpress.org/support/view/plugin-reviews/all-in-one-wp-migration?rate=5#postform" target="_blank">Review your migration experience</a>.<br />', AI1WM_PLUGIN_NAME ) );
-printf( __( '» Protect your site with automatic backups - upgrade to <a href="%s" target="_blank">Unlimited Extension</a>', AI1WM_PLUGIN_NAME ), 'https://servmask.com/products/unlimited-extension?utm_source=import-success&utm_medium=plugin&utm_campaign=ai1wm' );
+printf( __( '» <a class="ai1wm-no-underline" href="%s" target="_blank">Protect your site with real-time threat protection</a>', AI1WM_PLUGIN_NAME ), 'https://servmask.com/protect' );
 

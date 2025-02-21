@@ -25,7 +25,7 @@ class Page_Quick_Edit implements Integration_Interface {
 	 *
 	 * @return void
 	 */
-	public function hooks() {
+	public function hooks(): void {
 		add_action( 'quick_edit_custom_box', [ $this, 'add_quick_edit_fields' ], 10, 2 );
 		add_action( 'bulk_edit_custom_box', [ $this, 'add_bulk_edit_fields' ], 10, 2 );
 		add_action( 'save_post', [ $this, 'save_quick_edit_fields' ] );

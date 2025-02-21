@@ -85,6 +85,7 @@ class ComposerStaticInit_AdvancedAds
         'AdvancedAds\\BuildTools\\Values\\SemanticVersion' => __DIR__ . '/..' . '/advanced-ads/build-tools/src/Values/SemanticVersion.php',
         'AdvancedAds\\BuildTools\\Values\\Translation' => __DIR__ . '/..' . '/advanced-ads/build-tools/src/Values/Translation.php',
         'AdvancedAds\\Constants' => __DIR__ . '/../..' . '/includes/class-constants.php',
+        'AdvancedAds\\Crons\\License_Reminder' => __DIR__ . '/../..' . '/includes/crons/class-license-reminder.php',
         'AdvancedAds\\Entities' => __DIR__ . '/../..' . '/includes/class-entities.php',
         'AdvancedAds\\Groups\\Manager' => __DIR__ . '/../..' . '/includes/groups/class-manager.php',
         'AdvancedAds\\Groups\\Types\\Grid' => __DIR__ . '/../..' . '/includes/groups/types/type-grid.php',
