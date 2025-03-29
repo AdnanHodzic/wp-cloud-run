@@ -2,3 +2,8 @@
 backup/*
 wp-app/wp-content/plugins/all-in-one-wp-migration-unlimited-extension/*
 wp-app/wp-content/themes/*
+# Not including these (default) themes in the container image will result in
+# "There has been a critical error on this website" Wordpress error message
+!wp-app/wp-content/themes/twentytwentyfive
+!wp-app/wp-content/themes/twentytwentyfour
+!wp-app/wp-content/themes/twentytwentythree
