@@ -11,7 +11,7 @@ $setting_tabs = apply_filters(
 	'advanced-ads-setting-tabs',
 	[
 		'general' => [
-			'page'  => Advanced_Ads_Admin::get_instance()->plugin_screen_hook_suffix,
+			'page'  => wp_advads()->screens->get_hook( 'settings' ),
 			'group' => ADVADS_SLUG,
 			'tabid' => 'general',
 			'title' => __( 'General', 'advanced-ads' ),
@@ -34,6 +34,7 @@ $setting_tabs = apply_filters(
 		<?php foreach ( $setting_tabs as $_setting_tab_id => $_setting_tab ) : ?>
 			<div id="<?php echo esc_attr( $_setting_tab_id ); ?>" class="advads-tab">
 				<div id="advads-sub-menu-<?php echo esc_attr( $_setting_tab_id ); ?>" class="advads-tab-sub-menu"></div>
+				<?php do_action( 'advanced_ads_settings_before_form', $_setting_tab_id, $_setting_tab ); ?>
 				<form class="advads-settings-tab-main-form" method="post" action="options.php">
 					<?php
 					if ( isset( $_setting_tab['group'] ) ) {
@@ -42,17 +43,12 @@ $setting_tabs = apply_filters(
 					do_settings_sections( $_setting_tab['page'] );
 
 					do_action( 'advanced-ads-settings-form', $_setting_tab_id, $_setting_tab );
-					if ( isset( $_setting_tab['group'] ) ) {
+					if ( isset( $_setting_tab['group'] ) && 'advanced-ads-licenses' !== $_setting_tab['group'] ) {
 						submit_button( __( 'Save settings on this page', 'advanced-ads' ) );
 					}
 					?>
 				</form>
 				<?php do_action( 'advanced-ads-settings-tab-after-form', $_setting_tab_id, $_setting_tab ); ?>
-			<?php if ( 'general' === $_setting_tab_id ) : ?>
-			<ul>
-				<li><a href="<?php echo esc_url( admin_url( 'admin.php?page=advanced-ads-import-export' ) ); ?>"><?php esc_html_e( 'Import &amp; Export', 'advanced-ads' ); ?></a></li>
-			</ul>
-			<?php endif; ?>
 			</div>
 		<?php endforeach; ?>
 	<div id="support" class="advads-tab">

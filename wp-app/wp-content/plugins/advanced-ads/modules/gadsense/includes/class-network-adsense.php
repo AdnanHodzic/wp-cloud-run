@@ -1,4 +1,10 @@
-<?php
+<?php // phpcs:ignoreFile
+
+use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Utilities\WordPress;
+use AdvancedAds\Utilities\Conditional;
+use AdvancedAds\Compatibility\Compatibility;
+
 /**
  * Class Advanced_Ads_Network_Adsense
  */
@@ -53,6 +59,28 @@ class Advanced_Ads_Network_Adsense extends Advanced_Ads_Ad_Network {
 
 		// Adsense does not use the default generated settings section id. overwrite it with the old value.
 		$this->settings_section_id = 'advanced_ads_adsense_setting_section';
+
+		add_action( 'advanced_ads_settings_before_form', [ $this, 'render_before_form' ], 10, 2 );
+	}
+
+	/**
+	 * Render before form.
+	 *
+	 * @param string $tab_id the ID of the current tab.
+	 * @param array  $tab    the current tab.
+	 */
+	public function render_before_form( $tab_id, $tab ) {
+		if ( 'adsense' === $tab_id && ! empty( $this->data->get_adsense_id() ) ) {
+			$_notice = 'adsense_subscribe';
+			if ( Advanced_Ads_Admin_Notices::get_instance()->can_display( $_notice ) && Conditional::user_can_subscribe( 'nl_first_steps' ) ) {
+				$text = sprintf(
+					/* translators: %s: number of add-ons. */
+					__( 'Subscribe to our free email course for Google AdSense, receive our newsletter for periodic tutorials, and get %s for Advanced Ads.', 'advanced-ads' ),
+					'<strong>' . __( '2 free add-ons', 'advanced-ads' ) . '</strong>'
+				);
+				include ADVADS_ABSPATH . '/admin/views/notices/inline.php';
+			}
+		}
 	}
 
 	/**
@@ -167,7 +195,7 @@ class Advanced_Ads_Network_Adsense extends Advanced_Ads_Ad_Network {
 		<label>
 			<input type="checkbox" name="<?php echo esc_attr( GADSENSE_OPT_NAME ); ?>[top-anchor-ad]" value="1" <?php checked( $anchor_ad ); ?> />
 			<?php esc_html_e( 'Enable this box if you don’t want Google Auto ads to place anchor ads at the top of your page.', 'advanced-ads' ); ?>
-			<?php Advanced_Ads_Admin::show_deprecated_notice('top Anchor Ad'); ?>
+			<?php WordPress::show_deprecated_notice('top Anchor Ad'); ?>
 		</label>
 		<?php
 	}
@@ -229,7 +257,7 @@ class Advanced_Ads_Network_Adsense extends Advanced_Ads_Ad_Network {
 			endif;
 			?>
 		</ul>
-		<?php if ( Advanced_Ads_Compatibility::borlabs_cookie_adsense_auto_ads_code_exists() ) : ?>
+		<?php if ( Compatibility::borlabs_cookie_adsense_auto_ads_code_exists() ) : ?>
 			<p class="advads-notice-inline advads-error">
 				<?php require GADSENSE_BASE_PATH . 'admin/views/borlabs-cookie-auto-ads-warning.php'; ?>
 			</p>
@@ -355,39 +383,29 @@ class Advanced_Ads_Network_Adsense extends Advanced_Ads_Ad_Network {
 	}
 
 	/**
-	 * Sanitize ad settingssave publisher id from new ad unit if not given in main options
-	 *  save publisher id from new ad unit if not given in main options
+	 * Save publisher id from new ad unit if not given in main options
 	 *
-	 * @param array $ad_settings_post ad settings.
-	 * @return array sanitized ad settings.
+	 * @param Ad    $ad        Ad instance.
+	 * @param array $post_data Post data array.
+	 *
+	 * @return void
 	 */
-	public function sanitize_ad_settings( $ad_settings_post ) {
-		// Check ad type.
-		if ( ! isset( $ad_settings_post['type'] ) || 'adsense' !== $ad_settings_post['type'] ) {
-			return $ad_settings_post;
+	public function sanitize_ad_settings( Ad $ad, $post_data ): void {
+		if ( ! $ad->is_type( 'adsense' ) ) {
+			return;
 		}
 
 		// Save AdSense publisher ID if there is no one stored yet.
-		if ( ! empty( $ad_settings_post['output']['adsense-pub-id'] ) ) {
-			// Get options.
+		if ( ! empty( $post_data['adsense-pub-id'] ) ) {
 			$adsense_options = get_option( 'advanced-ads-adsense', [] );
 
 			if ( empty( $adsense_options['adsense-id'] ) ) {
-				$adsense_options['adsense-id'] = $ad_settings_post['output']['adsense-pub-id'];
+				$adsense_options['adsense-id'] = $post_data['adsense-pub-id'];
 				update_option( 'advanced-ads-adsense', $adsense_options );
 			}
 		}
-		unset( $ad_settings_post['output']['adsense-pub-id'] );
-		return $ad_settings_post;
-	}
 
-	/**
-	 * Return ad type object.
-	 *
-	 * @return Advanced_Ads_Ad_Type_Adsense
-	 */
-	public function get_ad_type() {
-		return new Advanced_Ads_Ad_Type_Adsense();
+		$ad->unset_prop( 'adsense-pub-id' );
 	}
 
 	/**
@@ -530,10 +548,9 @@ class Advanced_Ads_Network_Adsense extends Advanced_Ads_Ad_Network {
 	 * @return object|null The ad unit object associated with the given ad ID, or null if not found.
 	 */
 	function get_ad_unit( $ad_id ){
-		$ad_repository = new \Advanced_Ads\Ad_Repository();
-		$adense_ad = $ad_repository->get( $ad_id );
+		$adense_ad = wp_advads_get_ad( $ad_id );
 		// Early bail!!
-		if ( ! $adense_ad || 'adsense' !== ( $adense_ad->type ?? '' ) || ! isset( $adense_ad->content ) ) {
+		if ( ! $adense_ad || ! $adense_ad->is_type( 'adsense' ) || empty( $adense_ad->get_content() ) ) {
 			return null;
 		}
 
@@ -542,7 +559,7 @@ class Advanced_Ads_Network_Adsense extends Advanced_Ads_Ad_Network {
 			return null;
 		}
 
-		$json_content = json_decode( $adense_ad->content );
+		$json_content = json_decode( $adense_ad->get_content() );
 		$unit_code = $json_content->slotId ?? null;
 
 		foreach( $ad_units as $ad_unit ) {

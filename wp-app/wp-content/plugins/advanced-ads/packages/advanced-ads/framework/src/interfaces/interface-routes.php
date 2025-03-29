@@ -21,5 +21,5 @@ interface Routes_Interface {
 	 *
 	 * @return void
 	 */
-	public function register_routes();
+	public function register_routes(): void;
 }

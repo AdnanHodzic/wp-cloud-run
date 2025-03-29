@@ -1,8 +1,14 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName
+/**
+ * This represents an external ad unit. Will be used for importing external ads from various ad networks.
+ *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.x.x
+ */
 
 /**
  * Class Advanced_Ads_Ad_Network_Ad_Unit
- * This represents an external ad unit. Will be used for importing external ads from various ad networks.
  */
 class Advanced_Ads_Ad_Network_Ad_Unit {
 	/**
@@ -56,12 +62,6 @@ class Advanced_Ads_Ad_Network_Ad_Unit {
 	public $active;
 
 	/**
-	 * The code of the ad unit.
-	 * @var string
-	 */
-	public $code;
-
-	/**
 	 * Advanced_Ads_Ad_Network_Ad_Unit constructor.
 	 *
 	 * @param string $raw raw ad data.
@@ -79,15 +79,18 @@ class Advanced_Ads_Ad_Network_Ad_Unit {
 	 * @return array
 	 */
 	public static function sort_ad_units( array &$ad_units, $selected_id ) {
+		$selected_id = absint( $selected_id );
 		usort(
 			$ad_units,
 			function ( $a, $b ) use ( $selected_id ) {
-				if ( $a->id == $selected_id ) {
+				if ( absint( $a->id ) === $selected_id ) {
 					return - 1;
 				}
-				if ( $b->id == $selected_id ) {
+
+				if ( absint( $b->id ) === $selected_id ) {
 					return 1;
 				}
+
 				if ( $a->is_supported ) {
 					if ( ! $b->is_supported ) {
 						return - 1;

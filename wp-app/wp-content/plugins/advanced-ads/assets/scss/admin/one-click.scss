@@ -1,0 +1,39 @@
+.buttons-set {
+	@apply flex gap-x-4 items-center;
+}
+
+#advads-m2-connect {
+	a {
+		@apply text-primary;
+	}
+
+	.inside > div {
+		@apply p-0;
+	}
+
+	.subheader {
+		@apply font-semibold border-0 border-b border-solid block;
+		border-color: $border-color;
+		background-color: #fdfdfe;
+		font-size: 14px;
+		padding: 8px 12px;
+		margin: 0 -12px;
+		line-height: 1.4;
+
+		&.inline {
+			@apply border-t;
+		}
+
+		&.last {
+			@apply border-b-0;
+		}
+	}
+
+	.step-error {
+		@apply text-[#cc3000];
+	}
+}
+
+.import-active ul {
+	@apply text-[#cc3000];
+}

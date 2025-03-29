@@ -2,9 +2,11 @@
 /**
  * Template for the is/is_not operator used in many conditions.
  *
+ * @package AdvancedAds
  * @var string $name form field name attribute.
  * @var string $operator operator value.
  */
+
 ?>
 <select name="<?php echo esc_attr( $name ); ?>[operator]">
 	<option value="is" <?php selected( 'is', $operator ); ?>><?php esc_html_e( 'is', 'advanced-ads' ); ?></option>

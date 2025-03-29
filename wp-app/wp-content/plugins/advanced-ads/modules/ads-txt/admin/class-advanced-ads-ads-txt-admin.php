@@ -1,6 +1,7 @@
 <?php // phpcs:ignoreFile
 
-use AdvancedAds\Utilities\WordPress;
+use AdvancedAds\Framework\Utilities\Params;
+use AdvancedAds\Utilities\Conditional;
 
 /**
  * User interface for managing the 'ads.txt' file.
@@ -59,9 +60,9 @@ class Advanced_Ads_Ads_Txt_Admin {
 	 */
 	public function toggle( $options ) {
 		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		$create             = ! empty( $_POST['advads-ads-txt-create'] );
-		$all_network        = ! empty( $_POST['advads-ads-txt-all-network'] );
-		$additional_content = ! empty( $_POST['advads-ads-txt-additional-content'] ) ? trim( wp_unslash( $_POST['advads-ads-txt-additional-content'] ) ) : '';
+		$create             = ! empty( Params::post( 'advads-ads-txt-create' ) );
+		$all_network        = ! empty( Params::post( 'advads-ads-txt-all-network' ) );
+		$additional_content = trim( wp_unslash( Params::post( 'advads-ads-txt-additional-content', '' ) ) );
 		// phpcs:enable
 
 		$this->strategy->toggle( $create, $all_network, $additional_content );
@@ -114,7 +115,6 @@ class Advanced_Ads_Ads_Txt_Admin {
 	 * @param string $hook The slug-name of the settings page.
 	 */
 	public function add_settings( $hook ) {
-
 		$adsense_data = Advanced_Ads_AdSense_Data::get_instance();
 		$adsense_id   = $adsense_data->get_adsense_id();
 
@@ -372,15 +372,16 @@ class Advanced_Ads_Ads_Txt_Admin {
 
 		check_ajax_referer( 'advanced-ads-admin-ajax-nonce', 'nonce' );
 
-		if ( ! WordPress::user_can( 'advanced_ads_manage_options' ) ) {
+		if ( ! Conditional::user_can( 'advanced_ads_manage_options' ) ) {
 			return;
 		}
 
 		$response       = [];
 		$action_notices = [];
 
-		if ( isset( $_REQUEST['type'] ) ) {
-			if ( 'remove_real_file' === $_REQUEST['type'] ) {
+		$request_type = Params::request( 'type' );
+		if ( $request_type ) {
+			if ( 'remove_real_file' === $request_type ) {
 				$remove = $this->remove_real_file();
 				if ( is_wp_error( $remove ) ) {
 					$action_notices[] = [ 'advads-ads-txt-updated advads-notice-inline advads-error', $remove->get_error_message() ];
@@ -394,7 +395,7 @@ class Advanced_Ads_Ads_Txt_Admin {
 				}
 			}
 
-			if ( 'create_real_file' === $_REQUEST['type'] ) {
+			if ( 'create_real_file' === $request_type ) {
 				$action_notices[] = $this->create_real_file();
 			}
 		}

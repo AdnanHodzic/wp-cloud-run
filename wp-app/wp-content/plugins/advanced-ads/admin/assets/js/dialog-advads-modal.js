@@ -1,6 +1,5 @@
 // phpcs:disable Generic.WhiteSpace.ScopeIndent.IncorrectExact -- PHPCS can't handle es5 short functions
 const modal = element => {
-	let termination;
 	let targetForm;
 
 	/**
@@ -14,10 +13,11 @@ const modal = element => {
 		element.showModal();
 		element.dispatchEvent( new CustomEvent( 'advads-modal-opened' ) );
 
-		termination = new Advads_Termination( element );
+		// Attach the termination object to the dialog node to allow other's code to plug in.
+		element.advadsTermination = new Advads_Termination( element );
 
 		if ( targetForm ) {
-			termination.collectValues();
+			element.advadsTermination.collectValues();
 		}
 	};
 
@@ -43,7 +43,7 @@ const modal = element => {
 			return;
 		}
 
-		if ( ! targetForm || termination.terminationNotice( true ) ) {
+		if ( ! targetForm || element.advadsTermination.terminationNotice( true ) ) {
 			element.close();
 		}
 	} );
@@ -69,10 +69,10 @@ const modal = element => {
 			return;
 		}
 
-		if ( termination.terminationNotice( true ) ) {
+		if ( element.advadsTermination.terminationNotice( true ) ) {
 			element.close();
 
-			termination.observers.disconnect();
+			element.advadsTermination.observers.disconnect();
 
 			document.dispatchEvent( new CustomEvent( 'advads-modal-canceled', {
 				detail: {
@@ -112,8 +112,24 @@ const modal = element => {
 				}
 
 				if ( targetForm.reportValidity() ) {
+					let submitForm = true;
+
+					if ( 'function' === typeof window[element.closeValidation.function] && ! window[element.closeValidation.function]( element.closeValidation.modal_id ) ) {
+						e.preventDefault();
+						return;
+					}
+
+					/**
+					 * Allow other code to prevent the form submission (and send it using an AJAX call for instance).
+					 */
+					submitForm = wp.hooks.applyFilters( 'advanced-ads-submit-modal-form', true, targetForm, element.advadsTermination.initialFormValues, element.advadsTermination.changedFormValues );
+
+					if ( ! submitForm ) {
+						e.preventDefault();
+						return;
+					}
+
 					targetForm.submit();
-					return;
 				}
 
 				// if there are inputs, but there is no form associated with them, do nothing.

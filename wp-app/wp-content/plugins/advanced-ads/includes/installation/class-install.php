@@ -35,7 +35,12 @@ class Install extends Base {
 	 */
 	protected function activate(): void {
 		// TODO: inform modules.
-		Capabilities::get_instance()->create_capabilities();
+		( new Capabilities() )->create_capabilities();
+
+		// Addons compatibility check.
+		if ( ! get_option( 'advanced-ads-2-compatibility-flag' ) ) {
+			( new Compatibility() )->deactivate_plugins();
+		}
 	}
 
 	/**
@@ -45,7 +50,7 @@ class Install extends Base {
 	 */
 	protected function deactivate(): void {
 		// TODO: inform modules.
-		Capabilities::get_instance()->remove_capabilities();
+		( new Capabilities() )->remove_capabilities();
 	}
 
 	/**

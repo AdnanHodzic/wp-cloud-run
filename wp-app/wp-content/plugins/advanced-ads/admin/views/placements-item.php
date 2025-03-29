@@ -7,7 +7,7 @@
  * @var array  $placement           information of the current placement.
  * @var string $placement_item_type type of the item currently selected for the placement
  * @var int    $placement_item_id   ID of the item currently selected for the placement
- * @package Advanced_Ads_Admin
+ * @package AdvancedAds
  */
 
 ?>
@@ -53,7 +53,7 @@ if ( $placement_item_type ) :
 		<p>
 		<?php
 		printf(
-				// translators: %s is the name of a language in English.
+			/* translators: %s is the name of a language in English. */
 			esc_html__( 'The ad is not translated into %s', 'advanced-ads' ),
 			esc_html( ICL_LANGUAGE_NAME )
 		);

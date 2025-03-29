@@ -77,8 +77,8 @@
 			<h2 id="advanced-ads-feedback-after-submit-goodbye" style="display: none">
 			<?php
 			printf(
-				// translators: %s is the title of the website.
-				wp_kses_post( 'All the best to you and <em>%s</em>.', 'advanced-ads' ),
+				/* translators: %s is the title of the website. */
+				wp_kses_post( __( 'All the best to you and <em>%s</em>.', 'advanced-ads' ) ),
 				esc_html( get_bloginfo( 'name' ) )
 			);
 			?>

@@ -9,7 +9,7 @@
 
 namespace AdvancedAds\Framework\Form;
 
-use Advanced_Ads_Admin_Upgrades;
+use AdvancedAds\Admin\Upgrades;
 use AdvancedAds\Framework\Utilities\Str;
 
 defined( 'ABSPATH' ) || exit;
@@ -99,7 +99,7 @@ abstract class Field {
 
 				// Place an upgrade link below the description if there is one.
 				if ( $this->get( 'is_pro_pitch' ) ) {
-					Advanced_Ads_Admin_Upgrades::upgrade_link( 'upgrade-pro-' . $this->get( 'id' ) );
+					Upgrades::upgrade_link( 'upgrade-pro-' . $this->get( 'id' ) );
 				}
 				?>
 			</div>

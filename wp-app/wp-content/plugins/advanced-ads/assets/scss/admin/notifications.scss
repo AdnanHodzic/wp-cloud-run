@@ -1,0 +1,108 @@
+@import "../bootstrap/variables";
+
+##{$namespace}-notifications {
+	@apply fixed text-sm pt-12 top-0;
+	z-index: 999;
+	right: 15px;
+
+	.item {
+		@apply text-white flex relative justify-end;
+		padding: 5px 0;
+	}
+
+	.item-inner {
+		@apply flex rounded-md;
+
+		.content p:before {
+			@apply align-middle mr-1.5;
+		}
+
+		> div {
+			@apply p-1.5;
+
+			&:first-of-type {
+				@apply rounded-l-md;
+			}
+
+			&:last-of-type {
+				@apply rounded-r-md;
+			}
+		}
+
+		.content {
+			@apply pl-3 pr-3;
+			p {
+				@apply text-nowrap block;
+			}
+		}
+
+		p {
+			@apply m-0;
+		}
+
+		a {
+			@apply text-white;
+		}
+
+		.dashicons {
+			scale: 0.66;
+		}
+
+		.dismiss {
+			cursor: pointer;
+
+			.dashicons:before {
+				content: "\f153";
+				color: rgb(255, 255, 255, 0.5);
+			}
+		}
+
+		.sep {
+			width: 1px;
+			padding: 0;
+			background-color: rgb(255, 255, 255, 0.5) !important;
+		}
+	}
+
+	.item-error .item-inner {
+		background-color: #cc3000;
+
+		.content p:before {
+			font-family: dashicons;
+			content: "\f534";
+		}
+	}
+
+	.item-success .item-inner {
+		background-color: #1b183a;
+
+		.content p:before {
+			font-family: dashicons;
+			content: "\f147";
+		}
+	}
+
+	.item-info .item-inner {
+		background-color: #0474a2;
+
+		.content p:before {
+			font-family: dashicons;
+			content: "\f14c";
+		}
+	}
+}
+
+#show-tester:before {
+	font-size: 30px;
+	border: 1px solid #0474a2;
+	background-color: #0474a2;
+	border-radius: 50%;
+	color: #f1ffdf;
+}
+
+.#{$namespace}-page {
+	#message,
+	#setting-error-settings_updated {
+		@apply hidden;
+	}
+}

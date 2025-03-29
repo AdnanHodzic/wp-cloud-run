@@ -1,0 +1,195 @@
+/* stylelint-disable selector-class-pattern */
+@import "../bootstrap/variables";
+@import "../partials/post-type-list";
+
+.#{$namespace}-page {
+	background-color: #f8f9fa;
+}
+
+.#{$namespace}-placements-table-options {
+	text-align: right;
+
+	input[type="number"] {
+		width: 4.5em;
+	}
+}
+
+.#{$namespace}-placements-table ol {
+	margin: 0.5em 0;
+	list-style-position: inside;
+}
+
+th.#{$namespace}-placement-sortable {
+	cursor: pointer;
+
+	a {
+		display: block;
+		overflow: hidden;
+	}
+}
+
+.#{$namespace}-placement-sorting-indicator {
+	display: inline-block;
+	visibility: hidden;
+	width: 8px;
+	height: 4px;
+}
+
+.sorted .#{$namespace}-placement-sorting-indicator,
+a:not(.sorted):hover .#{$namespace}-placement-sorting-indicator {
+	visibility: visible;
+}
+
+.#{$namespace}-placement-sorting-indicator::before {
+	content: "\f142";
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 1;
+	/* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+	font-family: dashicons;
+	display: inline-block;
+	padding: 0;
+	top: 0;
+	left: -7px;
+	color: #444;
+	position: relative;
+	vertical-align: middle;
+	text-decoration: none !important;
+}
+
+/** hide inaccessible post status */
+
+.post-type-advanced_ads_plcmnt {
+	[name="_status"] {
+		[value="future"],
+		[value="private"],
+		[value="pending"] {
+			display: none;
+		}
+	}
+
+	.#{$namespace}-button-secondary.mine {
+		display: none;
+	}
+}
+
+.desc .#{$namespace}-placement-sorting-indicator::before,
+.asc:hover .#{$namespace}-placement-sorting-indicator::before {
+	content: "\f140";
+}
+
+.asc .#{$namespace}-placement-sorting-indicator::before,
+.desc:hover .#{$namespace}-placement-sorting-indicator::before {
+	content: "\f142";
+}
+
+.#{$namespace}_search_placement_name {
+	vertical-align: middle;
+}
+
+.column-conditions h4:first-of-type {
+	margin-top: 0;
+}
+
+.#{$namespace}-placement-item-select {
+	width: 200px;
+}
+
+.#{$namespace}-placement-item-select-wrap {
+	position: relative;
+	vertical-align: middle;
+}
+
+.#{$namespace}-option-placement-name {
+	vertical-align: middle;
+}
+
+.#{$namespace}-option-placement-name .#{$namespace}-help {
+	display: inline-block;
+	vertical-align: inherit;
+}
+
+.#{$namespace}-placement-item-select-wrap .#{$namespace}-loader {
+	position: absolute;
+	left: 78.5px;
+	top: 10px;
+	pointer-events: none;
+}
+
+.#{$namespace}-ajax-feedback {
+	display: none;
+}
+
+.#{$namespace}-ajax-feedback.#{$namespace}-success-message {
+	vertical-align: inherit;
+}
+
+@keyframes fade-out {
+	from {
+		opacity: 1;
+	}
+
+	to {
+		opacity: 0;
+	}
+}
+
+.#{$namespace}-ajax-feedback.#{$namespace}-success-message.#{$namespace}-show {
+	display: inline;
+	animation: 2s fade-out 1s;
+}
+
+.#{$namespace}-ajax-feedback.#{$namespace}-error::before {
+	top: unset;
+}
+
+.#{$namespace}-placement-item-edit {
+	vertical-align: inherit;
+
+	span {
+		vertical-align: inherit;
+		margin-top: -4px;
+	}
+}
+
+@media (min-width: 1200px) {
+	.#{$namespace}-placement-type {
+		flex-basis: 65px;
+		width: 65px;
+		margin-right: 3%;
+
+		img {
+			width: 100%;
+			height: unset !important;
+		}
+	}
+}
+
+.#{$namespace}-placements-table {
+	margin-top: 20px;
+}
+
+a.#{$namespace}-placement-sorted {
+	cursor: default;
+	pointer-events: none;
+	text-decoration: none;
+	color: #808080;
+}
+
+.inline-edit-row[id^="edit-"] {
+	fieldset:not(.advanced-ads) {
+		@apply hidden;
+	}
+}
+
+#the-list .notice.inline.hidden {
+	display: none;
+}
+
+#bulk-edit .title {
+	@apply mr-3 min-w-28 w-auto;
+}
+
+.#{$namespace}-bulk-edit {
+	margin-top: 0 !important;
+}

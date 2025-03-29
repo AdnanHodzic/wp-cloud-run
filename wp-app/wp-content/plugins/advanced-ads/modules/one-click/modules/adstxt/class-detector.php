@@ -11,6 +11,7 @@ namespace AdvancedAds\Modules\OneClick\AdsTxt;
 
 use AdvancedAds\Modules\OneClick\Admin\Admin;
 use AdvancedAds\Framework\Interfaces\Integration_Interface;
+use AdvancedAds\Utilities\Conditional;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -34,10 +35,9 @@ class Detector implements Integration_Interface {
 	 * @return void
 	 */
 	public function conditional_loading(): void {
-		if ( ! Admin::is_pubguru_page() ) {
+		if ( ! Conditional::is_screen_advanced_ads() ) {
 			return;
 		}
-
 		if ( $this->detect_files() ) {
 			add_action( 'all_admin_notices', [ $this, 'show_notice' ] );
 		}
@@ -93,7 +93,7 @@ class Detector implements Integration_Interface {
 				<strong><?php esc_html_e( 'File alert!', 'advanced-ads' ); ?></strong> <?php esc_html_e( 'Physical ads.txt found. In order to use PubGuru service you need to delete it or back it up.', 'advanced-ads' ); ?>
 			</div>
 
-			<button class="!ml-auto button button-primary js-btn-backup-adstxt" data-text="<?php esc_attr_e( 'Backup the File', 'advanced-ads' ); ?>" data-loading="<?php esc_attr_e( 'Backing Up', 'advanced-ads' ); ?>" data-done="<?php esc_attr_e( 'Backed Up', 'advanced-ads' ); ?>" data-security="<?php echo wp_create_nonce( 'pubguru_backup_adstxt' ); // phpcs:ignore ?>">
+			<button class="!ml-auto button button-primary js-btn-backup-adstxt" data-text="<?php esc_attr_e( 'Backup the File', 'advanced-ads' ); ?>" data-loading="<?php esc_attr_e( 'Backing Up', 'advanced-ads' ); ?>" data-done="<?php esc_attr_e( 'Backed Up', 'advanced-ads' ); ?>" data-security="<?php echo wp_create_nonce( 'pubguru_oneclick_security' ); // phpcs:ignore ?>">
 				<?php esc_html_e( 'Backup the File', 'advanced-ads' ); ?>
 			</button>
 		</div>

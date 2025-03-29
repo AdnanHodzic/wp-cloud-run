@@ -10,8 +10,8 @@ function Advads_Termination( element ) {
 		this.removedNodes = [];
 	};
 
-	let initialFormValues = new FormValues(),
-		changedFormValues = new FormValues();
+	this.initialFormValues = new FormValues();
+	this.changedFormValues = new FormValues();
 
 	const blocklist = [
 		'active_post_lock'
@@ -45,7 +45,7 @@ function Advads_Termination( element ) {
 		if ( ! input || ! input.value ) {
 			return;
 		}
-		initialFormValues[key] = input.value;
+		this.initialFormValues[key] = input.value;
 	};
 
 	/**
@@ -110,11 +110,11 @@ function Advads_Termination( element ) {
 				const nodes = document.createTreeWalker( removedNode, NodeFilter.SHOW_ELEMENT );
 				while ( nodes.nextNode() ) {
 					if ( nodes.currentNode.tagName === 'INPUT' || nodes.currentNode.tagName === 'SELECT' ) {
-						const index = changedFormValues.addedNodes.indexOf( nodes.currentNode.name );
+						const index = this.changedFormValues.addedNodes.indexOf( nodes.currentNode.name );
 						if ( index > - 1 ) {
-							changedFormValues.addedNodes.splice( index, 1 );
+							this.changedFormValues.addedNodes.splice( index, 1 );
 						} else {
-							changedFormValues.removedNodes.push( nodes.currentNode.name );
+							this.changedFormValues.removedNodes.push( nodes.currentNode.name );
 						}
 					}
 				}
@@ -130,7 +130,7 @@ function Advads_Termination( element ) {
 						if ( nodes.currentNode.name === '' ) {
 							continue;
 						}
-						changedFormValues.addedNodes.push( nodes.currentNode.name );
+						this.changedFormValues.addedNodes.push( nodes.currentNode.name );
 					}
 				}
 			}
@@ -168,14 +168,14 @@ function Advads_Termination( element ) {
 	 * @return {boolean}
 	 */
 	this.terminationNotice = ( reload = false ) => {
-		if ( ! this.hasChanged( initialFormValues, changedFormValues ) ) {
+		if ( ! this.hasChanged( this.initialFormValues, this.changedFormValues ) ) {
 			return true;
 		}
 
 		// ask user for confirmation.
 		if ( window.confirm( window.advadstxt.confirmation ) ) {
 			// if we have added or removed nodes, we might need to reload the page.
-			if ( changedFormValues.addedNodes.length || changedFormValues.removedNodes.length ) {
+			if ( this.changedFormValues.addedNodes.length || this.changedFormValues.removedNodes.length ) {
 				if ( reload ) {
 					window.location.reload();
 				}
@@ -183,19 +183,19 @@ function Advads_Termination( element ) {
 			}
 
 			// otherwise, we'll replace the values with the previous values.
-			for ( const name in changedFormValues ) {
+			for ( const name in this.changedFormValues ) {
 				const input = element.querySelector( '[name="' + name + '"]' );
 				if ( input === null ) {
 					continue;
 				}
 
 				if ( input.type === 'checkbox' ) {
-					input.checked = initialFormValues[name];
+					input.checked = this.initialFormValues[name];
 				} else if ( input.type === 'radio' ) {
-					let value = (initialFormValues[name] !== null && initialFormValues[name] !== undefined) ? initialFormValues[name] : input.value;
+					let value = (this.initialFormValues[name] !== null && this.initialFormValues[name] !== undefined) ? this.initialFormValues[name] : input.value;
 					element.querySelector( '[name="' + name + '"][value="' + value + '"]' ).checked = true;
 				} else {
-					input.value = initialFormValues[name];
+					input.value = this.initialFormValues[name];
 				}
 			}
 
@@ -203,6 +203,33 @@ function Advads_Termination( element ) {
 		}
 
 		return false;
+	};
+
+	/**
+	 * Set the initial values to the current ones, then reset the changed form values
+	 */
+	this.resetInitialValues = () => {
+		if ( this.changedFormValues.addedNodes.length ) {
+			for ( const name in this.changedFormValues.addedNodes ) {
+				this.initialFormValues[name] = this.changedFormValues.addedNodes[name];
+			}
+		}
+		if ( this.changedFormValues.removedNodes.length ) {
+			for ( const name in this.changedFormValues.removedNodes ) {
+				if ( this.initialFormValues[name] !== undefined ) {
+					delete ( this.initialFormValues[name] );
+				}
+			}
+		}
+		for ( const name in this.changedFormValues ) {
+			if ( 'removedNodes' === name || 'addedNodes' === name ) {
+				continue;
+			}
+			if ( this.initialFormValues[name] !== undefined ) {
+				this.initialFormValues[name] = this.changedFormValues[name];
+			}
+		}
+		this.changedFormValues = new FormValues();
 	};
 
 	/**
@@ -221,7 +248,7 @@ function Advads_Termination( element ) {
 				return;
 			}
 
-			initialFormValues = collectInputValue( initialFormValues, input );
+			this.initialFormValues = collectInputValue( this.initialFormValues, input );
 
 			// if the input is `hidden` no change event gets triggered. Use MutationObservers to check for changes in the value attribute.
 			if ( input.type === 'hidden' ) {
@@ -240,7 +267,7 @@ function Advads_Termination( element ) {
 			}
 
 			input.addEventListener( 'input', event => {
-				changedFormValues = collectInputValue( changedFormValues, input );
+				this.changedFormValues = collectInputValue( this.changedFormValues, input );
 			} );
 		} );
 	};

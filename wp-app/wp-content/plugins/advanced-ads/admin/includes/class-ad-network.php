@@ -1,7 +1,15 @@
-<?php
-// phpcs:ignoreFile
+<?php // phpcs:ignore WordPress.Files.FileName
+/**
+ * This class represents an ad network. It is used to manage the settings and the ad units of an ad network.
+ *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.x.x
+ */
+
+use AdvancedAds\Abstracts\Ad;
 use AdvancedAds\Utilities\Conditional;
-use AdvancedAds\Utilities\WordPress;
+use AdvancedAds\Framework\Utilities\Params;
 
 /**
  * Class Advanced_Ads_Ad_Network
@@ -112,9 +120,6 @@ abstract class Advanced_Ads_Ad_Network {
 	 * Registers this ad network
 	 */
 	public function register() {
-		// register the ad type.
-		add_filter( 'advanced-ads-ad-types', [ $this, 'register_ad_type_callback' ] );
-
 		if ( is_admin() ) {
 			if ( wp_doing_ajax() ) {
 				// we need add all the actions for our ajax calls here.
@@ -131,7 +136,7 @@ abstract class Advanced_Ads_Ad_Network {
 				$requires_javascript = false;
 
 				if ( 'admin.php' === $pagenow ) {
-					$page = isset( $_REQUEST['page'] ) ? $_REQUEST['page'] : null;
+					$page = Params::request( 'page', null );
 					switch ( $page ) {
 						case 'advanced-ads-settings':
 							$requires_settings   = true;
@@ -139,18 +144,18 @@ abstract class Advanced_Ads_Ad_Network {
 							break;
 						case 'advanced-ads':
 							$requires_javascript = true;
+							break;
 						default:
 							break;
 					}
 				} elseif ( 'options.php' === $pagenow ) {
 					$requires_settings = true;
 				} elseif ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) {
-					$post_type = isset( $_REQUEST['post_type'] ) ? $_REQUEST['post_type'] : '';
-					add_filter( 'advanced-ads-ad-settings-pre-save', [ $this, 'sanitize_ad_settings' ] );
+					add_action( 'advanced-ads-ad-pre-save', [ $this, 'sanitize_ad_settings' ], 10, 2 );
 
-					if ( isset( $_GET['action'] ) && 'edit' === $_GET['action'] ) {
+					if ( 'edit' === Params::get( 'action' ) ) {
 						$requires_javascript = true;
-					} elseif ( 'advanced_ads' === $post_type ) {
+					} elseif ( 'advanced_ads' === Params::request( 'post_type', '' ) ) {
 						$requires_javascript = true;
 					}
 				}
@@ -165,19 +170,6 @@ abstract class Advanced_Ads_Ad_Network {
 				}
 			}
 		}
-	}
-
-	/**
-	 * The callback method for the filter "advanced-ads-ad-types"
-	 *
-	 * @param array $types ad types.
-	 *
-	 * @return array
-	 */
-	public function register_ad_type_callback( $types ) {
-		$types[ $this->identifier ] = $this->get_ad_type();
-
-		return $types;
 	}
 
 	/**
@@ -198,17 +190,20 @@ abstract class Advanced_Ads_Ad_Network {
 		 *
 		 * @return array
 		 */
-		add_filter( 'advanced-ads-ad-admin-options', function( $options ) {
-			$options[] = ADVADS_SLUG . '-' . $this->identifier;
+		add_filter(
+			'advanced-ads-ad-admin-options',
+			function ( $options ) {
+				$options[] = ADVADS_SLUG . '-' . $this->identifier;
 
-			return $options;
-		} );
+				return $options;
+			}
+		);
 
 		// add a new section.
 		add_settings_section(
 			$this->settings_section_id,
 			'',
-			[ $this, 'render_settings_callback' ],
+			'__return_empty_string',
 			$this->settings_page_hook
 		);
 
@@ -239,7 +234,7 @@ abstract class Advanced_Ads_Ad_Network {
 		$js_path = $this->get_javascript_base_path();
 		if ( $js_path ) {
 			$id = $this->get_js_library_name();
-			wp_enqueue_script( $id, $js_path, [ 'jquery', wp_advads()->registry->prefix_it( 'admin' ) ] );
+			wp_enqueue_script( $id, $js_path, [ 'jquery' ], '1.7.3' ); // phpcs:ignore
 			// next we have to pass the data.
 			$data = [
 				'nonce' => $this->get_nonce(),
@@ -294,13 +289,6 @@ abstract class Advanced_Ads_Ad_Network {
 	}
 
 	/**
-	 * Render settings page
-	 */
-	public function render_settings_callback() {
-
-	}
-
-	/**
 	 * Callback to sanitize settings
 	 *
 	 * @param array $options options to be sanitized.
@@ -314,29 +302,17 @@ abstract class Advanced_Ads_Ad_Network {
 	}
 
 	/**
-	 * Callback to sanitize settings for an individual ad
-	 *
-	 * @param array $ad_settings_post post data from the ad settings form.
-	 *
-	 * @return mixed
-	 */
-	public function sanitize_ad_settings_callback( array $ad_settings_post ) {
-		return $this->sanitize_ad_settings( $ad_settings_post );
-	}
-
-	/**
 	 * Performs basic security checks for wp ajax requests (nonce, capabilities)
 	 * dies, when a problem was detected
 	 */
 	protected function ajax_security_checks() {
-		if ( ! WordPress::user_can( 'advanced_ads_manage_options' ) ) {
-			// TODO: translate.
-			$this->send_ajax_error_response_and_die( "You don't have the permission to manage ads." );
+		if ( ! Conditional::user_can( 'advanced_ads_manage_options' ) ) {
+			$this->send_ajax_error_response_and_die( __( 'You don\'t have the permission to manage ads.', 'advanced-ads' ) );
 		}
-		$nonce = isset( $_REQUEST['nonce'] ) ? $_REQUEST['nonce'] : '';
+
+		$nonce = Params::request( 'nonce', '' );
 		if ( ! wp_verify_nonce( $nonce, $this->get_nonce_action() ) ) {
-			// TODO: translate.
-			$this->send_ajax_error_response_and_die( 'You sent an invalid request.' );
+			$this->send_ajax_error_response_and_die( __( 'You sent an invalid request.', 'advanced-ads' ) );
 		}
 	}
 
@@ -373,8 +349,8 @@ abstract class Advanced_Ads_Ad_Network {
 	public function toggle_idle_ads() {
 		$this->ajax_security_checks();
 		global $external_ad_unit_id;
-		$hide_idle_ads       = isset( $_POST['hide'] ) ? $_POST['hide'] : false;
-		$external_ad_unit_id = isset( $_POST['ad_unit_id'] ) ? $_POST['ad_unit_id'] : "";
+		$hide_idle_ads       = Params::post( 'hide' );
+		$external_ad_unit_id = Params::post( 'ad_unit_id', '' );
 		if ( ! $external_ad_unit_id ) {
 			$external_ad_unit_id = '';
 		}
@@ -410,11 +386,6 @@ abstract class Advanced_Ads_Ad_Network {
 	abstract public function print_external_ads_list( $hide_idle_ads = true );
 
 	/**
-	 * Retrieves an instance of the ad type for this ad network
-	 */
-	abstract public function get_ad_type();
-
-	/**
 	 * This method will be called via wp AJAX.
 	 * it has to retrieve the list of ads from the ad network and store it as an option
 	 * does not return ad units - use "get_external_ad_units" if you're looking for an array of ad units
@@ -441,11 +412,12 @@ abstract class Advanced_Ads_Ad_Network {
 	/**
 	 * Sanitize the settings for this ad network
 	 *
-	 * @param array $ad_settings_post ad settings in POST format.
+	 * @param Ad    $ad        Ad instance.
+	 * @param array $post_data Post data array.
 	 *
-	 * @return mixed the sanitized settings
+	 * @return void
 	 */
-	abstract public function sanitize_ad_settings( $ad_settings_post );
+	abstract public function sanitize_ad_settings( Ad $ad, $post_data );
 
 
 	/**

@@ -30,6 +30,13 @@ class Constants {
 	 */
 	const DEFAULT_FRONTEND_PREFIX = 'advads-';
 
+	/**
+	 * Constant representing the slug for the hidden page in the Advanced Ads plugin.
+	 *
+	 * @var string HIDDEN_PAGE_SLUG The slug for the hidden page.
+	 */
+	const HIDDEN_PAGE_SLUG = 'advanced_ads_hidden_page_slug';
+
 	/* Entity Types ------------------- */
 
 	/**
@@ -101,13 +108,6 @@ class Constants {
 	 */
 	const CRON_JOB_AD_EXPIRATION = 'advanced-ads-ad-expiration';
 
-	/**
-	 * Ad creation cron job hook.
-	 *
-	 * @var string
-	 */
-	const CRON_API_ADS_CREATION = 'advanced-ads-pghb-auto-ad-creation';
-
 	/* Meta keys ------------------- */
 
 	/**
@@ -135,10 +135,36 @@ class Constants {
 	 */
 	const OPTION_WIZARD_COMPLETED = '_advanced_ads_wizard_completed';
 
+	/**
+	 * Option key for adblocker settings.
+	 *
+	 * @var string
+	 */
+	const OPTION_ADBLOCKER_SETTINGS = 'advanced-ads-adblocker';
+
 	/* Entity: Group ------------------- */
 
 	/**
 	 * Default ad group weight
 	 */
 	const GROUP_AD_DEFAULT_WEIGHT = 10;
+
+	/* Misc ---------------------------- */
+
+	const ADDONS_NON_COMPATIBLE_VERSIONS = [
+		'1.1.3'  => 'advanced-ads-adsense-in-feed',    // Advanced Ads – Google AdSense In-feed Placement.
+		'2.5.0'  => 'advanced-ads-gam',                // GAM.
+		'1.0.8'  => 'advanced-ads-genesis',            // Genesis.
+		'1.3.5'  => 'advanced-ads-geo',                // Geo.
+		'1.7.9'  => 'advanced-ads-layer',              // Layer Ads.
+		'0.1.3'  => 'advanced-ads-page-peel',          // Page Peel.
+		'2.28.0' => 'advanced-ads-pro',                // Pro.
+		'1.12.3' => 'advanced-ads-responsive',         // AMP former Responsive Ads.
+		'1.4.5'  => 'advanced-ads-selling',            // Selling.
+		'1.4.10' => 'slider-ads',                      // Slider.
+		'1.8.6'  => 'advanced-ads-sticky',             // Sticky Ads.
+		'2.8.1'  => 'advanced-ads-tracking',           // Tracking.
+		'1.0.7'  => 'ads-for-visual-composer',         // Visual Composer.
+		'1.1.0'  => 'advanced-ads-browser-language',   // Browser Language.
+	];
 }

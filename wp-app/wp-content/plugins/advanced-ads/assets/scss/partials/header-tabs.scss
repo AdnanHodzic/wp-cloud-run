@@ -1,0 +1,33 @@
+.#{$namespace}-wrap .#{$namespace}-header-tabs {
+	@apply relative flex flex-row border-b border-advads -mx-5 pt-8 pl-4;
+
+	a {
+		@apply text-base font-medium py-2 px-4 border border-advads border-b-0 border-r-0;
+
+		&:first-child {
+			@apply rounded-tl;
+		}
+
+		&:last-of-type {
+			@apply border-r rounded-tr;
+		}
+
+		&:hover,
+		&:focus,
+		&.is-active {
+			color: #1a1e22;
+			outline: none;
+			background: #f8f9fa;
+			box-shadow: none;
+		}
+
+		&.is-active {
+			border-bottom: 1px solid #f8f9fa;
+			margin-bottom: -1px;
+		}
+	}
+
+	+ .#{$namespace}-tab-content {
+		@apply -mx-5 py-6 px-5;
+	}
+}

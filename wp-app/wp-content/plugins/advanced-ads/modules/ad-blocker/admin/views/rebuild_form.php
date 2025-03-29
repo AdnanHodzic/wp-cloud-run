@@ -1,12 +1,14 @@
-<?php
+<?php // phpcs:disable WordPress.Files.FileName.NotHyphenatedLowercase
 /**
- * Ad blocker fix rebuild template
+ * Ad blocker disguise rebuild template
  *
+ * @package       AdvancedAds\Pro
  * @var array     $upload_dir      wp_upload_dir response
  * @var string    $message         Response message
  * @var bool|null $success         Whether request was successful
  * @var bool      $button_disabled If button should have disabled attribute.
  */
+
 ?>
 
 <?php if ( ! empty( $message ) && isset( $success ) ) : ?>
@@ -39,7 +41,12 @@ endif;
 				<td>
 					<label>
 						<input type="checkbox" name="advads_ab_assign_new_folder">
-						<?php esc_html_e( 'Check if you want to change the names of the assets', 'advanced-ads' ); ?>
+						<?php echo esc_html__( 'Check if you want to change the names of the assets', 'advanced-ads' ) . '.'; ?>
+						<span class="advads-help">
+							<span class="advads-tooltip" style="position: fixed; left: 693px; top: 387px;">
+								<?php esc_html_e( 'This feature relocates potentially blocked scripts to a new, randomly named folder to help bypass ad blockers. The folder receives updates during plugin updates. Occasional rebuilding of the asset folder prevents browsers from caching outdated versions. If you\'re already using a plugin that renames scripts, like Autoptimize or WP Rocket, turn off this feature to avoid conflicts.', 'advanced-ads' ); ?>
+							</span>
+						</span>
 					</label>
 				</td>
 			</tr>

@@ -24,7 +24,7 @@ class Advanced_Ads_AdSense_Report {
 	/**
 	 * Object representing the current report data.
 	 *
-	 * @var Advanced_Ads_AdSense_Report_Data
+	 * @var AdSense_Report_Data
 	 */
 	private $data_object;
 
@@ -44,16 +44,16 @@ class Advanced_Ads_AdSense_Report {
 	public function __construct( $type = 'unit', $filter = '' ) {
 		$this->type = $type;
 
-		if ( $type === 'domain' && ! empty( $filter ) ) {
+		if ( 'domain' === $type && ! empty( $filter ) ) {
 			update_option( 'advanced-ads-adsense-dashboard-filter', $filter );
-			// Backward compatibility: "*" was used to display data for all domains if API version prior to 2.0
-			if ( $filter === '*' ) {
+			// Backward compatibility: "*" was used to display data for all domains if API version prior to 2.0.
+			if ( '*' === $filter ) {
 				$filter = '';
 			}
 		}
 
 		$this->filter      = $filter;
-		$this->data_object = Advanced_Ads_AdSense_Report_Data::get_data_from_options( $type );
+		$this->data_object = AdSense_Report_Data::get_data_from_options( $type );
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Advanced_Ads_AdSense_Report {
 
 		if ( $api_helper->has_token() ) {
 			$response = $api_helper->call_google();
-			if ( $response['status'] === true ) {
+			if ( true === $response['status'] ) {
 				$this->data_object->update_data_from_response( $response['response_body'] );
 
 				return true;
@@ -118,7 +118,7 @@ class Advanced_Ads_AdSense_Report {
 	/**
 	 * Returns the report data object.
 	 *
-	 * @return Advanced_Ads_AdSense_Report_Data
+	 * @return AdSense_Report_Data
 	 */
 	public function get_data() {
 		return $this->data_object;
@@ -165,7 +165,7 @@ class Advanced_Ads_AdSense_Report {
 			'28days'     => sprintf( esc_html__( 'Last %1$d days', 'advanced-ads' ), 28 ),
 		];
 
-		$markup = '<div class="advads-flex1 advads-stats-box"><div>' . $period_strings[ $index ] . '</div>';
+		$markup  = '<div class="advads-flex1 advads-stats-box"><div>' . $period_strings[ $index ] . '</div>';
 		$markup .= '<div class="advads-stats-box-main">';
 		$markup .= number_format_i18n( ceil( 100 * $sum ) / 100, 2 );
 		$markup .= ' ' . $this->get_data()->get_currency();

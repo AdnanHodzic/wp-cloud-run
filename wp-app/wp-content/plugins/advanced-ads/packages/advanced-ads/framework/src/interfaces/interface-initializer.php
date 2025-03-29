@@ -21,5 +21,5 @@ interface Initializer_Interface {
 	 *
 	 * @return void
 	 */
-	public function initialize();
+	public function initialize(): void;
 }

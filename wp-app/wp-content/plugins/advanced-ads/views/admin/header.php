@@ -37,17 +37,17 @@
 		</div>
 		<div id="advads-header-links">
 			<?php if ( '' !== $reset_href ) : ?>
-				<a href="<?php echo esc_url( $reset_href ); ?>" class="button advads-button-secondary advads-button-icon-right">
+				<a id="advads-reset-filters" href="<?php echo esc_url( $reset_href ); ?>" class="button advads-button-secondary advads-button-icon-right">
 					<?php esc_html_e( 'Reset', 'advanced-ads' ); ?><span class="dashicons dashicons-undo"></span>
 				</a>
 			<?php endif; ?>
 			<?php if ( $show_filter_button ) : ?>
-				<a id="advads-show-filters" class="button advads-button-secondary advads-button-icon-right <?php echo esc_attr( $filter_disabled ); ?>">
+				<button id="advads-show-filters" class="button advads-button-secondary advads-button-icon-right <?php echo esc_attr( $filter_disabled ); ?>" <?php disabled( $filter_disabled, 'disabled' ); ?>>
 					<?php esc_html_e( 'Filters', 'advanced-ads' ); ?><span class="dashicons dashicons-filter"></span>
-				</a>
+				</button>
 			<?php endif; ?>
 			<?php if ( $show_screen_options ) : ?>
-				<a id="advads-show-screen-options" class="button advads-button-secondary"><?php esc_html_e( 'Screen Options', 'advanced-ads' ); ?></a>
+				<button id="advads-show-screen-options" class="button advads-button-secondary"><?php esc_html_e( 'Screen Options', 'advanced-ads' ); ?></button>
 			<?php endif; ?>
 			<?php if ( ! defined( 'AAP_VERSION' ) ) : ?>
 				<a href="https://wpadvancedads.com/add-ons/?utm_source=advanced-ads&utm_medium=link&utm_campaign=header-upgrade-<?php echo esc_attr( $screen->id ); ?>" target="_blank" class="advads-upgrade button advads-button-secondary advads-button-icon-right">

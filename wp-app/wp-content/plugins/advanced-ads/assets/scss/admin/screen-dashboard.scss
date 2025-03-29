@@ -1,0 +1,267 @@
+@import "../bootstrap/variables";
+@import "../bootstrap/tailwind";
+@import "../partials/spinner";
+@import "../partials/switch";
+@import "add-ons";
+@import "../../../node_modules/select2/src/scss/core.scss";
+@import "./one-click";
+
+#welcome {
+	@apply bg-repeat;
+
+	> *,
+	a {
+		@apply text-white;
+	}
+
+	p {
+		@apply text-justify;
+	}
+
+	#dismiss-welcome {
+		@apply absolute flex items-center right-0 top-0 justify-center;
+		width: 50px;
+		height: 50px;
+
+		.dashicons {
+			@apply cursor-pointer;
+		}
+	}
+
+	> div {
+		@apply p-6;
+	}
+
+	@media screen and (min-width: 601px) {
+		> div {
+			@apply grid grid-cols-2;
+			column-gap: 100px;
+			padding: 50px;
+
+			> div:last-child {
+				@apply flex items-center;
+			}
+		}
+	}
+
+	#head {
+		@apply block;
+		font-size: 1.75rem;
+		margin: 15px 0 30px 0;
+	}
+
+	#subhead {
+		@apply text-base font-medium block m-0 uppercase;
+	}
+
+	#cta {
+		margin-top: 50px;
+		width: 100%;
+
+		a {
+			padding: 12px 20px;
+			@apply inline-block no-underline;
+		}
+
+		&::after {
+			@apply block content-[""] clear-both;
+		}
+	}
+
+	#launch-wizard {
+		border-radius: 5px;
+		background: #1b193a;
+		color: #fff;
+
+		&:hover {
+			transition: ease-in-out 250ms;
+			background: #000;
+		}
+	}
+
+	#first-step {
+		@apply underline pr-0 #{!important};
+		text-underline-offset: 0.25rem;
+
+		&::after {
+			font-family: dashicons;
+			@apply inline-block ml-1.5 align-middle content-["\f118"];
+		}
+	}
+
+	@media screen and (min-width: 1020px) {
+		#cta {
+			@apply w-full;
+			margin-top: 50px;
+
+			> * {
+				@apply align-middle;
+			}
+
+			&::after {
+				@apply block content-[""] clear-both;
+			}
+		}
+
+		#launch-wizard {
+			@apply float-left;
+			box-shadow: 0 0 20px 0 rgb(242 252 255 / 20%);
+		}
+
+		#first-step {
+			@apply float-right;
+		}
+	}
+
+	#welcome-thumbnail {
+		@apply inline-block;
+		box-shadow: 0 0 20px 0 rgb(27 24 58 / 20%);
+
+		img {
+			@apply max-w-full;
+		}
+	}
+}
+
+##{$namespace}-overview {
+	.inside {
+		@apply my-0;
+		padding: 0;
+
+		> div {
+			padding-left: 12px;
+			padding-right: 12px;
+		}
+
+		#advanced-ads-addon-box {
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+
+		> footer {
+			@apply m-0 p-3;
+			border-top: 1px solid $border-color;
+
+			a {
+				@apply p-0 m-0 no-underline;
+
+				&:not(:last-child):after {
+					@apply font-light;
+					content: " | ";
+					color: $border-color;
+				}
+			}
+
+			a.go-pro {
+				@apply font-semibold;
+			}
+
+			.dashicons-external {
+				@apply text-lg;
+				line-height: normal;
+			}
+
+			.dashicons-lightbulb {
+				@apply text-xl leading-none;
+				color: $light-blue;
+			}
+		}
+	}
+
+	.postbox {
+		h2 {
+			@apply text-sm m-0 px-3 py-2;
+			border-bottom: 1px solid $border-color;
+		}
+	}
+
+	.#{$namespace}-widget-wrapper {
+		@apply mb-6;
+
+		.section-title {
+			@apply bg-gray-50/70 px-3 py-2.5 my-3;
+			@apply -mx-3 #{!important};
+			border: solid $border-color;
+			border-width: 1px 0;
+
+			h3 {
+				@apply m-0 font-semibold text-sm;
+			}
+		}
+
+		.manual-wrapper {
+			@apply flex flex-row justify-around mt-3;
+
+			> div {
+				width: 49%;
+			}
+
+			.title {
+				@apply flex flex-col m-0 text-center no-underline font-bold py-2;
+
+				&:hover,
+				.dashicons {
+					color: $color-primary;
+				}
+
+				.dashicons {
+					@apply text-6xl w-auto h-auto;
+					color: $light-blue;
+
+					&:hover {
+						@apply text-inherit;
+					}
+				}
+			}
+
+			.divider {
+				width: 0.1%;
+				border: solid $border-color;
+				border-width: 0 1px 0 0;
+			}
+		}
+	}
+
+	.#{$namespace}-ad-health-notices {
+		@apply m-0 mb-3;
+
+		.dashicons-warning {
+			color: $red;
+		}
+
+		.dashicons-info {
+			color: $light-blue;
+		}
+
+		&-show-hidden {
+			@apply ml-8 cursor-pointer underline;
+			color: $light-blue;
+		}
+
+		li {
+			@apply flex justify-between items-start gap-2 mb-0;
+
+			&:not(:last-child) {
+				@apply mb-3;
+			}
+
+			.text {
+				flex: 1;
+
+				a {
+					@apply text-current;
+				}
+			}
+
+			> button {
+				@apply border-none bg-transparent cursor-pointer;
+				color: $grey;
+			}
+
+			.date {
+				@apply italic;
+				color: $grey;
+			}
+		}
+	}
+}

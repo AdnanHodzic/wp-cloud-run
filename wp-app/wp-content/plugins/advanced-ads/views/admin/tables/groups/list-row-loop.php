@@ -5,44 +5,81 @@
  * @package AdvancedAds
  * @author  Advanced Ads <info@wpadvancedads.com>
  *
- * @var Advanced_Ads_Group $group      Group object.
- * @var int[]              $weights    All weights.
- * @var int                $weight_sum Sum of all ad weights.
- * @var Groups_List_Table  $this       The group terms list table class.
- * @var WP_Query           $ads        The query object to fetch all ads inside that group.
+ * @var Group $group Group instance.
  */
 
-use AdvancedAds\Admin\Groups_List_Table;
+use AdvancedAds\Abstracts\Group;
+use AdvancedAds\Utilities\WordPress;
 
-$i = 1;
+$counter   = 1;
+$ad_count  = $group->get_ads_count();
+$weights   = $group->get_ad_weights();
+$group_ads = $group->get_ads();
+usort($group_ads, function ($a, $b) {
+	return $b->get_weight() <=> $a->get_weight();
+});
 
-echo '<div class="advads-ad-group-list-ads advads-table-flex">';
-
-while ( $ads->have_posts() ) {
-	$ads->the_post();
-	$ad_id                = get_the_ID();
-	$ad_weight_percentage = '';
-
-	// Calculate ad weight percentage if group type is 'default'.
-	if ( 'default' === $group->type && $weight_sum ) {
-		$weight               = $weights[ $ad_id ] ?? Advanced_Ads_Group::MAX_AD_GROUP_DEFAULT_WEIGHT;
-		$ad_weight_percentage = $this->calculate_weight_percentage( $weight, $weight_sum );
+foreach ( $group_ads as $group_ad ) {
+	if ( ! $group_ad->is_status( 'publish' ) ) {
+		unset( $weights[ $group_ad->get_id() ] );
 	}
-
-	$ad_schedule_output = Advanced_Ads_Admin_Ad_Type::get_ad_schedule_output( $ad_id );
-	include ADVADS_ABSPATH . 'views/admin/tables/groups/list-row-ads.php';
-
-	++$i;
-}
-echo '</div>';
-
-if ( $ads->post_count > 4 ) {
-	echo '<p><a href="javascript:void(0)" class="advads-group-ads-list-show-more">+ ' .
-		/* translators: %d is a number. */
-		sprintf( esc_html__( 'show %d more ads', 'advanced-ads' ), $ads->post_count - 3 ) . // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-	'</a></p>';
 }
 
-if ( $ads->post_count > 1 ) {
-	echo '<p>' . esc_html( $this->get_ad_count_string( $group, $ads ) ) . '</p>';
-}
+$weight_sum = array_sum( $weights );
+?>
+
+<div class="advads-ad-group-list-ads advads-table-flex">
+	<?php
+	foreach ( $group_ads as $ad ) :
+		$ad_weight_percentage = '';
+		?>
+		<div style="display: <?php echo $counter > 3 ? 'none' : 'flex'; ?>">
+			<div>
+				<a href="<?php echo esc_url( get_edit_post_link( $ad->get_id() ) ); ?>"><?php echo esc_html( $ad->get_title() ); ?></a>
+			</div>
+			<div>
+				<?php echo $ad->get_ad_schedule_html(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			</div>
+			<?php
+			if ( 'default' === $group->get_type() && $weight_sum ) :
+				$weight               = $ad->get_weight() ?? Group::MAX_AD_GROUP_DEFAULT_WEIGHT;
+				$ad_weight_percentage = $ad->is_status( 'publish' ) ? WordPress::calculate_percentage( $weight, $weight_sum ) : '0%';
+				?>
+			<div class="advads-ad-group-list-ads-weight">
+				<span title="<?php esc_attr_e( 'Ad weight', 'advanced-ads' ); ?>"><?php echo esc_html( $ad_weight_percentage ); ?></span>
+			</div>
+			<?php endif; ?>
+		</div>
+		<?php
+		++$counter;
+	endforeach;
+	?>
+</div>
+
+<?php if ( $ad_count > 4 ) : ?>
+<p>
+	<a href="javascript:void(0)" class="advads-group-ads-list-show-more">
+	<?php
+	/* translators: %d is a number. */
+	echo esc_html( sprintf( __( '+ show %d more ads', 'advanced-ads' ), $ad_count - 3 ) );
+	?>
+	</a>
+</p>
+<?php endif; ?>
+
+<?php
+if ( $ad_count > 1 ) :
+	$ad_count = 'all' === $group->get_display_ad_count() ? $ad_count : $group->get_display_ad_count();
+	/**
+	 * Filters the displayed ad count on the ad groups page.
+	 *
+	 * @param int   $ad_count The amount of displayed ads.
+	 * @param Group $group    The current ad group.
+	 */
+	$ad_count = (int) apply_filters( 'advanced-ads-group-displayed-ad-count', $ad_count, $group );
+	$ad_count = (int) apply_filters( 'advanced-ads-group-' . $group->get_type() . '-displayed-ad-count', $ad_count, $group );
+
+	/* translators: amount of ads displayed */
+	echo '<p>' . esc_html( sprintf( _n( 'Up to %d ad displayed.', 'Up to %d ads displayed', $ad_count, 'advanced-ads' ), $ad_count ) ) . '</p>';
+
+endif;

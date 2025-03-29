@@ -1,0 +1,127 @@
+/* stylelint-disable at-rule-empty-line-before */
+/* stylelint-disable no-invalid-position-at-import-rule */
+@config "../../../tailwind.config.common.js";
+@import "../bootstrap/tailwind";
+@import "../bootstrap/variables";
+@import "../partials/header";
+@import "../partials/header-tabs";
+@import "../partials/tab-card";
+
+.#{$namespace}-page {
+	background: #f8f9fa;
+}
+
+.#{$namespace}-wrap {
+	*,
+	::before,
+	::after {
+		@apply box-border border-0 border-solid;
+	}
+
+	::before,
+	::after {
+		--tw-content: "";
+	}
+
+	a {
+		text-decoration: inherit;
+	}
+
+	.#{$namespace}-h2 {
+		@apply text-xl m-0 mb-4;
+	}
+
+	.notice {
+		@apply border border-l-4;
+	}
+
+	input:not([type="file"]),
+	textarea {
+		@apply border border-advads;
+	}
+}
+
+.wrap {
+	&:empty {
+		@apply hidden;
+	}
+}
+
+.#{$namespace}-spinner {
+	@apply inline-block h-5 w-5 mt-1 mb-1;
+
+	&.disabled {
+		@apply hidden;
+	}
+
+	&-img {
+		@apply align-middle;
+	}
+}
+
+.#{$namespace}-notices-button-subscribe.with-icon,
+.#{$namespace}-multiple-subscribe_button {
+	@apply items-center gap-2;
+
+	display: flex !important;
+}
+
+.#{$namespace}-btn {
+	&_primary {
+		@apply bg-primary border-primary text-white px-[10px] cursor-pointer border border-solid whitespace-nowrap box-border min-h-[30px];
+		text-shadow: none;
+		text-decoration: none;
+		border-radius: 3px;
+		font-size: 13px;
+
+		&:hover {
+			background-color: $color-primary;
+			border-color: $color-primary;
+		}
+	}
+}
+
+.#{$namespace}-notice-box {
+	&_wrapper {
+		@apply flex gap-2 my-2 flex-wrap;
+	}
+
+	.#{$namespace}-notices-button-subscribe.with-icon {
+		@apply items-center gap-2;
+
+		display: flex !important;
+	}
+
+	.button-primary {
+		margin-left: 0 !important;
+	}
+}
+
+.block-important {
+	display: block !important;
+}
+
+// For dynamic creation.
+.\!margin-top-4 {
+	@apply #{"!"}mt-4;
+}
+
+/* Widgets */
+.#{$namespace}-rss-widget {
+	ul {
+		@apply list-disc list-outside pl-3;
+
+		li {
+			&::marker {
+				@apply text-primary;
+			}
+			a {
+				@apply font-normal no-underline;
+			}
+		}
+	}
+}
+
+.#{$namespace}-link {
+	color: $wordpress !important;
+}

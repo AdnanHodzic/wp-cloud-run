@@ -1,4 +1,11 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName
+/**
+ * Report API for AdSense.
+ *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.48.2
+ */
 
 /**
  * Retrieve report data from Google.
@@ -99,7 +106,7 @@ class Advanced_Ads_AdSense_Report_Api {
 	 * @return array associative array with the response or with error data in case of failure.
 	 */
 	public function call_google() {
-		$dimension  = $this->type === 'unit' ? 'AD_UNIT_ID' : 'DOMAIN_NAME';
+		$dimension  = 'unit' === $this->type ? 'AD_UNIT_ID' : 'DOMAIN_NAME';
 		$today      = new DateTimeImmutable();
 		$start_date = $today->sub( date_interval_create_from_date_string( '28 days' ) );
 		// Replace placeholder in the endpoint with actual arguments.
@@ -137,7 +144,7 @@ class Advanced_Ads_AdSense_Report_Api {
 		if ( is_wp_error( $response ) ) {
 			return [
 				'status' => false,
-				// translators: AdSense ID.
+				/* translators: AdSense ID. */
 				'msg'    => sprintf( esc_html__( 'Error while retrieving report for "%s".', 'advanced-ads' ), $this->publisher_id ),
 				'raw'    => $response->get_error_message(),
 			];
@@ -148,7 +155,7 @@ class Advanced_Ads_AdSense_Report_Api {
 		if ( ! isset( $response_body['startDate'] ) ) {
 			return [
 				'status' => false,
-				// translators: AdSense ID.
+				/* translators: AdSense ID. */
 				'msg'    => sprintf( esc_html__( 'Invalid response while retrieving report for "%s".', 'advanced-ads' ), $this->publisher_id ),
 				'raw'    => $response['body'],
 			];
@@ -162,5 +169,4 @@ class Advanced_Ads_AdSense_Report_Api {
 			'response_body' => $response_body,
 		];
 	}
-
 }

@@ -1,25 +1,21 @@
-<?php
-// phpcs:ignoreFile
+<?php // phpcs:ignore WordPress.Files.FileName
+
+use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Framework\Utilities\Params;
+use AdvancedAds\Utilities\WordPress;
+
 /**
  * Display Conditions under which to (not) show an ad
  *
  * @since 1.7
- *
  */
 class Advanced_Ads_Display_Conditions {
-	/**
-	 * Advanced_Ads_Display_Conditions
-	 *
-	 * @var Advanced_Ads_Display_Conditions
-	 */
-	protected static $instance;
-
 	/**
 	 * Conditonis
 	 *
 	 * Registered display conditions.
 	 *
-	 * @var $conditions
+	 * @var array
 	 */
 	public $conditions;
 
@@ -34,7 +30,6 @@ class Advanced_Ads_Display_Conditions {
 	 * @var array
 	 */
 	protected static $query_var_keys = [
-		// 'is_single',
 		'is_archive',
 		'is_search',
 		'is_home',
@@ -64,15 +59,27 @@ class Advanced_Ads_Display_Conditions {
 	];
 
 	/**
+	 * Instance of Advanced_Ads_Display_Conditions
+	 *
+	 * @return Advanced_Ads_Display_Conditions
+	 */
+	public static function get_instance() {
+		static $instance = null;
+		if ( null === $instance ) {
+			$instance = new Advanced_Ads_Display_Conditions();
+		}
+
+		return $instance;
+	}
+
+	/**
 	 * Constructor
 	 */
 	private function __construct() {
-
-		// register filter.
 		add_filter( 'advanced-ads-ad-select-args', [ $this, 'ad_select_args_callback' ] );
-		add_filter( 'advanced-ads-can-display', [ $this, 'can_display' ], 10, 2 );
+		add_filter( 'advanced-ads-can-display-ad', [ $this, 'can_display' ], 10, 2 );
 
-		// register conditions with init hook, register as late as possible so other plugins can use the same hook to add new taxonomies.
+		// Register conditions with init hook, register as late as possible so other plugins can use the same hook to add new taxonomies.
 		add_action( 'init', [ $this, 'register_conditions' ], 100 );
 	}
 
@@ -83,40 +90,40 @@ class Advanced_Ads_Display_Conditions {
 	 */
 	public function register_conditions() {
 		$conditions = [
-			// post types condition.
+			// Post types condition.
 			'posttypes'   => [
 				'label'       => __( 'post type', 'advanced-ads' ),
 				'description' => __( 'Choose the public post types on which to display the ad.', 'advanced-ads' ),
 				'metabox'     => [ 'Advanced_Ads_Display_Conditions', 'metabox_post_type' ], // callback to generate the metabox.
 				'check'       => [ 'Advanced_Ads_Display_Conditions', 'check_post_type' ], // callback for frontend check.
 			],
-			// post id condition.
+			// Post id condition.
 			'postids'     => [
 				'label'       => __( 'specific pages', 'advanced-ads' ),
 				'description' => __( 'Choose on which individual posts, pages and public post type pages you want to display or hide ads.', 'advanced-ads' ),
 				'metabox'     => [ 'Advanced_Ads_Display_Conditions', 'metabox_post_ids' ], // callback to generate the metabox.
 				'check'       => [ 'Advanced_Ads_Display_Conditions', 'check_post_ids' ], // callback for frontend check.
 			],
-			// general conditions.
+			// General conditions.
 			'general'     => [
 				'label'   => __( 'general conditions', 'advanced-ads' ),
 				'metabox' => [ 'Advanced_Ads_Display_Conditions', 'metabox_general' ], // callback to generate the metabox.
 				'check'   => [ 'Advanced_Ads_Display_Conditions', 'check_general' ], // callback for frontend check.
 			],
-			// author conditions.
+			// Author conditions.
 			'author'      => [
 				'label'   => __( 'author', 'advanced-ads' ),
 				'metabox' => [ 'Advanced_Ads_Display_Conditions', 'metabox_author' ], // callback to generate the metabox.
 				'check'   => [ 'Advanced_Ads_Display_Conditions', 'check_author' ], // callback for frontend check.
 			],
-			// display ads only in content older or younger than a specific age.
+			// Display ads only in content older or younger than a specific age.
 			'content_age' => [
 				'label'       => __( 'content age', 'advanced-ads' ),
 				'description' => __( 'Display ads based on age of the page.', 'advanced-ads' ),
 				'metabox'     => [ 'Advanced_Ads_Display_Conditions', 'metabox_content_age' ], // callback to generate the metabox.
 				'check'       => [ 'Advanced_Ads_Display_Conditions', 'check_content_age' ], // callback for frontend check.
 			],
-			// condition for taxonomies in general.
+			// Condition for taxonomies in general.
 			'taxonomy'    => [
 				'label'       => __( 'taxonomy', 'advanced-ads' ),
 				'description' => __( 'Display ads based on the taxonomy of an archive page.', 'advanced-ads' ),
@@ -125,7 +132,7 @@ class Advanced_Ads_Display_Conditions {
 			],
 		];
 
-		// register a condition for each taxonomy for posts.
+		// Register a condition for each taxonomy for posts.
 		$taxonomies = get_taxonomies(
 			[
 				'public'             => true,
@@ -166,7 +173,7 @@ class Advanced_Ads_Display_Conditions {
 
 			$conditions[ 'archive_' . $_tax->name ] = [
 				'label'    => sprintf(
-				// translators: %s is a label of an archive page.
+					/* translators: %s is a label of an archive page. */
 					__( 'archive: %s', 'advanced-ads' ),
 					$archive_label
 				),
@@ -180,27 +187,12 @@ class Advanced_Ads_Display_Conditions {
 	}
 
 	/**
-	 * Instance of Advanced_Ads_Display_Conditions
-	 *
-	 * @return Advanced_Ads_Display_Conditions
-	 */
-	public static function get_instance() {
-		// If the single instance hasn't been set, set it now.
-		if ( null === self::$instance ) {
-			self::$instance = new self();
-		}
-
-		return self::$instance;
-	}
-
-
-	/**
 	 * Get the conditions array alphabetically by label
 	 *
 	 * @since 1.8.12
 	 */
 	public function get_conditions() {
-		uasort( $this->conditions, 'Advanced_Ads_Admin::sort_condition_array_by_label' );
+		uasort( $this->conditions, [ WordPress::class, 'sort_array_by_label' ] );
 
 		return $this->conditions;
 	}
@@ -209,7 +201,7 @@ class Advanced_Ads_Display_Conditions {
 	 * Controls frontend checks for conditions
 	 *
 	 * @param array $options options of the condition.
-	 * @param mixed $ad false or Advanced_Ads_Ad object.
+	 * @param mixed $ad false or Ad object.
 	 *
 	 * @return bool false, if ad can’t be delivered
 	 */
@@ -320,7 +312,7 @@ class Advanced_Ads_Display_Conditions {
 		$name = self::get_form_name_with_index( $form_name, $index );
 
 		// create random value to identify the form field.
-		$rand = md5( $form_name );
+		$rand = uniqid();
 
 		return sprintf(
 			"<input style='display:none' type='checkbox' name='%s[connector]' value='or' id='%s' %s><label for='%s'>%s</label>",
@@ -376,12 +368,12 @@ class Advanced_Ads_Display_Conditions {
 		}
 
 		// get values and select operator based on previous settings.
-		$operator = ( isset( $options['operator'] ) && 'is_not' === $options['operator'] ) ? 'is_not' : 'is';
-		$values   = ( isset( $options['value'] ) && is_array( $options['value'] ) ) ? $options['value'] : [];
+		$operator = isset( $options['operator'] ) && 'is_not' === $options['operator'] ? 'is_not' : 'is';
+		$values   = isset( $options['value'] ) && is_array( $options['value'] ) ? $options['value'] : [];
 
 		// form name basis.
 		$name = self::get_form_name_with_index( $form_name, $index );
-		$rand = md5( $name );
+		$rand = uniqid();
 
 		self::render_type_field( $options['type'], $name );
 
@@ -451,12 +443,12 @@ class Advanced_Ads_Display_Conditions {
 		}
 
 		// get values and select operator based on previous settings.
-		$operator = ( isset( $options['operator'] ) && 'is_not' === $options['operator'] ) ? 'is_not' : 'is';
-		$values   = ( isset( $options['value'] ) && is_array( $options['value'] ) ) ? $options['value'] : [];
+		$operator = isset( $options['operator'] ) && 'is_not' === $options['operator'] ? 'is_not' : 'is';
+		$values   = isset( $options['value'] ) && is_array( $options['value'] ) ? $options['value'] : [];
 
 		// form name basis.
 		$name = self::get_form_name_with_index( $form_name, $index );
-		$rand = md5( $name );
+		$rand = uniqid();
 
 		self::render_type_field( $options['type'], $name );
 
@@ -518,6 +510,13 @@ class Advanced_Ads_Display_Conditions {
 		// load operator template.
 		include ADVADS_ABSPATH . 'admin/views/conditions/condition-operator.php';
 
+		/**
+		 * Allow adding markup on the condition table
+		 *
+		 * @param array $options options of the current condition being rendered.
+		 */
+		do_action( 'advads-conditions-operator-after', $options );
+
 		?>
 		<div class="advads-conditions-single advads-buttonset">
 			<?php
@@ -546,7 +545,7 @@ class Advanced_Ads_Display_Conditions {
 		$taxonomies = get_taxonomies( [ 'public' => 1 ], 'objects' );
 
 		$name = self::get_form_name_with_index( $form_name, $index );
-		$rand = md5( $name );
+		$rand = uniqid();
 
 		// get values and select operator based on previous settings.
 		$operator = ( isset( $options['operator'] ) && 'is_not' === $options['operator'] ) ? 'is_not' : 'is';
@@ -560,12 +559,7 @@ class Advanced_Ads_Display_Conditions {
 			$tax_label_counts = array_count_values( wp_list_pluck( $taxonomies, 'label' ) );
 
 			foreach ( $taxonomies as $_taxonomy_id => $_taxonomy ) :
-
-				if ( in_array( $_taxonomy_id, $values ) ) {
-					$_val = 1;
-				} else {
-					$_val = 0;
-				}
+				$_val = in_array( $_taxonomy_id, $values, true ) ? 1 : 0;
 
 				if ( $tax_label_counts[ $_taxonomy->label ] < 2 ) {
 					$_label = $_taxonomy->label;
@@ -597,29 +591,33 @@ class Advanced_Ads_Display_Conditions {
 	 * @param array  $checked ids of checked terms.
 	 * @param string $inputname name of the input field.
 	 * @param int    $max_terms maximum number of terms to show.
- 	 * @param int    $index index of the conditions group.
+	 * @param int    $index index of the conditions group.
 	 *
 	 * @return array|int|WP_Error
 	 */
-	public static function display_term_list( $taxonomy, $checked = [], $inputname = '', $max_terms = 50, $index = 0 ) {
+	public static function display_term_list( $taxonomy, $checked = [], $inputname = '', $max_terms = 50, $index = 0 ) { // phpcs:ignore
 		$terms = get_terms(
-			$taxonomy->name,
 			[
+				'taxonomy'   => $taxonomy->name,
 				'hide_empty' => false,
 				'number'     => $max_terms,
 			]
 		);
-		$rand  = md5( $inputname );
+		$rand  = uniqid();
 
 		if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) :
 			// display search field if the term limit is reached.
-			if ( count( $terms ) == $max_terms ) :
+			if ( count( $terms ) === $max_terms ) :
 
 				// query active terms.
 				if ( is_array( $checked ) && count( $checked ) ) {
-					$args            = [ 'hide_empty' => false ];
-					$args['include'] = $checked;
-					$checked_terms   = get_terms( $taxonomy->name, $args );
+					$checked_terms = get_terms(
+						[
+							'hide_empty' => false,
+							'include'    => $checked,
+							'taxonomy'   => $taxonomy->name,
+						]
+					);
 					// phpcs:disable Squiz.PHP.EmbeddedPhp.ContentBeforeOpen, Squiz.PHP.EmbeddedPhp.ContentAfterOpen, Squiz.PHP.EmbeddedPhp.ContentBeforeEnd, Squiz.PHP.EmbeddedPhp.ContentAfterEnd -- Prevent whitespaces between labels
 					?>
 					<div class="advads-conditions-terms-buttons dynamic-search"><?php
@@ -654,7 +652,7 @@ class Advanced_Ads_Display_Conditions {
 						esc_attr( $field_id ),
 						esc_attr( $inputname ),
 						esc_attr( $_term->term_id ),
-						checked( in_array( $_term->term_id, $checked ), true, false ),
+						checked( self::in_array( $_term->term_id, $checked ), true, false ),
 						esc_attr( $field_id ),
 						esc_html( $_term->name )
 					);
@@ -705,14 +703,43 @@ class Advanced_Ads_Display_Conditions {
 				'order_by'       => 'title',
 
 			];
-			$the_query = new WP_Query( $args );
+
+			$the_query      = new WP_Query( $args );
+			$titles_types   = [];
+			$identical_data = [];
+
+			foreach ( $the_query->posts as $post ) {
+				// Check if post_title and post_type is already in the $titles_types array.
+				$combined_data = [ $post->post_title, $post->post_type ];
+				if ( in_array( $combined_data, $titles_types, true ) ) {
+					$identical_data[] = $combined_data;
+				} else {
+					$titles_types[] = $combined_data;
+				}
+			}
+
 			while ( $the_query->have_posts() ) {
 				$the_query->next_post();
-				?><label class="button advads-button advads-ui-state-active"><span class="advads-button-text"><?php
-				echo esc_html(
-					sprintf( '%s (%s)', get_the_title( $the_query->post->ID ), $the_query->post->post_type )
-				); ?></span><input type="hidden" name="<?php echo esc_attr( $name ); ?>[value][]"
-				value="<?php echo esc_attr( $the_query->post->ID ); ?>"></label><?php
+				$combined_data = [ $the_query->post->post_title, $the_query->post->post_type ];
+				$display_text  = sprintf( '%s (%s)', $combined_data[0], $combined_data[1] );
+				// add advads-tooltip if same title & type found.
+				if ( in_array( $combined_data, $identical_data, true ) ) {
+					$tooltip = __( 'ID', 'advanced-ads' ) . ': ' . $the_query->post->ID . '<br>' . __( 'Status', 'advanced-ads' ) . ': ' . $the_query->post->post_status . '<br>';
+					if ( 'publish' === $the_query->post->post_status ) {
+						$tooltip .= __( 'Published', 'advanced-ads' ) . ': ' . $the_query->post->post_date;
+					} else {
+						$tooltip .= __( 'Last Modified', 'advanced-ads' ) . ': ' . $the_query->post->post_modified;
+					}
+					$display_text .= '&nbsp;<div class="advads-help advads-help-info"><div class="advads-tooltip advads-text-left">' . $tooltip . '</div></div>';
+				}
+				?>
+				<label class="button advads-button advads-ui-state-active">
+					<span class="advads-button-text">
+						<?php echo wp_kses_post( $display_text ); ?>
+					</span>
+					<input type="hidden" name="<?php echo esc_attr( $name ); ?>[value][]" value="<?php echo esc_attr( $the_query->post->ID ); ?>">
+				</label>
+				<?php
 			}
 		}
 		printf(
@@ -764,7 +791,7 @@ class Advanced_Ads_Display_Conditions {
 
 		self::render_type_field( $options['type'], $name );
 
-		$rand = md5( $form_name );
+		$rand = uniqid();
 		foreach ( $conditions as $_key => $_condition ) {
 			// activate by default.
 			$value    = ( [] === $values || in_array( $_key, $values, true ) ) ? 1 : 0;
@@ -893,12 +920,12 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check post type display condition in frontend
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad Advanced_Ads_Ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_post_type( $options, Advanced_Ads_Ad $ad ) {
+	public static function check_post_type( $options, Ad $ad ) {
 		if ( ! isset( $options['value'] ) || ! is_array( $options['value'] ) ) {
 			return false;
 		}
@@ -909,10 +936,8 @@ class Advanced_Ads_Display_Conditions {
 			$operator = 'is';
 		}
 
-		$ad_options = $ad->options();
-		$query      = $ad_options['wp_the_query'];
-		$post       = isset( $ad_options['post'] ) ? $ad_options['post'] : null;
-		$post_type  = isset( $post['post_type'] ) ? $post['post_type'] : false;
+		$post      = $ad->get_prop( 'ad_args.post' );
+		$post_type = $post['post_type'] ?? false;
 
 		if ( ! self::can_display_ids( $post_type, $options['value'], $operator ) ) {
 			return false;
@@ -924,13 +949,12 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check author display condition in frontend
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad Advanced_Ads_Ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_author( $options, Advanced_Ads_Ad $ad ) {
-
+	public static function check_author( $options, Ad $ad ) {
 		if ( ! isset( $options['value'] ) || ! is_array( $options['value'] ) ) {
 			return false;
 		}
@@ -941,9 +965,8 @@ class Advanced_Ads_Display_Conditions {
 			$operator = 'is';
 		}
 
-		$ad_options  = $ad->options();
-		$post        = isset( $ad_options['post'] ) ? $ad_options['post'] : null;
-		$post_author = isset( $post['author'] ) ? $post['author'] : false;
+		$post        = $ad->get_prop( 'ad_args.post' ) ?? null;
+		$post_author = $post['author'] ?? false;
 
 		if ( ! self::can_display_ids( $post_author, $options['value'], $operator ) ) {
 			return false;
@@ -955,13 +978,12 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check taxonomies display condition in frontend
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_taxonomies( $options, Advanced_Ads_Ad $ad ) {
-
+	public static function check_taxonomies( $options, Ad $ad ) {
 		if ( ! isset( $options['value'] ) ) {
 			return false;
 		}
@@ -972,9 +994,8 @@ class Advanced_Ads_Display_Conditions {
 			$operator = 'is';
 		}
 
-		$ad_options = $ad->options();
-		$query      = $ad_options['wp_the_query'];
-		$post_id    = isset( $ad_options['post']['id'] ) ? $ad_options['post']['id'] : null;
+		$query   = $ad->get_prop( 'ad_args.wp_the_query' );
+		$post_id = $ad->get_prop( 'ad_args.post.id' );
 
 		// get terms of the current taxonomy.
 		$type_options = self::get_instance()->conditions;
@@ -998,8 +1019,7 @@ class Advanced_Ads_Display_Conditions {
 
 		if ( 'is' === $operator && ( ! isset( $query['is_singular'] ) || ! $query['is_singular'] ) ) {
 			return false;
-		} elseif ( isset( $query['is_singular'] ) && $query['is_singular'] && ! self::can_display_ids( $options['value'], $term_ids, $operator )
-		) {
+		} elseif ( isset( $query['is_singular'] ) && $query['is_singular'] && ! self::can_display_ids( $options['value'], $term_ids, $operator ) ) {
 			return false;
 		}
 
@@ -1009,13 +1029,12 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check taxonomy archive display condition in frontend
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_taxonomy_archive( $options, Advanced_Ads_Ad $ad ) {
-
+	public static function check_taxonomy_archive( $options, Ad $ad ) {
 		if ( ! isset( $options['value'] ) ) {
 			return false;
 		}
@@ -1026,14 +1045,12 @@ class Advanced_Ads_Display_Conditions {
 			$operator = 'is';
 		}
 
-		$ad_options = $ad->options();
-		$query      = $ad_options['wp_the_query'];
+		$query = $ad->get_prop( 'ad_args.wp_the_query' );
 
 		// return false if operator is "is", but important query vars are not given.
 		if ( 'is' === $operator && ( empty( $query['term_id'] ) || empty( $query['is_archive'] ) ) ) {
 			return false;
-		} elseif ( isset( $query['term_id'] ) && isset( $query['is_archive'] ) && $query['is_archive'] && ! self::can_display_ids( $query['term_id'], $options['value'], $operator )
-		) {
+		} elseif ( isset( $query['term_id'] ) && isset( $query['is_archive'] ) && $query['is_archive'] && ! self::can_display_ids( $query['term_id'], $options['value'], $operator ) ) {
 			return false;
 		}
 
@@ -1043,13 +1060,12 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check if a specific archive belongs to a taxonomy in general (not a specific term)
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_taxonomy( $options, Advanced_Ads_Ad $ad ) {
-
+	public static function check_taxonomy( $options, Ad $ad ) {
 		if ( ! isset( $options['value'] ) ) {
 			return false;
 		}
@@ -1060,14 +1076,12 @@ class Advanced_Ads_Display_Conditions {
 			$operator = 'is';
 		}
 
-		$ad_options = $ad->options();
-		$query      = $ad_options['wp_the_query'];
+		$query = $ad->get_prop( 'ad_args.wp_the_query' );
 
 		// return false if operator is "is", but important query vars are not given.
 		if ( 'is' === $operator && ( empty( $query['taxonomy'] ) || empty( $query['is_archive'] ) ) ) {
 			return false;
-		} elseif ( isset( $query['taxonomy'] ) && isset( $query['is_archive'] ) && $query['is_archive'] && ! self::can_display_ids( $query['taxonomy'], $options['value'], $operator )
-		) {
+		} elseif ( isset( $query['taxonomy'] ) && isset( $query['is_archive'] ) && $query['is_archive'] && ! self::can_display_ids( $query['taxonomy'], $options['value'], $operator ) ) {
 			return false;
 		}
 
@@ -1077,22 +1091,20 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check post ids display condition in frontend
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_post_ids( $options, Advanced_Ads_Ad $ad ) {
-
+	public static function check_post_ids( $options, Ad $ad ) {
 		if ( isset( $options['operator'] ) && 'is_not' === $options['operator'] ) {
 			$operator = 'is_not';
 		} else {
 			$operator = 'is';
 		}
 
-		$ad_options = $ad->options();
-		$query      = $ad_options['wp_the_query'];
-		$post_id    = isset( $ad_options['post']['id'] ) ? $ad_options['post']['id'] : null;
+		$post    = $ad->get_prop( 'ad_args.post' );
+		$post_id = $post['id'];
 
 		// fixes page id on BuddyPress pages.
 		if ( 0 === $post_id && class_exists( 'BuddyPress' ) && function_exists( 'bp_current_component' ) ) {
@@ -1113,12 +1125,8 @@ class Advanced_Ads_Display_Conditions {
 			return self::can_display_ids( $post_id, $options['value'], $operator );
 		}
 
-		if ( empty( $ad_options['wp_the_query']['is_singular'] ) ) {
-			if ( 'is_not' === $operator ) {
-				return true;
-			} else {
-				return false;
-			}
+		if ( empty( $ad->get_prop( 'ad_args.wp_the_query.is_singular' ) ) ) {
+			return 'is_not' === $operator;
 		}
 
 		if ( ! isset( $options['value'] ) || ! is_array( $options['value'] ) || ! $post_id ) {
@@ -1131,13 +1139,12 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check general display conditions in frontend
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_general( $options, Advanced_Ads_Ad $ad ) {
-
+	public static function check_general( $options, Ad $ad ) {
 		// display by default.
 		if ( ! isset( $options['value'] ) || ! is_array( $options['value'] ) || ! count( $options['value'] ) ) {
 			return true;
@@ -1155,8 +1162,7 @@ class Advanced_Ads_Display_Conditions {
 		}
 
 		// get plugin options.
-		$ad_options = $ad->options();
-		$query      = $ad_options['wp_the_query'];
+		$query = $ad->get_prop( 'ad_args.wp_the_query' );
 
 		// check main query.
 		if ( isset( $query['is_main_query'] ) && ! $query['is_main_query'] && ! in_array( 'is_main_query', $options['value'], true ) ) {
@@ -1191,21 +1197,20 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check 'content age' condition in frontend.
 	 *
-	 * @param array           $options options of the condition.
-	 * @param Advanced_Ads_Ad $ad ad.
+	 * @param array $options Options of the condition.
+	 * @param Ad    $ad      Ad instance.
 	 *
 	 * @return bool true if can be displayed
 	 */
-	public static function check_content_age( $options, Advanced_Ads_Ad $ad ) {
-		$post = get_post();
+	public static function check_content_age( $options, Ad $ad ) { // phpcs:ignore
+		$post   = get_post();
+		$the_id = Params::request( 'theId', 0, FILTER_VALIDATE_INT );
 
-		if ( ! $post
-			&& wp_doing_ajax()
-			&& isset( $_REQUEST['action'], $_REQUEST['theId'], $_REQUEST['isSingular'] )
-			&& sanitize_key( $_REQUEST['action'] ) === 'advads_ad_select'
-			&& ( $_REQUEST['isSingular'] )
+		if ( ! $post && wp_doing_ajax() && $the_id &&
+			Params::request( 'action' ) === 'advads_ad_select' &&
+			Params::request( 'isSingular' )
 		) {
-			$post = get_post( (int) $_REQUEST['theId'] );
+			$post = get_post( $the_id );
 		}
 
 		$operator = ( isset( $options['operator'] ) && 'younger_than' === $options['operator'] ) ? 'younger_than' : 'older_than';
@@ -1234,12 +1239,13 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Helper function to check for in array values
 	 *
-	 * @param mixed $id scalar (key) or array of keys as needle.
-	 * @param array $ids haystack.
+	 * @param mixed  $id   scalar (key) or array of keys as needle.
+	 * @param array  $ids  haystack.
+	 * @param string $type type to use for comparison. accepted values: integer|string.
 	 *
-	 * @return boolean void if either argument is empty
+	 * @return boolean|void void if either argument is empty
 	 */
-	public static function in_array( $id, $ids ) {
+	public static function in_array( $id, $ids, $type = 'integer' ) {
 		// empty?
 		if ( ! isset( $id ) || [] === $id ) {
 			return;
@@ -1250,7 +1256,15 @@ class Advanced_Ads_Display_Conditions {
 			return;
 		}
 
-		return is_array( $id ) ? [] !== array_intersect( $id, $ids ) : in_array( $id, $ids );
+		if ( ! is_array( $id ) ) {
+			$id = 'integer' === $type ? (int) $id : (string) $id;
+		} else {
+			$id = array_map( 'integer' === $type ? 'intval' : 'strval', $id );
+		}
+
+		$ids = array_map( 'integer' === $type ? 'intval' : 'strval', $ids );
+
+		return is_array( $id ) ? [] !== array_intersect( $id, $ids ) : in_array( $id, $ids, true );
 	}
 
 	/**
@@ -1263,12 +1277,11 @@ class Advanced_Ads_Display_Conditions {
 	 * @return boolean
 	 */
 	public static function can_display_ids( $needle, $haystack, $operator = 'is' ) {
-
-		if ( 'is' === $operator && self::in_array( $needle, $haystack ) === false ) {
+		if ( 'is' === $operator && self::in_array( $needle, $haystack, 'string' ) === false ) {
 			return false;
 		}
 
-		if ( 'is_not' === $operator && self::in_array( $needle, $haystack ) === true ) {
+		if ( 'is_not' === $operator && self::in_array( $needle, $haystack, 'string' ) === true ) {
 			return false;
 		}
 
@@ -1278,8 +1291,8 @@ class Advanced_Ads_Display_Conditions {
 	/**
 	 * Check display conditions
 	 *
-	 * @param bool            $can_display whether the current ad can be displayed based on the checks that ran by now.
-	 * @param Advanced_Ads_Ad $ad ad object.
+	 * @param bool $can_display Whether the current ad can be displayed based on the checks that ran by now.
+	 * @param Ad   $ad          Ad instance.
 	 *
 	 * @return bool $can_display true if can be displayed in frontend
 	 * @since 1.1.0 moved here from can_display()
@@ -1291,19 +1304,18 @@ class Advanced_Ads_Display_Conditions {
 			return false;
 		}
 
-		$options = $ad->options();
+		$conditions = $ad->get_display_conditions();
+		$query      = $ad->get_prop( 'ad_args.wp_the_query' );
 		if (
 			// test if anything is to be limited at all.
-			! isset( $options['conditions'] ) || ! is_array( $options['conditions'] )
+			! $conditions || ! is_array( $conditions )
 			// query arguments required.
-			|| ! isset( $options['wp_the_query'] )
+			|| ! $query
 		) {
 			return true;
 		}
 		// get conditions with rebased index keys.
-		$conditions  = array_values( $options['conditions'] );
-		$query       = $options['wp_the_query'];
-		$post        = isset( $options['post'] ) ? $options['post'] : null;
+		$conditions  = array_values( $conditions );
 		$last_result = false;
 		$length      = count( $conditions );
 

@@ -9,6 +9,7 @@
 
 namespace AdvancedAds\Groups\Types;
 
+use AdvancedAds\Groups\Group_Standard;
 use AdvancedAds\Interfaces\Group_Type;
 
 defined( 'ABSPATH' ) || exit;
@@ -25,6 +26,15 @@ class Standard implements Group_Type {
 	 */
 	public function get_id(): string {
 		return 'default';
+	}
+
+	/**
+	 * Get the class name of the object as a string.
+	 *
+	 * @return string
+	 */
+	public function get_classname(): string {
+		return Group_Standard::class;
 	}
 
 	/**

@@ -51,7 +51,7 @@ class Advanced_Ads_Ad_Blocker_Admin {
 	 */
 	private function __construct() {
 		// add module settings to Advanced Ads settings page
-		add_action( 'advanced-ads-settings-init', [ $this, 'settings_init' ], 9, 1 );
+		add_action( 'advanced-ads-settings-init', [ $this, 'settings_init' ], 9 );
 
 		$is_main_site = is_main_site( get_current_blog_id() );
 		if ( ! $is_main_site ) {
@@ -84,25 +84,23 @@ class Advanced_Ads_Ad_Blocker_Admin {
 
 	/**
 	 * Add settings to settings page.
-	 *
-	 * @param   string $hook settings page hook
 	 */
-	public function settings_init( $hook ) {
+	public function settings_init() {
 		add_settings_field(
 			'use-adblocker',
-			__( 'Ad blocker fix', 'advanced-ads' ),
+			__( 'Ad blocker disguise', 'advanced-ads' ),
 			[ $this, 'render_settings_use_adblocker' ],
-			$hook,
+			ADVADS_SETTINGS_ADBLOCKER,
 			'advanced_ads_adblocker_setting_section'
 		);
 	}
 
 	/**
-	* Render setting to enable/disable adblocker.
+	* Render setting to enable/disable 'adblocker disguise'.
 	*/
 	public function render_settings_use_adblocker() {
 		$is_main_site = is_main_site( get_current_blog_id() );
-		$checked      = ! empty( Advanced_Ads::get_instance()->options()['use-adblocker'] );
+		$checked      = ! empty( Advanced_Ads::get_instance()->get_adblocker_options()['use-adblocker'] );
 
 		include ADVADS_AB_BASE_PATH . 'admin/views/setting-use-adblocker.php';
 
@@ -479,7 +477,8 @@ class Advanced_Ads_Ad_Blocker_Admin {
 	 *
 	 */
 	public function process_auto_update() {
-		$advads_options = Advanced_Ads::get_instance()->options();
+		$advads_options = Advanced_Ads::get_instance()->get_adblocker_options();
+
 		if ( ! isset( $advads_options['use-adblocker'] )
 			|| ! $this->upload_dir
 		) { return; }

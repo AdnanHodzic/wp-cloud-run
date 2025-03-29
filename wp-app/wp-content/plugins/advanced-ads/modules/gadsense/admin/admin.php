@@ -1,6 +1,8 @@
 <?php // phpcs:ignoreFile
 
-use AdvancedAds\Entities;
+use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Constants;
+use AdvancedAds\Framework\Utilities\Params;
 use AdvancedAds\Utilities\Conditional;
 
 /**
@@ -55,25 +57,26 @@ class Advanced_Ads_AdSense_Admin {
 
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'admin_print_scripts', [ $this, 'print_scripts' ] );
-		add_filter( 'advanced-ads-ad-notices', [ $this, 'ad_notices' ], 10, 3 );
-		add_filter( 'advanced-ads-ad-settings-pre-save', [ $this, 'pre_save_post' ] );
+		add_filter( 'advanced-ads-ad-notices', [ $this, 'ad_notices' ], 10, 2 );
+		add_action( 'advanced-ads-ad-pre-save', [ $this, 'save_ad_options' ], 10, 2 );
 	}
 
 	/**
-	 * Edit $_POST['advanced_ad'] before saving
+	 * Save ad options.
 	 *
-	 * @param array $advanced_ad content of $_POST['advanced_ad'].
+	 * @param Ad    $ad        Ad instance.
+	 * @param array $post_data Post data array.
 	 *
-	 * @return array
+	 * @return void
 	 */
-	public function pre_save_post( $advanced_ad ) {
-		if ( $advanced_ad['type'] !== 'adsense' ) {
-			return $advanced_ad;
+	public function save_ad_options( Ad $ad, $post_data ): void {
+		if ( ! $ad->is_type( 'adsense' ) ) {
+			return;
 		}
 
 		// Remove ad size options for responsive AdSense ads.
-		$content = json_decode( str_replace( "\n", '', wp_unslash( $advanced_ad['content'] ) ), true );
-		if ( in_array( $content['unitType'], [
+		$content = json_decode( str_replace( "\n", '', wp_unslash( $post_data['content'] ) ), true );
+		if ( in_array( $content['unitType'] ?? 'none', [
 			'responsive',
 			'link',
 			'link-responsive',
@@ -82,22 +85,18 @@ class Advanced_Ads_AdSense_Admin {
 			'in-feed',
 		], true )
 		) {
-			$advanced_ad['width']  = '';
-			$advanced_ad['height'] = '';
+			$ad->set_width( 0 );
+			$ad->set_height( 0 );
 		}
-
-		return $advanced_ad;
 	}
 
 	/**
 	 * Load JavaScript needed on some pages.
 	 */
 	public function print_scripts() {
-		global $pagenow, $post_type;
-		if (
-				( 'post-new.php' === $pagenow && Entities::POST_TYPE_AD === $post_type ) ||
-				( 'post.php' === $pagenow && Entities::POST_TYPE_AD === $post_type && isset( $_GET['action'] ) && 'edit' === $_GET['action'] )
-		) {
+		global $pagenow;
+
+		if ( $this->is_on_screen() ) {
 			$db     = Advanced_Ads_AdSense_Data::get_instance();
 			$pub_id = $db->get_adsense_id();
 			?>
@@ -116,17 +115,11 @@ class Advanced_Ads_AdSense_Admin {
 	 * Add AdSense-related scripts.
 	 */
 	public function enqueue_scripts() {
-		global $gadsense_globals, $pagenow, $post_type;
-		$screen = get_current_screen();
-		$plugin = Advanced_Ads_Admin::get_instance();
-
 		if ( Conditional::is_screen_advanced_ads() ) {
 			self::enqueue_connect_adsense();
 		}
-		if (
-				( 'post-new.php' === $pagenow && Entities::POST_TYPE_AD === $post_type ) ||
-				( 'post.php' === $pagenow && Entities::POST_TYPE_AD === $post_type && isset( $_GET['action'] ) && 'edit' === $_GET['action'] )
-		) {
+
+		if ( $this->is_on_screen() ) {
 			$scripts = [];
 
 			// Allow modifications of script files to enqueue.
@@ -180,23 +173,17 @@ class Advanced_Ads_AdSense_Admin {
 	/**
 	 * Show AdSense ad specific notices in parameters box
 	 *
-	 * @param array   $notices some notices to show in the parameters box.
-	 * @param string  $box ID of the meta box.
-	 * @param WP_Post $post post object.
+	 * @param array  $notices some notices to show in the parameters box.
+	 * @param string $box     ID of the meta box.
 	 */
-	public function ad_notices( $notices, $box, $post ) {
-
-		$ad = \Advanced_Ads\Ad_Repository::get( $post->ID );
-
-		// $content = json_decode( stripslashes( $ad->content ) );
-
+	public function ad_notices( $notices, $box ) {
 		switch ( $box['id'] ) {
 			case 'ad-parameters-box':
 				// Add warning if this is a responsive ad unit without custom sizes and position is set to left or right.
 				// Hidden by default and made visible with JS.
 				$notices[] = [
 					'text'  => sprintf(
-							// translators: %s is a URL.
+						/* translators: %s is a URL. */
 						__( 'Responsive AdSense ads don’t work reliably with <em>Position</em> set to left or right. Either switch the <em>Type</em> to "normal" or follow <a href="%s" target="_blank">this tutorial</a> if you want the ad to be wrapped in text.', 'advanced-ads' ),
 						'https://wpadvancedads.com/adsense-responsive-custom-sizes/?utm_source=advanced-ads&utm_medium=link&utm_campaign=adsense-custom-sizes-tutorial'
 					),
@@ -206,7 +193,7 @@ class Advanced_Ads_AdSense_Admin {
 				if ( ! class_exists( 'Advanced_Ads_In_Feed', false ) && ! class_exists( 'Advanced_Ads_Pro_Admin', false ) ) {
 					$notices[] = [
 						'text'  => sprintf(
-								// translators: %s is a URL.
+								/* translators: %s is a URL. */
 							__( '<a href="%s" target="_blank">Install the free AdSense In-feed add-on</a> in order to place ads between posts.', 'advanced-ads' ),
 							wp_nonce_url(
 								self_admin_url( 'update.php?action=install-plugin&plugin=advanced-ads-adsense-in-feed' ),
@@ -247,7 +234,7 @@ class Advanced_Ads_AdSense_Admin {
 	public static function get_auto_ads_messages() {
 		return [
 			'enabled'  => sprintf(
-						  // translators: %s is a URL.
+				/* translators: %s is a URL. */
 				__( 'The AdSense verification and Auto ads code is already activated in the <a href="%s">AdSense settings</a>.', 'advanced-ads' ),
 				admin_url( 'admin.php?page=advanced-ads-settings#top#adsense' )
 			)
@@ -255,7 +242,7 @@ class Advanced_Ads_AdSense_Admin {
 			'disabled' => sprintf(
 				'%s <button id="adsense_enable_pla" type="button" class="button">%s</button>',
 				sprintf(
-						// translators: %s is a URL.
+					/* translators: %s is a URL. */
 					__( 'The AdSense verification and Auto ads code should be set up in the <a href="%s">AdSense settings</a>. Click on the following button to enable it now.', 'advanced-ads' ),
 					admin_url( 'admin.php?page=advanced-ads-settings#top#adsense' )
 				),
@@ -279,5 +266,17 @@ class Advanced_Ads_AdSense_Admin {
 		$pub_id          = Advanced_Ads_AdSense_Data::get_instance()->get_adsense_id();
 
 		require_once GADSENSE_BASE_PATH . 'admin/views/external-ads-list.php';
+	}
+
+	/**
+	 * Is on screen.
+	 *
+	 * @return boolean
+	 */
+	private function is_on_screen(): bool {
+		global $pagenow, $post_type;
+
+		return ( 'post-new.php' === $pagenow && Constants::POST_TYPE_AD === $post_type ) ||
+			( 'post.php' === $pagenow && Constants::POST_TYPE_AD === $post_type && 'edit' === Params::get( 'action' ) );
 	}
 }

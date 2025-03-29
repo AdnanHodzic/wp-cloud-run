@@ -1,0 +1,169 @@
+@config "../../../tailwind.config.onboarding.js";
+@import "../bootstrap/tailwind";
+@import "../bootstrap/variables";
+
+.#{$namespace}-onboarding-frame {
+	@apply fixed inset-0 z-[99999] bg-gray-100 flex justify-center items-center h-screen w-screen overflow-y-auto;
+}
+
+body.advanced-ads_page_advanced-ads-onboarding {
+	@apply absolute -left-[100%];
+
+	#adminmenumain {
+		@apply hidden;
+	}
+}
+
+.#{$namespace}-onboarding {
+	a,
+	p,
+	label,
+	button {
+		@apply text-base tracking-wide;
+	}
+
+	h1,
+	h2,
+	h3 {
+		@apply tracking-wide my-8;
+	}
+
+	h1,
+	h2 {
+		@apply font-medium;
+	}
+
+	h2 {
+		@apply text-2xl mb-3;
+	}
+
+	h3 {
+		@apply mb-3 font-normal;
+	}
+
+	select {
+		@apply w-full max-w-none px-2 py-0.5;
+	}
+
+	.button-link {
+		@apply no-underline text-black tracking-wide text-sm;
+
+		span {
+			@apply border-0 border-b border-solid border-black;
+		}
+	}
+
+	.button-onboarding {
+		@apply py-3 px-5 text-base border border-solid border-primary rounded text-white bg-primary text-base cursor-pointer no-underline font-medium;
+
+		&:disabled,
+		&.disabled {
+			@apply bg-gray-100 text-gray-600 border border-gray-100 cursor-not-allowed pointer-events-none;
+		}
+
+		&--gray {
+			@apply bg-gray-100 text-primary border border-solid border-primary whitespace-nowrap;
+		}
+	}
+
+	.file-name-rtl {
+		@apply max-w-72 whitespace-nowrap overflow-hidden relative;
+		direction: rtl;
+
+		&.truncate::before {
+			@apply w-10 h-full absolute left-0 top-0 z-10;
+			content: "";
+			background: linear-gradient(to right, #fff, rgba(255, 255, 255, 0));
+		}
+	}
+
+	.congrats-flex {
+		@apply flex gap-7 items-center;
+
+		& > *:first-child {
+			min-width: 65%;
+			max-width: 65%;
+		}
+
+		& > *:nth-child(2) {
+			min-width: 25%;
+		}
+	}
+}
+
+.#{$namespace}-input {
+	&-radio {
+		@apply flex gap-x-4;
+
+		input {
+			@apply block mt-2 #{!important};
+		}
+	}
+
+	&-text {
+		@apply px-5 py-3 w-full text-base tracking-wide #{!important};
+	}
+}
+
+.#{$namespace}-radio-list {
+	@apply space-y-2 my-8;
+
+	&:not(.is-button) &--item {
+		@apply flex gap-x-4;
+
+		input {
+			@apply block mt-1.5 #{!important};
+		}
+	}
+
+	&.is-button {
+		@apply space-y-5;
+	}
+
+	&.is-button &--item {
+		input {
+			@apply hidden;
+		}
+
+		label {
+			@apply bg-gray-100/50 border border-solid border-primary border-opacity-70 py-1 px-4 text-primary rounded block font-medium cursor-pointer;
+
+			> span {
+				@apply flex items-center gap-x-4;
+			}
+		}
+
+		input:checked ~ label {
+			@apply bg-primary/80 text-white;
+		}
+	}
+}
+
+.#{$namespace}-wizard-progress {
+	@apply flex justify-center py-4 gap-x-8;
+
+	&--item {
+		@apply relative rounded-full bg-white border-solid border border-gray-300 min-h-8 min-w-8 flex justify-center items-center text-lg text-gray-500 font-medium;
+
+		&.is-active {
+			@apply min-w-16 px-1 bg-primary text-white border-primary z-10;
+		}
+
+		&.is-done {
+			@apply bg-primary text-white border-primary;
+
+			&::after,
+			& + &::after {
+				@apply border-solid border border-x-0 border-y border-primary bg-primary -z-10;
+				@apply content-[""] absolute left-0 top-1/2 h-1 w-[110%];
+				transform: translate(90%, -50%);
+			}
+		}
+
+		&:not(.is-done) + &::after {
+			@apply border-solid border border-x-0 border-y border-gray-300 bg-white -z-10;
+			@apply content-[""] absolute left-0 top-1/2 h-1 w-[110%];
+			transform: translate(-100%, -50%);
+		}
+	}
+}

@@ -2,23 +2,35 @@
 /**
  * Advanced Ads - Backend modal
  *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.0.0
+ *
  * @var string $modal_slug       Unique slug that can be addressed by a link or button.
  * @var string $modal_content    The modal content. May contain HTML.
  * @var string $modal_title      The modal title.
+ * @var string $cancel_action    Show/Hide cancel button.
  * @var string $close_action     Adds another close button that can trigger an action.
  * @var string $close_form       Add a form ID. This form will be submitted after clicking the close and action button.
  * @var string $close_validation A JavaScript validation function. The function has to return true or the form won't be submitted.
  */
+
+$close_validation_object = [
+	'function' => $close_validation,
+	'modal_id' => "#modal-$modal_slug",
+];
+
 ?>
-<?php if ( $close_action && $close_form ) : ?>
-	<script>
-		document.addEventListener( 'DOMContentLoaded', function () {
-			document.querySelector( '#modal-<?php echo esc_attr( $modal_slug ); ?> .advads-modal-close-action' ).addEventListener( 'click', function ( event ) {
-				modal_submit_form( event, '<?php echo esc_attr( $close_form ); ?>', '#modal-<?php echo esc_attr( $modal_slug ); ?>', '<?php echo esc_attr( $close_validation ); ?>' );
-			} );
+<script>
+	document.addEventListener( 'DOMContentLoaded', function () {
+		document.querySelector( '#modal-<?php echo esc_attr( $modal_slug ); ?>' ).closeValidation = <?php echo wp_json_encode( $close_validation_object ); ?>;
+		<?php if ( $close_action && $close_form ) : ?>
+		document.querySelector( '#modal-<?php echo esc_attr( $modal_slug ); ?> .advads-modal-close-action' ).addEventListener( 'click', function ( event ) {
+			modal_submit_form( event, '<?php echo esc_attr( $close_form ); ?>', '#modal-<?php echo esc_attr( $modal_slug ); ?>', '<?php echo esc_attr( $close_validation ); ?>' );
 		} );
-	</script>
-<?php endif; ?>
+		<?php endif; ?>
+	} );
+</script>
 <dialog id="modal-<?php echo esc_attr( $modal_slug ); ?>" class="advads-modal" data-modal-id="<?php echo esc_attr( $modal_slug ); ?>" autofocus>
 	<a href="#close" class="advads-modal-close-background">Close</a>
 	<div class="advads-modal-content">
@@ -36,9 +48,11 @@
 		</div>
 		<div class="advads-modal-footer">
 			<div class="tablenav bottom">
+				<?php if ( false === $cancel_action ) : ?>
 				<a href="#close" class="button button-secondary advads-modal-close">
 					<?php esc_html_e( 'Cancel', 'advanced-ads' ); ?>
 				</a>
+				<?php endif; ?>
 
 				<?php if ( $close_action ) : ?>
 					<?php if ( $close_form ) : ?>

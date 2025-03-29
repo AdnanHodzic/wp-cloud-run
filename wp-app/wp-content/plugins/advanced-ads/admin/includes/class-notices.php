@@ -1,6 +1,16 @@
-<?php
-// phpcs:ignoreFile
+<?php // phpcs:ignore WordPress.Files.FileName
+/**
+ * Container class for admin notices
+ *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.x.x
+ */
+
+use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Utilities\WordPress;
 use AdvancedAds\Utilities\Conditional;
+use AdvancedAds\Framework\Utilities\Arr;
 
 /**
  * Container class for admin notices
@@ -14,13 +24,6 @@ class Advanced_Ads_Admin_Notices {
 	 * Maximum number of notices to show at once
 	 */
 	const MAX_NOTICES = 2;
-
-	/**
-	 * Instance of this class
-	 *
-	 * @var      object
-	 */
-	protected static $instance = null;
 
 	/**
 	 * Options
@@ -37,21 +40,10 @@ class Advanced_Ads_Admin_Notices {
 	public $notices = [];
 
 	/**
-	 * Plugin class
-	 *
-	 * @var Advanced_Ads_Plugin
-	 */
-	private $plugin;
-
-	/**
 	 * Advanced_Ads_Admin_Notices constructor to load notices
 	 */
 	public function __construct() {
-		$this->plugin = Advanced_Ads_Plugin::get_instance();
-		// load notices.
 		$this->load_notices();
-
-		add_action( 'advanced-ads-ad-params-before', [ $this, 'adsense_tutorial' ], 10, 2 );
 	}
 
 	/**
@@ -60,22 +52,36 @@ class Advanced_Ads_Admin_Notices {
 	 * @return    object    A single instance of this class.
 	 */
 	public static function get_instance() {
+		static $instance;
 
 		// if the single instance hasn't been set, set it now.
-		if ( null === self::$instance ) {
-			self::$instance = new self();
+		if ( null === $instance ) {
+			$instance = new self();
 		}
 
-		return self::$instance;
+		return $instance;
+	}
+
+	/**
+	 * Determines if a notice can be displayed.
+	 *
+	 * @param string $notice The notice identifier.
+	 *
+	 * @return bool Returns true if the notice can be displayed, false otherwise.
+	 */
+	public function can_display( $notice ) {
+		$options = $this->options();
+		$closed  = $options['closed'] ?? [];
+
+		return ! array_key_exists( $notice, $closed );
 	}
 
 	/**
 	 * Load admin notices
 	 */
 	public function load_notices() {
-
 		$options        = $this->options();
-		$plugin_options = $this->plugin->options();
+		$plugin_options = Advanced_Ads::get_instance()->options();
 
 		// load notices from queue.
 		$this->notices  = isset( $options['queue'] ) ? $options['queue'] : [];
@@ -83,6 +89,12 @@ class Advanced_Ads_Admin_Notices {
 
 		// check license notices.
 		$this->register_license_notices();
+
+		// check wizard notice.
+		$this->register_wizard_notice();
+
+		// check non org plugins update.
+		$this->check_non_org_plugins();
 
 		// don’t check non-critical notices if they are disabled.
 		if ( ! isset( $plugin_options['disable-notices'] ) ) {
@@ -97,26 +109,10 @@ class Advanced_Ads_Admin_Notices {
 	}
 
 	/**
-	 * Update version number to latest one
-	 */
-	public function update_version_number() {
-
-		$internal_options = $this->plugin->internal_options();
-		$new_options      = $internal_options; // in case we udpate options here.
-
-		$new_options['version'] = ADVADS_VERSION;
-
-		// update version numbers.
-		if ( $internal_options !== $new_options ) {
-			$this->plugin->update_internal_options( $new_options );
-		}
-	}
-
-	/**
 	 * Check various notices conditions
 	 */
 	public function check_notices() {
-		$internal_options = $this->plugin->internal_options();
+		$internal_options = Advanced_Ads::get_instance()->internal_options();
 		$now              = time();
 		$activation       = ( isset( $internal_options['installed'] ) ) ? $internal_options['installed'] : $now; // activation time.
 
@@ -126,37 +122,27 @@ class Advanced_Ads_Admin_Notices {
 		$paused  = isset( $options['paused'] ) ? $options['paused'] : [];
 
 		// offer free add-ons if not yet subscribed.
-		if ( $this->user_can_subscribe() && ! in_array( 'nl_free_addons', $queue, true ) && ! isset( $closed['nl_free_addons'] ) ) {
+		if ( Conditional::user_can_subscribe( 'nl_free_addons' ) && ! in_array( 'nl_free_addons', $queue, true ) && ! isset( $closed['nl_free_addons'] ) ) {
 			// get number of ads.
-			if ( Advanced_Ads::get_number_of_ads() ) {
+			if ( WordPress::get_count_ads() ) {
 				$this->notices[] = 'nl_free_addons';
 			}
 		}
 		$number_of_ads = 0;
 		// needed error handling due to a weird bug in the piklist plugin.
 		try {
-			$number_of_ads = Advanced_Ads::get_number_of_ads();
-		} catch ( Exception $e ) {
+			$number_of_ads = WordPress::get_count_ads();
+		} catch ( Exception $e ) { // phpcs:ignore
 			// no need to catch anything since we just use TRY/CATCH to prevent an issue caused by another plugin.
 		}
 
-		// register intro message.
-		if ( ! $number_of_ads
-			&& [] === $options && ! in_array( 'nl_intro', $queue, true ) && ! isset( $closed['nl_intro'] ) ) {
-			$this->notices[] = 'nl_intro';
-		} elseif ( $number_of_ads ) {
-			$key = array_search( 'nl_intro', $this->notices, true );
-			if ( false !== $key ) {
-				unset( $this->notices[ $key ] );
-			}
-		}
-
 		// ask for a review after 2 days and when 3 ads were created and when not paused.
-		if ( ! in_array( 'review', $queue, true )
-			 && ! isset( $closed['review'] )
-			 && ( ! isset( $paused['review'] ) || $paused['review'] <= time() )
-			 && 172800 < ( time() - $activation )
-			 && 3 <= $number_of_ads
+		if (
+			! in_array( 'review', $queue, true )
+			&& ! isset( $closed['review'] )
+			&& ( ! isset( $paused['review'] ) || $paused['review'] <= time() )
+			&& 172800 < ( time() - $activation )
+			&& 3 <= $number_of_ads
 		) {
 			$this->notices[] = 'review';
 		} elseif ( in_array( 'review', $queue, true ) && 3 > $number_of_ads ) {
@@ -186,6 +172,58 @@ class Advanced_Ads_Admin_Notices {
 			}
 		} else {
 			$this->remove_from_queue( 'license_invalid' );
+		}
+	}
+
+	/**
+	 * Register wizard notice.
+	 */
+	public function register_wizard_notice() {
+		if ( ! Conditional::is_screen_advanced_ads() ) {
+			return;
+		}
+
+		$options = $this->options();
+		$queue   = isset( $options['queue'] ) ? $options['queue'] : [];
+
+		if ( Advanced_Ads_Checks::can_launch_wizard() ) {
+			if ( ! in_array( 'monetize_wizard', $queue, true ) ) {
+				$this->notices[] = 'monetize_wizard';
+			}
+		} else {
+			$this->remove_from_queue( 'monetize_wizard' );
+		}
+	}
+
+	/**
+	 * Check for updates of non wp.org plugins
+	 */
+	public function check_non_org_plugins() {
+		if ( ! Conditional::is_screen_advanced_ads() ) {
+			return;
+		}
+
+		$addons  = \AdvancedAds\Constants::ADDONS_NON_COMPATIBLE_VERSIONS;
+		$plugins = WordPress::get_wp_plugins();
+		$options = $this->options();
+		$queue   = isset( $options['queue'] ) ? $options['queue'] : [];
+		$closed  = isset( $options['closed'] ) ? $options['closed'] : [];
+
+		foreach ( $addons as $version => $slug ) {
+			$addon = $plugins[ $slug ] ?? null;
+			if ( ! $addon ) {
+				continue;
+			}
+
+			$notice = $slug . '_upgrade';
+
+			if ( version_compare( $addon['version'], $version, '<=' ) ) {
+				if ( ! in_array( $notice, $queue, true ) && ! array_key_exists( $notice, $closed ) ) {
+					$this->notices[] = $notice;
+				}
+			} else {
+				$this->remove_from_queue( $notice );
+			}
 		}
 	}
 
@@ -315,14 +353,13 @@ class Advanced_Ads_Admin_Notices {
 	 * Display notices
 	 */
 	public function display_notices() {
-
-		if ( defined( 'DOING_AJAX' ) ) {
+		if ( wp_doing_ajax() ) {
 			return;
 		}
 
 		// register Black Friday 2023 deals.
-		if ( time() > 1732669200 &&
-			time() <= 1733266800 && Conditional::is_screen_advanced_ads() ) {
+		if ( time() > 1700654400 &&
+			time() <= 1701172800 && Conditional::is_screen_advanced_ads() ) {
 			$options = $this->options();
 			$closed  = isset( $options['closed'] ) ? $options['closed'] : [];
 
@@ -331,34 +368,13 @@ class Advanced_Ads_Admin_Notices {
 			}
 		}
 
-		// 2024 AA 10 year anniversary
-		if ( time() > 1719464400 &&
-			time() <= 1720047600 && Conditional::is_screen_advanced_ads() ) {
-			$options = $this->options();
-			$closed  = isset( $options['closed'] ) ? $options['closed'] : [];
-
-			if ( ! isset( $closed['promo-10ya'] ) ) {
-				$this->notices[] = 'promo-10ya';
-			}
-		}
-
 		if ( [] === $this->notices ) {
 			return;
 		}
 
-		// hide the welcome panel on the ad edit page
-		$screen = get_current_screen();
-		if ( isset( $screen->id ) && $screen->id === 'advanced_ads' ) {
-			$intro_key = array_search( 'nl_intro', $this->notices, true );
-			if ( $intro_key !== false ) {
-				unset( $this->notices[ $intro_key ] );
-			}
-		}
+		include_once ADVADS_ABSPATH . '/admin/includes/notices.php';
 
-		// load notices.
-		include ADVADS_ABSPATH . '/admin/includes/notices.php';
-
-		// iterate through notices.
+		// Iterate through notices.
 		$count = 0;
 		foreach ( $this->notices as $_notice ) {
 
@@ -371,8 +387,10 @@ class Advanced_Ads_Admin_Notices {
 			}
 
 			// don’t display non-global notices on other than plugin related pages.
-			if ( ( ! isset( $advanced_ads_admin_notices[ $_notice ]['global'] ) || ! $advanced_ads_admin_notices[ $_notice ]['global'] )
-				 && ! Conditional::is_screen_advanced_ads() ) {
+			if (
+				( ! isset( $advanced_ads_admin_notices[ $_notice ]['global'] ) || ! $advanced_ads_admin_notices[ $_notice ]['global'] )
+				&& ! Conditional::is_screen_advanced_ads()
+			) {
 				continue;
 			}
 
@@ -381,26 +399,21 @@ class Advanced_Ads_Admin_Notices {
 				continue;
 			}
 
-			switch ( $type ) {
-				case 'info':
-					include ADVADS_ABSPATH . '/admin/views/notices/info.php';
-					break;
-				case 'subscribe':
-					include ADVADS_ABSPATH . '/admin/views/notices/subscribe.php';
-					break;
-				case 'plugin_error':
-					include ADVADS_ABSPATH . '/admin/views/notices/plugin_error.php';
-					break;
-				case 'promo':
-					include ADVADS_ABSPATH . '/admin/views/notices/promo.php';
-					break;
-				default:
-					include ADVADS_ABSPATH . '/admin/views/notices/error.php';
-			}
+			$hash = [
+				'info'         => '/admin/views/notices/info.php',
+				'subscribe'    => '/admin/views/notices/subscribe.php',
+				'plugin_error' => '/admin/views/notices/plugin_error.php',
+				'promo'        => '/admin/views/notices/promo.php',
+			];
 
-			if ( self::MAX_NOTICES === ++ $count ) {
-				break;
-			}
+			$locate_tempalte = isset( $hash[ $type ] ) ? $hash[ $type ] : '/admin/views/notices/error.php';
+			include ADVADS_ABSPATH . $locate_tempalte;
+
+			// phpcs:disable
+			// if ( self::MAX_NOTICES === ++$count ) {
+			// 	break;
+			// }
+			// phpcs:enable
 		}
 	}
 
@@ -444,11 +457,10 @@ class Advanced_Ads_Admin_Notices {
 			return '';
 		}
 
-		global $current_user;
 		$user = wp_get_current_user();
 
 		if ( '' === $user->user_email ) {
-			// translators: %s is a URL.
+			/* translators: %s: is a URL. */
 			return sprintf( __( 'You don’t seem to have an email address. Please use <a href="%s" target="_blank">this form</a> to sign up.', 'advanced-ads' ), 'http://eepurl.com/bk4z4P' );
 		}
 
@@ -471,89 +483,64 @@ class Advanced_Ads_Admin_Notices {
 
 		if ( is_wp_error( $result ) ) {
 			return __( 'How embarrassing. The email server seems to be down. Please try again later.', 'advanced-ads' );
-		} else {
-			// mark as subscribed and move notice from quere.
-			$this->mark_as_subscribed();
-			$this->remove_from_queue( $notice );
-
-			// translators: the first %s is an email address, the seconds %s is a URL.
-			return sprintf( __( 'Please check your email (%1$s) for the confirmation message. If you didn’t receive one or want to use another email address then please use <a href="%2$s" target="_blank">this form</a> to sign up.', 'advanced-ads' ), $user->user_email, 'http://eepurl.com/bk4z4P' );
 		}
+
+		// Mark as subscribed and move notice from queue.
+		$this->mark_as_subscribed( $notice );
+		$this->remove_from_queue( $notice );
+
+		/* translators: the first %s is an email address, the seconds %s is a URL. */
+		return sprintf( __( 'Please check your email (%1$s) for the confirmation message. If you didn’t receive one or want to use another email address then please use <a href="%2$s" target="_blank">this form</a> to sign up.', 'advanced-ads' ), $user->user_email, 'http://eepurl.com/bk4z4P' );
 	}
 
 	/**
-	 * Check if blog is subscribed to the newsletter
+	 * Update information that the current user is subscribed
+	 *
+	 * @param string $notice notice slug.
 	 */
-	public function is_subscribed() {
-
-		// respect previous settings.
-		$options = $this->options();
-		if ( isset( $options['is_subscribed'] ) ) {
-			return true;
+	private function mark_as_subscribed( $notice ) {
+		// Early bail!!
+		if ( empty( $notice ) || ! Conditional::user_can_subscribe( $notice ) ) {
+			return;
 		}
 
-		$user_id = get_current_user_id();
-		if ( ! $user_id ) {
-			return true;
+		$user_id            = get_current_user_id();
+		$subscribed_notices = get_user_meta( $user_id, 'advanced-ads-subscribed', true );
+
+		// backward compatibility.
+		if ( ! is_array( $subscribed_notices ) ) {
+			$subscribed_notices = [];
 		}
 
-		$subscribed = get_user_meta( $user_id, 'advanced-ads-subscribed', true );
+		$subscribed_notices[ $notice ] = true;
 
-		return $subscribed;
+		update_user_meta( $user_id, 'advanced-ads-subscribed', $subscribed_notices );
 	}
 
 	/**
 	 * Check if a usesr can be subscribed to our newsletter
 	 * check if is already subscribed or email is invalid
 	 *
+	 * @deprecated version 2.0 use Conditional::user_can_subscribe() instead
+	 *
 	 * @return bool true if user can subscribe
 	 */
 	public function user_can_subscribe() {
+		_deprecated_function( __METHOD__, '2.0', '\AdvancedAds\Utilities\Conditional::user_can_subscribe()' );
 
-		// respect previous settings.
-		$options = $this->options();
-		if ( isset( $options['is_subscribed'] ) ) {
-			return true;
-		}
-
-		$current_user = wp_get_current_user();
-
-		if ( empty( $current_user->ID ) || empty( $current_user->user_email ) ) {
-			return false;
-		}
-
-		$subscribed = get_user_meta( $current_user->ID, 'advanced-ads-subscribed', true );
-
-		// secureserver.net email address belong to GoDaddy (?) and have very, very low open rates. Seems like only temporary setup.
-		return ( ! $subscribed && is_email( $current_user->user_email ) && false === strpos( $current_user->user_email, 'secureserver.net' ) )
-			? true : false;
-
-	}
-
-	/**
-	 * Update information that the current user is subscribed
-	 */
-	private function mark_as_subscribed() {
-
-		$user_id = get_current_user_id();
-
-		if ( ! $this->is_subscribed() ) {
-			update_user_meta( $user_id, 'advanced-ads-subscribed', true );
-		}
+		return Conditional::user_can_subscribe( 'nl_first_steps' );
 	}
 
 	/**
 	 * Add AdSense tutorial notice
 	 *
-	 * @param Advanced_Ads_Ad $ad ad object.
-	 * @param array           $types ad types.
+	 * @param Ad $ad ad object.
 	 */
-	public function adsense_tutorial( $ad, $types = [] ) {
-
+	public function adsense_tutorial( $ad ) {
 		$options = $this->options();
 		$_notice = 'nl_adsense';
 
-		if ( 'adsense' !== $ad->type || isset( $options['closed'][ $_notice ] ) ) {
+		if ( 'adsense' !== $ad->get_type() || isset( $options['closed'][ $_notice ] ) ) {
 			return;
 		}
 
@@ -566,17 +553,5 @@ class Advanced_Ads_Admin_Notices {
 		$notice = $advanced_ads_admin_notices[ $_notice ];
 		$text   = $notice['text'];
 		include ADVADS_ABSPATH . '/admin/views/notices/inline.php';
-	}
-
-	/**
-	 * Create the content of a welcome panel like WordPress core does
-	 */
-	public function get_welcome_panel() {
-
-		ob_start();
-		include ADVADS_ABSPATH . '/admin/views/notices/welcome-panel.php';
-
-		return ob_get_clean();
-
 	}
 }

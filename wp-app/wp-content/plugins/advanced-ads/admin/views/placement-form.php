@@ -2,8 +2,13 @@
 /**
  * Render form to create new placements.
  *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.48.2
+ *
  * @var array $placement_types types of placements.
  */
+
 ?>
 <form method="POST" class="advads-placements-new-form advads-form" id="advads-placements-new-form">
 	<h3>1. <?php esc_html_e( 'Choose a placement type', 'advanced-ads' ); ?></h3>
@@ -11,7 +16,7 @@
 		<?php
 		printf(
 			wp_kses(
-			// translators: %s is a URL.
+				/* translators: %s is a URL. */
 				__( 'Placement types define where the ad is going to be displayed. Learn more about the different types from the <a href="%s">manual</a>', 'advanced-ads' ),
 				[
 					'a' => [

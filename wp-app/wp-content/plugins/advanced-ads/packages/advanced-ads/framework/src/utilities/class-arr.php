@@ -67,7 +67,7 @@ class Arr {
 			return $array[ $key ];
 		}
 
-		if ( ! str_contains( $key, '.' ) ) {
+		if ( ! Str::contains( '.', $key ) ) {
 			return $array[ $key ] ?? $default;
 		}
 

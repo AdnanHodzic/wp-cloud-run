@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignoreFile
 
 /**
  * Template for ad positioning.

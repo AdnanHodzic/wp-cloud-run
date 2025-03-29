@@ -4,7 +4,7 @@
  *
  * @var string $_placement_slug slug of the current placement.
  * @var string $_placement      Placement with all options.
- * @package Advanced_Ads_Admin
+ * @package AdvancedAds
  */
 
 $inline_css = isset( $_placement['options']['inline-css'] ) ? $_placement['options']['inline-css'] : '';

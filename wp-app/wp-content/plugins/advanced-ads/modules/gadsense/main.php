@@ -1,4 +1,4 @@
-<?php
+<?php // phpcs:ignoreFile
 
 if ( class_exists( 'Advanced_Ads', false ) ) {
 	define( 'GADSENSE_BASE_PATH', plugin_dir_path( __FILE__ ) );
@@ -8,18 +8,25 @@ if ( class_exists( 'Advanced_Ads', false ) ) {
 	function gadsense_init() {
 		Advanced_Ads_AdSense_Data::get_instance();
 
-        if ( is_admin() ) {
-          Advanced_Ads_AdSense_MAPI::get_instance();
-        }
+		if ( is_admin() ) {
+			Advanced_Ads_AdSense_MAPI::get_instance();
+		}
 
-        if ( ! wp_doing_ajax() && is_admin() ) {
-            Advanced_Ads_AdSense_Admin::get_instance();
-        } else {
-            Advanced_Ads_AdSense_Public::get_instance();
-        }
+		if ( ! wp_doing_ajax() && is_admin() ) {
+			Advanced_Ads_AdSense_Admin::get_instance();
+		} else {
+			Advanced_Ads_AdSense_Public::get_instance();
+		}
 
-        $network = Advanced_Ads_Network_Adsense::get_instance();
-        $network->register();
+		$network = Advanced_Ads_Network_Adsense::get_instance();
+		$network->register();
+
+		add_action(
+			'advanced-ads-ad-types-manager',
+			function ( $manager ) {
+				$manager->register_type( \AdvancedAds\Adsense\Types\Adsense::class );
+			}
+		);
 	}
 	add_action( 'advanced-ads-plugin-loaded', 'gadsense_init' );
 }

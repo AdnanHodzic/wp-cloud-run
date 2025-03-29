@@ -1,4 +1,6 @@
-<?php
+<?php // phpcs:ignoreFile
+
+use AdvancedAds\Abstracts\Ad;
 
 /**
  * Class handling the ad positioning and migrating values from previous solutions.
@@ -7,7 +9,7 @@ class Advanced_Ads_Ad_Positioning {
 	/**
 	 * The instance of the current ad.
 	 *
-	 * @var Advanced_Ads_Ad
+	 * @var Ad
 	 */
 	private $ad;
 
@@ -30,9 +32,9 @@ class Advanced_Ads_Ad_Positioning {
 	/**
 	 * Class constructor.
 	 *
-	 * @param Advanced_Ads_Ad $ad The current ad object.
+	 * @param Ad $ad The current ad object.
 	 */
-	public function __construct( Advanced_Ads_Ad $ad ) {
+	public function __construct( Ad $ad ) {
 		$this->ad = $ad;
 		$this->migrate_values();
 		$this->filter_values();
@@ -80,7 +82,7 @@ class Advanced_Ads_Ad_Positioning {
 	}
 
 	/**
-	 * Filter the option value for Advanced_Ads_Ad.
+	 * Filter the option value for Ad.
 	 * This ensures we don't have to update the whole positioning process but can change only the wp-admin side of things.
 	 *
 	 * @return void
@@ -202,11 +204,12 @@ class Advanced_Ads_Ad_Positioning {
 	 * @return array
 	 */
 	private function get_options() {
-		$options = $this->ad->options();
-		if ( empty( $options['output'] ) ) {
-			return $this->positioning;
-		}
+		$options = [
+			'position' => $this->ad->get_position(),
+			'clearfix' => $this->ad->get_clearfix(),
+			'margin'   => $this->ad->get_margin(),
+		];
 
-		return wp_parse_args( $options['output'], $this->positioning );
+		return wp_parse_args( $options, $this->positioning );
 	}
 }

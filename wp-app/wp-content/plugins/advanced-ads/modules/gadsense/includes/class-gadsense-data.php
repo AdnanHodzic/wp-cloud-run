@@ -1,5 +1,6 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 
+use AdvancedAds\Constants;
 use AdvancedAds\Entities;
 
 /**
@@ -64,13 +65,13 @@ class Advanced_Ads_AdSense_Data {
 	/**
 	 * Get adsense id
 	 *
-	 * @param mixed $ad Ad instance.
+	 * @param Ad|null $ad Ad instance.
 	 *
 	 * @return string
 	 */
 	public function get_adsense_id( $ad = null ) {
-		if ( ! empty( $ad ) && isset( $ad->is_ad ) && true === $ad->is_ad && 'adsense' === $ad->type ) {
-			$ad_content = json_decode( $ad->content );
+		if ( ! empty( $ad ) && $ad->is_type( 'adsense' ) ) {
+			$ad_content = json_decode( $ad->get_content() );
 			// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
 			if ( $ad_content && isset( $ad_content->pubId ) && ! empty( $ad_content->pubId ) ) {
 				return $ad_content->pubId;
@@ -149,9 +150,9 @@ class Advanced_Ads_AdSense_Data {
 	public function is_hide_stats() {
 		global $post;
 
-		if ( $post instanceof WP_Post && Entities::POST_TYPE_AD === $post->post_type ) {
-			$the_ad = \Advanced_Ads\Ad_Repository::get( $post->ID );
-			if ( 'adsense' !== $the_ad->type ) {
+		if ( $post instanceof WP_Post && Constants::POST_TYPE_AD === $post->post_type ) {
+			$the_ad = wp_advads_get_ad( $post->ID );
+			if ( ! $the_ad->is_type( 'adsense' ) ) {
 				return true;
 			}
 		}

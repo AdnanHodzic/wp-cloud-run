@@ -1,0 +1,36 @@
+@import "../bootstrap/variables";
+@import "../partials/post-type-list.scss";
+
+.#{$namespace}-page {
+	background-color: #f8f9fa;
+}
+
+.column-ad_type {
+	width: 50px;
+}
+
+.#{$namespace}-datetime {
+	input,
+	select {
+		@apply leading-6 text-sm;
+	}
+	@media screen and (min-width: 783px) {
+		select {
+			margin-top: -4px;
+		}
+	}
+}
+
+.inline-edit-col-left .inline-edit-group {
+	@apply hidden;
+}
+
+##{$namespace}-ad-filter-customize {
+	@apply float-left mr-1 leading-7;
+}
+
+.#{$namespace}-quick-edit, .#{$namespace}-bulk-edit {
+	.#{$namespace}-help::before {
+		@apply align-middle;
+	}
+}

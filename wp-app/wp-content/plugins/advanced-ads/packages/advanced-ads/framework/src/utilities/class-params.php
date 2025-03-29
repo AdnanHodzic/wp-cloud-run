@@ -17,8 +17,6 @@
 
 namespace AdvancedAds\Framework\Utilities;
 
-defined( 'ABSPATH' ) || exit;
-
 /**
  * Params class
  */
@@ -78,7 +76,7 @@ class Params {
 	 * @return mixed
 	 */
 	public static function server( $id, $default = false, $filter = FILTER_DEFAULT, $flag = [] ) {
-		return self::input( INPUT_SERVER, $id, $default, $filter, $flag );
+		return isset( $_SERVER[ $id ] ) ? filter_var( wp_unslash( $_SERVER[ $id ] ), $filter, $flag ) : $default;
 	}
 
 	/**
@@ -106,7 +104,7 @@ class Params {
 	 * @return mixed
 	 */
 	public static function env( $id, $default = false, $filter = FILTER_DEFAULT, $flag = [] ) {
-		return self::input( INPUT_ENV, $id, $default, $filter, $flag );
+		return isset( $_ENV[ $id ] ) ? filter_var( wp_unslash( $_ENV[ $id ] ), $filter, $flag ) : $default;
 	}
 
 	/**

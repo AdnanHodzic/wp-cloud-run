@@ -1,4 +1,12 @@
-<?php if ( $adsense_line ) : ?>
+<?php
+/**
+ * View to show the additional content setting for ads.txt.
+ *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ */
+
+if ( $adsense_line ) : ?>
 <p>
 
 	<?php
@@ -28,7 +36,7 @@ echo $notices;
 </div>
 <p class="advads-notice-inline advads-error hidden" id="advads-ads-txt-notice-error">
 	<?php
-	// translators: %s is replaced with an error message.
+	/* translators: %s is replaced with an error message. */
 	esc_html_e( 'An error occured: %s.', 'advanced-ads' );
 	?>
 </p>

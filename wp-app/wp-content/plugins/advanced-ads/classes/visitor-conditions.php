@@ -1,4 +1,6 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName
+
+use AdvancedAds\Utilities\WordPress;
 
 /**
  * Visitor conditions under which to (not) show an ad
@@ -93,7 +95,7 @@ class Advanced_Ads_Visitor_Conditions {
 	 * @since 1.8.12
 	 */
 	public function get_conditions() {
-		uasort( $this->conditions, 'Advanced_Ads_Admin::sort_condition_array_by_label' );
+		uasort( $this->conditions, [ WordPress::class, 'sort_array_by_label' ] );
 
 		return $this->conditions;
 	}
@@ -122,15 +124,18 @@ class Advanced_Ads_Visitor_Conditions {
 
 		// convert previous binary option to device selector.
 		if ( ! array_key_exists( 'value', $options ) ) {
-			$options['value'] = $operator === 'is' ? [ 'tablet', 'mobile' ] : [ 'desktop' ];
+			$options['value'] = 'is' === $operator ? [ 'tablet', 'mobile' ] : [ 'desktop' ];
 			$operator         = 'is';
 		}
 
-		$type_options[ $options['type'] ]['device_types'] = array_map( function( $device_type ) use ( $options ) {
-			$device_type['checked'] = in_array( $device_type['id'], $options['value'], true );
+		$type_options[ $options['type'] ]['device_types'] = array_map(
+			function ( $device_type ) use ( $options ) {
+				$device_type['checked'] = in_array( $device_type['id'], $options['value'], true );
 
-			return $device_type;
-		}, $type_options[ $options['type'] ]['device_types'] );
+				return $device_type;
+			},
+			$type_options[ $options['type'] ]['device_types']
+		);
 
 		// form name basis.
 		$name = self::get_form_name_with_index( $form_name, $index );
@@ -146,21 +151,17 @@ class Advanced_Ads_Visitor_Conditions {
 	 * @param string $form_name name of the form, falls back to class constant.
 	 */
 	public static function metabox_is_or_not( $options, $index = 0, $form_name = '' ) {
-
 		if ( ! isset( $options['type'] ) || '' === $options['type'] ) {
 			return;
 		}
 
 		$type_options = self::get_instance()->conditions;
-
 		if ( ! isset( $type_options[ $options['type'] ] ) ) {
 			return;
 		}
 
 		// form name basis.
-		$name = self::get_form_name_with_index( $form_name, $index );
-
-		// options.
+		$name     = self::get_form_name_with_index( $form_name, $index );
 		$operator = isset( $options['operator'] ) ? $options['operator'] : 'is';
 
 		include ADVADS_ABSPATH . 'admin/views/conditions/condition-is-or-not.php';
@@ -227,8 +228,8 @@ class Advanced_Ads_Visitor_Conditions {
 	/**
 	 * Controls frontend checks for conditions
 	 *
-	 * @param array       $options options of the condition.
-	 * @param bool|object $ad false or Advanced_Ads_Ad.
+	 * @param array   $options Options of the condition.
+	 * @param bool|Ad $ad      Ad instance.
 	 *
 	 * @return bool false, if ad can’t be delivered
 	 */
@@ -261,7 +262,7 @@ class Advanced_Ads_Visitor_Conditions {
 		$conditions = self::get_instance()->get_conditions();
 
 		// use default form name if not given explicitly.
-		// @todo create a random form name, in case we have more than one form per page and the parameter is not given.
+		// TODO: create a random form name, in case we have more than one form per page and the parameter is not given.
 		$form_name = ! $form_name ? self::FORM_NAME : $form_name;
 
 		include ADVADS_ABSPATH . 'admin/views/conditions/visitor-conditions-list.php';
@@ -319,12 +320,12 @@ class Advanced_Ads_Visitor_Conditions {
 		$name = self::get_form_name_with_index( $form_name, $index );
 
 		// create random value to identify the form field.
-		$rand = md5( $form_name );
+		$rand = uniqid();
 
-		return '<input type="checkbox" name="' . $name . '[connector]' . '" value="or" id="advads-conditions-' .
-		       $index . '-connector-' . $rand . '"' .
-		       checked( 'or', $value, false )
-		       . '><label for="advads-conditions-' . $index . '-connector-' . $rand . '">' . $label . '</label>';
+		return '<input type="checkbox" name="' . $name . '[connector]' . '" value="or" id="advads-conditions-' . // phpcs:ignore
+			$index . '-connector-' . $rand . '"' .
+			checked( 'or', $value, false )
+			. '><label for="advads-conditions-' . $index . '-connector-' . $rand . '">' . $label . '</label>';
 	}
 
 	/**
@@ -352,23 +353,30 @@ class Advanced_Ads_Visitor_Conditions {
 			return self::check_mobile( $options );
 		}
 
-		$mobile_detect = new Mobile_Detect();
+		$mobile_detect = new \Detection\MobileDetect();
 		// register callbacks to decide whether device "is".
-		$callbacks = array_intersect_key( [
-			'mobile'  => function() use ( $mobile_detect ) {
-				return $mobile_detect->isMobile() && ! $mobile_detect->isTablet();
-			},
-			'tablet'  => function() use ( $mobile_detect ) {
-				return $mobile_detect->isTablet();
-			},
-			'desktop' => function() use ( $mobile_detect ) {
-				return ! $mobile_detect->isTablet() && ! $mobile_detect->isMobile();
-			},
-		], array_flip( $options['value'] ) );
-		// only call devices that are part of the condition.
-		array_walk( $callbacks, static function( callable &$value ) {
-			$value = $value();
-		} );
+		$callbacks = array_intersect_key(
+			[
+				'mobile'  => function () use ( $mobile_detect ) {
+					return $mobile_detect->isMobile() && ! $mobile_detect->isTablet();
+				},
+				'tablet'  => function () use ( $mobile_detect ) {
+					return $mobile_detect->isTablet();
+				},
+				'desktop' => function () use ( $mobile_detect ) {
+					return ! $mobile_detect->isTablet() && ! $mobile_detect->isMobile();
+				},
+			],
+			array_flip( $options['value'] )
+		);
+
+		// Only call devices that are part of the condition.
+		array_walk(
+			$callbacks,
+			function ( callable &$value ) {
+				$value = $value();
+			}
+		);
 
 		return array_filter( $callbacks ) !== [];
 	}
@@ -441,7 +449,7 @@ class Advanced_Ads_Visitor_Conditions {
 	 * @return bool true if ad can be displayed
 	 * @since 1.6.3
 	 */
-	public static function helper_check_string( $string = '', $options = [] ) {
+	public static function helper_check_string( $string = '', $options = [] ) { // phpcs:ignore
 		if ( ! isset( $options['operator'] ) || empty( $options['value'] ) ) {
 			return true;
 		}
@@ -489,14 +497,14 @@ class Advanced_Ads_Visitor_Conditions {
 				break;
 			case 'regex':
 			case 'regex_not':
-				$condition = @preg_match( sprintf( '/%s/', $value ), $string );
-				// if the return value is `false`, the regex is incorrect.
-				if ( $condition === false ) {
+				$condition = @preg_match( sprintf( '/%s/', $value ), $string ); // phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+				// If the return value is `false`, the regex is incorrect.
+				if ( false === $condition ) {
 					Advanced_Ads::log( "Advanced Ads: regular expression '$value' in visitor condition is broken." );
 					break;
 				}
 
-				if ( $operator === 'regex_not' ) {
+				if ( 'regex_not' === $operator ) {
 					$condition = ! $condition;
 				}
 				break;

@@ -19,26 +19,13 @@ defined( 'ABSPATH' ) || exit;
 class Entities implements Integration_Interface {
 
 	/**
-	 * Post type slug
-	 *
-	 * @var string
-	 */
-	const POST_TYPE_AD = 'advanced_ads';
-
-	/**
-	 * Ad group slug
-	 *
-	 * @var string
-	 */
-	const TAXONOMY_AD_GROUP = 'advanced_ads_groups';
-
-	/**
 	 * Hook into WordPress.
 	 *
 	 * @return void
 	 */
 	public function hooks(): void {
 		$this->register_ad_post_type();
+		$this->register_placement_post_type();
 		$this->register_group_taxonomy();
 	}
 
@@ -49,7 +36,7 @@ class Entities implements Integration_Interface {
 	 */
 	private function register_ad_post_type(): void {
 		// Early bail!!
-		if ( post_type_exists( self::POST_TYPE_AD ) ) {
+		if ( post_type_exists( Constants::POST_TYPE_AD ) ) {
 			return;
 		}
 
@@ -105,12 +92,86 @@ class Entities implements Integration_Interface {
 			'query_var'    => false,
 			'rewrite'      => false,
 			'supports'     => $supports,
-			'taxonomies'   => [ self::TAXONOMY_AD_GROUP ],
+			'taxonomies'   => [ Constants::TAXONOMY_GROUP ],
 		];
 
 		register_post_type(
-			self::POST_TYPE_AD,
-			apply_filters( 'advanced-ads-post-type-params', $args )
+			Constants::POST_TYPE_AD,
+			apply_filters( 'advanced-ads-post-type-ad', $args )
+		);
+
+		register_post_status(
+			Constants::AD_STATUS_EXPIRED,
+			[
+				'label'   => __( 'Expired', 'advanced-ads' ),
+				'private' => true,
+			]
+		);
+	}
+
+	/**
+	 * Register placement post type.
+	 *
+	 * @return void
+	 */
+	private function register_placement_post_type(): void {
+		// Early bail!!
+		if ( post_type_exists( Constants::POST_TYPE_PLACEMENT ) ) {
+			return;
+		}
+
+		$labels = [
+			'name'               => __( 'Ad Placements', 'advanced-ads' ),
+			'singular_name'      => __( 'Ad Placement', 'advanced-ads' ),
+			'add_new'            => __( 'New Placement', 'advanced-ads' ),
+			'add_new_item'       => __( 'Add New Placement', 'advanced-ads' ),
+			'edit'               => __( 'Edit', 'advanced-ads' ),
+			'edit_item'          => __( 'Edit Placement', 'advanced-ads' ),
+			'new_item'           => __( 'New Placement', 'advanced-ads' ),
+			'view'               => __( 'View', 'advanced-ads' ),
+			'view_item'          => __( 'View the Ad Placement', 'advanced-ads' ),
+			'search_items'       => __( 'Search Ad Placements', 'advanced-ads' ),
+			'not_found'          => __( 'No Ad Placements found', 'advanced-ads' ),
+			'not_found_in_trash' => __( 'No Ad Placements found in Trash', 'advanced-ads' ),
+		];
+
+		$args = [
+			'labels'       => $labels,
+			'description'  => __( 'Placements are physically places in your theme and posts. You can use them if you plan to change ads and ad groups on the same place without the need to change your templates.', 'advanced-ads' ),
+			'public'       => false,
+			'show_ui'      => true,
+			'show_in_menu' => false,
+			'hierarchical' => false,
+			'capabilities' => [
+				// Meta capabilities.
+				'edit_post'              => 'advanced_ads_manage_placements',
+				'read_post'              => 'advanced_ads_manage_placements',
+				'delete_post'            => 'advanced_ads_manage_placements',
+				'edit_page'              => 'advanced_ads_manage_placements',
+				'read_page'              => 'advanced_ads_manage_placements',
+				'delete_page'            => 'advanced_ads_manage_placements',
+				// Primitive capabilities used outside of map_meta_cap().
+				'edit_posts'             => 'advanced_ads_manage_placements',
+				'publish_posts'          => 'advanced_ads_manage_placements',
+				'read_private_posts'     => 'advanced_ads_manage_placements',
+				// Primitive capabilities used within map_meta_cap().
+				'read'                   => 'advanced_ads_manage_placements',
+				'delete_posts'           => 'advanced_ads_manage_placements',
+				'delete_private_posts'   => 'advanced_ads_manage_placements',
+				'delete_published_posts' => 'advanced_ads_manage_placements',
+				'edit_private_posts'     => 'advanced_ads_manage_placements',
+				'edit_published_posts'   => 'advanced_ads_manage_placements',
+				'create_posts'           => 'advanced_ads_manage_placements',
+			],
+			'has_archive'  => false,
+			'query_var'    => false,
+			'rewrite'      => false,
+			'supports'     => [ 'title' ],
+		];
+
+		register_post_type(
+			Constants::POST_TYPE_PLACEMENT,
+			apply_filters( 'advanced-ads-post-type-placement', $args )
 		);
 	}
 
@@ -121,7 +182,7 @@ class Entities implements Integration_Interface {
 	 */
 	private function register_group_taxonomy(): void {
 		// Early bail!!
-		if ( taxonomy_exists( self::TAXONOMY_AD_GROUP ) ) {
+		if ( taxonomy_exists( Constants::TAXONOMY_GROUP ) ) {
 			return;
 		}
 
@@ -160,8 +221,8 @@ class Entities implements Integration_Interface {
 		];
 
 		register_taxonomy(
-			self::TAXONOMY_AD_GROUP,
-			self::POST_TYPE_AD,
+			Constants::TAXONOMY_GROUP,
+			Constants::POST_TYPE_AD,
 			apply_filters( 'advanced-ads-group-taxonomy-params', $args )
 		);
 	}

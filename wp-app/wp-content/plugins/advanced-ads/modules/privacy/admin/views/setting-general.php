@@ -2,6 +2,10 @@
 /**
  * Enable Privacy Module.
  *
+ * @since   1.47.0
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ *
  * @var bool   $module_enabled                Whether the privacy module is enabled.
  * @var array  $methods                       Available privacy methods.
  * @var string $current_method                Currently chosen method.
@@ -10,6 +14,11 @@
  * @var bool   $show_non_personalized_adsense Whether to show non-personalized ads until custom cookie consent is given.
  * @var string $opening_link_to_pro           Opening link tag for link to Pro (either upsell or settings).
  */
+
+use AdvancedAds\Compatibility\Compatibility;
+use AdvancedAds\Tracking\Helpers;
+use AdvancedAds\Utilities\Conditional;
+
 ?>
 <input name="<?php echo esc_attr( Advanced_Ads_Privacy::OPTION_KEY ); ?>[enabled]" id="<?php echo esc_attr( Advanced_Ads_Privacy::OPTION_KEY ); ?>_enabled" type="checkbox" <?php checked( $module_enabled ); ?> class="advads-has-sub-settings"/>
 <label for="<?php echo esc_attr( Advanced_Ads_Privacy::OPTION_KEY ); ?>_enabled">
@@ -36,7 +45,7 @@
 					<?php endif; ?>
 				</label>
 
-				<?php if ( $method === 'custom' ) : ?>
+				<?php if ( 'custom' === $method ) : ?>
 
 					<div style="margin: 10px 24px;">
 						<label>
@@ -52,14 +61,14 @@
 							<input type="checkbox" name="<?php echo esc_attr( Advanced_Ads_Privacy::OPTION_KEY ); ?>[show-non-personalized-adsense]" <?php checked( $show_non_personalized_adsense ); ?> />
 							<?php esc_html_e( 'Show non-personalized AdSense ads until consent is given.', 'advanced-ads' ); ?>
 						</label>
-						<?php if ( Advanced_Ads_Compatibility::borlabs_cookie_adsense_auto_ads_code_exists() ) : ?>
+						<?php if ( Compatibility::borlabs_cookie_adsense_auto_ads_code_exists() ) : ?>
 							<p class="description">
 								<?php require GADSENSE_BASE_PATH . 'admin/views/borlabs-cookie-auto-ads-warning.php'; ?>
 							</p>
 						<?php endif; ?>
 					</div>
 
-					<?php if ( apply_filters( 'advanced-ads-privacy-custom-show-warning', ! empty( $checked ) && Advanced_Ads_Checks::cache() ) ) : ?>
+					<?php if ( apply_filters( 'advanced-ads-privacy-custom-show-warning', ! empty( $checked ) && Conditional::has_cache_plugins() ) ) : ?>
 						<p class="description" style="margin: 5px 0 10px 23px;">
 							<span class="advads-notice-inline advads-error"><?php esc_html_e( 'It seems that a caching plugin is activated.', 'advanced-ads' ); ?></span>
 							<br>
@@ -72,7 +81,7 @@
 							?>
 						</p>
 					<?php endif; ?>
-				<?php elseif ( $method === 'iab_tcf_20' ) : ?>
+				<?php elseif ( 'iab_tcf_20' === $method ) : ?>
 					<?php if ( apply_filters( 'advanced-ads-privacy-tcf-show-warning', ! empty( $checked ) ) ) : ?>
 						<p class="description" style="margin: 5px 0 10px 23px;">
 							<?php
@@ -89,12 +98,11 @@
 						</p>
 					<?php endif; ?>
 					<?php
-					if ( method_exists( 'Advanced_Ads_Tracking_Admin', 'has_tcf_conflict' ) ) :
-						$tracking_admin = Advanced_Ads_Tracking_Admin::get_instance();
-						if ( $tracking_admin->has_tcf_conflict() ) :
+					if ( method_exists( Helpers::class, 'has_tcf_conflict' ) ) :
+						if ( Helpers::has_tcf_conflict() ) :
 							?>
 							<p class="advads-notice-inline advads-error">
-								<?php echo esc_html( $tracking_admin->get_tcf_conflict_notice() ); ?>
+								<?php esc_html_e( 'The selected tracking method is not compatible with the TCF 2.0 integration.', 'advanced-ads' ); ?>
 							</p>
 							<?php
 						endif;

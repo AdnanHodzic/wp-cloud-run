@@ -1,0 +1,109 @@
+/* stylelint-disable selector-id-pattern */
+
+.advanced-ads-post-type-list {
+	.search-box {
+		@apply hidden mb-3;
+	}
+
+	.wrap .subsubsub,
+	#screen-options-link-wrap {
+		@apply hidden;
+	}
+
+	.advads-table .toggle-row {
+		@apply absolute right-2 top-2.5 hidden p-0 w-10 h-10 border-0 outline-none bg-transparent;
+	}
+
+	.tablenav.top {
+		@apply clear-none mt-0 pt-0;
+
+		.displaying-num,
+		.alignleft.actions:not(.bulkactions),
+		.bulkactions {
+			@apply hidden;
+		}
+
+		.alignleft {
+			@apply float-none my-3 mx-0;
+		}
+
+		.tablenav-pages {
+			@apply mt-3 mb-5 mx-0;
+		}
+
+		#delete_all {
+			@apply m-0 mt-2.5 ml-5;
+		}
+
+		.alignleft.actions #delete_all {
+			@apply m-0 p-0 w-0 border-0 invisible;
+		}
+	}
+
+	.tablenav.bottom {
+		@apply mt-4;
+
+		.bulkactions.fixed {
+			position: fixed;
+			@apply bottom-0 bg-white p-4 border border-black z-[1000];
+		}
+	}
+
+	.advanced-ads-ad-list-views {
+		@apply float-left clear-both mt-2.5 mb-5;
+
+		li {
+			@apply inline-block p-0 overflow-hidden;
+		}
+
+		a {
+			@apply inline-block no-underline p-0 px-2.5;
+		}
+	}
+
+	#adv-settings .submit button {
+		@apply ml-2.5;
+	}
+
+	#advads-show-filters span {
+		@apply leading-8;
+	}
+
+	.button:not(.button-primary):not(.advads-button-primary):not(:hover) {
+		border-color: #0474a2;
+		color: #0474a2;
+	}
+
+	.wp-list-table thead tr {
+		.dashicons-edit {
+			@apply float-right invisible cursor-pointer;
+		}
+
+		&:hover .dashicons-edit {
+			@apply visible;
+		}
+	}
+
+	tr:not(.inline-edit-row):not(.no-items) td:not(.column-primary)::before {
+		@apply content-none;
+	}
+
+	#screen-meta {
+		@apply absolute z-[1000] border-black;
+	}
+
+	.advads-quick-edit,
+	.advads-bulk-edit {
+		.expiry-inputs {
+			@apply hidden;
+		}
+
+		label {
+			@apply inline-block;
+		}
+
+		input[type="text"] {
+			@apply align-middle text-center p-0 px-1;
+		}
+	}
+}

@@ -6,5 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Detection\\' => array($vendorDir . '/mobiledetect/mobiledetectlib/src'),
     'Advanced_Ads\\' => array($baseDir . '/src'),
 );

@@ -45,7 +45,7 @@ if ( 'lifetime' === $expires ) {
 	$expired    = true;
 } elseif ( 0 < $days_left && 31 > $days_left ) {
 	$errortext = sprintf(
-		// translators: %d is a number of days.
+		/* translators: %d is a number of days. */
 		esc_html__( '(%d days left)', 'advanced-ads' ),
 		$days_left
 	);

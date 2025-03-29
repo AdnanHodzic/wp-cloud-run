@@ -13,25 +13,11 @@ namespace AdvancedAds\Modules\ProductExperimentationFramework;
  */
 class Module {
 	/**
-	 * The singleton
-	 *
-	 * @var Module
-	 */
-	private static $instance;
-
-	/**
 	 * User meta key where the dismiss flag is stored.
 	 *
 	 * @var string
 	 */
 	const USER_META = 'advanced_ads_pef_dismiss';
-
-	/**
-	 * Current running features
-	 *
-	 * @var array[]
-	 */
-	private $features;
 
 	/**
 	 * Sum of all weights
@@ -55,26 +41,25 @@ class Module {
 	private $can_display = true;
 
 	/**
-	 * Singleton design
-	 */
-	private function __construct() {
-		$this->set_features();
-
-		// Wait for `admin_init` to get the current user.
-		add_action( 'admin_init', [ $this, 'admin_init' ] );
-	}
-
-	/**
 	 * Return the singleton. Create it if needed
 	 *
 	 * @return Module
 	 */
-	public static function get_instance() {
-		if ( null === self::$instance ) {
-			self::$instance = new self();
+	public static function get_instance(): Module {
+		static $instance;
+
+		if ( null === $instance ) {
+			$instance = new self();
 		}
 
-		return self::$instance;
+		return $instance;
+	}
+
+	/**
+	 * Singleton design
+	 */
+	private function __construct() {
+		add_action( 'admin_init', [ $this, 'admin_init' ] );
 	}
 
 	/**
@@ -82,7 +67,7 @@ class Module {
 	 *
 	 * @return void
 	 */
-	public function admin_init() {
+	public function admin_init(): void {
 		$meta = get_user_meta( get_current_user_id(), self::USER_META, true );
 		if ( $this->get_minor_version( ADVADS_VERSION ) === $this->get_minor_version( $meta ) ) {
 			$this->can_display = false;
@@ -98,10 +83,11 @@ class Module {
 	 *
 	 * @return void
 	 */
-	public function dismiss() {
+	public function dismiss(): void {
 		if ( ! check_ajax_referer( 'advanced_ads_pef' ) ) {
 			wp_send_json_error( 'Unauthorized', 401 );
 		}
+
 		update_user_meta( get_current_user_id(), self::USER_META, ADVADS_VERSION );
 		wp_send_json_success( 'OK', 200 );
 	}
@@ -111,10 +97,10 @@ class Module {
 	 *
 	 * @return array
 	 */
-	public function get_winner_feature() {
+	public function get_winner_feature(): array {
 		$random_weight  = wp_rand( 1, $this->weight_sum );
 		$current_weight = 0;
-		foreach ( $this->features as $id => $feature ) {
+		foreach ( $this->get_features() as $id => $feature ) {
 			$current_weight += $this->weights[ $id ];
 			if ( $random_weight <= $current_weight ) {
 				return array_merge(
@@ -122,7 +108,7 @@ class Module {
 						'id'     => $id,
 						'weight' => $this->weights[ $id ],
 					],
-					$this->features[ $id ]
+					$this->get_features()[ $id ]
 				);
 			}
 		}
@@ -135,7 +121,7 @@ class Module {
 	 *
 	 * @return void
 	 */
-	public function render( $screen ) {
+	public function render( $screen ): void { // phpcs:ignore
 		// Early bail!!
 		if ( ! $this->can_display ) {
 			return;
@@ -152,7 +138,7 @@ class Module {
 	 *
 	 * @return string
 	 */
-	public function get_minor_version( $version ) {
+	public function get_minor_version( $version ): string {
 		return explode( '.', $version )[1] ?? '0';
 	}
 
@@ -164,12 +150,12 @@ class Module {
 	 *
 	 * @return string
 	 */
-	public function build_link( $winner, $screen ) {
+	public function build_link( $winner, $screen ): string {
 		$utm_source   = 'advanced-ads';
 		$utm_medium   = 'link';
 		$utm_campaign = sprintf( '%s-aa-labs', $screen );
 		$utm_term     = sprintf(
-			'b%sw%d-%d',
+			'b%s-w%d-%d',
 			str_replace( '.', '-', ADVADS_VERSION ),
 			$winner['weight'],
 			$this->weight_sum
@@ -189,10 +175,10 @@ class Module {
 	/**
 	 * Set the features/banners
 	 *
-	 * @return void
+	 * @return array
 	 */
-	private function set_features() {
-		$this->features = [
+	public function get_features(): array {
+		return [
 			'labs-campaign-manager-ay' => [
 				'subheading' => __( 'FROM THE ADVANCED ADS LABS:', 'advanced-ads' ),
 				'heading'    => __( 'The Campaign Manager', 'advanced-ads' ),
@@ -219,7 +205,7 @@ class Module {
 		if ( 0 !== $this->weight_sum ) {
 			return;
 		}
-		foreach ( $this->features as $id => $feature ) {
+		foreach ( $this->get_features() as $id => $feature ) {
 			$this->weights[ $id ] = (int) $feature['weight'];
 			$this->weight_sum    += $this->weights[ $id ];
 		}

@@ -1,0 +1,10 @@
+@import "../bootstrap/variables";
+
+.#{$namespace}-subpage-title {
+	@apply text-lg font-semibold leading-none mb-4;
+}
+
+##{$namespace}-system-information {
+	@apply w-full block max-w-screen-lg h-[40rem] p-5 rounded border border-[#8c8f94] bg-white text-xs text-[#2c3338] whitespace-pre overflow-auto resize-none mb-5;
+	font-family: Menlo, Monaco, monospace;
+}

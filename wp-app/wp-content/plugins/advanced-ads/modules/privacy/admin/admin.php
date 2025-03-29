@@ -1,4 +1,7 @@
-<?php
+<?php // phpcs:ignoreFile
+
+use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Framework\Utilities\Params;
 
 /**
  * Admin class for privacy settings.
@@ -18,7 +21,7 @@ class Advanced_Ads_Privacy_Admin {
 		add_action( 'advanced-ads-settings-init', [ $this, 'settings_init' ], 20 );
 		add_filter( 'advanced-ads-setting-tabs', [ $this, 'setting_tabs' ], 20 );
 		add_action( 'advanced-ads-ad-params-after', [ $this, 'render_ad_options' ], 20 );
-		add_filter( 'advanced-ads-save-options', [ $this, 'save_ad_options' ], 10, 2 );
+		add_action( 'advanced-ads-ad-pre-save', [ $this, 'save_ad_options' ], 10, 2 );
 	}
 
 	/**
@@ -122,11 +125,7 @@ class Advanced_Ads_Privacy_Admin {
 				'manual_url' => 'https://wpadvancedads.com/manual/ad-cookie-consent/?utm_source=advanced-ads&utm_medium=link&utm_campaign=privacy-tab',
 			],
 			'iab_tcf_20' => [
-				'label'      => sprintf(
-					// translators: %s is a string with various CMPs (companies) that support the TCF standard.
-					__( 'TCF v2.0 integration (e.g., %s)', 'advanced-ads' ),
-					'Quantcast Choices'
-				),
+				'label'      => __( 'IAB Transparency and Consent Framework (TCF) integration', 'advanced-ads' ),
 				'manual_url' => 'https://wpadvancedads.com/manual/tcf-consent-wordpress/?utm_source=advanced-ads&utm_medium=link&utm_campaign=privacy-tab',
 			],
 		];
@@ -165,10 +164,10 @@ class Advanced_Ads_Privacy_Admin {
 	/**
 	 * Add options to ad edit page
 	 *
-	 * @param Advanced_Ads_Ad $ad Ad object.
+	 * @param Ad $ad Ad object.
 	 */
-	public function render_ad_options( Advanced_Ads_Ad $ad ) {
-		if ( empty( $ad->id ) ) {
+	public function render_ad_options( Ad $ad ) {
+		if ( empty( $ad->get_id() ) ) {
 			return;
 		}
 
@@ -179,14 +178,14 @@ class Advanced_Ads_Privacy_Admin {
 			return;
 		}
 
-		// Don't add override option if the ad is adsense and tcf is enabled, or if the ad is image or dummy.
-		$skip_option = ( 'adsense' === $ad->type && 'iab_tcf_20' === $privacy_options['consent-method'] ) || ! $privacy->ad_type_needs_consent( $ad->type );
+		// Don't add override option if the ad is adsense, image or dummy.
+		$skip_option = $ad->is_type( 'adsense' ) || ! $privacy->ad_type_needs_consent( $ad->get_type() );
 
 		if ( (bool) apply_filters( 'advanced-ads-ad-privacy-hide-ignore-consent', $skip_option, $ad, $privacy_options ) ) {
 			return;
 		}
 
-		$ignore_consent = isset( $ad->options()['privacy']['ignore-consent'] );
+		$ignore_consent = isset( $ad->get_data()['privacy']['ignore-consent'] );
 
 		include ADVADS_PRIVACY_BASE_PATH . 'admin/views/setting-ad-ignore-consent.php';
 	}
@@ -194,19 +193,20 @@ class Advanced_Ads_Privacy_Admin {
 	/**
 	 * Save ad options.
 	 *
-	 * @param array $options Current options, default empty.
+	 * @param Ad    $ad        Ad instance.
+	 * @param array $post_data Post data array.
 	 *
-	 * @return array
+	 * @return void
 	 */
-	public function save_ad_options( $options = [] ) {
-		// phpcs:disable WordPress.Security.NonceVerification.Missing
-		if ( isset( $_POST['advanced_ad']['privacy'] ) ) {
-			$options['privacy'] = $_POST['advanced_ad']['privacy'];
-		} else {
-			unset( $options['privacy'] );
+	public function save_ad_options( Ad $ad, $post_data ): void {
+		if ( wp_verify_nonce( sanitize_key( Params::get( '_wpnonce' ) ), 'bulk-posts' ) || wp_verify_nonce( sanitize_key( Params::post( '_inline_edit' ) ), 'inlineeditnonce' ) ) {
+			// Don't mess with bulk and quick edit.
+			return;
 		}
-		// phpcs:enable
-
-		return $options;
+		if ( isset( $post_data['privacy'] ) ) {
+			$ad->set_prop( 'privacy', wp_unslash( $post_data['privacy'] ) );
+		} else {
+			$ad->unset_prop( 'privacy' );
+		}
 	}
 }

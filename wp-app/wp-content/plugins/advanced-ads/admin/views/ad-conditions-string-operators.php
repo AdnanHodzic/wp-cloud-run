@@ -2,7 +2,7 @@
 /**
  * Render select field for matching-technique of string-based Display Conditions
  *
- * @package   Advanced_Ads_Admin
+ * @package   AdvancedAds
  * @author    Thomas Maier <support@wpadvancedads.com>
  * @license   GPL-2.0+
  * @link      https://wpadvancedads.com
@@ -11,7 +11,9 @@
  * @var string $name option name.
  * @var string $operator value of the $operator option.
  */
-?><select name="<?php echo esc_attr( $name ); ?>[operator]">
+
+?>
+<select name="<?php echo esc_attr( $name ); ?>[operator]">
 	<option value="contain" <?php selected( 'contain', $operator ); ?>><?php esc_attr_e( 'contains', 'advanced-ads' ); ?></option>
 	<option value="start" <?php selected( 'start', $operator ); ?>><?php esc_attr_e( 'starts with', 'advanced-ads' ); ?></option>
 	<option value="end" <?php selected( 'end', $operator ); ?>><?php esc_attr_e( 'ends with', 'advanced-ads' ); ?></option>

@@ -1,4 +1,12 @@
-<?php
+<?php // phpcs:ignoreFile
+/**
+ * View for the Settings - AdSense.
+ *
+ * @package Advanced_Ads
+ */
+
+use AdvancedAds\Utilities\Conditional;
+
 $MAPI = Advanced_Ads_AdSense_MAPI::get_instance();
 $options = $this->data->get_options();
 $adsense_id = $this->data->get_adsense_id();
@@ -142,7 +150,7 @@ $alerts_advads_messages    = Advanced_Ads_Adsense_MAPI::get_adsense_alert_messag
 			<?php
 			printf(
 				wp_kses(
-					// translators: %1$s is an opening a tag, %2$s is the closing one
+					/* translators: %1$s is an opening a tag, %2$s is the closing one */
 					__( 'See all %1$srecommended ad networks%2$s.', 'advanced-ads' ),
 					[
 						'a' => [
@@ -162,9 +170,6 @@ $alerts_advads_messages    = Advanced_Ads_Adsense_MAPI::get_adsense_alert_messag
 	#adsense table h3 {
 		margin-top: 0;
 		margin-bottom: .2em;
-	}
-	#adsense table button {
-		margin-bottom: .8em;
 	}
 	#adsense .form-table tr {
 		display: none;
@@ -210,13 +215,26 @@ $alerts_advads_messages    = Advanced_Ads_Adsense_MAPI::get_adsense_alert_messag
 	<a href="https://wpadvancedads.com/place-adsense-ad-unit-manually/?utm_source=advanced-ads&utm_medium=link&utm_campaign=adsense-manually" style="text-decoration: none;" target="_blank"><span class="dashicons dashicons-welcome-learn-more"></span>
 		<?php
 		esc_attr_e( 'How to choose specific positions for AdSense ad units', 'advanced-ads' ); ?></a>
-	</p><?php
-else : ?>
+	</p>
+
+	<?php
+		$_notice = 'nl_adsense';
+		if ( Advanced_Ads_Admin_Notices::get_instance()->can_display( $_notice ) && Conditional::user_can_subscribe( 'nl_first_steps' ) ) {
+			$box_classes = '!margin-top-4';
+			$text    = sprintf(
+				/* translators: %s: number of add-ons. */
+				__( 'Subscribe to our free email course for Google AdSense, receive our newsletter for periodic tutorials, and get %s for Advanced Ads.', 'advanced-ads' ),
+				'<strong>' . __( '2 free add-ons', 'advanced-ads' ) . '</strong>'
+			);
+			include ADVADS_ABSPATH . '/admin/views/notices/inline.php';
+		}
+	?>
+<?php else : ?>
 <p>
 	<?php
 	printf(
 		wp_kses(
-			// translators: %1$s is the opening link tag to our manual; %2$s is the appropriate closing link tag; %3$s is the opening link tag to our help forum; %4$s is the appropriate closing link tag
+			/* translators: %1$s is the opening link tag to our manual; %2$s is the appropriate closing link tag; %3$s is the opening link tag to our help forum; %4$s is the appropriate closing link tag */
 			__( 'Problems with AdSense? Check out the %1$smanual%2$s or %3$sask here%4$s.', 'advanced-ads' ),
 			[
 				'a' => [
@@ -234,7 +252,7 @@ else : ?>
 	<?php
 	printf(
 		wp_kses(
-		// translators: %1$s is an opening a tag, %2$s is the closing one
+			/* translators: %1$s is an opening a tag, %2$s is the closing one */
 			__( 'See all %1$srecommended ad networks%2$s.', 'advanced-ads' ),
 			[
 				'a' => [

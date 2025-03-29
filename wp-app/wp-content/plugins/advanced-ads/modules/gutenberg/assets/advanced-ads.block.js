@@ -54,13 +54,9 @@
 		 */
 		registerBlockType('advads/gblock', {
 			apiVersion: 2,
-
 			title: i18n.advads,
-
 			icon: advadsIconEl,
-
 			category: 'common',
-
 			attributes: {
 				className: {
 					type: 'string',
@@ -83,10 +79,8 @@
 					default: 'default',
 				},
 			},
-
 			// todo: make the keywords translatable
 			keywords: ['advert', 'adsense', 'banner'],
-
 			edit: (props) => {
 				const itemID = props.attributes.itemID;
 

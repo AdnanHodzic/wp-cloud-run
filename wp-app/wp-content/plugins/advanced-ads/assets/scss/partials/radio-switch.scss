@@ -1,0 +1,127 @@
+.switch {
+	position: relative;
+
+	input {
+		position: absolute;
+		top: 0;
+		z-index: 2;
+		opacity: 0;
+		cursor: pointer;
+		background: transparent;
+
+		&:checked {
+			z-index: 1;
+
+			+ label {
+				opacity: 1;
+				cursor: default;
+			}
+		}
+
+		&:not(:checked) + label:hover {
+			opacity: 0.5;
+		}
+	}
+
+	label {
+		color: #fff;
+		opacity: 0.33;
+		transition: opacity 0.25s ease;
+		cursor: pointer;
+	}
+
+	.toggle {
+		&-outside {
+			height: 100%;
+			border-radius: 2rem;
+			padding: 0.25rem;
+			overflow: hidden;
+			transition: 0.25s ease all;
+		}
+
+		&-inside {
+			border-radius: 5rem;
+			background: #4a4a4a;
+			position: absolute;
+			transition: 0.25s ease all;
+		}
+	}
+
+	&-horizontal {
+		font-size: 0;
+		height: 1.6rem;
+		width: 3rem;
+		margin-bottom: 1rem;
+		border: 1px solid #ccc;
+		border-radius: 2rem;
+
+		input {
+			height: 1.6rem;
+			width: 3rem;
+			left: 3rem;
+			margin: 0;
+		}
+
+		label {
+			font-size: 1.5rem;
+			line-height: 3;
+			display: inline-block;
+			width: 3rem;
+			height: 100%;
+			margin: 0;
+			text-align: center;
+
+			&:last-of-type {
+				margin-left: 3rem;
+			}
+		}
+
+		.toggle {
+			&-outside {
+				position: absolute;
+				width: 3rem;
+				left: 3rem;
+			}
+
+			&-inside {
+				height: 1rem;
+				width: 1rem;
+			}
+		}
+
+		input:checked ~ .toggle-outside .toggle-inside {
+			left: 0.25rem;
+		}
+
+		input ~ input:checked ~ .toggle-outside .toggle-inside {
+			left: 1.6rem;
+		}
+	}
+
+	&--no-label {
+		label {
+			width: 0;
+			height: 0;
+			visibility: hidden;
+			overflow: hidden;
+		}
+
+		input {
+			&:checked ~ .toggle-outside .toggle-inside {
+				background: rgba(0, 0, 0, 0.2);
+				border: 1px solid rgba(0, 0, 0, 0.2);
+			}
+
+			~ input:checked ~ .toggle-outside {
+				.toggle-inside {
+					background: #3582c4;
+				}
+			}
+		}
+
+		&.switch-horizontal input,
+		&.switch-horizontal .toggle-outside {
+			left: 0;
+		}
+	}
+}

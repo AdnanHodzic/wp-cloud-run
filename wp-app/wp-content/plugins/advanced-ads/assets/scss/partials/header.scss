@@ -1,0 +1,24 @@
+.#{$namespace}-header {
+	margin: -10px -20px auto !important;
+
+	##{$namespace}-header-links {
+		@apply flex items-center justify-center;
+	}
+
+	.#{$namespace}-icon-help {
+		@apply ml-1.5 px-1 border-0 bg-transparent text-neutral-400;
+
+		&:focus,
+		&:hover {
+			@apply bg-transparent text-primary;
+		}
+
+		i {
+			@apply text-3xl leading-none;
+		}
+	}
+
+	.#{$namespace}-upgrade {
+		@apply flex items-center gap-x-2;
+	}
+}

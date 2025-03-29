@@ -2,43 +2,44 @@
 /**
  * HTML markup for AdSense connection modal frame.
  *
- * @package   Advanced_Ads_Admin
+ * @package   AdvancedAds
  */
 
-use AdvancedAds\Utilities\WordPress;
+use AdvancedAds\Framework\Utilities\Params;
+use AdvancedAds\Utilities\Conditional;
 
 $data_obj = Advanced_Ads_AdSense_Data::get_instance();
 $options  = $data_obj->get_options();
 
 $nonce = wp_create_nonce( 'advads-mapi' );
 
-$CID = Advanced_Ads_AdSense_MAPI::CID;
+$cid = Advanced_Ads_AdSense_MAPI::CID;
 
 $use_user_app = Advanced_Ads_AdSense_MAPI::use_user_app();
 if ( $use_user_app ) {
-	$CID = ADVANCED_ADS_MAPI_CID;
+	$cid = ADVANCED_ADS_MAPI_CID;
 }
 
 $state = [
-	'api' => 'adsense',
-	'nonce' => $nonce,
+	'api'        => 'adsense',
+	'nonce'      => $nonce,
 	'return_url' => admin_url( 'admin.php?page=advanced-ads-settings&oauth=1#top#adsense' ),
 ];
 
 $connection_error_messages = Advanced_Ads_AdSense_MAPI::get_connect_error_messages();
 
 $auth_url = 'https://accounts.google.com/o/oauth2/v2/auth?scope=' .
-			urlencode( 'https://www.googleapis.com/auth/adsense.readonly' ) .
-			'&client_id=' . $CID .
-			'&redirect_uri=' . urlencode( Advanced_Ads_AdSense_MAPI::REDIRECT_URI ) .
-			'&state=' . urlencode( base64_encode( wp_json_encode( $state ) ) ) .
+			rawurlencode( 'https://www.googleapis.com/auth/adsense.readonly' ) .
+			'&client_id=' . $cid .
+			'&redirect_uri=' . rawurlencode( Advanced_Ads_AdSense_MAPI::REDIRECT_URI ) .
+			'&state=' . rawurlencode( base64_encode( wp_json_encode( $state ) ) ) . // phpcs:ignore
 			'&access_type=offline&include_granted_scopes=true&prompt=consent&response_type=code';
 
 $_get = wp_unslash( $_GET );
 
-if ( isset( $_get['oauth'] ) && '1' == $_get['oauth'] && isset( $_get['api'] ) && 'adsense' == $_get['api'] ) : ?>
+if ( '1' === Params::get( 'oauth' ) && 'adsense' === Params::get( 'api' ) ) : ?>
 	<?php if ( isset( $_get['nonce'] ) && false !== wp_verify_nonce( $_get['nonce'], 'advads-mapi' ) ) : ?>
-		<?php if ( isset( $_get['code'] ) && WordPress::user_can( 'advanced_ads_manage_options' ) ) : ?>
+		<?php if ( isset( $_get['code'] ) && Conditional::user_can( 'advanced_ads_manage_options' ) ) : ?>
 		<input type="hidden" id="advads-adsense-oauth-code" value="<?php echo esc_attr( urldecode( $_get['code'] ) ); ?>" />
 		<?php endif; ?>
 	<?php endif; ?>
@@ -49,9 +50,9 @@ if ( isset( $_get['oauth'] ) && '1' == $_get['oauth'] && isset( $_get['api'] ) &
 			<div id="gadsense-modal-content">
 				<div class="gadsense-modal-content-inner" data-content="confirm-code">
 					<i class="dashicons dashicons-dismiss"></i>
-					<h2><?php esc_html_e( 'Processing authorization', 'advanced-ads-gam' );?></h2>
+					<h2><?php esc_html_e( 'Processing authorization', 'advanced-ads' ); ?></h2>
 					<div class="gadsense-overlay">
-						<img alt="..." src="<?php echo ADVADS_BASE_URL . 'admin/assets/img/loader.gif'; ?>" style="margin-top:3em" />
+						<img alt="..." src="<?php echo esc_url( ADVADS_BASE_URL ); ?>admin/assets/img/loader.gif" style="margin-top:3em" />
 					</div>
 				</div>
 				<div class="gadsense-modal-content-inner" data-content="error" style="display:none;">
@@ -71,7 +72,7 @@ if ( isset( $_get['oauth'] ) && '1' == $_get['oauth'] && isset( $_get['api'] ) &
 					<input type="hidden" class="token-data" value="" />
 					<input type="hidden" class="accounts-details" value="" />
 					<div class="gadsense-overlay">
-						<img alt="..." src="<?php echo ADVADS_BASE_URL . 'admin/assets/img/loader.gif'; ?>" style="margin-top:3em" />
+						<img alt="..." src="<?php echo esc_url( ADVADS_BASE_URL ); ?>admin/assets/img/loader.gif" style="margin-top:3em" />
 					</div>
 				</div>
 			</div>
@@ -82,9 +83,9 @@ if ( isset( $_get['oauth'] ) && '1' == $_get['oauth'] && isset( $_get['api'] ) &
 	if ( 'undefined' == typeof window.AdsenseMAPI ) {
 		AdsenseMAPI = {};
 	}
-	AdsenseMAPI.nonce = '<?php echo wp_strip_all_tags( $nonce ); ?>';
-	AdsenseMAPI.oAuth2 = '<?php echo wp_strip_all_tags( $auth_url ); ?>';
-    AdsenseMAPI.connectErrorMsg = <?php echo wp_json_encode( $connection_error_messages ); ?>;
+	AdsenseMAPI.nonce = '<?php echo wp_strip_all_tags( $nonce ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>';
+	AdsenseMAPI.oAuth2 = '<?php echo wp_strip_all_tags( $auth_url ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>';
+	AdsenseMAPI.connectErrorMsg = <?php echo wp_json_encode( $connection_error_messages ); ?>;
 </script>
 <style type="text/css">
 .gadsense-overlay {
@@ -110,11 +111,11 @@ if ( isset( $_get['oauth'] ) && '1' == $_get['oauth'] && isset( $_get['api'] ) &
 	position: relative;
 	width: 60%;
 	height: 100%;
-    <?php if ( is_rtl() ) : ?>
+	<?php if ( is_rtl() ) : ?>
 	margin-right: 20%;
-    <?php else : ?>
+	<?php else : ?>
 	margin-left: 20%;
-    <?php endif; ?>
+	<?php endif; ?>
 }
 #gadsense-modal-inner {
 	display: table;
@@ -136,11 +137,11 @@ if ( isset( $_get['oauth'] ) && '1' == $_get['oauth'] && isset( $_get['api'] ) &
 	border-radius: 100%;
 	cursor: pointer;
 	top: -.5em;
-    <?php if ( is_rtl() ) : ?>
-    left: -.5em;
-    <?php else : ?>
+	<?php if ( is_rtl() ) : ?>
+	left: -.5em;
+	<?php else : ?>
 	right: -.5em;
-    <?php endif; ?>
+	<?php endif; ?>
 	position: absolute;
 	z-index: 2;
 }

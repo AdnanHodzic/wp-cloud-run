@@ -23,25 +23,27 @@ if ( ! isset( $ad_units ) ) {
 
 ?>
 <div id="mapi-wrap" class="aa-select-list">
-    <?php if ($closeable): ?>
-        <button type="button" id="mapi-close-selector" class="notice-dismiss"></button>
-    <?php endif;?>
+	<?php if ( $closeable ) : ?>
+		<button type="button" id="mapi-close-selector" class="notice-dismiss"></button>
+	<?php endif; ?>
 	<i id="mapi-archived-ads" title="<?php esc_attr_e( 'Hide archived ads', 'advanced-ads' ); ?>" data-alt-title="<?php esc_attr_e( 'Show archived ads', 'advanced-ads' ); ?>" class="dashicons dashicons-hidden"></i>
 	<i class="aa-select-list-update dashicons dashicons-update mapiaction" data-mapiaction="updateList" style="color:#0085ba;cursor:pointer;font-size:20px;" title="<?php esc_attr_e( 'Update the ad units list', 'advanced-ads' ); ?>"></i>
-    <div id="mapi-loading-overlay" class="aa-select-list-loading-overlay">
-        <img alt="..." src="<?php echo ADVADS_BASE_URL . 'admin/assets/img/loader.gif'; ?>" style="margin-top:8em;" />
-    </div>
-    <div id="mapi-table-wrap" class="aa-select-list-table-wrap">
-        <table class="widefat striped">
-            <thead>
-            <tr>
-                <th><?php esc_html_e( 'Name', 'advanced-ads' ); ?></th>
-                <?php if ($display_slot_id):?><th><?php echo esc_html_x( 'Slot ID', 'AdSense ad', 'advanced-ads' ); ?></th><?php endif;?>
-                <th><?php echo esc_html_x( 'Type', 'AdSense ad', 'advanced-ads' ); ?></th>
-                <th><?php esc_html_e( 'Size', 'advanced-ads' ); ?></th>
-            </tr>
-            </thead>
-            <tbody>
+	<div id="mapi-loading-overlay" class="aa-select-list-loading-overlay">
+		<img alt="..." src="<?php echo esc_url( ADVADS_BASE_URL . 'admin/assets/img/loader.gif' ); ?>" style="margin-top:8em;" />
+	</div>
+	<div id="mapi-table-wrap" class="aa-select-list-table-wrap">
+		<table class="widefat striped">
+			<thead>
+			<tr>
+				<th><?php esc_html_e( 'Name', 'advanced-ads' ); ?></th>
+				<?php if ( $display_slot_id ) : ?>
+				<th><?php echo esc_html_x( 'Slot ID', 'AdSense ad', 'advanced-ads' ); ?></th>
+				<?php endif; ?>
+				<th><?php echo esc_html_x( 'Type', 'AdSense ad', 'advanced-ads' ); ?></th>
+				<th><?php esc_html_e( 'Size', 'advanced-ads' ); ?></th>
+			</tr>
+			</thead>
+			<tbody>
 			<?php if ( empty( $ad_units ) ) : ?>
 				<tr id="mapi-notice-noads">
 					<td colspan="5" style="text-align:center;">
@@ -52,7 +54,8 @@ if ( ! isset( $ad_units ) ) {
 						</button>
 					</td>
 				</tr>
-			<?php else :
+				<?php
+			else :
 				// Force a refresh the first time the ad list is opened after an update.
 				echo ! isset( $ad_units[0]->raw['nameV2'] ) ? '<input type="hidden" id="mapi-force-v2-list-update" value="" />' : '';
 				foreach ( $ad_units as $ad_unit ) {
@@ -61,13 +64,13 @@ if ( ! isset( $ad_units ) ) {
 				$sorted_adunits = Advanced_Ads_Ad_Network_Ad_Unit::sort_ad_units( $ad_units, $external_ad_unit_id );
 				?>
 				<?php foreach ( $sorted_adunits as $unit ) : ?>
-				<tr <?php echo $unit->raw['status'] === 'ARCHIVED' ? 'data-archived="1"' : ''; ?> class="advads-clickable-row mapiaction" data-mapiaction="getCode" data-slotid="<?php echo esc_attr( $unit->id ); ?>" data-active="<?php echo esc_attr( $unit->active ); ?>">
+				<tr <?php echo 'ARCHIVED' === $unit->raw['status'] ? 'data-archived="1"' : ''; ?> class="advads-clickable-row mapiaction" data-mapiaction="getCode" data-slotid="<?php echo esc_attr( $unit->id ); ?>" data-active="<?php echo esc_attr( $unit->active ); ?>">
 					<td><?php echo esc_html( $unit->name ); ?></td>
 					<?php if ( $display_slot_id ) : ?>
 						<td class="unitcode">
 							<?php
 							echo '<span>' . esc_html( $unit->slot_id ) . '</span>';
-							echo $unit->raw['status'] === 'ARCHIVED' ? '&nbsp;<code>' . esc_html__( 'Archived', 'advanced-ads' ) . '</code>' : '';
+							echo 'ARCHIVED' === $unit->raw['status'] ? '&nbsp;<code>' . esc_html__( 'Archived', 'advanced-ads' ) . '</code>' : '';
 							?>
 						</td>
 					<?php endif; ?>
@@ -90,9 +93,9 @@ if ( ! isset( $ad_units ) ) {
 				</tr>
 			<?php endforeach; ?>
 			<?php endif; ?>
-            </tbody>
-        </table>
-    </div>
+			</tbody>
+		</table>
+	</div>
 	<p class="advads-notice-inline advads-error" id="remote-ad-code-error" style="display:none;"><strong><?php esc_attr_e( 'Unrecognized ad code', 'advanced-ads' ); ?></strong></p>
 	<p class="advads-error-message" id="remote-ad-code-msg"></p>
 </div>
@@ -114,10 +117,18 @@ if ( ! isset( $ad_units ) ) {
 		<li>
 			<?php
 			/* Translators: 1: opening tag for a link to create an ad manually 2: closing a tag   */
-			printf( wp_kses( __( '%1$sCreate an AdSense code manually%2$s: Select the <em>Normal</em> or <em>Responsive</em> type and the size.', 'advanced-ads' ), [
-				'em'     => [],
-				'strong' => [],
-            ] ), '<a href="#" class="mapi-close-selector-link prevent-default">', '</a>' );
+			printf(
+				wp_kses(
+					/* translators: 1: opening tag for a link to create an ad manually 2: closing tag */
+					__( '%1$sCreate an AdSense code manually%2$s: Select the <em>Normal</em> or <em>Responsive</em> type and the size.', 'advanced-ads' ),
+					[
+						'em'     => [],
+						'strong' => [],
+					]
+				),
+				'<a href="#" class="mapi-close-selector-link prevent-default">',
+				'</a>'
+			);
 			?>
 		</li>
 		<li>

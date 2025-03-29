@@ -2,9 +2,14 @@
 /**
  * Settings for the spacing
  *
+ * @package AdvancedAds
+ * @author  Advanced Ads <info@wpadvancedads.com>
+ * @since   1.x.x
+ *
  * @var array $spacings    array with values for top, right, bottom, left spacing pixel values.
  * @var bool  $is_centered Whether the "Block Center" position has been selected.
  */
+
 ?>
 <hr class"advads-hide-in-wizard">
 
@@ -32,7 +37,7 @@
 			<div class="advads-ad-positioning-spacing-direction <?php echo esc_attr( $input_id ); ?>" aria-hidden="true">
 				<?php
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- allow inline svg
-				echo preg_replace( '/\s+/', ' ', file_get_contents( ADVADS_ABSPATH . 'modules/ad-positioning/assets/img/advads-bknd-ui-pos-margin.svg' ) );
+				echo preg_replace( '/\s+/', ' ', file_get_contents( ADVADS_ABSPATH . 'modules/ad-positioning/assets/img/advads-bknd-ui-pos-margin.svg' ) ); // phpcs:ignore
 				?>
 			</div>
 		<?php endforeach; ?>

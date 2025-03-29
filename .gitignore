@@ -1,9 +1,10 @@
 .env
 backup/*
+# Ignore custom paid plugins
+# default WordPress plugins copied as part of container image, e.g:
+# ../wp-content/plugins/akismet
 wp-app/wp-content/plugins/all-in-one-wp-migration-unlimited-extension/*
+# Ignore custom WordPress themes
+# Default WordPress themes copied as part of container image, e.g:
+# ../wp-content/themes/twentytwentyfive, twentytwentyfour, twentytwentythree
 wp-app/wp-content/themes/*
-# Not including these (default) themes in the container image will result in
-# "There has been a critical error on this website" Wordpress error message
-!wp-app/wp-content/themes/twentytwentyfive
-!wp-app/wp-content/themes/twentytwentyfour
-!wp-app/wp-content/themes/twentytwentythree

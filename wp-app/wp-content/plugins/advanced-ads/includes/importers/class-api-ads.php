@@ -10,12 +10,11 @@
 namespace AdvancedAds\Importers;
 
 use WP_Error;
-use Advanced_Ads;
 use AdvancedAds\Constants;
-use Advanced_Ads_Placements;
 use AdvancedAds\Framework\Utilities\Str;
 use AdvancedAds\Modules\OneClick\Helpers;
 use AdvancedAds\Interfaces\Importer as Interface_Importer;
+use AdvancedAds\Modules\OneClick\Options;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -96,7 +95,6 @@ class Api_Ads extends Importer implements Interface_Importer {
 	 * @return WP_Error|string
 	 */
 	public function import() {
-
 		kses_remove_filters();
 		$this->fetch_created_slots();
 
@@ -104,6 +102,7 @@ class Api_Ads extends Importer implements Interface_Importer {
 		$ads = Helpers::get_ads_from_config();
 		$ads = $this->normalize_ads( $ads );
 		if ( $ads ) {
+			$this->rollback_preview();
 			return $this->create_ads( $ads );
 		}
 	}
@@ -118,6 +117,31 @@ class Api_Ads extends Importer implements Interface_Importer {
 	public function rollback( $key ): void {
 		parent::rollback( $key );
 		$this->migrate_old_entities( $key, 'publish' );
+
+		$config = Options::pubguru_config();
+		unset( $config['page'], $config['method'], $config['history_key'] );
+		Options::pubguru_config( $config );
+	}
+
+	/**
+	 * Rollback Preview mode
+	 *
+	 * @return void
+	 */
+	private function rollback_preview(): void {
+		$config = Options::pubguru_config();
+		if ( ! $config || ! isset( $config['history_key'] ) ) {
+			return;
+		}
+
+		parent::rollback( $config['history_key'] );
+
+		// Remove keys.
+		$importers = wp_advads()->importers ?? new Manager();
+		$importers->delete_session_history( $config['history_key'] );
+
+		unset( $config['history_key'] );
+		Options::pubguru_config( $config );
 	}
 
 	/**
@@ -131,127 +155,61 @@ class Api_Ads extends Importer implements Interface_Importer {
 		$count       = 0;
 		$history_key = $this->get_id() . '_' . wp_rand() . '_' . count( $ads );
 		$this->migrate_old_entities( $history_key, 'draft' );
+		$this->save_history_key( $history_key );
 
 		foreach ( $ads as $data ) {
-			$ad_options = [
-				'type' => 'plain',
-			];
+			$ad = wp_advads_create_new_ad( 'plain' );
+			$ad->set_title( '[PubGuru] Ad # ' . $data['ad_unit'] );
+			$ad->set_status( 'publish' );
+			$ad->set_content( sprintf( '<pubguru data-pg-ad="%s"></pubguru>', $data['ad_unit'] ) );
+			$ad->set_author_id( $this->get_author_id() );
+			$ad->set_prop( 'pghb_slot_id', $data['ad_unit'] );
 
 			if ( 'all' !== $data['device'] ) {
-				$ad_options['visitors'] = [
+				$ad->set_visitor_conditions(
 					[
-						'type'  => 'mobile',
-						'value' => [ $data['device'] ],
-					],
-				];
+						[
+							'type'  => 'mobile',
+							'value' => [ $data['device'] ],
+						],
+					]
+				);
 			}
 
-			$ad_id = wp_insert_post(
-				[
-					'post_title'   => '[Migrated from API] Ad # ' . $data['ad_unit'],
-					'post_content' => sprintf( '<pubguru data-pg-ad="%s"></pubguru>', $data['ad_unit'] ),
-					'post_status'  => 'publish',
-					'post_type'    => Constants::POST_TYPE_AD,
-					'post_author'  => $this->get_author_id(),
-					'meta_input'   => [
-						'pghb_slot_id'            => $data['ad_unit'],
-						'advanced_ads_ad_options' => $ad_options,
-					],
-				]
-			);
+			$ad_id = $ad->save();
 
 			if ( $ad_id > 0 ) {
 				++$count;
 
-				$placement = [
-					'type'    => $data['placement'],
-					'name'    => '[Migrated from API] Placement # ' . $ad_id,
-					'item'    => 'ad_' . $ad_id,
-					'options' => [],
-				];
-
+				if ( ! wp_advads_has_placement_type( $data['placement'] ) ) {
+					wp_advads_create_placement_type( $data['placement'] );
+				}
+				$placement = wp_advads_create_new_placement( $data['placement'] );
+				$placement->set_title( '[PubGuru] Placement # ' . $data['ad_unit'] );
+				$placement->set_item( 'ad_' . $ad_id );
+				$placement->set_status( 'publish' );
 				if ( ! empty( $data['placement_conditions'] ) ) {
-					$placement['options']['display'] = [ $data['placement_conditions'] ];
+					$placement->set_display_conditions( $data['placement_conditions'] );
 				}
 
-				if ( 'post_content' === $data['placement'] ) {
-					$placement['options']['position'] = $data['in_content_position'];
-					$placement['options']['index']    = $data['in_content_count'];
-					$placement['options']['tag']      = $data['in_content_element'];
-					$placement['options']['repeat']   = boolval( $data['in_content_repeat'] );
+				if ( $placement->is_type( 'post_content' ) ) {
+					$placement->set_prop( 'position', $data['in_content_position'] );
+					$placement->set_prop( 'index', $data['in_content_count'] );
+					$placement->set_prop( 'tag', $data['in_content_element'] );
+					$placement->set_prop( 'repeat', boolval( $data['in_content_repeat'] ) );
 				}
 
-				Advanced_Ads_Placements::save_new_placement( $placement );
-				update_post_meta( $ad_id, '_importer_session_key', $history_key );
+				$placement->save();
+
+				$this->add_session_key( $ad, $placement, $history_key );
 			}
 		}
 
-		update_option( 'advanced-ads-importer-history', $history_key );
+		$importers = wp_advads()->importers ?? new Manager();
+		$importers->add_session_history( $this->get_id(), $history_key, $count );
 
 		/* translators: 1: counts 2: Importer title */
 		return sprintf( __( '%1$d ads migrated from %2$s', 'advanced-ads' ), $count, $this->get_title() );
-	}
-
-	/**
-	 * Maps the placement type to a corresponding value.
-	 *
-	 * This function takes a placement type as input and returns the corresponding value based on a predefined mapping.
-	 *
-	 * @param string $type The placement type to be mapped.
-	 *
-	 * @return string The mapped placement type value.
-	 */
-	private function map_placement_type( $type ): string {
-		$type = strtolower( str_replace( ' ', '_', $type ) );
-		$hash = [
-			'leaderboard'  => 'post_top',
-			'in_content_1' => 'post_content',
-			'in_content_2' => 'post_content',
-			'sidebar'      => 'sidebar_widget',
-		];
-
-		foreach ( $hash as $key => $value ) {
-			if ( Str::contains( $type, $key ) ) {
-				return $value;
-			}
-		}
-
-		return 'post_content';
-	}
-
-	/**
-	 * Parse display conditions
-	 *
-	 * @param string $term Dictionary term.
-	 *
-	 * @return array|null
-	 */
-	private function parse_display_conditions( $term ) {
-		$term = str_replace( ' ', '_', strtolower( $term ) );
-		if ( 'all' === $term ) {
-			return null;
-		}
-
-		if ( 'homepage' === $term ) {
-			return [
-				'type'  => 'general',
-				'value' => [ 'is_front_page' ],
-			];
-		}
-
-		if ( 'post_pages' === $term ) {
-			return [
-				'type'  => 'general',
-				'value' => [ 'is_singular' ],
-			];
-		}
-
-		if ( 'category_pages' === $term ) {
-			return [
-				'type'  => 'general',
-				'value' => [ 'is_archive' ],
-			];
-		}
 	}
 
 	/**
@@ -301,6 +259,11 @@ class Api_Ads extends Importer implements Interface_Importer {
 	 * @return void
 	 */
 	private function migrate_old_entities( $key, $status ): void {
+		// Early bail!!
+		if ( $this->is_preview_mode() ) {
+			return;
+		}
+
 		$args = [
 			'post_type'      => [ Constants::POST_TYPE_AD, Constants::POST_TYPE_PLACEMENT ],
 			'posts_per_page' => -1,
@@ -332,16 +295,6 @@ class Api_Ads extends Importer implements Interface_Importer {
 
 			wp_update_post( $entity );
 		}
-
-		// Old placements rollback.
-		if ( 'draft' === $status ) {
-			$placements = Advanced_Ads::get_instance()->get_model()->get_ad_placements_array();
-			update_option( 'advanced-ads-placements-backup', $placements );
-			Advanced_Ads::get_instance()->get_model()->update_ad_placements_array( [] );
-		} elseif ( 'publish' === $status ) {
-			$placements = get_option( 'advanced-ads-placements-backup', [] );
-			Advanced_Ads::get_instance()->get_model()->update_ad_placements_array( $placements );
-		}
 	}
 
 	/**
@@ -351,63 +304,228 @@ class Api_Ads extends Importer implements Interface_Importer {
 	 *
 	 * @return array
 	 */
-	private function normalize_ads( $ads ): array {
+	public function normalize_ads( $ads ): array {
 		$normalized = [];
-		$in_content = [
-			'in-content1' => [
-				'count'    => 3,
-				'position' => 'after',
-				'repeat'   => false,
-			],
-			'in-content2' => [
-				'count'    => 5,
-				'position' => 'after',
-				'repeat'   => false,
-			],
-			'in-content3' => [
-				'count'    => 7,
-				'position' => 'after',
-				'repeat'   => true,
-			],
-		];
 
 		foreach ( $ads as $ad ) {
+			if ( empty( $ad['slot'] ) ) {
+				$ad['slot'] = explode( '/', $ad['id'] );
+				$ad['slot'] = array_pop( $ad['slot'] );
+			}
+
 			// already created.
 			if ( in_array( $ad['slot'], $this->slots, true ) ) {
 				continue;
 			}
 
-			foreach ( $in_content as $key => $value ) {
-				$matches = [];
-				preg_match( '/.*in[-_]?content[_-]?(\d+).*/', $ad['slot'], $matches );
-				if ( ! empty( $matches ) && ( 'in-content' . $matches[1] ) === $key ) {
-					if ( empty( $ad['in_content_count'] ) ) {
-						$ad['in_content_count'] = $value['count'];
-					}
+			$advanced_placement = $ad['advanced_placement'] ?? [];
+			$placement_type     = $this->map_placement_type( $advanced_placement['placement'] ?? $ad['slot'] );
+			$in_content_rules   = $advanced_placement['inContentRule'] ?? [];
 
-					if ( empty( $ad['in_content_position'] ) ) {
-						$ad['in_content_position'] = $value['position'];
-					}
-
-					if ( empty( $ad['in_content_repeat'] ) ) {
-						$ad['in_content_repeat'] = $value['repeat'];
-					}
-					break;
-				}
+			if ( isset( $advanced_placement['pageType'] ) && ! empty( $advanced_placement['pageType'] ) ) {
+				$advanced_placement['pageType'] = array_filter( $advanced_placement['pageType'] );
+				$advanced_placement['pageType'] = array_keys( $advanced_placement['pageType'] );
 			}
 
-			$normalized[] = [
+			$normalized_ad = [
 				'ad_unit'              => $ad['slot'],
 				'device'               => $ad['device'],
-				'placement'            => $this->map_placement_type( $ad['slot'] ),
-				'placement_conditions' => $this->parse_display_conditions( $data['placement_conditions'] ?? 'all' ),
-				'in_content_position'  => $ad['in_content_position'] ?? 'before',
-				'in_content_count'     => $ad['in_content_count'] ?? 1,
-				'in_content_element'   => $ad['in_content_element'] ?? 'p',
-				'in_content_repeat'    => $ad['in_content_repeat'] ?? false,
+				'placement'            => $placement_type,
+				'placement_conditions' => $this->parse_display_conditions( $advanced_placement['pageType'] ?? 'all' ),
 			];
+
+			if ( 'post_content' === $placement_type ) {
+				$normalized_ad['in_content_position'] = $in_content_rules['position'] ?? 'before';
+				$normalized_ad['in_content_count']    = $in_content_rules['positionCount'] ?? 1;
+				$normalized_ad['in_content_repeat']   = $in_content_rules['positionRepeat'] ?? false;
+				$normalized_ad['in_content_element']  = $this->map_element( $in_content_rules['positionElement'] ?? 'p' );
+			}
+
+			$normalized[] = $normalized_ad;
 		}
 
 		return $normalized;
+	}
+
+	/**
+	 * Maps the placement type to a corresponding value.
+	 *
+	 * This function takes a placement type as input and returns the corresponding value based on a predefined mapping.
+	 *
+	 * @param string $type The placement type to be mapped.
+	 *
+	 * @return string The mapped placement type value.
+	 */
+	private function map_placement_type( $type ): string {
+		$type = strtolower( str_replace( ' ', '_', $type ) );
+		$hash = [
+			'leaderboard'   => 'post_top',
+			'beforecontent' => 'post_top',
+			'in_content_1'  => 'post_content',
+			'in_content_2'  => 'post_content',
+			'incontent'     => 'post_content',
+			'sidebar'       => 'sidebar_widget',
+			'header'        => 'header',
+			'footer'        => 'footer',
+			'aboveheadline' => 'post_above_headline',
+		];
+
+		foreach ( $hash as $key => $value ) {
+			if ( Str::contains( $type, $key ) ) {
+				return $value;
+			}
+		}
+
+		return 'post_content';
+	}
+
+	/**
+	 * Parse display conditions
+	 *
+	 * @param array|string $terms Dictionary term.
+	 *
+	 * @return array|null
+	 */
+	private function parse_display_conditions( $terms ) {
+		// Return for debugging.
+		if ( $this->is_preview_mode() ) {
+			$config = Options::pubguru_config();
+			return [
+				[
+					'type'     => 'postids',
+					'operator' => 'is',
+					'value'    => [ absint( $config['page'] ) ],
+				],
+			];
+		}
+
+		$conditions = [];
+		$terms      = array_filter( (array) $terms );
+		if ( count( $terms ) === 5 ) {
+			$terms = [ 'all' ];
+		}
+
+		$hash = [
+			'all'              => null,
+			'homepage'         => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_front_page' ],
+				],
+			],
+			'post_pages'       => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_singular' ],
+				],
+			],
+			'pages'            => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_singular' ],
+				],
+			],
+			'posts'            => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_singular' ],
+				],
+				[
+					'type'     => 'posttypes',
+					'operator' => 'is',
+					'value'    => [ 'post' ],
+				],
+			],
+			'category_pages'   => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_archive' ],
+				],
+			],
+			'categoryPages'    => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_archive' ],
+				],
+			],
+			'secondaryQueries' => [
+				[
+					'type'  => 'general',
+					'value' => [ 'is_main_query' ],
+				],
+			],
+		];
+
+		foreach ( $terms as $term ) {
+			if ( 'all' === $term ) {
+				$conditions = [];
+				break;
+			}
+
+			if ( $hash[ $term ] ) {
+				$conditions = array_merge( $conditions, $hash[ $term ] );
+			}
+		}
+
+		return $conditions;
+	}
+
+	/**
+	 * Maps the element to a corresponding value.
+	 *
+	 * @param string $element The element to be mapped.
+	 *
+	 * @return string The mapped element value.
+	 */
+	private function map_element( $element ): string {
+		$element = strtolower( $element );
+		$hash    = [
+			'paragraph'             => 'p',
+			'paragraphWithoutImage' => 'pwithoutimg',
+			'headline2'             => 'h2',
+			'headline3'             => 'h3',
+			'headline4'             => 'h4',
+			'headlineAny'           => 'headlines',
+			'image'                 => 'img',
+			'table'                 => 'table',
+			'listItem'              => 'li',
+			'blockquote'            => 'blockquote',
+			'iframe'                => 'iframe',
+			'div'                   => 'div',
+		];
+
+		return $hash[ $element ] ?? 'p';
+	}
+
+	/**
+	 * Checks if the current mode is preview mode.
+	 *
+	 * @return bool True if the current mode is preview mode, false otherwise.
+	 */
+	private function is_preview_mode(): bool {
+		$config = Options::pubguru_config();
+		if ( $config && 'page' === $config['method'] && absint( $config['page'] ) > 0 ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Save history key
+	 *
+	 * @param string $key Session key.
+	 *
+	 * @return void
+	 */
+	private function save_history_key( $key ): void {
+		if ( ! $this->is_preview_mode() ) {
+			return;
+		}
+
+		$config                = Options::pubguru_config();
+		$config['history_key'] = $key;
+
+		Options::pubguru_config( $config );
 	}
 }

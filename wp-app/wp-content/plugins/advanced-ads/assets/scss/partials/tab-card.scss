@@ -1,0 +1,40 @@
+.#{$namespace}-page .#{$namespace}-tab {
+	&-container {
+		@apply border border-advads rounded-md;
+	}
+
+	&-target {
+		@apply hidden;
+	}
+
+	&-menu {
+		@apply border-b border-advads flex;
+
+		a {
+			@apply flex items-center font-medium relative py-3 px-5 border-r border-advads;
+
+			&:first-child {
+				@apply rounded-tl-md;
+			}
+
+			&:hover,
+			&:focus,
+			&.is-active {
+				@apply bg-white outline-none shadow-none;
+				color: #1a1e22;
+			}
+
+			&.is-active {
+				@apply -mb-[1px] border-b border-b-white;
+			}
+		}
+	}
+
+	&-content-body {
+		@apply bg-white rounded-b-md py-4 px-5;
+	}
+
+	&-content-footer {
+		@apply border-t border-advads py-4 px-5;
+	}
+}

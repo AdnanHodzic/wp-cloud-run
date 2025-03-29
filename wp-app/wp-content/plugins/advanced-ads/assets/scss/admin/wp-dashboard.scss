@@ -1,0 +1,140 @@
+@import "../bootstrap/variables";
+
+.#{$namespace}-logo {
+	&--icon {
+		@apply mr-3 h-5 w-5;
+	}
+
+	&--text {
+		@apply flex-grow;
+	}
+}
+
+##{$namespace}-dashboard-widget {
+	&-hide + span {
+		@apply hidden;
+	}
+
+	.#{$namespace}-widget-wrapper {
+		@apply mb-6;
+
+		.section-title {
+			@apply bg-gray-50/70 px-3 py-2.5 my-3;
+			@apply -mx-3 #{!important};
+			border: solid $border-color;
+			border-width: 1px 0;
+
+			h3 {
+				@apply m-0 font-semibold;
+			}
+		}
+	}
+
+	.#{$namespace}-widget-header {
+		font-size: 13px;
+
+		a {
+			@apply px-1;
+		}
+	}
+
+	.#{$namespace}-widget-buttons {
+		@apply py-1;
+	}
+
+	a {
+		@apply no-underline;
+	}
+
+	.dashicons-external {
+		@apply align-[-4px] ml-1;
+	}
+
+	.inside {
+		padding: 0; // Entfernt den inneren Abstand
+
+		> div {
+			padding-left: 12px;
+			padding-right: 12px;
+		}
+
+		> footer {
+			margin: 0;
+			padding: 12px;
+			margin-bottom: 0;
+			border-top: 1px solid $border-color;
+
+			a {
+				@apply px-2.5 no-underline;
+				margin: 0;
+				padding: 0;
+				text-decoration-line: none; // Entfernt die Text-Dekoration
+
+				&:not(:last-child):after {
+					content: " | ";
+					color: #c3c4c7;
+					font-weight: 300;
+				}
+			}
+
+			a.go-pro {
+				@apply font-semibold;
+			}
+
+			.dashicons-external {
+				@apply text-lg;
+				line-height: unset;
+			}
+		}
+	}
+}
+
+.index-php {
+	div.advads-stats-box {
+		margin: 0;
+		flex: 0 0 calc(33.33% - 8pt);
+
+		.advads-stats-age {
+			@apply clear-left float-left text-left;
+		}
+	}
+
+	div.advads-stats-dd-container {
+		@apply float-left text-left;
+	}
+}
+
+.#{$namespace}-performing-ads-track {
+	@apply flex justify-between;
+
+	ul {
+		@apply list-none m-0;
+	}
+
+	li {
+		@apply inline cursor-pointer;
+		color: $light-blue;
+
+		&.active {
+			@apply text-black;
+		}
+
+		&:not(:last-child)::after {
+			content: "|";
+			@apply ml-1 text-gray-400;
+		}
+	}
+
+	&.disabled {
+		@apply pointer-events-none text-gray-400;
+
+		a,
+		li {
+			@apply text-gray-400;
+		}
+	}
+}
+
+.#{$namespace}-custom-period-wrapper {
+	@apply hidden;
+}

@@ -1,5 +1,13 @@
 <?php
-// todo: move the array somewhere else.
+/**
+ * Pro placements upgrade notice.
+ *
+ * @package Advanced_Ads
+ * TODO: move the array somewhere else.
+ */
+
+use AdvancedAds\Admin\Upgrades;
+
 $pro_placements = [
 	// ad injection on random position.
 	'post_content_random' => [
@@ -38,13 +46,13 @@ $pro_placements = [
 	],
 ];
 // BuddyBoss & BuddyPress.
-if ( defined( 'BP_PLATFORM_VERSION' ) ) { // BuddyBoss
+if ( defined( 'BP_PLATFORM_VERSION' ) ) { // BuddyBoss.
 	$pro_placements['buddypress'] = [
 		'title'       => __( 'BuddyBoss Content', 'advanced-ads' ),
 		'description' => __( 'Display ads on BuddyBoss related pages.', 'advanced-ads' ),
 		'image'       => ADVADS_BASE_URL . 'admin/assets/img/placements/buddyboss-icon.png',
 	];
-} elseif ( class_exists( 'BuddyPress', false ) ) { // BuddyPress
+} elseif ( class_exists( 'BuddyPress', false ) ) { // BuddyPress.
 	$pro_placements['buddypress'] = [
 		'title'       => __( 'BuddyPress Content', 'advanced-ads' ),
 		'description' => __( 'Display ads on BuddyPress related pages.', 'advanced-ads' ),
@@ -84,5 +92,5 @@ if ( is_array( $pro_placements ) ) :
 		</div>
 		<?php endforeach; ?>
 	<div class="clear"></div>
-	<h4><?php Advanced_Ads_Admin_Upgrades::upgrade_link( __( 'Get all placements with All Access', 'advanced-ads' ), 'https://wpadvancedads.com/add-ons/all-access/', 'upgrades-pro-placements' ); ?></h4>
+	<h4><?php Upgrades::upgrade_link( __( 'Get all placements with All Access', 'advanced-ads' ), 'https://wpadvancedads.com/add-ons/all-access/', 'upgrades-pro-placements' ); ?></h4>
 <?php endif; ?>

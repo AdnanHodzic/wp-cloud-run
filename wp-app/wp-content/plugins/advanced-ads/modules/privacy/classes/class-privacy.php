@@ -1,4 +1,8 @@
-<?php
+<?php // phpcs:ignore WordPress.Files.FileName
+
+use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Framework\Utilities\Params;
+use AdvancedAds\Framework\Utilities\Str;
 
 /**
  * Handles Advanced Ads privacy settings.
@@ -29,15 +33,15 @@ class Advanced_Ads_Privacy {
 	 * Initialize the module
 	 */
 	private function __construct() {
-		add_filter( 'advanced-ads-can-display', [ $this, 'can_display_by_consent' ], 10, 3 );
+		add_filter( 'advanced-ads-can-display-ad', [ $this, 'can_display_by_consent' ], 10, 3 );
 
 		$this->options();
 
 		if ( ! empty( $this->options['enabled'] ) ) {
 			add_filter( 'advanced-ads-activate-advanced-js', '__return_true' );
 
-			if ( $this->options['consent-method'] === 'iab_tcf_20' ) {
-				add_filter( 'advanced-ads-output-final', [ $this, 'final_ad_output' ], 10, 2 );
+			if ( 'iab_tcf_20' === $this->options['consent-method'] ) {
+				add_filter( 'advanced-ads-ad-output', [ $this, 'final_ad_output' ], 10, 2 );
 			}
 		}
 	}
@@ -45,18 +49,16 @@ class Advanced_Ads_Privacy {
 	/**
 	 * If this ad is not image or dummy base64_encode the text.
 	 *
-	 * @param string          $output The output string.
-	 * @param Advanced_Ads_Ad $ad     The ad object.
+	 * @param string $output The output string.
+	 * @param Ad     $ad     Ad instance.
 	 *
 	 * @return string
 	 */
-	public function final_ad_output( $output, Advanced_Ads_Ad $ad ) {
+	public function final_ad_output( $output, Ad $ad ) {
 		if (
-			advads_is_amp()
-			// Never encode image, dummy or group ads.
-			|| ! $this->ad_type_needs_consent( $ad->type )
-			// Consent is overridden, and this is not an AdSense ad, don't encode it.
-			|| ( $ad->type !== 'adsense' && isset( $ad->options()['privacy']['ignore-consent'] ) )
+			advads_is_amp() ||
+			! $this->ad_type_needs_consent( $ad->get_type() ) ||
+			( ! $ad->is_type( 'adsense' ) && $ad->get_prop( 'privacy.ignore-consent' ) )
 		) {
 			return $output;
 		}
@@ -67,34 +69,38 @@ class Advanced_Ads_Privacy {
 	/**
 	 * Encode the ad output.
 	 *
-	 * @param string          $output The output string.
-	 * @param Advanced_Ads_Ad $ad     The ad object.
+	 * @param string $output The output string.
+	 * @param Ad     $ad     Ad intance.
 	 *
 	 * @return string
 	 */
-	public function encode_ad( $output, Advanced_Ads_Ad $ad ) {
+	public function encode_ad( $output, Ad $ad ) {
 		$data_attributes = [
-			'id'  => $ad->id,
+			'id'  => $ad->get_id(),
 			'bid' => get_current_blog_id(),
 		];
-		if ( ! empty( $ad->output['placement_id'] ) ) {
-			$data_attributes['placement'] = $ad->output['placement_id'];
+
+		if ( $ad->is_parent_placement() ) {
+			$data_attributes['placement'] = $ad->get_parent()->get_id();
 		}
 
 		/**
 		 * Filter the data attributes and allow removing/adding attributes.
 		 * All attributes will be prefix with `data-` on output.
 		 *
-		 * @param array           $data_attributes The default data attributes.
-		 * @param Advanced_Ads_Ad $ad              The current ad.
+		 * @param array $data_attributes The default data attributes.
+		 * @param Ad    $ad              Ad instance.
 		 */
 		$data_attributes = (array) apply_filters( 'advanced-ads-privacy-output-attributes', $data_attributes, $ad );
 
-		// convert the data-attributes array into a string.
+		// Convert the data-attributes array into a string.
 		$attributes_string = '';
-		array_walk( $data_attributes, static function( $value, $key ) use ( &$attributes_string ) {
-			$attributes_string .= sprintf( ' data-%s="%s"', sanitize_key( $key ), esc_attr( $value ) );
-		} );
+		array_walk(
+			$data_attributes,
+			function ( $value, $key ) use ( &$attributes_string ) {
+				$attributes_string .= sprintf( ' data-%s="%s"', sanitize_key( $key ), esc_attr( $value ) );
+			}
+		);
 
 		return sprintf(
 			'<script type="text/plain" data-tcf="waiting-for-consent"%s>%s</script>',
@@ -148,19 +154,19 @@ class Advanced_Ads_Privacy {
 	/**
 	 * Check if ad can be displayed based on user's consent.
 	 *
-	 * @param bool            $can_display   Whether to display this ad.
-	 * @param Advanced_Ads_Ad $ad            The ad object.
-	 * @param array           $check_options Additional options passed to can_display.
+	 * @param bool  $can_display   Whether to display this ad.
+	 * @param Ad    $ad            Ad instance.
+	 * @param array $check_options Additional options passed to can_display.
 	 *
 	 * @return bool
 	 */
-	public function can_display_by_consent( $can_display, Advanced_Ads_Ad $ad, $check_options ) {
-		// already false, honor this.
+	public function can_display_by_consent( $can_display, Ad $ad, $check_options ) {
+		// Early bail!!
 		if ( ! $can_display ) {
 			return $can_display;
 		}
 
-		// passive cache busting enabled.
+		// Passive cache busting enabled.
 		if ( $check_options['passive_cache_busting'] ) {
 			return true;
 		}
@@ -171,24 +177,24 @@ class Advanced_Ads_Privacy {
 		}
 
 		// If consent is overriden for the ad.
-		if ( ! empty( $ad->options()['privacy']['ignore-consent'] ) ) {
+		if ( ! empty( $ad->get_prop( 'privacy.ignore-consent' ) ) ) {
 			return true;
 		}
 
-		$consent_method = isset( $this->options['consent-method'] ) ? $this->options['consent-method'] : '';
+		$consent_method = $this->options['consent-method'] ?? '';
 
 		// If the consent method is set to cookie and the ad type does not need consent.
-		if ( $consent_method === 'custom' && ! $this->ad_type_needs_consent( $ad->type ) ) {
+		if ( 'custom' === $consent_method && ! $this->ad_type_needs_consent( $ad->get_type() ) ) {
 			return true;
 		}
 
 		// If method is iab_tcf_20, always set to true, JS needs to decide whether to display ad or not.
-		if ( $consent_method === 'iab_tcf_20' ) {
+		if ( 'iab_tcf_20' === $consent_method ) {
 			return true;
 		}
 
 		// Either personalized or non-personalized ad will be shown.
-		if ( $ad->type === 'adsense' && ! empty( $this->options()['show-non-personalized-adsense'] ) ) {
+		if ( $ad->is_type( 'adsense' ) && ! empty( $this->options()['show-non-personalized-adsense'] ) ) {
 			return true;
 		}
 
@@ -236,7 +242,7 @@ class Advanced_Ads_Privacy {
 			return 'not_needed';
 		}
 
-		$consent_method = isset( $this->options['consent-method'] ) ? $this->options['consent-method'] : '';
+		$consent_method = $this->options['consent-method'] ?? '';
 		switch ( $consent_method ) {
 			case 'custom':
 				$name = $this->options['custom-cookie-name'];
@@ -244,14 +250,14 @@ class Advanced_Ads_Privacy {
 					return 'not_needed';
 				}
 
-				if ( ! isset( $_COOKIE[ $name ] ) ) {
+				if ( ! Params::cookie( $name ) ) {
 					return 'unknown';
 				}
 
-				$value = isset( $this->options['custom-cookie-value'] ) ? $this->options['custom-cookie-value'] : '';
+				$value = $this->options['custom-cookie-value'] ?? '';
 				if (
-					( $value === '' && $_COOKIE[ $name ] === '' )
-					|| ( $value !== '' && strpos( $_COOKIE[ $name ], $value ) !== false )
+					( '' === $value && '' === Params::cookie( $name ) ) ||
+					Str::contains( $value, Params::cookie( $name ) )
 				) {
 					return 'accepted';
 				}

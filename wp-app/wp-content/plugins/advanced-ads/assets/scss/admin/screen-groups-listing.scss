@@ -1,0 +1,109 @@
+@import "../bootstrap/variables";
+
+.#{$namespace}-page {
+	background-color: #f8f9fa;
+}
+
+.#{$namespace}-table .toggle-row {
+	position: absolute;
+	right: 8px;
+	top: 10px;
+	display: none;
+	padding: 0;
+	width: 40px;
+	height: 40px;
+	border: none;
+	outline: none;
+	background: transparent;
+}
+
+##{$namespace}-group-filter {
+	display: none;
+	margin-bottom: 1.2rem;
+}
+
+##{$namespace}-group-filter-form {
+	display: flex;
+	justify-content: space-between;
+}
+
+/**
+ * Ad status icons
+ */
+.#{$namespace}-ad-status-icon {
+	display: block;
+	width: 20px;
+	height: 20px;
+}
+
+.#{$namespace}-group-ads .advads-ad-status-icon {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.#{$namespace}-ad-status-icon-published,
+.#{$namespace}-ad-status-icon-publish {
+	background: url(../../img/icons/publish-bw.svg) no-repeat center/20px;
+
+	&:hover {
+		background: url(../../img/icons/publish.svg) no-repeat center/20px;
+	}
+}
+
+.#{$namespace}-ad-status-icon-draft {
+	background: url(../../img/icons/draft-bw.svg) no-repeat center/20px;
+
+	&:hover {
+		background: url(../../img/icons/draft.svg) no-repeat center/20px;
+	}
+}
+
+.#{$namespace}-ad-status-icon-future {
+	background: url(../../img/icons/future-bw.svg) no-repeat center/20px;
+
+	&:hover {
+		background: url(../../img/icons/future.svg) no-repeat center/20px;
+	}
+}
+
+.#{$namespace}-ad-status-icon-expiring {
+	background: url(../../img/icons/expiring-bw.svg) no-repeat center/20px;
+
+	&:hover {
+		background: url(../../img/icons/expiring.svg) no-repeat center/20px;
+	}
+}
+
+.#{$namespace}-ad-status-icon-expired,
+.#{$namespace}-ad-status-icon-trash {
+	background: url(../../img/icons/trash-bw.svg) no-repeat center/20px;
+
+	&:hover {
+		background: url(../../img/icons/trash.svg) no-repeat center/20px;
+	}
+}
+
+.#{$namespace}-ad-group-list-ads {
+	.#{$namespace}-ad-status-icon-published {
+		display: none;
+	}
+
+	> div:hover {
+		.#{$namespace}-ad-status-icon-draft {
+			background: url(../../img/icons/draft.svg) no-repeat center/20px;
+		}
+
+		.#{$namespace}-ad-status-icon-future {
+			background: url(../../img/icons/future.svg) no-repeat center/20px;
+		}
+
+		.#{$namespace}-ad-status-icon-expiring {
+			background: url(../../img/icons/expiring.svg) no-repeat center/20px;
+		}
+
+		.#{$namespace}-ad-status-icon-expired,
+		.#{$namespace}-ad-status-icon-trash {
+			background: url(../../img/icons/trash.svg) no-repeat center/20px;
+		}
+	}
+}
