@@ -49,6 +49,24 @@ $settings = $args['settings'] ?? new stdClass();
 			</a>
 		</p>
 
+		<h3 class="hndle"><?php esc_html_e( 'Image Previews', 'xml-sitemap-generator-for-google' ); ?></h3>
+		<div>
+			<p class="image-sitemap-depended"><?php esc_html_e( 'If you are experiencing long loading times, hide image previews in your Sitemap. This will not affect SEO results.', 'xml-sitemap-generator-for-google' ); ?></p>
+			<p>
+				<?php
+				Dashboard::render(
+					'fields/checkbox.php',
+					array(
+						'name'  => 'hide_image_previews',
+						'class' => 'image-sitemap-depended',
+						'value' => $settings->hide_image_previews ?? false,
+						'label' => esc_html__( 'Hide Image Previews', 'xml-sitemap-generator-for-google' ),
+					)
+				);
+				?>
+			</p>
+		</div>
+
 		<h3 class="hndle"><?php
 			esc_html_e( 'Image MIME Types', 'xml-sitemap-generator-for-google' );
 

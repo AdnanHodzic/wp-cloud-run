@@ -64,7 +64,10 @@ class PostSettings {
 				'sitemap-settings',
 				'sitemapSettings',
 				array(
-					'isProEnabled' => sgg_pro_enabled(),
+					'isProEnabled'       => sgg_pro_enabled(),
+					'isExcludeEnabled'   => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__exclude_sitemap', false ) ),
+					'isPriorityEnabled'  => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__sitemap_priority', false ) ),
+					'isFrequencyEnabled' => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__sitemap_frequency', false ) ),
 				)
 			);
 		}
@@ -74,6 +77,11 @@ class PostSettings {
 	 * Registers Post Metabox.
 	 */
 	public function add_meta_box() {
+		// Disable Meta Box fields.
+		if ( apply_filters( 'xml_sitemap_disable_post_meta_fields', false ) ) {
+			return;
+		}
+
 		$public_post_types = get_post_types(
 			array(
 				'public' => true,

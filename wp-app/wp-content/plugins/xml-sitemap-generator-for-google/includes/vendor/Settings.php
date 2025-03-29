@@ -24,6 +24,7 @@ class Settings extends Controller {
 	public $authors;
 	public $exclude_posts;
 	public $exclude_terms;
+	public $include_only_terms;
 	public $posts_priority;
 	public $custom_sitemaps  = array();
 	public $additional_pages = array();
@@ -39,12 +40,14 @@ class Settings extends Controller {
 	public $google_news_stocks    = false;
 	public $google_news_exclude;
 	public $google_news_exclude_terms;
+	public $google_news_include_only_terms;
 
 	// Media Sitemap Data Settings
 	public $enable_image_sitemap    = false;
 	public $enable_video_sitemap    = false;
 	public $image_sitemap_url       = 'image-sitemap.xml';
 	public $video_sitemap_url       = 'video-sitemap.xml';
+	public $hide_image_previews     = false;
 	public $image_mime_types        = array(
 		'image/jpeg' => true,
 		'image/png'  => true,

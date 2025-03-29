@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -98,7 +100,7 @@ class Ai1wm_Export_Plugins {
 			$archive->set_file_pointer( $archive_bytes_offset );
 
 			// Loop over files
-			while ( list( $file_abspath, $file_relpath, $file_size, $file_mtime ) = fgetcsv( $plugins_list ) ) {
+			while ( list( $file_abspath, $file_relpath, $file_size, $file_mtime ) = ai1wm_getcsv( $plugins_list ) ) {
 				$file_bytes_written = 0;
 
 				// Add file to archive

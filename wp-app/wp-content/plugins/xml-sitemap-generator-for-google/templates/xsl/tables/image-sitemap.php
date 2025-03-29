@@ -1,9 +1,18 @@
+<?php
+/**
+ * @var $args array
+ */
+
+$settings = $args['settings'] ?? new stdClass();
+?>
 <table>
 	<tr>
 		<th>#</th>
 		<th>Page, Post, Custom Post URL</th>
 		<th>Image URLs</th>
-		<th>Images</th>
+		<?php if ( ! ( $settings->hide_image_previews ?? false ) ) : ?>
+			<th>Images</th>
+		<?php endif; ?>
 	</tr>
 	<xsl:for-each select="./sitemap:urlset/sitemap:url">
 		<tr>
@@ -33,6 +42,7 @@
 					</div>
 				</xsl:for-each>
 			</td>
+			<?php if ( ! ( $settings->hide_image_previews ?? false ) ) : ?>
 			<td>
 				<xsl:for-each select="image:image">
 					<xsl:variable name='imageURL'>
@@ -45,6 +55,7 @@
 					</div>
 				</xsl:for-each>
 			</td>
+			<?php endif; ?>
 		</tr>
 	</xsl:for-each>
 </table>

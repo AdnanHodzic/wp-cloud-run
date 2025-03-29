@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -47,7 +49,7 @@ class Ai1wm_Database_Utility {
 			return self::$db_client;
 		}
 
-		if ( $wpdb instanceof WP_SQLite_DB ) {
+		if ( $wpdb instanceof WP_SQLite_DB || $wpdb instanceof WP_SQLite_DB\wpsqlitedb ) {
 			return new Ai1wm_Database_Sqlite( $wpdb );
 		}
 
@@ -66,72 +68,256 @@ class Ai1wm_Database_Utility {
 	 * Replace all occurrences of the search string with the replacement string.
 	 * This function is case-sensitive.
 	 *
-	 * @param  array  $from List of string we're looking to replace.
-	 * @param  array  $to   What we want it to be replaced with.
-	 * @param  string $data Data to replace.
-	 * @return mixed        The original string with all elements replaced as needed.
+	 * @param  string $data    Data to replace
+	 * @param  array  $search  List of string we're looking to replace
+	 * @param  array  $replace What we want it to be replaced with
+	 * @return string          The original string with all elements replaced as needed
 	 */
-	public static function replace_values( $from = array(), $to = array(), $data = '' ) {
-		if ( ! empty( $from ) && ! empty( $to ) ) {
-			return strtr( $data, array_combine( $from, $to ) );
-		}
-
-		return $data;
+	public static function replace_values( $data, $search = array(), $replace = array() ) {
+		return strtr( $data, array_combine( $search, $replace ) );
 	}
 
 	/**
-	 * Take a serialized array and unserialize it replacing elements as needed and
-	 * unserializing any subordinate arrays and performing the replace on those too.
+	 * Replace serialized occurrences of the search string with the replacement string.
 	 * This function is case-sensitive.
 	 *
-	 * @param  array $from       List of string we're looking to replace.
-	 * @param  array $to         What we want it to be replaced with.
-	 * @param  mixed $data       Used to pass any subordinate arrays back to in.
-	 * @param  bool  $serialized Does the array passed via $data need serializing.
-	 * @return mixed             The original array with all elements replaced as needed.
+	 * @param  string $data    Data to replace
+	 * @param  array  $search  List of string we're looking to replace
+	 * @param  array  $replace What we want it to be replaced with
+	 * @return string          The original array with all elements replaced as needed
 	 */
-	public static function replace_serialized_values( $from = array(), $to = array(), $data = '', $serialized = false ) {
-		try {
+	public static function replace_serialized_values( $data, $search = array(), $replace = array() ) {
+		$pos = 0;
 
-			// Some unserialized data cannot be re-serialized eg. SimpleXMLElements
-			if ( is_serialized( $data ) && ( $unserialized = @unserialize( $data ) ) !== false ) {
-				$data = self::replace_serialized_values( $from, $to, $unserialized, true );
-			} elseif ( is_array( $data ) ) {
-				$tmp = array();
-				foreach ( $data as $key => $value ) {
-					$tmp[ $key ] = self::replace_serialized_values( $from, $to, $value, false );
-				}
-
-				$data = $tmp;
-				unset( $tmp );
-			} elseif ( is_object( $data ) ) {
-				if ( ! ( $data instanceof __PHP_Incomplete_Class ) ) {
-					$tmp   = $data;
-					$props = get_object_vars( $data );
-					foreach ( $props as $key => $value ) {
-						if ( ! empty( $tmp->$key ) ) {
-							$tmp->$key = self::replace_serialized_values( $from, $to, $value, false );
-						}
-					}
-
-					$data = $tmp;
-					unset( $tmp );
-				}
-			} else {
-				if ( is_string( $data ) ) {
-					if ( ! empty( $from ) && ! empty( $to ) ) {
-						$data = strtr( $data, array_combine( $from, $to ) );
-					}
-				}
-			}
-
-			if ( $serialized ) {
-				return serialize( $data );
-			}
-		} catch ( Exception $e ) {
+		$result = self::parse_serialized_values( $data, $pos, $search, $replace );
+		if ( $pos !== strlen( $data ) ) {
+			// Failed to parse entire data
+			return strtr( $data, array_combine( $search, $replace ) );
 		}
 
-		return $data;
+		return $result;
+	}
+
+	/**
+	 * Parse serialized string and replace needed substitutions.
+	 * This function is case-sensitive.
+	 *
+	 * @param  string  $data    Serialized data
+	 * @param  integer $pos     Character position
+	 * @param  array   $search  List of string we're looking to replace
+	 * @param  array   $replace What we want it to be replaced with
+	 * @return string           The original string with all elements replaced as needed
+	 */
+	public static function parse_serialized_values( $data, &$pos, $search = array(), $replace = array() ) {
+		$length = strlen( $data );
+		if ( $pos >= $length ) {
+			return '';
+		}
+
+		$type = $data[ $pos ];
+		$pos++;
+
+		switch ( $type ) {
+			case 's':
+				if ( $data[ $pos ] !== ':' ) {
+					return '';
+				}
+
+				$pos++;
+				$len_end = strpos( $data, ':', $pos );
+				if ( $len_end === false ) {
+					return '';
+				}
+
+				$str_length = (int) substr( $data, $pos, $len_end - $pos );
+
+				$pos = $len_end + 1;
+				if ( $data[ $pos ] !== '"' ) {
+					return '';
+				}
+
+				$pos++;
+				$str = substr( $data, $pos, $str_length );
+
+				$pos += $str_length;
+				if ( $data[ $pos ] !== '"' ) {
+					return '';
+				}
+
+				$pos++;
+				if ( $data[ $pos ] !== ';' ) {
+					return '';
+				}
+
+				$pos++;
+
+				// If the string is a single letter, skip any parsing or replacement.
+				if ( $str_length === 1 ) {
+					return 's:' . $str_length . ':"' . $str . '";';
+				}
+
+				// Attempt to parse the string as serialized data
+				$pos_inner  = 0;
+				$parsed_str = self::parse_serialized_values( $str, $pos_inner, $search, $replace );
+				if ( $pos_inner === strlen( $str ) ) {
+					// The string is serialized data, use the parsed string
+					$new_str = $parsed_str;
+				} else {
+					// Regular string, perform replacement
+					$new_str = strtr( $str, array_combine( $search, $replace ) );
+				}
+
+				return 's:' . strlen( $new_str ) . ':"' . $new_str . '";';
+
+			case 'i':
+			case 'd':
+			case 'b':
+				if ( $data[ $pos ] !== ':' ) {
+					return '';
+				}
+
+				$pos++;
+				$end = strpos( $data, ';', $pos );
+				if ( $end === false ) {
+					return '';
+				}
+
+				$value = substr( $data, $pos, $end - $pos );
+				$pos   = $end + 1;
+
+				return $type . ':' . $value . ';';
+
+			case 'N':
+				if ( $data[ $pos ] !== ';' ) {
+					return '';
+				}
+
+				$pos++;
+
+				return 'N;';
+
+			case 'a':
+				if ( $data[ $pos ] !== ':' ) {
+					return '';
+				}
+
+				$pos++;
+				$len_end = strpos( $data, ':', $pos );
+				if ( $len_end === false ) {
+					return '';
+				}
+
+				$array_length = (int) substr( $data, $pos, $len_end - $pos );
+
+				$pos = $len_end + 1;
+				if ( $data[ $pos ] !== '{' ) {
+					return '';
+				}
+
+				$pos++;
+				$result = 'a:' . $array_length . ':{';
+				for ( $i = 0; $i < $array_length * 2; $i++ ) {
+					$element = self::parse_serialized_values( $data, $pos, $search, $replace );
+					if ( $element === '' ) {
+						return '';
+					}
+
+					$result .= $element;
+				}
+
+				if ( $data[ $pos ] !== '}' ) {
+					return '';
+				}
+
+				$pos++;
+				$result .= '}';
+
+				return $result;
+
+			case 'O':
+				if ( $data[ $pos ] !== ':' ) {
+					return '';
+				}
+
+				$pos++;
+				$class_len_end = strpos( $data, ':', $pos );
+				if ( $class_len_end === false ) {
+					return '';
+				}
+
+				$class_length = (int) substr( $data, $pos, $class_len_end - $pos );
+
+				$pos = $class_len_end + 1;
+				if ( $data[ $pos ] !== '"' ) {
+					return '';
+				}
+
+				$pos++;
+				$class_name = substr( $data, $pos, $class_length );
+
+				$pos += $class_length;
+				if ( $data[ $pos ] !== '"' ) {
+					return '';
+				}
+
+				$pos++;
+				if ( $data[ $pos ] !== ':' ) {
+					return '';
+				}
+
+				$pos++;
+				$prop_len_end = strpos( $data, ':', $pos );
+				if ( $prop_len_end === false ) {
+					return '';
+				}
+
+				$prop_count = (int) substr( $data, $pos, $prop_len_end - $pos );
+
+				$pos = $prop_len_end + 1;
+				if ( $data[ $pos ] !== '{' ) {
+					return '';
+				}
+
+				$pos++;
+				$result = 'O:' . strlen( $class_name ) . ':"' . $class_name . '":' . $prop_count . ':{';
+				for ( $i = 0; $i < $prop_count * 2; $i++ ) {
+					$element = self::parse_serialized_values( $data, $pos, $search, $replace );
+					if ( $element === '' ) {
+						return '';
+					}
+
+					$result .= $element;
+				}
+
+				if ( $data[ $pos ] !== '}' ) {
+					return '';
+				}
+
+				$pos++;
+				$result .= '}';
+
+				return $result;
+
+			case 'R':
+			case 'r':
+				if ( $data[ $pos ] !== ':' ) {
+					return '';
+				}
+
+				$pos++;
+				$end = strpos( $data, ';', $pos );
+				if ( $end === false ) {
+					return '';
+				}
+
+				$ref = substr( $data, $pos, $end - $pos );
+				$pos = $end + 1;
+
+				return $type . ':' . $ref . ';';
+
+			default:
+				return '';
+		}
 	}
 
 	/**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -35,7 +37,7 @@ define( 'AI1WM_DEBUG', false );
 // ==================
 // = Plugin Version =
 // ==================
-define( 'AI1WM_VERSION', '7.89' );
+define( 'AI1WM_VERSION', '7.91' );
 
 // ===============
 // = Plugin Name =
@@ -221,6 +223,11 @@ define( 'AI1WM_SQLITE_DATABASE_EXTENSION', '.sqlite' );
 // = Elementor CSS Cache Name =
 // ============================
 define( 'AI1WM_ELEMENTOR_CSS_NAME', 'uploads' . DIRECTORY_SEPARATOR . 'elementor' . DIRECTORY_SEPARATOR . 'css' );
+
+// ========================
+// = CiviCRM Uploads Name =
+// ========================
+define( 'AI1WM_CIVICRM_UPLOADS_NAME', 'uploads' . DIRECTORY_SEPARATOR . 'civicrm' );
 
 // =========================
 // = Themes Functions Name =

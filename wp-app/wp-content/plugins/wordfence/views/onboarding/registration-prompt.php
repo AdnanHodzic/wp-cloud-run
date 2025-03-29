@@ -41,7 +41,7 @@ $populated = $existing && $email && $license;
 				<small><?php esc_html_e('This is where future security alerts for your website will be sent. This can also be changed in Global Options.', 'wordfence') ?></small>
 			</div>
 			<div class="wf-onboarding-form-group">
-				<label for="wf-onboarding-license-input"><?php esc_html_e('License Key', 'wordfence') ?></label>
+				<label for="wf-onboarding-license-input"><?php esc_html_e('License Key', 'wordfence') ?> &mdash; <?php esc_html_e('each Wordfence installation should have a unique key', 'wordfence'); ?></label>
 				<textarea id="wf-onboarding-license-input" rows="3" required><?php echo esc_html((string) $license) ?></textarea>
 			</div>
 			<div class="wf-onboarding-form-group wf-onboarding-consent-group"<?php if ($populated): ?> style="display: none;"<?php endif ?>>
@@ -93,6 +93,29 @@ $populated = $existing && $email && $license;
 					</div>
 				</div>
 				<div class="wf-modal-content"><?php echo esc_html($modal['content']) ?></div>
+			</div>
+			<div class="wf-modal-footer">
+				<ul class="wf-onboarding-flex-horizontal wf-onboarding-flex-align-right wf-onboarding-full-width">
+					<li><a href="<?php echo esc_url(network_admin_url('admin.php?page=Wordfence')); ?>" class="wf-onboarding-btn wf-onboarding-btn-primary"><?php esc_html_e('Go To Dashboard', 'wordfence'); ?></a></li>
+				</ul>
+			</div>
+		</div>
+	<?php endforeach ?>
+	<?php foreach ($licenseTypeModals as $key => $modal): ?>
+		<div class="wf-modal wf-modal-success" id="<?php echo esc_attr("wf-onboarding-registration-inuse-$key-template") ?>">
+			<div class="wf-model-success-wrapper">
+				<div class="wf-modal-header">
+					<div class="wf-modal-header-content">
+						<div class="wf-modal-title"><?php echo esc_html($modal['title']) ?></div>
+					</div>
+				</div>
+				<div class="wf-modal-content">
+					<p><?php echo esc_html($modal['content']) ?></p>
+					<div class="wf-license-in-use-warning">
+						<p><?php esc_html_e('This key may already be used on several sites. To avoid scan scheduling issues and other problems, you should get a new key or remove it from the other sites.', 'wordfence'); ?></p>
+						<p><?php echo wp_kses(/* translators: 1: Registration URL. */sprintf(__('You can <a class="wf-onboarding-link" href="%s" target="_blank">get a new free license<span class="screen-reader-text">(opens in new tab)</span></a> for this site directly, or click the "Get a free license" button at the top of the Licenses page when logged in to wordfence.com if you need more than one.', 'wordfence'), $registrationLink), array('a' => array('href' => array(), 'target' => array(), 'rel' => array()), 'span' => array('class' => array()))); ?></p>
+					</div>
+				</div>
 			</div>
 			<div class="wf-modal-footer">
 				<ul class="wf-onboarding-flex-horizontal wf-onboarding-flex-align-right wf-onboarding-full-width">

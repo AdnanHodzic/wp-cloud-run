@@ -22,7 +22,11 @@ class Sitemap extends Controller {
 	 */
 	public function show_sitemap( $template, $is_xml = true, $inner_sitemap = null, $current_page = null ) {
 		if ( sgg_is_sitemap_index( $template, $this->settings ) && ! empty( $inner_sitemap ) ) {
-			$template = 'inner-sitemap';
+			if ( in_array( $template, array( ImageSitemap::$template, VideoSitemap::$template ) ) ) {
+				$template .= '-inner-sitemap';
+			} else {
+				$template = 'inner-sitemap';
+			}
 		}
 
 		$sitemap = $this->generate_sitemap( $template, $is_xml, $inner_sitemap, $current_page );
@@ -96,7 +100,7 @@ class Sitemap extends Controller {
 	/**
 	 * Get Sitemap Table by Template
 	 */
-	public static function get_sitemap_table( $template = 'sitemap' ) {
+	public static function get_sitemap_table( $template = 'sitemap', $args = array() ) {
 		switch ( $template ) {
 			case GoogleNews::$template:
 				$table = 'google-news';
@@ -107,10 +111,8 @@ class Sitemap extends Controller {
 			case VideoSitemap::$template:
 				$table = 'video-sitemap';
 				break;
-			case MultilingualSitemap::$template:
-				$table = 'sitemap-index';
-				break;
 			case 'sitemap-index':
+			case MultilingualSitemap::$template:
 				$table = 'sitemap-index';
 				break;
 			default:
@@ -118,7 +120,7 @@ class Sitemap extends Controller {
 				break;
 		}
 
-		load_template( GRIM_SG_PATH . "/templates/xsl/tables/{$table}.php", false );
+		load_template( GRIM_SG_PATH . "/templates/xsl/tables/{$table}.php", false, $args );
 	}
 
 	/**
@@ -172,6 +174,7 @@ class Sitemap extends Controller {
 		if ( $this->settings->home->include && ! $this->settings->page->include ) {
 			$this->add_home();
 		}
+
 		if ( sgg_is_sitemap_index( $template, $this->settings ) ) {
 			$current_page = ! empty( $current_page ) ? intval( $current_page ) - 1 : $current_page;
 
@@ -242,6 +245,7 @@ class Sitemap extends Controller {
 		$front_page_id    = get_option( 'page_on_front' );
 		$exclude_post_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_posts ?? '' );
 		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_terms ?? '' );
+		$include_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->include_only_terms ?? '' );
 		$per_page         = intval( $this->settings->links_per_page ?? 1000 );
 
 		if ( ! empty( $front_page_id ) ) {
@@ -253,16 +257,23 @@ class Sitemap extends Controller {
 			$exclude_posts_sql = 'AND posts.ID NOT IN (' . implode( ',', array_unique( $exclude_post_ids ) ) . ')';
 		}
 
-		$exclude_terms_join = '';
-		$exclude_terms_sql  = '';
-		if ( ! empty( $exclude_term_ids ) ) {
-			$exclude_terms_join = "LEFT JOIN (
+		$terms_join_sql  = '';
+		$terms_where_sql = '';
+		if ( ! empty( $include_term_ids ) ) {
+			$terms_join_sql  = "INNER JOIN (
 				SELECT DISTINCT tr.object_id
-				FROM {$wpdb->prefix}term_relationships tr
-				INNER JOIN {$wpdb->prefix}term_taxonomy tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+				FROM {$wpdb->term_relationships} tr
+				INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+				WHERE tt.term_id IN (" . implode( ',', array_unique( $include_term_ids ) ) . ')
+			) included_posts ON posts.ID = included_posts.object_id';
+		} else if ( ! empty( $exclude_term_ids ) ) {
+			$terms_join_sql  = "LEFT JOIN (
+				SELECT DISTINCT tr.object_id
+				FROM {$wpdb->term_relationships} tr
+				INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
 				WHERE tt.term_id IN (" . implode( ',', array_unique( $exclude_term_ids ) ) . ')
 			) excluded_posts ON posts.ID = excluded_posts.object_id';
-			$exclude_terms_sql  = ' AND excluded_posts.object_id IS NULL';
+			$terms_where_sql = ' AND excluded_posts.object_id IS NULL';
 		}
 
 		if ( ! empty( $post_type ) ) {
@@ -282,24 +293,28 @@ class Sitemap extends Controller {
 			$this->add_home();
 		}
 
+		$sql_extra_select = '';
 		$sql_post_types   = "('" . implode( "','", $post_types ) . "')";
 		$multilingual_sql = $this->multilingual_sql( $post_types );
 		$where_clause     = ! empty( $multilingual_sql ) ? 'AND ' : 'WHERE ';
 
+		if ( sgg_pro_enabled() && ! empty( $this->settings->posts_priority ) ) {
+			$sql_extra_select .= ', posts.comment_count';
+		}
+
 		$sql = "SELECT
 	            posts.ID,
 				posts.post_name,
-				posts.post_parent,
 				posts.post_type,
 				posts.post_date,
-				posts.post_modified,
-				posts.comment_count
+				posts.post_modified
+				$sql_extra_select
 				FROM $wpdb->posts as posts
-				$exclude_terms_join
+				$terms_join_sql
 				$multilingual_sql
 				$where_clause posts.post_status = 'publish' AND posts.post_type IN $sql_post_types AND posts.post_password = ''
 				$exclude_posts_sql
-				$exclude_terms_sql
+				$terms_where_sql
 				GROUP BY posts.ID
 				ORDER BY posts.post_modified DESC";
 
@@ -312,11 +327,11 @@ class Sitemap extends Controller {
 		if ( $is_sitemap_index ) {
 			// Calculate total number of posts
 			$total_posts_sql = "SELECT COUNT(*) FROM $wpdb->posts as posts
-			$exclude_terms_join
+			$terms_join_sql
 			$multilingual_sql
 			$where_clause posts.post_status = 'publish' AND posts.post_type IN $sql_post_types AND posts.post_password = ''
 			$exclude_posts_sql
-			$exclude_terms_sql
+			$terms_where_sql
 			ORDER BY posts.post_modified DESC";
 			$total_posts     = $wpdb->get_var( $total_posts_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
 
@@ -378,10 +393,13 @@ class Sitemap extends Controller {
 			return;
 		}
 
-		$exclude_term_ids  = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_terms ?? '' );
-		$exclude_terms_sql = '';
-		if ( ! empty( $exclude_term_ids ) ) {
-			$exclude_terms_sql = 'AND terms.term_id NOT IN (' . implode( ',', array_unique( $exclude_term_ids ) ) . ')';
+		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_terms ?? '' );
+		$include_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->include_only_terms ?? '' );
+		$terms_where_sql  = '';
+		if ( ! empty( $include_term_ids ) ) {
+			$terms_where_sql = 'AND terms.term_id IN (' . implode( ',', array_unique( $include_term_ids ) ) . ')';
+		} else if ( ! empty( $exclude_term_ids ) ) {
+			$terms_where_sql = 'AND terms.term_id NOT IN (' . implode( ',', array_unique( $exclude_term_ids ) ) . ')';
 		}
 
 		$post_types       = $this->get_post_types_list( array( 'post' ), $this->settings );
@@ -402,7 +420,7 @@ class Sitemap extends Controller {
 			INNER JOIN $wpdb->term_taxonomy AS term_taxonomy ON terms.term_id = term_taxonomy.term_id
 			$multilingual_sql
 			$where_clause term_taxonomy.taxonomy IN $sql_taxonomies
-			$exclude_terms_sql
+			$terms_where_sql
 			AND term_taxonomy.count > 0
 			GROUP BY terms.term_id
 			ORDER BY post_modified DESC, terms.name ASC
@@ -421,7 +439,7 @@ class Sitemap extends Controller {
 				INNER JOIN $wpdb->term_taxonomy AS term_taxonomy ON terms.term_id = term_taxonomy.term_id
 				$multilingual_sql
 				$where_clause term_taxonomy.taxonomy IN $sql_taxonomies
-				$exclude_terms_sql
+				$terms_where_sql
 				AND term_taxonomy.count > 0
 			";
 			$total_terms     = $wpdb->get_var( $total_terms_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared

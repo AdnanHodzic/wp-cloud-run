@@ -20,7 +20,7 @@ class wfAPI {
 		return $this->getURL(rtrim($this->getAPIURL(), '/') . '/' . ltrim($url, '/'));
 	}
 
-	public function call($action, $getParams = array(), $postParams = array(), $forceSSL = false, $timeout = 900) {
+	public function call($action, $getParams = array(), $postParams = array(), $forceSSL = false, $timeout = 900, $passThroughErrorMsg = false) {
 		$apiURL = $this->getAPIURL();
 		//Sanity check. Developer should call wfAPI::SSLEnabled() to check if SSL is enabled before forcing SSL and return a user friendly msg if it's not.
 		if ($forceSSL && (!preg_match('/^https:/i', $apiURL))) {
@@ -31,7 +31,7 @@ class wfAPI {
 				array_merge(
 					array('action' => $action),
 					$getParams
-				)), $postParams, $timeout);
+				)), $postParams, $timeout, $passThroughErrorMsg);
 		if (!$json) {
 			throw new wfAPICallInvalidResponseException(sprintf(/* translators: API call/action/endpoint. */__("We received an empty data response from the Wordfence scanning servers when calling the '%s' function.", 'wordfence'), $action));
 		}
@@ -96,7 +96,7 @@ class wfAPI {
 		$license->save(isset($dat['errorMsg']));
 	}
 
-	protected function getURL($url, $postParams = array(), $timeout = 900) {
+	protected function getURL($url, $postParams = array(), $timeout = 900, $passThroughErrorMsg = false) {
 		wordfence::status(4, 'info', sprintf(/* translators: API version. */ __("Calling Wordfence API v%s:", 'wordfence'), WORDFENCE_API_VERSION) . $url);
 
 		if (!function_exists('wp_remote_post')) {
@@ -152,8 +152,18 @@ class wfAPI {
 		if (!empty($response['response']['code'])) {
 			$this->lastHTTPStatus = (int) $response['response']['code'];
 		}
+		
+		if ($this->lastHTTPStatus == 429) {
+			$passThroughErrorMsg = true;
+		}
 
 		if (200 != $this->lastHTTPStatus) {
+			if ($passThroughErrorMsg) {
+				$content = wp_remote_retrieve_body($response);
+				if (!is_wp_error($content) && ($dat = json_decode($content, true)) && isset($dat['errorMsg'])) {
+					return $content;
+				}
+			}
 			throw new wfAPICallFailedException(sprintf(/* translators: HTTP status code. */__("The Wordfence scanning servers are currently unavailable. This may be for maintenance or a temporary outage. If this still occurs in an hour, please contact support. [%s]", 'wordfence'), $this->lastHTTPStatus));
 		}
 

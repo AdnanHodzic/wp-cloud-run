@@ -4,12 +4,12 @@ Donate link: https://wpgrim.com/google-xml-sitemaps-generator-pro/?utm_source=wo
 Tags: sitemap, xml sitemap, google news, image sitemap, video sitemap, google sitemaps, xml, google, seo, sitemaps
 Requires at least: 5.0
 Requires PHP: 5.6
-Tested up to: 6.7.1
-Stable tag: 2.0.6
+Tested up to: 6.7.2
+Stable tag: 2.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Greatly improves your site's SEO 🚀 with special XML Sitemaps, HTML Sitemaps, Media Sitemaps and Google News.
+Greatly improves your site's SEO 🚀 with special XML Sitemaps, HTML Sitemap, Image Sitemap, Video Sitemap and Google News.
 
 == Description ==
 
@@ -73,14 +73,14 @@ Here is a short list of Google XML Sitemap plugin features.
 * IndexNow Protocol for indexing Microsoft Bing, Seznam.cz, Naver, and Yandex
 * Control Sitemap Options for all Pages, Posts, Custom Posts, Archives, Authors, Categories, Taxonomies and Tags 🔥
 * Include/Exclude Taxonomies, Categories, Tags 🔥
-* Add Custom Sitemaps to Sitemap Index **[NEW]**
+* Add Custom Sitemaps to Sitemap Index
 * Add Custom External/Internal URLs to your XML Sitemap 🔥
 * Automatically add Sitemaps to robots.txt
-* Links Per Page for Sitemap Index **[NEW]**
-* Static Sitemap File detector **[NEW]**
+* Links Per Page for Sitemap Index 🔥
+* Static Sitemap File detector
 * Toolbar with most helpful Actions & Links 🔥
 * Disables auto-generated WP Sitemaps
-* Setup Wizard **[NEW]** 🔥
+* Setup Wizard 🔥
 * Multisite Network compatible
 * WooCommerce compatible
 * Multilingual Sitemap 🔥
@@ -106,8 +106,10 @@ Here is a short list of Google XML Sitemap plugin features.
 
 * Image Sitemap 🔥
 * Video Sitemap 🔥
+* Multiple Sitemaps by Sitemap Index **[NEW]** 🔥
+* Hide Image Previews **[NEW]**
 * Include Pages & Posts
-* Custom Image & Video Sitemaps URL 🔥
+* Custom Image & Video Sitemaps URLs
 
 **Advanced Features**
 
@@ -136,6 +138,7 @@ You can also customize your HTML Sitemap by choosing which Post Types to display
 
 * Exclude Pages, Posts, Custom Posts from Sitemap
 * Exclude Categories and Tags from Sitemap 🔥
+* Include only selected Categories & Tags **[NEW]**
 * HTML Sitemap 🔥
 * Single Post/Page Custom Sitemap Options: 🔥
 -- Exclude from Sitemap
@@ -149,7 +152,7 @@ You can also customize your HTML Sitemap by choosing which Post Types to display
 -- Gutenberg block
 -- WPBakery (Visual Composer) widget
 -- **[html-sitemap post-types="page,post,.." ..]**
-* Sitemap Custom Colors [NEW]
+* Sitemap Custom Colors **[NEW]** 🔥
 * No Branding Marks 🔥
 * Premium Support
 
@@ -161,6 +164,7 @@ You can also customize your HTML Sitemap by choosing which Post Types to display
 * Stock Tickers 🔥
 * Exclude Posts and Custom Posts
 * Exclude Categories and Tags 🔥
+* Include only selected Categories & Tags **[NEW]**
 
 **Media Sitemaps Premium Features**
 
@@ -170,6 +174,7 @@ You can also customize your HTML Sitemap by choosing which Post Types to display
 * WooCommerce Gallery for Image Sitemap 🔥
 * Video Sitemap YouTube videos 🔥
 * Video Sitemap Vimeo videos **[NEW]** 🔥
+* Video Sitemap X (Twitter) videos **[NEW]** 🔥
 * Include Custom Post Types
 
 **Advanced Premium Features**
@@ -267,6 +272,29 @@ This section describes how to install the plugin and get it working.
 4. Set Up Page in **Settings -> XML Sitemaps**.
 
 == Changelog ==
+
+= 2.1.2 - 2025-03-18 =
+* Caching Chunk Size increased
+
+= 2.1.1 - 2025-03-18 =
+* Minor bug fixes
+
+= 2.1.0 - 2025-03-14 =
+* Image Sitemap: Multiple Sitemaps (Per Paged) by Sitemap Index feature added
+* Image Sitemap: Hide Image Previews feature added
+* Video Sitemap: Multiple Sitemaps (Per Paged) by Sitemap Index feature added
+* Media Sitemaps: Database Queries optimized
+* Media Sitemaps: Smart Caching feature implemented for faster loading
+* **xml_sitemap_disable_post_meta_fields** filter added for disabling Post Meta Fields
+* **xml_sitemap_disable_post_meta__exclude_sitemap**, **xml_sitemap_disable_post_meta__priority**, **xml_sitemap_disable_post_meta__frequency** filters added for disabling Post Meta Fields
+
+= 2.0.8 - 2025-03-02 =
+* Pro Version: XML Sitemaps > Include only selected Categories & Tags feature added
+* Pro Version: Google News > Include only selected Categories & Tags feature added
+
+= 2.0.7 - 2025-02-23 =
+* Pro Version: Video Sitemap > X (Twitter) video support added
+* WordPress 6.7.2 compatible
 
 = 2.0.6 - 2025-02-10 =
 * **sgg_sitemap_colors** filter added for customizing Sitemap Colors

@@ -77,6 +77,7 @@ if (!isset($collapseable)) {
 								
 								<script type="application/javascript">
 									(function($) {
+										var __ = window.wfi18n.__;
 										$(function() {
 											$('#wf-install-license').on('click', function(e) {
 												e.preventDefault();
@@ -136,7 +137,19 @@ if (!isset($collapseable)) {
 														e.stopPropagation();
 
 														WFAD.ajax('wordfence_downgradeLicense', {}, function(res) {
-															window.location.reload(true);
+															if (res.ok) { //Success
+																window.location.reload(true);
+															}
+															else {
+																WFAD.colorboxClose();
+																setTimeout(function() {
+																	WFAD.colorboxModalHTML((self.isSmallScreen ? '300px' : '400px'), __('Error'), __('There was an error while downgrading to a free license.')
+																		+ ' ' + res.downgradeErrorMsg
+																		+ ' ' + __('You may close this alert and try again later, or click the button below to register for a new free Wordfence license.')
+																		+ '<br/><br/>'
+																		+ '<a href="' + res.registrationLink + '" class="wf-btn wf-btn-primary" target="_blank">' + __('Get a new license') + '</a>');
+																}, 500);
+															}
 														});
 													});
 												}});

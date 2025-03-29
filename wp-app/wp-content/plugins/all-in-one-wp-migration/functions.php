@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -1577,13 +1579,22 @@ function ai1wm_tell( $handle ) {
 /**
  * Write fields to a file
  *
- * @param  resource $handle File handle to write to
- * @param  array    $fields Fields to write to the file
+ * @param resource  $handle File handle to write to
+ * @param array     $fields Fields to write to the file
+ * @param string    $separator
+ * @param string    $enclosure
+ * @param string    $escape
+ *
  * @return integer
  * @throws Ai1wm_Not_Writable_Exception
  */
-function ai1wm_putcsv( $handle, $fields ) {
-	$write_result = @fputcsv( $handle, $fields );
+function ai1wm_putcsv( $handle, $fields, $separator = ',', $enclosure = '"', $escape = '\\' ) {
+	if ( PHP_MAJOR_VERSION >= 7 ) {
+		$write_result = @fputcsv( $handle, $fields, $separator, $enclosure, $escape );
+	} else {
+		$write_result = @fputcsv( $handle, $fields, $separator, $enclosure );
+	}
+
 	if ( false === $write_result ) {
 		if ( ( $meta = stream_get_meta_data( $handle ) ) ) {
 			throw new Ai1wm_Not_Writable_Exception( sprintf( __( 'Could not write to: %s. The process cannot continue. <a href="https://help.servmask.com/knowledgebase/invalid-file-permissions/" target="_blank">Technical details</a>', AI1WM_PLUGIN_NAME ), $meta['uri'] ) );
@@ -1591,6 +1602,21 @@ function ai1wm_putcsv( $handle, $fields ) {
 	}
 
 	return $write_result;
+}
+
+/**
+ * Read fields from a file
+ *
+ * @param resource  $handle File handle to read from
+ * @param int       $length
+ * @param string    $separator
+ * @param string    $enclosure
+ * @param string    $escape
+ *
+ * @return array|false|null
+ */
+function ai1wm_getcsv( $handle, $length = null, $separator = ',', $enclosure = '"', $escape = '\\' ) {
+	return fgetcsv( $handle, $length, $separator, $enclosure, $escape );
 }
 
 /**

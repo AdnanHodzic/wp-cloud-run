@@ -94,7 +94,7 @@ class SitemapGenerator {
 	/**
 	 * Use this to add single URL to Sitemap.
 	 */
-	public function addMediaUrl( $item ) {
+	public function addMediaUrl( $item, $sitemap = null ) {
 		$url = $item[0] ?? null;
 
 		$this->validateUrl( $url );
@@ -106,7 +106,12 @@ class SitemapGenerator {
 			$tmp['media'] = $item[1];
 		}
 
-		$this->urls[] = $tmp;
+		if ( ! empty( $sitemap ) ) {
+			$tmp['lastmod']           = gmdate( 'c' );
+			$this->urls[ $sitemap ][] = $tmp;
+		} else {
+			$this->urls[] = $tmp;
+		}
 	}
 
 	/**
@@ -167,11 +172,15 @@ class SitemapGenerator {
 			throw new \InvalidArgumentException( 'More than 50,000 URLs per single sitemap is not allowed.' );
 		}
 
-		$settings         = ( new Controller() )->get_settings();
-		$stylesheet_path  = apply_filters( 'sitemap_xsl_template_path', 'sitemap-stylesheet.xsl' );
-		$stylesheet_url   = sgg_get_sitemap_url( "{$stylesheet_path}?template={$template}", "sitemap_xsl={$template}", false );
-		$stylesheet_url   = strtok( $stylesheet_url, '&' ); // remove & query string
-		$is_sitemap_index = sgg_is_sitemap_index( $template, $settings );
+		$settings            = ( new Controller() )->get_settings();
+		$stylesheet_template = sgg_maybe_remove_inner_suffix( $template );
+
+		$stylesheet_path   = apply_filters( 'sitemap_xsl_template_path', 'sitemap-stylesheet.xsl' );
+		$stylesheet_url    = sgg_get_sitemap_url( "{$stylesheet_path}?template={$stylesheet_template}", "sitemap_xsl={$stylesheet_template}", false );
+		$stylesheet_url    = strtok( $stylesheet_url, '&' ); // remove & query string
+		$is_sitemap_index  = sgg_is_sitemap_index( $template, $settings );
+		$is_media_template = in_array( $template, array( 'image-sitemap', 'video-sitemap' ), true );
+		$is_index_template = $is_media_template || 'sitemap' === $template;
 
 		$sitemap_urls = $is_sitemap_index
 			? $this->urls
@@ -228,34 +237,46 @@ class SitemapGenerator {
 							);
 						}
 					}
-				} elseif ( ImageSitemap::$template === $template ) {
-					if ( ! empty( $url['media'] ) ) {
-						foreach ( $url['media'] as $image ) {
-							$image_element = $url_element->appendChild( $dom->createElement( 'image:image' ) );
-							$image_element->appendChild(
-								$dom->createElement( 'image:loc', $image )
-							);
+				} elseif ( strpos( $template, ImageSitemap::$template ) !== false ) {
+					if ( isset( $url['lastmod'] ) ) {
+						$url_element->appendChild(
+							$dom->createElement( 'lastmod', $url['lastmod'] )
+						);
+					} else {
+						if ( ! empty( $url['media'] ) ) {
+							foreach ( $url['media'] as $image ) {
+								$image_element = $url_element->appendChild( $dom->createElement( 'image:image' ) );
+								$image_element->appendChild(
+									$dom->createElement( 'image:loc', $image )
+								);
+							}
 						}
 					}
-				} elseif ( VideoSitemap::$template === $template ) {
-					if ( ! empty( $url['media'] ) ) {
-						foreach ( $url['media'] as $video ) {
-							$video_element = $url_element->appendChild( $dom->createElement( 'video:video' ) );
-							$video_element->appendChild(
-								$dom->createElement( 'video:thumbnail_loc', esc_url( $video['thumbnail'] ?? '' ) )
-							);
-							$video_element->appendChild(
-								$dom->createElement( 'video:title', esc_html( $video['title'] ?? '' ) )
-							);
-							$video_element->appendChild(
-								$dom->createElement( 'video:description', esc_html( $video['description'] ?? '' ) )
-							);
-							$video_element->appendChild(
-								$dom->createElement( 'video:player_loc', esc_url( $video['player_loc'] ?? '' ) )
-							);
-							$video_element->appendChild(
-								$dom->createElement( 'video:duration', esc_html( $video['duration'] ?? '' ) )
-							);
+				} elseif ( strpos( $template, VideoSitemap::$template ) !== false ) {
+					if ( isset( $url['lastmod'] ) ) {
+						$url_element->appendChild(
+							$dom->createElement( 'lastmod', $url['lastmod'] )
+						);
+					} else {
+						if ( ! empty( $url['media'] ) ) {
+							foreach ( $url['media'] as $video ) {
+								$video_element = $url_element->appendChild( $dom->createElement( 'video:video' ) );
+								$video_element->appendChild(
+									$dom->createElement( 'video:thumbnail_loc', esc_url( $video['thumbnail'] ?? '' ) )
+								);
+								$video_element->appendChild(
+									$dom->createElement( 'video:title', esc_html( $video['title'] ?? '' ) )
+								);
+								$video_element->appendChild(
+									$dom->createElement( 'video:description', esc_html( $video['description'] ?? '' ) )
+								);
+								$video_element->appendChild(
+									$dom->createElement( 'video:player_loc', esc_url( $video['player_loc'] ?? '' ) )
+								);
+								$video_element->appendChild(
+									$dom->createElement( 'video:duration', esc_html( $video['duration'] ?? '' ) )
+								);
+							}
 						}
 					}
 				} else {
@@ -278,7 +299,7 @@ class SitemapGenerator {
 
 				$urlset->appendChild( $url_element );
 
-				if ( $is_sitemap_index && 'sitemap' === $template ) {
+				if ( $is_sitemap_index && $is_index_template ) {
 					$this->sitemaps[ $sitemap_key ][] = array(
 						'loc'     => $url['loc'],
 						'lastmod' => $url['lastmod'],
@@ -290,7 +311,7 @@ class SitemapGenerator {
 				$dom->formatOutput = true;
 			}
 
-			if ( 'sitemap' !== $template || ! $is_sitemap_index ) {
+			if ( ! $is_index_template || ! $is_sitemap_index ) {
 				$ready_sitemap = $dom->saveXML();
 
 				if ( $is_sitemap_index ) {
@@ -315,7 +336,8 @@ class SitemapGenerator {
 			throw new \LengthException( 'Sitemap index can contains 1000 single sitemaps. Perhaps You trying to submit too many URLs.' );
 		}
 
-		if ( ! empty( $settings->sitemap_view ) && 'sitemap' === $template && count( $this->sitemaps ) > 0 ) {
+		$is_media_index = $is_media_template && $is_sitemap_index;
+		if ( ! empty( $settings->sitemap_view ) && ( ( 'sitemap' === $template && count( $this->sitemaps ) > 0 ) || $is_media_index ) ) {
 			$stylesheet_url   = sgg_get_sitemap_url( "{$stylesheet_path}?template=sitemap-index", 'sitemap_xsl=sitemap-index', false );
 			$stylesheet_url   = strtok( $stylesheet_url, '&' ); // remove & query string
 
@@ -345,7 +367,8 @@ class SitemapGenerator {
 					foreach ( $sitemap as $index => $url ) {
 						$sitemap_element = $dom->createElement( 'sitemap' );
 						$sitemap_type    = $is_xml ? 'xml' : 'html';
-						$sitemap_number  = 0 < $index ? intval( $index ) + 1 : '';
+						$default_number  = $is_media_template ? 1 : '';
+						$sitemap_number  = 0 < $index ? intval( $index ) + 1 : $default_number;
 						$page_param      = 0 < $sitemap_number ? "&page={$sitemap_number}" : '';
 
 						$sitemap_element->appendChild(
@@ -364,7 +387,7 @@ class SitemapGenerator {
 				}
 			}
 
-			if ( $is_xml ) {
+			if ( $is_xml && 'sitemap' === $template ) {
 				$additional_sitemaps = apply_filters( 'sgg_additional_index_sitemaps', $settings->custom_sitemaps ?? array() );
 
 				if ( $settings->enable_image_sitemap ) {
@@ -438,6 +461,7 @@ class SitemapGenerator {
 		}
 
 		$stylesheet_path = apply_filters( 'sitemap_xsl_template_path', 'sitemap-stylesheet.xsl' );
+		$settings        = ( new Controller() )->get_settings();
 
 		$dom = $this->create_sitemap_dom(
 			sgg_get_sitemap_url( "{$stylesheet_path}?template=multilingual-sitemap", 'sitemap_xsl=sitemap-index', false )

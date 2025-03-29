@@ -47,6 +47,12 @@ class VideoSitemap extends MediaSitemap {
 					if ( ! empty( $vimeo_data ) ) {
 						$videos[] = $vimeo_data;
 					}
+				} elseif ( $this->is_twitter_url( $video ) ) {
+					$twitter_data = Video_Sitemap::get_twitter_data( $video, $this->settings->enable_video_api_cache );
+
+					if ( ! empty( $twitter_data ) ) {
+						$videos[] = $twitter_data;
+					}
 				}
 			}
 		}
@@ -63,7 +69,8 @@ class VideoSitemap extends MediaSitemap {
 		$extensions = explode( '.', $value );
 		$extension  = end( $extensions );
 
-		return 'video' === wp_ext2type( $extension ) || ( sgg_pro_enabled() && ( $this->is_youtube_url( $value ) || $this->is_vimeo_url( $value ) ) );
+		return 'video' === wp_ext2type( $extension )
+			|| ( sgg_pro_enabled() && ( $this->is_youtube_url( $value ) || $this->is_vimeo_url( $value ) || $this->is_twitter_url( $value ) ) );
 	}
 
 	public function is_youtube_url( $url ) {
@@ -82,5 +89,9 @@ class VideoSitemap extends MediaSitemap {
 			false !== strpos( $url, 'https://vimeo.com/' ) ||
 			false !== strpos( $url, 'https://player.vimeo.com/video/' )
 		);
+	}
+
+	public function is_twitter_url( $url ) {
+		return preg_match( '#https?://(?:www\.)?(?:twitter\.com|x\.com)/[^/]+/status/(\d+)#i', $url );
 	}
 }

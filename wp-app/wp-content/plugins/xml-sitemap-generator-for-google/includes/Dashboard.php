@@ -95,6 +95,9 @@ class Dashboard extends Controller {
 			return;
 		}
 
+		// Clear Media Sitemap Cache on every save
+		MediaSitemap::delete_all_cache();
+
 		// Clear Sitemaps Cache
 		if ( ! empty( $_POST['clear_cache'] ) ) {
 			Cache::clear();
@@ -175,21 +178,24 @@ class Dashboard extends Controller {
 		$settings->sitemap_view        = sanitize_text_field( $_POST['sitemap_view'] ?? '' );
 		$settings->exclude_posts       = apply_filters( 'sanitize_post_array', $_POST['exclude_posts'] ?? '' );
 		$settings->exclude_terms       = apply_filters( 'sanitize_post_array', $_POST['exclude_terms'] ?? '' );
+		$settings->include_only_terms  = apply_filters( 'sanitize_post_array', $_POST['include_only_terms'] ?? '' );
 		$settings->posts_priority      = sanitize_text_field( $_POST['posts_priority'] ?? '' );
 
-		$settings->enable_google_news        = sanitize_text_field( $_POST['enable_google_news'] ?? 0 );
-		$settings->google_news_old_posts     = sanitize_text_field( $_POST['google_news_old_posts'] ?? 0 );
-		$settings->google_news_name          = sanitize_text_field( $_POST['google_news_name'] ?? '' );
-		$settings->google_news_url           = sanitize_text_field( $_POST['google_news_url'] ?? $settings->google_news_url );
-		$settings->google_news_keywords      = sanitize_text_field( $_POST['google_news_keywords'] ?? '' );
-		$settings->google_news_stocks        = sanitize_text_field( $_POST['google_news_stocks'] ?? 0 );
-		$settings->google_news_exclude       = apply_filters( 'sanitize_post_array', $_POST['google_news_exclude'] ?? '' );
-		$settings->google_news_exclude_terms = apply_filters( 'sanitize_post_array', $_POST['google_news_exclude_terms'] ?? '' );
+		$settings->enable_google_news             = sanitize_text_field( $_POST['enable_google_news'] ?? 0 );
+		$settings->google_news_old_posts          = sanitize_text_field( $_POST['google_news_old_posts'] ?? 0 );
+		$settings->google_news_name               = sanitize_text_field( $_POST['google_news_name'] ?? '' );
+		$settings->google_news_url                = sanitize_text_field( $_POST['google_news_url'] ?? $settings->google_news_url );
+		$settings->google_news_keywords           = sanitize_text_field( $_POST['google_news_keywords'] ?? '' );
+		$settings->google_news_stocks             = sanitize_text_field( $_POST['google_news_stocks'] ?? 0 );
+		$settings->google_news_exclude            = apply_filters( 'sanitize_post_array', $_POST['google_news_exclude'] ?? '' );
+		$settings->google_news_exclude_terms      = apply_filters( 'sanitize_post_array', $_POST['google_news_exclude_terms'] ?? '' );
+		$settings->google_news_include_only_terms = apply_filters( 'sanitize_post_array', $_POST['google_news_include_only_terms'] ?? '' );
 
 		$settings->enable_image_sitemap    = sanitize_text_field( $_POST['enable_image_sitemap'] ?? 0 );
 		$settings->enable_video_sitemap    = sanitize_text_field( $_POST['enable_video_sitemap'] ?? 0 );
 		$settings->image_sitemap_url       = sanitize_text_field( $_POST['image_sitemap_url'] ?? $settings->image_sitemap_url );
 		$settings->video_sitemap_url       = sanitize_text_field( $_POST['video_sitemap_url'] ?? $settings->video_sitemap_url );
+		$settings->hide_image_previews     = sanitize_text_field( $_POST['hide_image_previews'] ?? 0 );
 		$settings->image_mime_types        = apply_filters( 'sanitize_post_array', $_POST['image_mime_types'] ?? $settings->image_mime_types );
 		$settings->youtube_api_key         = sanitize_text_field( $_POST['youtube_api_key'] ?? $settings->youtube_api_key );
 		$settings->vimeo_api_key           = sanitize_text_field( $_POST['vimeo_api_key'] ?? $settings->vimeo_api_key );

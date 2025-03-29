@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -58,12 +60,13 @@ class Ai1wm_Database_Mysqli extends Ai1wm_Database {
 			}
 		}
 
-		// Copy results from the internal mysqlnd buffer into the PHP variables fetched
-		if ( defined( 'MYSQLI_STORE_RESULT_COPY_DATA' ) ) {
-			return mysqli_store_result( $this->wpdb->dbh, MYSQLI_STORE_RESULT_COPY_DATA );
+		// The parameter $mode has had no effect as of PHP 8.1.0.
+		if ( ( PHP_MAJOR_VERSION >= 8 && PHP_MINOR_VERSION >= 1 ) || ! defined( 'MYSQLI_STORE_RESULT_COPY_DATA' ) ) {
+			return mysqli_store_result( $this->wpdb->dbh );
 		}
 
-		return mysqli_store_result( $this->wpdb->dbh );
+		// Copy results from the internal mysqlnd buffer into the PHP variables fetched
+		return mysqli_store_result( $this->wpdb->dbh, MYSQLI_STORE_RESULT_COPY_DATA );
 	}
 
 	/**

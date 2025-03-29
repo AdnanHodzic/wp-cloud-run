@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -956,8 +958,11 @@ abstract class Ai1wm_Database {
 							$select_columns = implode( ', ', $select_columns );
 
 							// Set query with offset and rows count
-							$query = sprintf( 'SELECT %s FROM `%s` AS t1 JOIN (SELECT %s FROM `%s` WHERE %s ORDER BY %s LIMIT %d, %d) AS t2 USING (%s)', $select_columns, $table_name, $table_keys, $table_name, $table_where, $table_keys, $table_offset, AI1WM_MAX_SELECT_RECORDS, $table_keys );
-
+							if ( defined( 'AI1WM_DISABLE_LATE_ROW_LOOKUPS' ) ) {
+								$query = sprintf( 'SELECT %s FROM `%s` AS t1 WHERE %s ORDER BY %s LIMIT %d, %d', $select_columns, $table_name, $table_where, $table_keys, $table_offset, AI1WM_MAX_SELECT_RECORDS );
+							} else {
+								$query = sprintf( 'SELECT %s FROM `%s` AS t1 JOIN (SELECT %s FROM `%s` WHERE %s ORDER BY %s LIMIT %d, %d) AS t2 USING (%s)', $select_columns, $table_name, $table_keys, $table_name, $table_where, $table_keys, $table_offset, AI1WM_MAX_SELECT_RECORDS, $table_keys );
+							}
 						} else {
 
 							$table_keys = 1;
@@ -1642,7 +1647,7 @@ abstract class Ai1wm_Database {
 			$matches[1] = Ai1wm_Database_Utility::base64_decode( $matches[1] );
 
 			// Replace values
-			$matches[1] = Ai1wm_Database_Utility::replace_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[1] );
+			$matches[1] = Ai1wm_Database_Utility::replace_values( $matches[1], $this->get_old_replace_values(), $this->get_new_replace_values() );
 
 			// Encode base64 characters
 			$matches[1] = Ai1wm_Database_Utility::base64_encode( $matches[1] );
@@ -1665,7 +1670,7 @@ abstract class Ai1wm_Database {
 			$matches[2] = Ai1wm_Database_Utility::base64_decode( $matches[2] );
 
 			// Replace values
-			$matches[2] = Ai1wm_Database_Utility::replace_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[2] );
+			$matches[2] = Ai1wm_Database_Utility::replace_values( $matches[2], $this->get_old_replace_values(), $this->get_new_replace_values() );
 
 			// Encode base64 characters
 			$matches[2] = Ai1wm_Database_Utility::base64_encode( $matches[2] );
@@ -1688,7 +1693,7 @@ abstract class Ai1wm_Database {
 			$matches[1] = Ai1wm_Database_Utility::base64_decode( $matches[1] );
 
 			// Replace serialized values
-			$matches[1] = Ai1wm_Database_Utility::replace_serialized_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[1] );
+			$matches[1] = Ai1wm_Database_Utility::replace_serialized_values( $matches[1], $this->get_old_replace_values(), $this->get_new_replace_values() );
 
 			// Encode base64 characters
 			$matches[1] = Ai1wm_Database_Utility::base64_encode( $matches[1] );
@@ -1708,7 +1713,7 @@ abstract class Ai1wm_Database {
 		$matches[1] = Ai1wm_Database_Utility::unescape_mysql( $matches[1] );
 
 		// Replace serialized values
-		$matches[1] = Ai1wm_Database_Utility::replace_serialized_values( $this->get_old_replace_values(), $this->get_new_replace_values(), $matches[1] );
+		$matches[1] = Ai1wm_Database_Utility::replace_serialized_values( $matches[1], $this->get_old_replace_values(), $this->get_new_replace_values() );
 
 		// Escape MySQL special characters
 		$matches[1] = Ai1wm_Database_Utility::escape_mysql( $matches[1] );
@@ -1752,7 +1757,7 @@ abstract class Ai1wm_Database {
 	 * @return string
 	 */
 	protected function replace_raw_values( $input ) {
-		return Ai1wm_Database_Utility::replace_values( $this->get_old_replace_raw_values(), $this->get_new_replace_raw_values(), $input );
+		return Ai1wm_Database_Utility::replace_values( $input, $this->get_old_replace_raw_values(), $this->get_new_replace_raw_values() );
 	}
 
 	/**

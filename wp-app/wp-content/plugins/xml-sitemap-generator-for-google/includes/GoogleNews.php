@@ -40,6 +40,7 @@ class GoogleNews extends Sitemap {
 		$post_types       = array( 'page', 'post' );
 		$exclude_post_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_exclude ?? '' );
 		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_exclude_terms ?? '' );
+		$include_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_include_only_terms ?? '' );
 
 		if ( ! empty( $front_page_id ) ) {
 			$exclude_post_ids[] = $front_page_id;
@@ -73,16 +74,24 @@ class GoogleNews extends Sitemap {
 			$exclude_posts_sql = 'AND posts.ID NOT IN (' . implode( ',', array_unique( $exclude_post_ids ) ) . ')';
 		}
 
-		$exclude_terms_join = '';
-		$exclude_terms_sql  = '';
-		if ( ! empty( $exclude_term_ids ) ) {
-			$exclude_terms_join = "LEFT JOIN (
+		$terms_join_sql  = '';
+		$terms_where_sql = '';
+
+		if ( ! empty( $include_term_ids ) ) {
+			$terms_join_sql  = "INNER JOIN (
 				SELECT DISTINCT tr.object_id
-				FROM {$wpdb->prefix}term_relationships tr
-				INNER JOIN {$wpdb->prefix}term_taxonomy tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+				FROM {$wpdb->term_relationships} tr
+				INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
+				WHERE tt.term_id IN (" . implode( ',', array_unique( $include_term_ids ) ) . ')
+			) included_posts ON posts.ID = included_posts.object_id';
+		} else if ( ! empty( $exclude_term_ids ) ) {
+			$terms_join_sql  = "LEFT JOIN (
+				SELECT DISTINCT tr.object_id
+				FROM {$wpdb->term_relationships} tr
+				INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
 				WHERE tt.term_id IN (" . implode( ',', array_unique( $exclude_term_ids ) ) . ')
 			) excluded_posts ON posts.ID = excluded_posts.object_id';
-			$exclude_terms_sql  = ' AND excluded_posts.object_id IS NULL';
+			$terms_where_sql = ' AND excluded_posts.object_id IS NULL';
 		}
 
 		$sql_post_types   = "('" . implode( "','", $post_types ) . "')";
@@ -92,18 +101,16 @@ class GoogleNews extends Sitemap {
 	            posts.ID,
 				posts.post_title,
 				posts.post_name,
-				posts.post_parent,
 				posts.post_type,
 				posts.post_date,
-				posts.post_date_gmt,
-				posts.comment_count
+				posts.post_date_gmt
 				FROM $wpdb->posts as posts
-				$exclude_terms_join
+				$terms_join_sql
 				$multilingual_sql
 				$where_clause post_status = 'publish' AND post_type IN $sql_post_types AND posts.post_password = ''
 				$exclude_old_posts_sql
 				$exclude_posts_sql
-				$exclude_terms_sql
+				$terms_where_sql
 				GROUP BY posts.ID
 				ORDER BY posts.post_modified DESC";
 

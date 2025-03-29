@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -808,6 +810,34 @@ class Ai1wm_Import_Database {
 						$new_replace_values[] = addcslashes( ai1wm_url_scheme( ai1wm_get_uploads_url(), $new_schemes[ $i ] ), '/' );
 					}
 				}
+			}
+		}
+
+		// Get WordPress Absolute Path
+		if ( isset( $config['WordPress']['Absolute'] ) && ( $absolute_path = $config['WordPress']['Absolute'] ) ) {
+
+			// Add plain WordPress Absolute
+			if ( ! in_array( $absolute_path, $old_replace_values ) ) {
+				$old_replace_values[] = $absolute_path;
+				$new_replace_values[] = ABSPATH;
+			}
+
+			// Add URL encoded WordPress Absolute
+			if ( ! in_array( urlencode( $absolute_path ), $old_replace_values ) ) {
+				$old_replace_values[] = urlencode( $absolute_path );
+				$new_replace_values[] = urlencode( ABSPATH );
+			}
+
+			// Add URL raw encoded WordPress Absolute
+			if ( ! in_array( rawurlencode( $absolute_path ), $old_replace_values ) ) {
+				$old_replace_values[] = rawurlencode( $absolute_path );
+				$new_replace_values[] = rawurlencode( ABSPATH );
+			}
+
+			// Add JSON escaped WordPress Absolute
+			if ( ! in_array( addcslashes( $absolute_path, '/' ), $old_replace_values ) ) {
+				$old_replace_values[] = addcslashes( $absolute_path, '/' );
+				$new_replace_values[] = addcslashes( ABSPATH, '/' );
 			}
 		}
 

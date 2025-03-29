@@ -4,45 +4,60 @@ Tags: backup, transfer, copy, move, clone
 Requires at least: 3.3
 Tested up to: 6.7
 Requires PHP: 5.3
-Stable tag: 7.89
+Stable tag: 7.91
 License: GPLv2 or later
 
-Backup, transfer, copy, and move a site with 1-click. Quick, easy, and reliable.
+Trusted by 60M+ sites: The gold standard for WordPress migrations, backups, and site transfers since 2013.
 
 == Description ==
-Introduced in 2013 and used by over 60 million websites, All-in-One WP Migration is verifiably one of WordPress' most trusted and utilized plugins for moving websites with absolute ease.
+**The Most Trusted WordPress Migration & Backup Solution Since 2013**
 
-Intently built with the non-technical user in mind, All-in-One WP Migration comes loaded with newbie-friendly functions that allow you to migrate your WordPress website with little to no technical knowledge or experience.
+All-in-One WP Migration is the gold standard for WordPress site migration, used by over 60 million websites worldwide - from small blogs to Fortune 500 companies and government agencies. Our plugin offers enterprise-grade reliability with beginner-friendly simplicity.
 
-Ready to migrate your website? It's fast and easy as 1, 2, 3:
+**Why Choose All-in-One WP Migration?**
 
-1. Install All-in-One WP Migration plugin.
-2. Hit the export button to bundle your database, media files, plugins, and themes into one tidy file.
-3. Unpack the file at the new location with an easy-to-use "drag and drop" feature in the WordPress dashboard of your new website.
+* **Effortless Migration**: Export your entire site with a single click - including database, media, themes, and plugins
+* **Zero Downtime**: Complete your migration with no service interruptions
+* **Universal Compatibility**: Works across all hosting providers, from budget shared hosting to high-end dedicated servers
+* **Technical Excellence**: Engineered for reliability with memory-efficient processing (512KB chunks), ideal for resource-limited environments
+* **No Technical Skills Required**: Intuitive interface designed for users of all skill levels
+* **Cross-Database Support**: Seamlessly move between MySQL, MariaDB, and SQLite databases
+* **Secure & Reliable**: Trusted by Boeing, NASA, Harvard, Stanford, Automattic, and government agencies worldwide
 
-Follow these three simple steps, and your site will be live at its new location with minimal stress and **zero downtime**!
+**How It Works - Simple as 1-2-3:**
 
-One feature that makes All-in-One WP Migration widely loved (to the tune of over 6,000 5-star user reviews) is that the technical requirements for installing the plugin are simple.
+1. **Install** the plugin on your source and destination sites
+2. **Export** your site to a .wpress file with one click
+3. **Import** using our drag-and-drop importer on your destination site
 
-If you have WordPress version between 3.3 and 6.7.1 and PHP version between 5.3 and 8.4, you are good to go. All-in-One WP Migration also supports all versions of MySQL, MariaDB and SQLite.
+**For Developers & Power Users:**
+
+* **Advanced Find & Replace**: Control exactly what changes during migration
+* **Selective Content Migration**: Include/exclude specific content types
+* **PHP 5.3-8.4 Compatibility**: Works across virtually all hosting environments
+* **Custom WPress Format**: Our optimized archive format ensures data integrity
+* **Hook System**: Extensive API for custom integration and workflows
+* **Command-Line Support**: Automate migrations via WP-CLI
+
+**Premium Extensions:**
+
+Enhance your migration workflow with our [premium extensions](https://servmask.com/products) for:
+
+* **Unlimited Site Size**: Migrate sites of any size
+* **Cloud Storage Integration**: Direct migration to/from Dropbox, Google Drive, OneDrive, and more
+* **Multisite Support**: Migrate complex WordPress networks
+* **Scheduled Backups**: Automated, recurring backups
+* **Database Filtering**: Exclude specific tables or data
 
 **Features Spotlight:**
 
-* Supports custom uploads, plugins, theme folders, and more.
-* Available in over 50 language translations - including Japanese.
-* Accessible for individuals with disabilities (WCAG 2.1 AA Level compliant)
-* No limitations on host or operating system.
-* Supports a vast range of hosting providers -- [click here for a full list of supported providers.](https://help.servmask.com/knowledgebase/supported-hosting-providers/)
-* A long list of [premium extensions](https://servmask.com/products) that gives you the power to do more.
-* Mobile device compatible.
-* Intelligent and flawless auto-replacement of website url during import.
-* Full product support.
-* Browse WPRESS files online with [Traktor Web](https://traktor.servmask.com)
-* Extract WPRESS files on your computer with [Traktor Desktop](https://traktor.wp-migration.com)
-* New in v7.82: Integration with WordPress Playground, enabling easy migration between SQLite and MySQL.
-* And lots more!
-
-Here are other reasons to use All-in-One WP Migration ...
+* WCAG 2.1 AA Level accessibility compliance
+* Mobile-responsive interface
+* [Browse WPRESS files online](https://traktor.servmask.com) or [extract locally](https://traktor.wp-migration.com)
+* Automatic URL and path replacement
+* WordPress Playground integration for SQLite/MySQL migration
+* Regular bi-weekly updates ensuring compatibility with the latest WordPress versions
+* Available in 50+ languages including Japanese
 
 **Trusted by the Government and Big Corporations:**
 
@@ -98,6 +113,26 @@ All-in-One WP Migration is in full compliance with General Data Protection Regul
 See our [GDPR Compliant Privacy Policy here](https://www.iubenda.com/privacy-policy/946881).
 
 == Changelog ==
+= 7.91 =
+**Added**
+
+* CiviCRM for WordPress support
+
+= 7.90 =
+**Added**
+
+* Introduced a constant to disable MySQL late row lookups for enhanced database performance
+
+**Improved**
+
+* Enhanced SQLite database integration for improved stability and efficiency
+* Strengthened serialization replacement mechanism to address an unauthenticated PHP Object Injection vulnerability (CVE-2024-10942). Special thanks to Webbernaut for responsibly disclosing this issue
+* Preserved the wp_rocket_settings option during exports for improved user experience
+
+**Fixed**
+
+* Resolved PHP 8.4 deprecation warnings
+
 = 7.89 =
 **Improved**
 

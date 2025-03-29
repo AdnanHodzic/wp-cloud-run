@@ -39,6 +39,21 @@ $settings = $args['settings'] ?? new stdClass();
 				'class' => 'google-news-depended',
 			)
 		);
+		?>
+
+		<hr>
+
+		<?php
+		Dashboard::render(
+			'fields/autocomplete.php',
+			array(
+				'type'  => 'taxonomy',
+				'label' => esc_html__( 'Include only selected Categories, Tags and exclude all others:', 'xml-sitemap-generator-for-google' ),
+				'name'  => 'google_news_include_only_terms',
+				'value' => $settings->google_news_include_only_terms ?? '',
+				'class' => 'google-news-depended',
+			)
+		);
 
 		sgg_show_pro_overlay();
 		?>

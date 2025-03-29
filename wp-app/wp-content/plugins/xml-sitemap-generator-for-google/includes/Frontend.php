@@ -56,26 +56,25 @@ class Frontend extends Controller {
 		if ( $is_xsl_sitemap || $is_xml_sitemap || $is_html_sitemap || $is_google_news || $is_image_sitemap || $is_video_sitemap || $is_multilingual ) {
 			$wp_query->is_404  = false;
 			$wp_query->is_feed = true;
+			$inner_sitemap     = $wp_query->query_vars['inner_sitemap'] ?? null;
+			$current_page      = $wp_query->query_vars['page'] ?? null;
+
+			if ( ! empty( $inner_sitemap ) && empty( $current_page ) ) {
+				$current_page = 0;
+			}
 
 			if ( $is_xsl_sitemap ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				Sitemap::generate_sitemap_xsl( sanitize_text_field( $_GET['template'] ?? $wp_query->query_vars['sitemap_xsl'] ) );
 			} elseif ( $is_google_news ) {
 				( new GoogleNews() )->show_sitemap( GoogleNews::$template );
-			} elseif ( $is_image_sitemap ) {
-				( new ImageSitemap() )->show_sitemap( ImageSitemap::$template );
-			} elseif ( $is_video_sitemap ) {
-				( new VideoSitemap() )->show_sitemap( VideoSitemap::$template );
+			} elseif ( $is_image_sitemap || 'image' === $inner_sitemap ) {
+				( new ImageSitemap() )->show_sitemap( ImageSitemap::$template, true, $inner_sitemap, $current_page );
+			} elseif ( $is_video_sitemap || 'video' === $inner_sitemap) {
+				( new VideoSitemap() )->show_sitemap( VideoSitemap::$template, true, $inner_sitemap, $current_page );
 			} elseif ( $is_multilingual ) {
 				( new MultilingualSitemap() )->show_sitemap( MultilingualSitemap::$template );
 			} else {
-				$inner_sitemap = $wp_query->query_vars['inner_sitemap'] ?? null;
-				$current_page  = $wp_query->query_vars['page'] ?? null;
-
-				if ( ! empty( $inner_sitemap ) && empty( $current_page ) ) {
-					$current_page = 0;
-				}
-
 				( new Sitemap() )->show_sitemap( 'sitemap', $is_xml_sitemap, $inner_sitemap, $current_page );
 			}
 
@@ -118,7 +117,7 @@ class Frontend extends Controller {
 	public static function add_rewrite_rules( $wp_rules ) {
 		$settings       = get_option( self::$slug, new Settings() );
 		$stylesheet_url = str_replace( '.', '\.', apply_filters( 'sitemap_xsl_template_path', 'sitemap-stylesheet.xsl' ) ) . '$';
-		$sitemap_types  = array( 'page', 'post', 'category', 'author', 'archive', 'additional' );
+		$sitemap_types  = array( 'page', 'post', 'category', 'author', 'archive', 'additional', 'image', 'video' );
 		$custom_posts   = ( new Controller() )->get_cpt();
 
 		$grim_sg_rules = array(
@@ -131,7 +130,11 @@ class Frontend extends Controller {
 
 			if ( ! empty( $settings->sitemap_view ) ) {
 				foreach ( $sitemap_types as $type ) {
-					$grim_sg_rules[ "{$type}-sitemap([0-9]+)?\.xml$" ] = "index.php?sitemap_xml=true&inner_sitemap={$type}&page=\$matches[1]";
+					$regex_pattern = in_array( $type, array( 'image', 'video' ) )
+						? "{$type}-sitemap([0-9]+)\.xml$"
+						: "{$type}-sitemap([0-9]+)?\.xml$";
+
+					$grim_sg_rules[ $regex_pattern ] = "index.php?sitemap_xml=true&inner_sitemap={$type}&page=\$matches[1]";
 				}
 
 				foreach ( $custom_posts as $cpt ) {
@@ -145,7 +148,11 @@ class Frontend extends Controller {
 			$grim_sg_rules[ $html_sitemap_url ] = 'index.php?sitemap_html=true';
 
 			foreach ( $sitemap_types as $type ) {
-				$grim_sg_rules[ "{$type}-sitemap([0-9]+)?\.html$" ] = "index.php?sitemap_html=true&inner_sitemap={$type}&page=\$matches[1]";
+				$regex_pattern = in_array( $type, array( 'image', 'video' ) )
+					? "{$type}-sitemap([0-9]+)\.html$"
+					: "{$type}-sitemap([0-9]+)?\.html$";
+
+				$grim_sg_rules[ $regex_pattern ] = "index.php?sitemap_html=true&inner_sitemap={$type}&page=\$matches[1]";
 			}
 
 			foreach ( $custom_posts as $cpt ) {

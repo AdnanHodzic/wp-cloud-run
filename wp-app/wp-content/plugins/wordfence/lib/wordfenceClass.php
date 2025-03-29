@@ -4057,8 +4057,8 @@ SQL
 	public static function ajax_downgradeLicense_callback(){
 		$api = new wfAPI('', wfUtils::getWPVersion());
 		try {
-			$keyData = $api->call('get_anon_api_key', array(), array('previousLicense' => wfConfig::get('apiKey')));
-			if($keyData['ok'] && $keyData['apiKey']){
+			$keyData = $api->call('get_anon_api_key', array(), array('previousLicense' => wfConfig::get('apiKey')), false, 900, true);
+			if ($keyData['ok'] && $keyData['apiKey']) {
 				wfLicense::current()->downgradeToFree($keyData['apiKey'])->save();
 				//When downgrading we must disable all two factor authentication because it can lock an admin out if we don't.
 				wfConfig::set_ser('twoFactorUsers', array());
@@ -4072,11 +4072,16 @@ SQL
 				if (method_exists(wfWAF::getInstance()->getStorageEngine(), 'purgeIPBlocks')) {
 					wfWAF::getInstance()->getStorageEngine()->purgeIPBlocks(wfWAFStorageInterface::IP_BLOCKS_BLACKLIST);
 				}
-			} else {
+			}
+			else {
 				throw new Exception(__("Could not understand the response we received from the Wordfence servers when applying for a free license key.", 'wordfence'));
 			}
-		} catch(Exception $e){
-			return array('errorMsg' => sprintf(/* translators: Error message. */ __("Could not fetch free license key from Wordfence: %s", 'wordfence'), wp_kses($e->getMessage(), array())));
+		}
+		catch(Exception $e) {
+			return array(
+				'downgradeErrorMsg' => wp_kses(sprintf(/* translators: Error message. */ __("A free license key could not be fetched from Wordfence: %s", 'wordfence'), $e->getMessage()), array()),
+				'registrationLink' => esc_attr(wfLicense::generateRegistrationLink()),
+			);
 		}
 		return array('ok' => 1);
 	}
@@ -4491,7 +4496,8 @@ SQL
 						return array(
 							'success' => 1,
 							'isPaid' => wfConfig::get('isPaid') ? 1 : 0,
-							'type' => wfLicense::current()->getType()
+							'inUse' => (isset($res['inUse']) && wfUtils::truthyToBoolean($res['inUse'])) ? 1 : 0,
+							'type' => wfLicense::current()->getType(),
 						);
 					}
 					else if (isset($res['_hasKeyConflict']) && $res['_hasKeyConflict']) {
@@ -6340,6 +6346,7 @@ HTML;
 			'Filter Traffic' => __('Filter Traffic', 'wordfence'),
 			'Firewall Response' => __('Firewall Response', 'wordfence'),
 			'Full Path Disclosure' => __('Full Path Disclosure', 'wordfence'),
+			'Get a new license' => __('Get a new license', 'wordfence'),
 			'Google Bot' => __('Google Bot', 'wordfence'),
 			'Google Crawlers' => __('Google Crawlers', 'wordfence'),
 			'HTTP Response Code' => __('HTTP Response Code', 'wordfence'),
@@ -6408,6 +6415,7 @@ HTML;
 			'The file %s was successfully restored.' => /* translators: File path. */ __('The file %s was successfully restored.', 'wordfence'),
 			'The option %s was successfully removed.' => /* translators: WordPress option. */ __('The option %s was successfully removed.', 'wordfence'),
 			'The request has been allowlisted. Please try it again.' => __('The request has been allowlisted. Please try it again.', 'wordfence'),
+			'There was an error while downgrading to a free license.' => __('There was an error while downgrading to a free license.', 'wordfence'),
 			'There was an error while sending the email.' => __('There was an error while sending the email.', 'wordfence'),
 			'This will be shown only once. Keep these codes somewhere safe.' => __('This will be shown only once. Keep these codes somewhere safe.', 'wordfence'),
 			'Throttled' => __('Throttled', 'wordfence'),
@@ -6432,6 +6440,7 @@ HTML;
 			'You are using an Nginx web server and using a FastCGI processor like PHP5-FPM. You will need to manually modify your php.ini to disable <em>display_error</em>' => __('You are using an Nginx web server and using a FastCGI processor like PHP5-FPM. You will need to manually modify your php.ini to disable <em>display_error</em>', 'wordfence'),
 			'You forgot to include a reason you\'re blocking this IP range. We ask you to include this for your own record keeping.' => __('You forgot to include a reason you\'re blocking this IP range. We ask you to include this for your own record keeping.', 'wordfence'),
 			'You have unsaved changes to your options. If you leave this page, those changes will be lost.' => __('You have unsaved changes to your options. If you leave this page, those changes will be lost.', 'wordfence'),
+			'You may close this alert and try again later, or click the button below to register for a new free Wordfence license.' => __('You may close this alert and try again later, or click the button below to register for a new free Wordfence license.', 'wordfence'),
 			'Your .htaccess has been updated successfully. Please verify your site is functioning normally.' => __('Your .htaccess has been updated successfully. Please verify your site is functioning normally.', 'wordfence'),
 			'Your Wordfence activity log was sent to %s' => /* translators: Email address. */ __('Your Wordfence activity log was sent to %s', 'wordfence'),
 			'Your rules have been updated successfully.' => __('Your rules have been updated successfully.', 'wordfence'),

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright (C) 2014-2023 ServMask Inc.
+ * Copyright (C) 2014-2025 ServMask Inc.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,6 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Attribution: This code is part of the All-in-One WP Migration plugin, developed by
  *
  * ███████╗███████╗██████╗ ██╗   ██╗███╗   ███╗ █████╗ ███████╗██╗  ██╗
  * ██╔════╝██╔════╝██╔══██╗██║   ██║████╗ ████║██╔══██╗██╔════╝██║ ██╔╝
@@ -37,6 +39,7 @@ class Ai1wm_Import_Clean {
 		$db_client->add_table_prefix_filter( ai1wm_table_prefix( 'mainsite' ) );
 		$db_client->flush();
 
+		// Trigger import cancel action
 		if ( isset( $params['ai1wm_import_cancel'] ) ) {
 			do_action( 'ai1wm_status_import_canceled', $params );
 		} else {

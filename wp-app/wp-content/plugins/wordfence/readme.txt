@@ -4,7 +4,7 @@ Tags: security, malware, 2fa, firewall, scanner
 Requires at least: 4.7
 Requires PHP: 7.0
 Tested up to: 6.7
-Stable tag: 8.0.3
+Stable tag: 8.0.4
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -12,55 +12,66 @@ Firewall, Malware Scanner, Two Factor Auth, and Comprehensive Security Features,
 
 == Description ==
 
-### THE MOST POPULAR WORDPRESS FIREWALL & SECURITY SCANNER
+https://www.youtube.com/watch?v=i4ZN2TwlaBE
 
-WordPress security requires a team of dedicated analysts researching the latest malware variants and WordPress exploits, turning them into firewall rules and malware signatures, and releasing those to customers in real-time. Wordfence is widely acknowledged as the number one WordPress security research team in the World. Our plugin provides a comprehensive suite of security features, and our team's research is what powers our plugin and provides the level of security that we are known for.
+= THE MOST POPULAR WORDPRESS FIREWALL & SECURITY SCANNER =
 
-At Wordfence, WordPress security isn't a division of our business - WordPress security is all we do. We employ a global 24 hour dedicated incident response team that provides our priority customers with a 1 hour response time for any security incident. The sun never sets on our global security team and we run a sophisticated threat intelligence platform to aggregate, analyze and produce ground breaking security research on the newest security threats.
+WordPress security requires a team of dedicated analysts researching the latest malware variants and WordPress exploits, turning them into firewall rules and malware signatures, and releasing those to customers in real-time. 
 
-Wordfence Security includes an endpoint firewall, malware scanner, robust login security features, live traffic views, and more. Our Threat Defense Feed arms Wordfence with the newest firewall rules, malware signatures and malicious IP addresses it needs to keep your website safe. Rounded out by 2FA and a suite of additional features, Wordfence is the most comprehensive WordPress security solution available.
+Choose the right protection for you: [Wordfence Free, Premium, Care or Response](https://www.wordfence.com/products/pricing/) 
 
-#### WORDPRESS FIREWALL
-* Web Application Firewall identifies and blocks malicious traffic. Built and maintained by a large team focused 100% on WordPress security.
-* [Premium] Real-time firewall rule and malware signature updates via the Threat Defense Feed (free version is delayed by 30 days).
-* [Premium] Real-time IP Blocklist blocks all requests from the most malicious IPs, protecting your site while reducing load.
-* Protects your site at the endpoint, enabling deep integration with WordPress. Unlike cloud alternatives does not break encryption, cannot be bypassed and cannot leak data.
-* Integrated malware scanner blocks requests that include malicious code or content.
-* Protection from brute force attacks by limiting login attempts.
+Wordfence is widely acknowledged as the number one WordPress security research team in the World. Our plugin provides a comprehensive suite of security features, and our team’s research is what powers our plugin and provides the level of security that we are known for.
 
-#### WORDPRESS SECURITY SCANNER
-* Malware scanner checks core files, themes and plugins for malware, bad URLs, backdoors, SEO spam, malicious redirects and code injections.
-* [Premium] Real-time malware signature updates via the Threat Defense Feed (free version is delayed by 30 days).
-* Compares your core files, themes and plugins with what is in the WordPress.org repository, checking their integrity and reporting any changes to you.
-* Repair files that have changed by overwriting them with a pristine, original version. Delete any files that don’t belong easily within the Wordfence interface.
-* Checks your site for known security vulnerabilities and alerts you to any issues. Also alerts you to potential security issues when a plugin has been closed or abandoned.
-* Checks your content safety by scanning file contents, posts and comments for dangerous URLs and suspicious content.
-* [Premium] Checks to see if your site or IP have been blocklisted for malicious activity, generating spam or other security issue.
+At Wordfence, WordPress security isn’t a division of our business – WordPress security is all we do. We employ a global 24-hour dedicated incident response team that provides our priority customers with a 1 hour response time for any security incident. 
 
-#### LOGIN SECURITY
-* Two-factor authentication (2FA), one of the most secure forms of remote system authentication available via any TOTP-based authenticator app or service.
-* Login Page CAPTCHA stops bots from logging in.
-* Disable or add 2FA to XML-RPC.
-* Block logins for administrators using known compromised passwords.
+The sun never sets on our global security team and we run a sophisticated threat intelligence platform to aggregate, analyze and produce ground breaking security research on the newest security threats.
 
-#### SECURITY AUDIT LOG [Premium]
-* Monitors all changes and actions in security-sensitive areas of the site.
-* Remote tamper-proof data storage via Wordfence Central.
-* Monitored actions range from user creation and editing to plugin/theme installation and updates to post and page changes.
-* Configurable to log all events or significant events only, which includes all authentication, site configuration, and site functionality events.
+**Wordfence Security includes an endpoint firewall, malware scanner, robust login security features, live traffic views, and more.** Our [Threat Defense Feed](https://www.wordfence.com/threat-intel/) arms Wordfence with the newest firewall rules, malware signatures, and malicious IP addresses it needs to keep your website safe. 
 
-#### WORDFENCE CENTRAL
-* Wordfence Central is a powerful and efficient way to manage the security for multiple sites in one place.
-* Efficiently assess the security status of all your websites in one view. View detailed security findings without leaving Wordfence Central.
-* Powerful templates make configuring Wordfence a breeze.
-* Highly configurable alerts can be delivered via email, SMS or Slack. Improve the signal to noise ratio by leveraging severity level options and a daily digest option.
-* Track and alert on important security events including administrator logins, breached password usage and surges in attack activity.
-* Free to use for unlimited sites.
+Rounded out by 2FA and a suite of additional features, Wordfence is the most comprehensive WordPress security solution available.
 
-#### SECURITY TOOLS
-* With Live Traffic, monitor visits and hack attempts not shown in other analytics packages in real time; including origin, their IP address, the time of day and time spent on your site.
-* Block attackers by IP or build advanced rules based on IP Range, Hostname, User Agent and Referrer. 
-* Country blocking available with Wordfence Premium.
+### 🔥 WORDPRESS FIREWALL
+- **[Web Application Firewall](https://www.wordfence.com/help/firewall/)** identifies and blocks malicious traffic. Built and maintained by a large team focused 100% on WordPress security.
+- **Real-time firewall rule and malware signature [Premium]** updates via the Threat Defense Feed (free version is delayed by 30 days).
+- **[Real-time IP Blocklist](https://www.wordfence.com/help/blocking/) [Premium]** blocks all requests from the most malicious IPs, protecting your site while reducing load.
+- **Protects your site at the endpoint**, enabling deep integration with WordPress. Unlike cloud alternatives, it does not break encryption, cannot be bypassed and cannot leak data.
+- **[Integrated malware scanner](https://www.wordfence.com/help/scan/)** blocks requests that include malicious code or content.
+- **[Protection from brute force](https://www.wordfence.com/help/firewall/brute-force/)** attacks by limiting login attempts.
+
+### 📡 WORDPRESS SECURITY SCANNER
+- **Malware scanner** checks core files, themes and plugins for malware, bad URLs, backdoors, SEO spam, malicious redirects and code injections.
+- **Real-time malware signature updates [Premium]** via the Threat Defense Feed (free version is delayed by 30 days).
+- **Compares with WordPress.org repository** your core files, themes and plugins, checking their integrity and reporting any changes to you.
+- **Repair WordPress core, theme, and plugin files** that have changed by overwriting them with a pristine, original version. Delete any files that don’t belong easily within the Wordfence interface.
+- **Checks your site for known security vulnerabilities** and alerts you to any issues. Also alerts you to potential security issues when a plugin has been closed or abandoned.
+- **Checks your content safety** by scanning file contents, posts and comments for dangerous URLs and suspicious content.
+- **Checks to see if your site or IP have been blocklisted [Premium]** for malicious activity, generating spam or other security issues.
+
+### 🔒 LOGIN SECURITY
+- **[Two-factor authentication (2FA)](https://www.wordfence.com/help/tools/two-factor-authentication/)**, one of the most secure forms of remote system authentication available via any TOTP-based authenticator app or service.
+- **[Login Page CAPTCHA](https://www.wordfence.com/help/login-security/)** stops bots from logging in.
+- **[2FA for WooCommerce and custom integrations](https://www.wordfence.com/help/login-security/#woocommerce-and-custom-integrations)** allow for 2FA to be setup on custom account pages
+- **XML-RPC** options including disabling or adding 2FA.
+- **Password Security:** Block logins for administrators using known compromised passwords.
+
+### 📋 SECURITY AUDIT LOG [Premium]
+- **[The Audit Log](https://www.wordfence.com/help/audit-log)** monitors all changes and actions in security-sensitive areas of the site.
+- **Remote tamper-proof data storage** via Wordfence Central.
+- **Monitor events and actions** ranging  from user creation and editing to plugin/theme installation and updates to post and page changes.
+- **Configurable** to log all events or significant events only, which includes all authentication, site configuration, and site functionality events.
+
+### 🌐 WORDFENCE CENTRAL
+- **[Wordfence Central](https://www.wordfence.com/products/wordfence-central/)** is a powerful and efficient way to manage the security for multiple sites in one place.
+- **Centralized management:** Efficiently assess the security status of all your websites in one view. View detailed security findings without leaving Wordfence Central.
+- **Powerful templates** make configuring Wordfence a breeze.
+- **Highly configurable alerts** can be delivered via email, SMS or Slack. Improve the signal to noise ratio by leveraging severity level options and a daily digest option.
+- **Track and alert on important security events** including administrator logins, breached password usage and surges in attack activity.
+- **Free to use** for unlimited sites.
+
+### 🛠️ SECURITY TOOLS
+- **[Live Traffic](https://www.wordfence.com/help/tools/live-traffic/)** monitors visits and hack attempts not shown in other analytics packages in real time; including origin, their IP address, the time of day and time spent on your site.
+- **Block attackers by IP** or build advanced rules based on IP Range, Hostname, User Agent and Referrer.
+- **[Country blocking](https://www.wordfence.com/help/blocking/country-blocking/)** available with Wordfence Premium.
 
 == Installation ==
 
@@ -194,6 +205,11 @@ Secure your website with Wordfence.
 9. Logging in is easy with Wordfence 2FA.
 
 == Changelog ==
+
+= 8.0.4 - March 19, 2025 =
+* Improvement: Improved error handling and messaging for some responses from our servers
+* Improvement: Added messaging when a site may be using the same free license shared among multiple sites because it can cause the sites to use the same scan schedule rather than spreading out the load
+* Improvement: Updated the readme content and formatting
 
 = 8.0.3 - January 15, 2025 =
 * Improvement: Added support for hosts relocating the WAF's auto-prepend file via the constant/envvar WORDFENCE_WAF_PREPEND_DIRECTORY

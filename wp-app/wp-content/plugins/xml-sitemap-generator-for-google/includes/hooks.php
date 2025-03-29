@@ -159,6 +159,17 @@ function sgg_serve_indexnow_api_key() {
 add_action( 'wp', 'sgg_serve_indexnow_api_key' );
 
 /**
+ * Clear Media Sitemap cache when a post status is changed.
+ */
+function sgg_clear_media_sitemap_cache( $new_status, $old_status, $post ) {
+	if ( ( 'publish' === $old_status && 'publish' !== $new_status )
+		|| ( 'publish' === $new_status && 'publish' !== $old_status ) ) {
+		\GRIM_SG\MediaSitemap::delete_all_cache();
+	}
+}
+add_action( 'transition_post_status', 'sgg_clear_media_sitemap_cache', 10, 3 );
+
+/**
  * Disable default WordPress Sitemaps.
  */
 add_filter( 'wp_sitemaps_enabled', '__return_false' );

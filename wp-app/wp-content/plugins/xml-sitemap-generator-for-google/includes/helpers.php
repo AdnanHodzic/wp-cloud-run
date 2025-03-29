@@ -50,6 +50,13 @@ function sgg_is_sitemap_index( $template, $settings = null ) {
 		$settings = ( new \GRIM_SG\Vendor\Controller() )->get_settings();
 	}
 
+	// Detect Media Sitemap Structure
+	if ( in_array( $template, array( 'image-sitemap', 'video-sitemap' ), true ) && ! empty( $settings->sitemap_view ) ) {
+		$sitemap_structure = get_option( "sgg_{$template}_structure" );
+
+		return 'multiple' === $sitemap_structure;
+	}
+
 	return in_array( $template, array( 'sitemap', 'inner-sitemap' ), true ) && ! empty( $settings->sitemap_view );
 }
 
@@ -124,4 +131,12 @@ function sgg_is_multilingual() {
 	return function_exists( 'pll_languages_list' )
 		|| function_exists( 'trp_get_languages' )
 		|| defined( 'ICL_SITEPRESS_VERSION' );
+}
+
+function sgg_maybe_remove_inner_suffix( $template ) {
+	if ( strpos( $template, '-inner-sitemap' ) !== false ) {
+		$template = str_replace( '-inner-sitemap', '', $template );
+	}
+
+	return $template;
 }

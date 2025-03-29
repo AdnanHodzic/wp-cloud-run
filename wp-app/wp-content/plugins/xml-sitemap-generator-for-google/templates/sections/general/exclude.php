@@ -37,6 +37,20 @@ $settings = $args['settings'] ?? new stdClass();
 				'value' => $settings->exclude_terms ?? '',
 			)
 		);
+		?>
+
+		<hr>
+
+		<?php
+		Dashboard::render(
+			'fields/autocomplete.php',
+			array(
+				'type'  => 'taxonomy',
+				'label' => esc_html__( 'Include only selected Categories, Tags and exclude all others:', 'xml-sitemap-generator-for-google' ),
+				'name'  => 'include_only_terms',
+				'value' => $settings->include_only_terms ?? '',
+			)
+		);
 
 		sgg_show_pro_overlay();
 		?>

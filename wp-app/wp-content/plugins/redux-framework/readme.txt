@@ -3,8 +3,8 @@ Contributors: kprovance, dovyp, redux
 Tags: admin, options, theme options, plugin options, options framework
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.7
-Stable tag: 4.5.6
+Tested up to: 6.8
+Stable tag: 4.5.7
 License: GPL-3.0+
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 
@@ -121,6 +121,13 @@ NOTE: Redux is not intended to be used on its own. It requires a config file pro
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Changelog ==
+
+= 4.5.7 =
+* Fixed: Bullet-proofed some global args when omitted from the config.
+* Fixed: PHP 8.4 deprecation notices.
+* Fixed: The Options constructor now filters out blank strings, causing fatal errors. Options must always be in an array.
+* Fixed: `gallery` field errors on failed demo imports not installing images into the WP gallery.
+* Release date: March 26, 2025
 
 = 4.5.6 =
 * Fixed: Setting CHMOD defaults in construct to avoid errors in certain use cases.

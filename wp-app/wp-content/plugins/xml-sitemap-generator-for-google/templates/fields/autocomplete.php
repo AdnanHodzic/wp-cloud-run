@@ -13,7 +13,7 @@
 			name="<?php echo esc_attr( $args['name'] ); ?>"
 			value="<?php echo esc_attr( stripslashes( $args['value'] ) ); ?>">
 
-	<div class="expand">
+	<div class="expand <?php echo esc_attr( $args['class'] ?? '' ); ?>">
 		<ul class="widefat striped sgg-autocomplete-terms"></ul>
 		<a href="#" class="expand-toggle button button-default">Show More &#9660;</a>
 	</div>
