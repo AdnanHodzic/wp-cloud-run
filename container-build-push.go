@@ -8,6 +8,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"os"
@@ -53,9 +54,9 @@ func main() {
 		return
 	}
 
-	// Get the GCP_PROJECT from the environment variables
+	// Get the GAR_REGION from the environment variables
 	repo_region := os.Getenv("GAR_REGION")
-	if project == "" {
+	if repo_region == "" {
 		fmt.Println("GAR_REGION not set in .env file")
 		return
 	}
@@ -95,5 +96,22 @@ func main() {
 			return
 		}
 		fmt.Println("\nImage pushed successfully!")
+
+		// Write image name to /tmp/wp-cloud-run-image-name.json
+		// ToDo: more elaborate description why this is used
+		outputFile := "/tmp/wp-cloud-run-image-name.json"
+		data := map[string]string{"image": image_name}
+		jsonData, err := json.MarshalIndent(data, "", "  ")
+		if err != nil {
+			fmt.Println("Error marshaling image name to JSON:", err)
+			return
+		}
+		err = os.WriteFile(outputFile, jsonData, 0644)
+		if err != nil {
+			fmt.Println("Error writing image name to file:", err)
+			return
+		}
+		// ToDo: clean-up
+		fmt.Printf("Image name written to %s\n", outputFile)
 	}
 }
