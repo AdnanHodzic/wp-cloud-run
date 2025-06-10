@@ -82,6 +82,22 @@ func main() {
 			return
 		}
 		fmt.Println("\nImage build successful!\n")
+
+		// Write image name to /tmp/wp-cloud-run-image-name.json
+		// This is later used by Terraform to dynamically read the image name
+		outputFile := "/tmp/wp-cloud-run-image-name.json"
+		data := map[string]string{"image": image_name}
+		jsonData, err := json.MarshalIndent(data, "", "  ")
+		if err != nil {
+			fmt.Println("Error marshaling image name to JSON:", err)
+			return
+		}
+		err = os.WriteFile(outputFile, jsonData, 0644)
+		if err != nil {
+			fmt.Println("Error writing image name to file:", err)
+			return
+		}
+		fmt.Printf("Image name written to %s\n", outputFile)
 	}
 
 	// Push the image to the registry if the push flag is true
@@ -96,22 +112,5 @@ func main() {
 			return
 		}
 		fmt.Println("\nImage pushed successfully!")
-
-		// Write image name to /tmp/wp-cloud-run-image-name.json
-		// ToDo: more elaborate description why this is used
-		outputFile := "/tmp/wp-cloud-run-image-name.json"
-		data := map[string]string{"image": image_name}
-		jsonData, err := json.MarshalIndent(data, "", "  ")
-		if err != nil {
-			fmt.Println("Error marshaling image name to JSON:", err)
-			return
-		}
-		err = os.WriteFile(outputFile, jsonData, 0644)
-		if err != nil {
-			fmt.Println("Error writing image name to file:", err)
-			return
-		}
-		// ToDo: clean-up
-		fmt.Printf("Image name written to %s\n", outputFile)
 	}
 }
