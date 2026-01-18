@@ -15,6 +15,10 @@ use Automattic\Jetpack\Blaze;
 use Automattic\Jetpack\Status;
 use Automattic\Jetpack\Status\Host;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 require_once __DIR__ . '/class.json-api-date.php';
 require_once __DIR__ . '/class.json-api-post-base.php';
 
@@ -61,12 +65,22 @@ abstract class SAL_Site {
 	}
 
 	/**
+	 * Returns the site slug.
+	 *
+	 * @return string
+	 */
+	public function get_slug() {
+		return ( new Status() )->get_site_suffix();
+	}
+
+	/**
 	 * Returns the site name.
 	 *
 	 * @return string
 	 */
 	public function get_name() {
-		return (string) htmlspecialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+		$name = get_bloginfo( 'name' );
+		return is_string( $name ) ? htmlspecialchars_decode( $name, ENT_QUOTES ) : '';
 	}
 
 	/**
@@ -75,7 +89,8 @@ abstract class SAL_Site {
 	 * @return string
 	 */
 	public function get_description() {
-		return (string) htmlspecialchars_decode( get_bloginfo( 'description' ), ENT_QUOTES );
+		$description = get_bloginfo( 'description' );
+		return is_string( $description ) ? htmlspecialchars_decode( $description, ENT_QUOTES ) : '';
 	}
 
 	/**
@@ -761,21 +776,24 @@ abstract class SAL_Site {
 		// If the post is of status inherit, check if the parent exists ( different to 0 ) to check for the parent status object.
 		if ( 'inherit' === $post->post_status && 0 !== (int) $post->post_parent ) {
 			$parent_post     = get_post( $post->post_parent );
-			$post_status_obj = get_post_status_object( $parent_post->post_status );
+			$post_status_obj = $parent_post ? get_post_status_object( $parent_post->post_status ) : null;
 		} else {
 			$post_status_obj = get_post_status_object( $post->post_status );
 		}
 
-		$authorized = (
-			$post_status_obj->public ||
-			( is_user_logged_in() &&
-				(
-					( $post_status_obj->protected && current_user_can( 'edit_post', $post->ID ) ) ||
-					( $post_status_obj->private && current_user_can( 'read_post', $post->ID ) ) ||
-					( 'trash' === $post->post_status && current_user_can( 'edit_post', $post->ID ) ) ||
-					'auto-draft' === $post->post_status
-				)
-			)
+		$authorized = false;
+
+		if ( $post_status_obj ) {
+			$authorized = $post_status_obj->public
+				|| ( is_user_logged_in() && (
+				( $post_status_obj->protected && current_user_can( 'edit_post', $post->ID ) )
+				|| ( $post_status_obj->private && current_user_can( 'read_post', $post->ID ) )
+				) );
+		}
+
+		$authorized = $authorized || (
+			( 'trash' === $post->post_status && current_user_can( 'edit_post', $post->ID ) )
+			|| 'auto-draft' === $post->post_status
 		);
 
 		if ( ! $authorized ) {
@@ -959,16 +977,6 @@ abstract class SAL_Site {
 			'delete_users'        => $this->current_user_can( 'delete_users' ),
 			'remove_users'        => $this->current_user_can( 'remove_users' ),
 			'own_site'            => $is_wpcom_blog_owner,
-			/**
-			 * Filter whether the Hosting section in Calypso should be available for site.
-			 *
-			 * @module json-api
-			 *
-			 * @since 8.2.0
-			 *
-			 * @param bool $view_hosting Can site access Hosting section. Default to false.
-			 */
-			'view_hosting'        => apply_filters( 'jetpack_json_api_site_can_view_hosting', false ),
 			'view_stats'          => stats_is_blog_user( $this->blog_id ),
 			'activate_plugins'    => $this->current_user_can( 'activate_plugins' ),
 			'update_plugins'      => $this->current_user_can( 'update_plugins' ),
@@ -1007,7 +1015,7 @@ abstract class SAL_Site {
 	public function get_logo() {
 		// Set an empty response array.
 		$logo_setting = array(
-			'id'    => (int) 0,
+			'id'    => 0,
 			'sizes' => array(),
 			'url'   => '',
 		);
@@ -1248,7 +1256,7 @@ abstract class SAL_Site {
 			$blog_services          = $ss->get_blog_services();
 			$default_sharing_status = ! empty( $blog_services['visible'] );
 		}
-		return (bool) $default_sharing_status;
+		return $default_sharing_status;
 	}
 
 	/**
@@ -1512,6 +1520,36 @@ abstract class SAL_Site {
 	}
 
 	/**
+	 * Check if the site has the summer-special-2025 blog sticker.
+	 *
+	 * @return bool
+	 */
+	public function is_summer_special_2025() {
+		if ( function_exists( 'has_blog_sticker' ) ) {
+			return has_blog_sticker( 'summer-special-2025' );
+		} elseif ( function_exists( 'wpcomsh_is_site_sticker_active' ) ) {
+			// For atomic sites
+			return wpcomsh_is_site_sticker_active( 'summer-special-2025' );
+		}
+		return false;
+	}
+
+	/**
+	 * Check if the site has the gating-business-q1 blog sticker.
+	 *
+	 * @return bool
+	 */
+	public function is_gating_business_q1() {
+		if ( function_exists( 'has_blog_sticker' ) ) {
+			return has_blog_sticker( 'gating-business-q1' );
+		} elseif ( function_exists( 'wpcomsh_is_site_sticker_active' ) ) {
+			// For atomic sites
+			return wpcomsh_is_site_sticker_active( 'gating-business-q1' );
+		}
+		return false;
+	}
+
+	/**
 	 * Get the option of site intent which value is coming from the Hero Flow
 	 *
 	 * @return string
@@ -1685,4 +1723,52 @@ abstract class SAL_Site {
 	 * @return bool
 	 */
 	abstract public function is_pending_plan();
+
+	/**
+	 * Detect whether the site is a Garden site.
+	 *
+	 * @return bool
+	 */
+	public function is_garden() {
+		return false;
+	}
+
+	/**
+	 * Get the Garden name.
+	 *
+	 * @return string
+	 */
+	public function garden_name() {
+		return null;
+	}
+
+	/**
+	 * Get the Garden partner.
+	 *
+	 * @return string
+	 */
+	public function garden_partner() {
+		return null;
+	}
+
+	/**
+	 * Detect whether the Garden site is provisioned.
+	 *
+	 * @return bool|null
+	 */
+	public function garden_is_provisioned() {
+		return null;
+	}
+
+	/**
+	 * Detect whether the site is a Flex site.
+	 *
+	 * @return bool
+	 */
+	public function is_wpcom_flex() {
+		if ( function_exists( 'has_blog_sticker' ) ) {
+			return has_blog_sticker( 'flex-cache-site' );
+		}
+		return false;
+	}
 }

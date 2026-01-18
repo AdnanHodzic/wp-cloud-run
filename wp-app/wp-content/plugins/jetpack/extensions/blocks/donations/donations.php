@@ -10,8 +10,13 @@
 namespace Automattic\Jetpack\Extensions\Donations;
 
 use Automattic\Jetpack\Blocks;
+use Automattic\Jetpack\Status\Request;
 use Jetpack_Gutenberg;
 use WP_Post;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Registers the block for use in Gutenberg
@@ -29,6 +34,17 @@ function register_block() {
 			)
 		);
 	}
+	// Add a meta field to the user to track if the donation warning has been dismissed.
+	\register_meta(
+		'user',
+		'jetpack_donation_warning_dismissed',
+		array(
+			'type'         => 'boolean',
+			'single'       => true,
+			'show_in_rest' => true,
+			'default'      => false,
+		)
+	);
 }
 add_action( 'init', __NAMESPACE__ . '\register_block' );
 
@@ -42,7 +58,7 @@ add_action( 'init', __NAMESPACE__ . '\register_block' );
  */
 function render_block( $attr, $content ) {
 	// Keep content as-is if rendered in other contexts than frontend (i.e. feed, emails, API, etc.).
-	if ( ! jetpack_is_frontend() ) {
+	if ( ! Request::is_frontend() ) {
 		$parsed = parse_blocks( $content );
 		if ( ! empty( $parsed[0] ) ) {
 			// Inject the link of the current post from the server side as the fallback link to make sure the donations block
@@ -254,11 +270,11 @@ function load_editor_scripts() {
 
 	wp_add_inline_script(
 		'jetpack-blocks-editor',
-		'var Jetpack_DonationsBlock = ' . wp_json_encode( $data, JSON_HEX_TAG | JSON_HEX_AMP ) . ';',
+		'var Jetpack_DonationsBlock = ' . wp_json_encode( $data, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . ';',
 		'before'
 	);
 }
-add_action( 'enqueue_block_assets', __NAMESPACE__ . '\load_editor_scripts' );
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\load_editor_scripts', 11 );
 
 /**
  * Determine if AMP should be disabled on posts having Donations blocks.

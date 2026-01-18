@@ -233,7 +233,6 @@ class Publicize extends Publicize_Base {
 	 * Get all connections for a specific user.
 	 *
 	 * @param array $args Arguments to run operations such as force refresh and connection test results.
-
 	 * @return array
 	 */
 	public function get_all_connections_for_user( $args = array() ) {
@@ -250,28 +249,10 @@ class Publicize extends Publicize_Base {
 					$user_id = (int) $connection['connection_data']['user_id'];
 					// phpcs:ignore WordPress.PHP.YodaConditions.NotYoda
 					if ( $user_id === 0 || $this->user_id() === $user_id ) {
-						if ( $this->use_admin_ui_v1() ) {
-							$connections_to_return[] = array_merge(
-								$connection,
-								array(
-									'service_name'   => $service_name,
-									'connection_id'  => $connection['connection_data']['id'],
-									'can_disconnect' => self::can_manage_connection( $connection['connection_data'] ),
-									'profile_link'   => (string) $this->get_profile_link( $service_name, $connection ),
-									'shared'         => '0' === $connection['connection_data']['user_id'],
-									'status'         => 'ok',
-								)
-							);
-						} else {
-							$connections_to_return[ $service_name ][ $id ] = $connection;
-						}
+						$connections_to_return[ $service_name ][ $id ] = $connection;
 					}
 				}
 			}
-		}
-
-		if ( self::use_admin_ui_v1() && isset( $args['test_connections'] ) && $args['test_connections'] && count( $connections_to_return ) > 0 ) {
-			$connections_to_return = $this->add_connection_test_results( $connections_to_return );
 		}
 
 		return $connections_to_return;
@@ -672,8 +653,8 @@ class Publicize extends Publicize_Base {
 
 		$error_data = array(
 			'user_can_refresh' => $user_can_refresh,
-			'refresh_text'     => $refresh_text,
-			'refresh_url'      => $refresh_url,
+			'refresh_text'     => $refresh_text ?? null,
+			'refresh_url'      => $refresh_url ?? null,
 		);
 
 		$this->test_connection_results[ $id ] = new WP_Error( $connection_error_code, $connection_test_message, $error_data );
@@ -718,7 +699,7 @@ class Publicize extends Publicize_Base {
 		}
 		// Only do this when a post transitions to being published.
 		// phpcs:disable WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase
-		if ( get_post_meta( $post->ID, $this->PENDING ) && $this->post_type_is_publicizeable( $post->post_type ) ) {
+		if ( get_post_meta( $post->ID, $this->PENDING, false ) && $this->post_type_is_publicizeable( $post->post_type ) ) {
 			delete_post_meta( $post->ID, $this->PENDING );
 			update_post_meta( $post->ID, $this->POST_DONE . 'all', true );
 		}
@@ -754,41 +735,5 @@ class Publicize extends Publicize_Base {
 		$flags['publicize_post'] = true;
 
 		return $flags;
-	}
-
-	/**
-	 * Gets the share status for a post.
-	 *
-	 * @param int $post_id The post ID.
-	 */
-	public function get_post_share_status( $post_id ) {
-		$shares = get_post_meta( $post_id, REST_Controller::SOCIAL_SHARES_POST_META_KEY, true );
-
-		// If the data is not an array, it means that sharing is not done yet.
-		$done = is_array( $shares );
-
-		if ( $done ) {
-			// The site could have multiple admins, editors and authors connected. Load shares information that only the current user has access to.
-			$connection_ids = wp_list_pluck( Connections::get_all_for_user(), 'connection_id', 'connection_id' );
-
-			$shares = array_filter(
-				$shares,
-				function ( $share ) use ( $connection_ids ) {
-					return isset( $connection_ids[ $share['connection_id'] ] );
-				}
-			);
-
-			usort(
-				$shares,
-				function ( $a, $b ) {
-					return $b['timestamp'] - $a['timestamp'];
-				}
-			);
-		}
-
-		return array(
-			'shares' => $done ? $shares : array(),
-			'done'   => $done,
-		);
 	}
 }

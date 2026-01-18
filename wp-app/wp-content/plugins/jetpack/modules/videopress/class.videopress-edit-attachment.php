@@ -2,6 +2,10 @@
 
 use Automattic\Jetpack\Connection\Client;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * VideoPress edit attachment screen
  *
@@ -261,7 +265,7 @@ class VideoPress_Edit_Attachment {
 			$poster = "<br><img src=\"{$info->poster}\" width=\"175px\">";
 		}
 
-		$html = <<< HTML
+		$html = <<<HTML
 
 <div class="misc-pub-section misc-pub-shortcode">
 	<strong>Shortcode</strong><br>
@@ -348,7 +352,7 @@ HTML;
 		$out = "<select name='attachments[{$info->post_id}][privacy_setting]'>";
 		foreach ( $privacy_settings as $r => $label ) {
 			$out .= "<option value=\"$r\"";
-			if ( intval( $r ) === $displayed_privacy_setting ) {
+			if ( $r === $displayed_privacy_setting ) {
 				$out .= ' selected';
 			}
 

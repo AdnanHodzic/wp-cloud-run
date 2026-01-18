@@ -10,11 +10,13 @@
 .infinite-scroll .pagination-wrapper,
 .infinite-scroll.neverending .footer-nav-widgets-wrapper,
 .infinite-scroll.neverending #site-footer {
+
 	/* Theme Footer (when set to scrolling) */
 	display: none;
 }
 
- /* When Infinite Scroll has reached its end we need to re-display elements that were hidden (via .neverending) before. */
+/* When Infinite Scroll has reached its end we need to re-display
+ * elements that were hidden (via .neverending) before. */
 .infinite-end.neverending .footer-nav-widgets-wrapper,
 .infinity-end.neverending #site-footer {
 	display: block;
@@ -92,6 +94,7 @@
 }
 
 @media (min-width: 700px) {
+
 	.entry-content div.sharedaddy h3.sd-title,
 	.entry-content h3.sd-title,
 	.entry-content #jp-relatedposts h3.jp-relatedposts-headline {
@@ -99,12 +102,12 @@
 	}
 }
 
-.entry-content div.sharedaddy h3.sd-title:before,
-.entry-content h3.sd-title:before {
+.entry-content div.sharedaddy h3.sd-title::before,
+.entry-content h3.sd-title::before {
 	border: 0 none;
 }
 
-.entry-content #jp-relatedposts h3.jp-relatedposts-headline em:before {
+.entry-content #jp-relatedposts h3.jp-relatedposts-headline em::before {
 	border: 0 none;
 }
 
@@ -124,7 +127,7 @@
 }
 
 /* Flickr */
-.widget_flickr .flickr-size-thumbnail .flickr-images  {
+.widget_flickr .flickr-size-thumbnail .flickr-images {
 	justify-content: left;
 }
 
@@ -148,6 +151,7 @@
 }
 
 @media (max-width: 600px) {
+
 	.widget_eu_cookie_law_widget #eu-cookie-law {
 		font-size: 1.4rem;
 		padding: 1.5rem 1.5rem 6.5rem;
@@ -170,9 +174,11 @@
 	font-weight: 700;
 	margin: 0;
 }
+
 @media ( min-width: 700px ) {
+
 	.jetpack_subscription_widget .widget-title label {
-			font-size: 4rem;
+		font-size: 4rem;
 	}
 }
 
@@ -194,6 +200,7 @@
 }
 
 @media (min-width: 700px) {
+
 	.entry-content #jp-relatedposts {
 		width: calc(100% - 8rem);
 	}
@@ -215,6 +222,7 @@
 }
 
 @media only screen and (max-width: 640px) {
+
 	#jp-relatedposts .jp-relatedposts-grid {
 		flex-direction: column;
 	}
@@ -225,7 +233,7 @@
 	}
 }
 
-#jp-relatedposts .jp-relatedposts-items-visual .jp-relatedposts-post  {
+#jp-relatedposts .jp-relatedposts-items-visual .jp-relatedposts-post {
 	padding-right: 0;
 }
 
@@ -273,7 +281,8 @@
 
 /* GIF Block */
 .wp-block-jetpack-gif {
-	/* Uses !important because the gif block styles are loaded in the footer after this file */
+
+	/* Uses !important because gif block styles load in footer after this file */
 	margin: 1em auto !important;
 }
 
@@ -300,7 +309,8 @@
 }
 
 /* Contact form */
-/* See https: //core.trac.wordpress.org/browser/trunk/src/wp-content/themes/twentytwenty/style.css?rev=58726#L710 */
+
+/* See https://core.trac.wordpress.org/browser/trunk/src/wp-content/themes/twentytwenty/style.css?rev=58726#L710 */
 .contact-form input.grunion-field[type="checkbox"] {
 	padding: 0;
 	width: 1.5rem;

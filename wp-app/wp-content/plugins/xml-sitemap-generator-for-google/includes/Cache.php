@@ -6,7 +6,7 @@ use GRIM_SG\Vendor\Controller;
 
 class Cache extends Controller {
 	private static $max_chunk_size = 500000;
-	private static $prefix = 'sgg_cache_';
+	private static $prefix         = 'sgg_cache_';
 
 	public static $sitemaps = array(
 		'sitemap',

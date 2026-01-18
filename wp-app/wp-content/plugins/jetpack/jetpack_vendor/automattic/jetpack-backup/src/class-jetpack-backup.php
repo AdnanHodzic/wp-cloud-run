@@ -119,15 +119,7 @@ class Jetpack_Backup {
 
 		add_action( 'rest_api_init', array( __CLASS__, 'register_rest_routes' ) );
 
-		$page_suffix = Admin_Menu::add_menu(
-			__( 'Jetpack VaultPress Backup', 'jetpack-backup-pkg' ),
-			_x( 'VaultPress Backup', 'The Jetpack VaultPress Backup product name, without the Jetpack prefix', 'jetpack-backup-pkg' ),
-			'manage_options',
-			'jetpack-backup',
-			array( __CLASS__, 'plugin_settings_page' ),
-			7
-		);
-		add_action( 'load-' . $page_suffix, array( __CLASS__, 'admin_init' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'add_wp_admin_submenu' ), 1 ); // Akismet uses 4, so we need to use 1 to ensure both menus are added when only they exist.
 
 		// Init Jetpack packages.
 		add_action(
@@ -162,6 +154,24 @@ class Jetpack_Backup {
 		 * @since 1.3.0
 		 */
 		do_action( 'jetpack_backup_initialized' );
+	}
+
+	/**
+	 * The page to be added to submenu
+	 */
+	public static function add_wp_admin_submenu() {
+		$page_suffix = Admin_Menu::add_menu(
+			__( 'Jetpack VaultPress Backup', 'jetpack-backup-pkg' ),
+			_x( 'VaultPress Backup', 'The Jetpack VaultPress Backup product name, without the Jetpack prefix', 'jetpack-backup-pkg' ),
+			'manage_options',
+			'jetpack-backup',
+			array( __CLASS__, 'plugin_settings_page' ),
+			7
+		);
+
+		if ( $page_suffix ) {
+			add_action( 'load-' . $page_suffix, array( __CLASS__, 'admin_init' ) );
+		}
 	}
 
 	/**
@@ -427,7 +437,7 @@ class Jetpack_Backup {
 			'wpcom'
 		);
 
-		if ( 200 !== $response['response']['code'] ) {
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return null;
 		}
 
@@ -493,11 +503,7 @@ class Jetpack_Backup {
 			'wpcom'
 		);
 
-		if ( is_wp_error( $response ) ) {
-			return null;
-		}
-
-		if ( 200 !== $response['response']['code'] ) {
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return null;
 		}
 
@@ -524,7 +530,7 @@ class Jetpack_Backup {
 			'wpcom'
 		);
 
-		if ( 200 !== $response['response']['code'] ) {
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return null;
 		}
 
@@ -711,15 +717,12 @@ class Jetpack_Backup {
 				return $upsell_products[ $bytes_1tb ];
 			}
 
+			$matched_bytes = $bytes_10gb;
 			foreach ( $upsell_products as $bytes => $product ) {
 				if ( $bytes > $additional_bytes_needed ) {
 					$matched_bytes = $bytes;
 					break;
 				}
-			}
-
-			if ( ! $matched_bytes ) {
-				$matched_bytes = $bytes_10gb;
 			}
 
 			return $upsell_products[ $matched_bytes ];

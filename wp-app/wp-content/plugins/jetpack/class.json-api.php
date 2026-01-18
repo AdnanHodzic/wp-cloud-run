@@ -221,7 +221,7 @@ class WPCOM_JSON_API {
 			return false;
 		}
 
-		switch ( strtolower( (string) $value ) ) {
+		switch ( strtolower( $value ) ) {
 			case '1':
 			case 't':
 			case 'true':
@@ -250,7 +250,7 @@ class WPCOM_JSON_API {
 			return false;
 		}
 
-		switch ( strtolower( (string) $value ) ) {
+		switch ( strtolower( $value ) ) {
 			case '0':
 			case 'f':
 			case 'false':
@@ -476,7 +476,8 @@ class WPCOM_JSON_API {
 		}
 
 		// Find which endpoint to serve.
-		$found = false;
+		$found       = false;
+		$path_pieces = array();
 		foreach ( $this->endpoints as $endpoint_path_versions => $endpoints_by_method ) {
 			// @todo Determine if anything depends on this being serialized rather than e.g. JSON.
 			// phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_unserialize -- Legacy, possibly depended on elsewhere.
@@ -499,6 +500,7 @@ class WPCOM_JSON_API {
 				$endpoint_path = untrailingslashit( $endpoint_path );
 				if ( $is_help ) {
 					// Truncate path at help depth.
+					// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $depth is set when $is_help is true.
 					$endpoint_path = implode( '/', array_slice( explode( '/', $endpoint_path ), 0, $depth ) );
 				}
 
@@ -557,6 +559,7 @@ class WPCOM_JSON_API {
 			 */
 			do_action( 'wpcom_json_api_output', 'help' );
 			$proxied = function_exists( 'wpcom_is_proxied_request' ) ? wpcom_is_proxied_request() : false;
+			// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $help_content_type is set when $is_help is true.
 			if ( 'json' === $help_content_type ) {
 				$docs = array();
 				foreach ( $matching_endpoints as $matching_endpoint ) {
@@ -576,13 +579,16 @@ class WPCOM_JSON_API {
 			exit( 0 );
 		}
 
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $endpoint is set when $find_all_matching_endpoints is false and $found is true, which is guaranteed here.
 		if ( $endpoint->in_testing && ! WPCOM_JSON_API__DEBUG ) {
 			return $this->output( 404, '', 'text/plain' );
 		}
 
 		/** This action is documented in class.json-api.php */
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $endpoint is set when $find_all_matching_endpoints is false and $found is true, which is guaranteed here.
 		do_action( 'wpcom_json_api_output', $endpoint->stat );
 
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $endpoint is set when $find_all_matching_endpoints is false and $found is true, which is guaranteed here.
 		$response = $this->process_request( $endpoint, $path_pieces );
 
 		if ( ! $response && ! is_array( $response ) ) {
@@ -606,6 +612,7 @@ class WPCOM_JSON_API {
 	 */
 	public function process_request( WPCOM_JSON_API_Endpoint $endpoint, $path_pieces ) {
 		$this->endpoint = $endpoint;
+		$this->maybe_switch_to_token_user_and_site();
 		return call_user_func_array( array( $endpoint, 'callback' ), $path_pieces );
 	}
 
@@ -677,7 +684,7 @@ class WPCOM_JSON_API {
 
 		if ( 'text/plain' === $content_type ||
 			'text/html' === $content_type ) {
-			status_header( (int) $status_code );
+			status_header( $status_code );
 			header( 'Content-Type: ' . $content_type );
 			foreach ( $extra as $key => $value ) {
 				header( "$key: $value" );
@@ -699,7 +706,7 @@ class WPCOM_JSON_API {
 			$content_type = 'application/json';
 		}
 
-		status_header( (int) $status_code );
+		status_header( $status_code );
 		header( "Content-Type: $content_type" );
 		if ( isset( $this->query['callback'] ) && is_string( $this->query['callback'] ) ) {
 			$callback = preg_replace( '/[^a-z0-9_.]/i', '', $this->query['callback'] );
@@ -714,7 +721,7 @@ class WPCOM_JSON_API {
 			echo "/**/$callback("; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- This is JSONP output, not HTML.
 
 		}
-		echo $this->json_encode( $response ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- This is JSON or JSONP output, not HTML.
+		echo $this->json_encode( $response, JSON_UNESCAPED_SLASHES ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- This is JSON or JSONP output, not HTML.
 		if ( $callback ) {
 			echo ');';
 		}
@@ -907,11 +914,14 @@ class WPCOM_JSON_API {
 	/**
 	 * JSON encode.
 	 *
-	 * @param mixed $data Data.
+	 * @param mixed $value   The value to encode.
+	 * @param int   $flags   Options to be passed to json_encode(). Default 0.
+	 * @param int   $depth   Maximum depth to walk through $value. Must be greater than 0.
+	 *
 	 * @return string|false
 	 */
-	public function json_encode( $data ) {
-		return wp_json_encode( $data );
+	public function json_encode( $value, $flags = 0, $depth = 512 ) {
+		return wp_json_encode( $value, $flags, $depth );
 	}
 
 	/**
@@ -968,6 +978,35 @@ class WPCOM_JSON_API {
 		}
 
 		return $blog_id;
+	}
+
+	/**
+	 * Switch to a user and blog based on the current request's Jetpack token when the endpoint accepts this feature.
+	 *
+	 * @return void
+	 */
+	protected function maybe_switch_to_token_user_and_site() {
+		if ( ! $this->endpoint->allow_jetpack_token_auth ) {
+			return;
+		}
+
+		if ( ! class_exists( 'Jetpack_Server_Version' ) ) {
+			return;
+		}
+
+		$token = Jetpack_Server_Version::get_token_from_authorization_header();
+
+		if ( ! $token || is_wp_error( $token ) ) {
+			return;
+		}
+
+		if ( get_current_user_id() !== $token->user_id ) {
+			wp_set_current_user( $token->user_id );
+		}
+
+		if ( get_current_blog_id() !== $token->blog_id ) {
+			switch_to_blog( $token->blog_id );
+		}
 	}
 
 	/**
@@ -1078,7 +1117,7 @@ class WPCOM_JSON_API {
 	 * Counts the number of comments on a site, including certain comment types.
 	 *
 	 * @param int $post_id Post ID.
-	 * @return array Array of counts, matching the output of https://developer.wordpress.org/reference/functions/get_comment_count/.
+	 * @return object The number of counts keyed by status, matching the output of https://developer.wordpress.org/reference/functions/get_comment_count/.
 	 */
 	public function wp_count_comments( $post_id ) {
 		global $wpdb;

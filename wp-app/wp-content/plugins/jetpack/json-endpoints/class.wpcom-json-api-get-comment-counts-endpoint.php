@@ -3,6 +3,10 @@
  * Endpoint: /sites/%s/comment-counts
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 new WPCOM_JSON_API_GET_Comment_Counts_Endpoint(
 	array(
 		'description'      => 'Get comment counts for each available status',
@@ -34,6 +38,8 @@ new WPCOM_JSON_API_GET_Comment_Counts_Endpoint(
 
 /**
  * GET Comment Counts endpoint class.
+ *
+ * @phan-constructor-used-for-side-effects
  */
 class WPCOM_JSON_API_GET_Comment_Counts_Endpoint extends WPCOM_JSON_API_Endpoint {
 	/**
@@ -54,8 +60,7 @@ class WPCOM_JSON_API_GET_Comment_Counts_Endpoint extends WPCOM_JSON_API_Endpoint
 			return new WP_Error( 'authorization_required', 'An active access token must be used to retrieve comment counts.', 403 );
 		}
 
-		// @phan-suppress-next-line PhanDeprecatedFunction -- @todo Switch to current_user_can_for_site when we drop support for WP 6.6.
-		if ( ! current_user_can_for_blog( $blog_id, 'edit_posts' ) ) {
+		if ( ! current_user_can_for_site( $blog_id, 'edit_posts' ) ) {
 			return new WP_Error( 'authorization_required', 'You are not authorized to view comment counts for this blog.', 403 );
 		}
 

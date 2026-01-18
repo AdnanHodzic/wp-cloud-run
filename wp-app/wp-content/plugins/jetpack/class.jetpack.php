@@ -39,6 +39,11 @@ use Automattic\Jetpack\Sync\Health;
 use Automattic\Jetpack\Sync\Sender;
 use Automattic\Jetpack\Terms_Of_Service;
 use Automattic\Jetpack\Tracking;
+use Automattic\Woocommerce_Analytics;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /*
 Options:
@@ -652,11 +657,6 @@ class Jetpack {
 		require_once JETPACK__PLUGIN_DIR . 'class-jetpack-stats-dashboard-widget.php';
 		add_action( 'wp_dashboard_setup', array( new Jetpack_Stats_Dashboard_Widget(), 'init' ) );
 
-		if ( defined( 'JETPACK_NEWSLETTER_WIDGET' ) && JETPACK_NEWSLETTER_WIDGET ) {
-			require_once JETPACK__PLUGIN_DIR . 'class-jetpack-newsletter-dashboard-widget.php';
-			add_action( 'wp_dashboard_setup', array( new Jetpack_Newsletter_Dashboard_Widget(), 'init' ) );
-		}
-
 		// Returns HTTPS support status.
 		add_action( 'wp_ajax_jetpack-recheck-ssl', array( $this, 'ajax_recheck_ssl' ) );
 
@@ -759,6 +759,7 @@ class Jetpack {
 			array(
 				'jitm',
 				'sync',
+				'account_protection',
 				'waf',
 				'videopress',
 				'stats',
@@ -788,10 +789,6 @@ class Jetpack {
 		);
 
 		$config->ensure( 'search' );
-
-		if ( defined( 'ENABLE_WORDADS_SHARED_UI' ) && ENABLE_WORDADS_SHARED_UI ) {
-			$config->ensure( 'wordads' );
-		}
 
 		if ( ! $this->connection_manager ) {
 			$this->connection_manager = new Connection_Manager( 'jetpack' );
@@ -1504,9 +1501,8 @@ class Jetpack {
 			$notice = __( 'The WP_LOCAL_DEV constant is defined in wp-config.php or elsewhere.', 'jetpack' );
 		} elseif ( $status->is_local_site() ) {
 			$notice = __( 'The site URL is a known local development environment URL (e.g. http://localhost).', 'jetpack' );
-			/** This filter is documented in packages/status/src/class-status.php */
-		} elseif ( has_filter( 'jetpack_development_mode' ) && apply_filters( 'jetpack_development_mode', false ) ) { // This is a deprecated filter name.
-			$notice = __( 'The jetpack_development_mode filter is set to true.', 'jetpack' );
+		} elseif ( get_option( 'jetpack_offline_mode' ) ) {
+			$notice = __( 'The jetpack_offline_mode option is set to true.', 'jetpack' );
 		} else {
 			$notice = __( 'The jetpack_offline_mode filter is set to true.', 'jetpack' );
 		}
@@ -2625,6 +2621,10 @@ p {
 			Sync_Actions::do_only_first_initial_sync();
 		}
 
+		if ( ! defined( 'WC_ANALYTICS' ) && class_exists( 'Automattic\Woocommerce_Analytics' ) ) {
+			Woocommerce_Analytics::maybe_add_proxy_speed_module();
+		}
+
 		self::plugin_initialize();
 	}
 
@@ -2805,6 +2805,10 @@ p {
 			self::disconnect();
 			Jetpack_Options::delete_option( 'version' );
 		}
+
+		if ( ! defined( 'WC_ANALYTICS' ) && class_exists( 'Automattic\Woocommerce_Analytics' ) ) {
+			Woocommerce_Analytics::maybe_remove_proxy_speed_module();
+		}
 	}
 
 	/**
@@ -2834,7 +2838,7 @@ p {
 	}
 
 	/**
-	 * Happens after a successfull disconnection.
+	 * Happens after a successful disconnection.
 	 *
 	 * @static
 	 */
@@ -3030,7 +3034,7 @@ p {
 		}
 
 		if ( $encode ) {
-			return wp_json_encode( $data );
+			return wp_json_encode( $data, JSON_UNESCAPED_SLASHES );
 		}
 
 		return $data;
@@ -3111,6 +3115,7 @@ p {
 			// Upgrade: 1.1 -> 1.1.1
 			// Check and see if host can verify the Jetpack servers' SSL certificate.
 			$args = array();
+			// @phan-suppress-next-line PhanAccessMethodInternal -- Phan is correct, but the usage is intentional.
 			Client::_wp_remote_request( self::connection()->api_url( 'test' ), $args, true );
 		}
 
@@ -3197,7 +3202,7 @@ p {
 
 			if ( $throw ) {
 				/* translators: Plugin name to deactivate. */
-				throw new RuntimeException( sprintf( __( 'Jetpack contains the most recent version of the old “%1$s” plugin.', 'jetpack' ), 'WordPress.com Stats' ) );
+				throw new RuntimeException( sprintf( __( 'Jetpack contains the most recent version of the old "%1$s" plugin.', 'jetpack' ), 'WordPress.com Stats' ) );
 			}
 		}
 	}
@@ -3310,16 +3315,15 @@ p {
 				$status_code = 400;
 			}
 
-			status_header( $status_code );
-			die( wp_json_encode( (object) compact( 'error', 'error_description' ) ) );
+			wp_send_json( (object) compact( 'error', 'error_description' ), $status_code, JSON_UNESCAPED_SLASHES );
 		}
 
-		status_header( 200 );
 		if ( true === $response ) {
+			status_header( 200 );
 			exit( 0 );
 		}
 
-		die( wp_json_encode( (object) $response ) );
+		wp_send_json( (object) $response, 200, JSON_UNESCAPED_SLASHES );
 	}
 
 	/**
@@ -3439,7 +3443,7 @@ p {
 					'meta' => (array) wp_get_attachment_metadata( $post_id ),
 				);
 
-				return (array) array( $response );
+				return array( $response );
 			}
 
 			$attachment_id = media_handle_upload(
@@ -3527,7 +3531,7 @@ p {
 
 			// Add objects to be passed to the initial state of the app.
 			// Use wp_add_inline_script instead of wp_localize_script, see https://core.trac.wordpress.org/ticket/25280.
-			wp_add_inline_script( 'jetpack-plugins-page-js', 'var Initial_State=JSON.parse(decodeURIComponent("' . rawurlencode( wp_json_encode( Jetpack_Redux_State_Helper::get_minimal_state() ) ) . '"));', 'before' );
+			wp_add_inline_script( 'jetpack-plugins-page-js', 'var Initial_State=' . wp_json_encode( Jetpack_Redux_State_Helper::get_minimal_state(), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . ';', 'before' );
 
 			add_action( 'admin_footer', array( $this, 'jetpack_plugin_portal_containers' ) );
 		}
@@ -4446,7 +4450,9 @@ endif;
 			array(
 				'enabled' => $result,
 				'message' => get_transient( 'jetpack_https_test_message' ),
-			)
+			),
+			null, // @phan-suppress-current-line PhanTypeMismatchArgumentProbablyReal -- It takes null, but its phpdoc only says int.
+			JSON_UNESCAPED_SLASHES
 		);
 	}
 
@@ -4494,8 +4500,7 @@ endif;
 				if ( is_a( $jp_user, 'WP_User' ) ) {
 					wp_set_current_user( $jp_user->ID );
 					$user_can = is_multisite()
-						// @phan-suppress-next-line PhanDeprecatedFunction -- @todo Switch to current_user_can_for_site when we drop support for WP 6.6.
-						? current_user_can_for_blog( get_current_blog_id(), 'manage_options' )
+						? current_user_can_for_site( get_current_blog_id(), 'manage_options' )
 						: current_user_can( 'manage_options' );
 					if ( $user_can ) {
 						$token_type              = 'user';
@@ -4579,6 +4584,7 @@ endif;
 	 */
 	public static function permit_ssl( $force_recheck = false ) {
 		// Do some fancy tests to see if ssl is being supported.
+		$ssl = false;
 		if ( ! $force_recheck ) {
 			$ssl = get_transient( 'jetpack_https_test' );
 		}
@@ -4650,16 +4656,16 @@ endif;
 			jQuery( document ).ready( function( $ ) {
 				$( '#jetpack-recheck-ssl-button' ).click( function( e ) {
 					var $this = $( this );
-					$this.html( <?php echo wp_json_encode( __( 'Checking', 'jetpack' ) ); ?> );
+					$this.html( <?php echo wp_json_encode( esc_html__( 'Checking', 'jetpack' ), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?> );
 					$( '#jetpack-recheck-ssl-output' ).html( '' );
 					e.preventDefault();
-					var data = { action: 'jetpack-recheck-ssl', 'ajax-nonce': <?php echo wp_json_encode( $ajax_nonce ); ?> };
+					var data = { action: 'jetpack-recheck-ssl', 'ajax-nonce': <?php echo wp_json_encode( $ajax_nonce, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?> };
 					$.post( ajaxurl, data )
 					.done( function( response ) {
 						if ( response.enabled ) {
 							$( '#jetpack-ssl-warning' ).hide();
 						} else {
-							this.html( <?php echo wp_json_encode( __( 'Try again', 'jetpack' ) ); ?> );
+							this.html( <?php echo wp_json_encode( esc_html__( 'Try again', 'jetpack' ), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?> );
 							$( '#jetpack-recheck-ssl-output' ).html( 'SSL Failed: ' + response.message );
 						}
 					}.bind( $this ) );
@@ -5115,7 +5121,7 @@ endif;
 	 * @return mixed
 	 */
 	public static function set_suffix_on_min( $src, $handle ) {
-		if ( ! str_contains( $src, '.min.css' ) ) {
+		if ( ! is_string( $src ) || ! str_contains( $src, '.min.css' ) ) {
 			return $src;
 		}
 

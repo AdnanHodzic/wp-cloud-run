@@ -7,6 +7,10 @@
 
 namespace Automattic\Jetpack\JITMS;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Jetpack pre-connection just in time messaging through out the admin.
  */
@@ -130,6 +134,8 @@ class Pre_Connection_JITM extends JITM {
 	 * @return array The JITMs to show, or an empty array if there is nothing to show
 	 */
 	public function get_messages( $message_path, $query, $full_jp_logo_exists ) {
+		// Ensure only admins see pre-connection JITMs since only they can connect to WordPress.com
+		// and enable modules.
 		if ( ! current_user_can( 'install_plugins' ) ) {
 			return array();
 		}

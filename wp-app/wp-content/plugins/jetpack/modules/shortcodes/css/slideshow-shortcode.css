@@ -16,9 +16,8 @@
 	border-color: #fff;
 }
 
-.jetpack-slideshow-window, .jetpack-slideshow-window * {
-	-moz-box-sizing: content-box;
-	-webkit-box-sizing: content-box;
+.jetpack-slideshow-window,
+.jetpack-slideshow-window * {
 	box-sizing: content-box;
 }
 
@@ -29,6 +28,7 @@
 }
 
 body div.jetpack-slideshow-window * img {
+
 	/* Override any styles that might be present in the page stylesheet */
 	background-color: transparent !important;
 	background-image: none !important;
@@ -39,8 +39,6 @@ body div.jetpack-slideshow-window * img {
 	max-height: 100%;
 	padding: 0 !important;
 	position: relative;
-	-webkit-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
 	transform: translateY(-50%);
 	top: 50%;
 }
@@ -67,8 +65,8 @@ body div.jetpack-slideshow-window * img {
 
 .jetpack-slideshow-line-height-hack {
 	overflow: hidden;
-	width: 0px;
-	font-size: 0px;
+	width: 0;
+	font-size: 0;
 }
 
 .jetpack-slideshow-slide-caption {
@@ -93,26 +91,24 @@ body div.jetpack-slideshow-window * img {
 	margin: auto;
 	text-align: center;
 	width: 100%;
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";
 	opacity: 0.5;
+
 	/*rtl:ignore*/
-	direction:ltr;
-	-webkit-transition: 300ms opacity ease-out;
-	-moz-transition: 300ms opacity ease-out;
+	direction: ltr;
 	transition: 300ms opacity ease-out;
 }
 
 .jetpack-slideshow-window:hover .jetpack-slideshow-controls {
-	-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
+	-ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 	opacity: 1;
 }
 
 body div div.jetpack-slideshow-controls a,
 body div div.jetpack-slideshow-controls a:hover {
-	border:2px solid rgba(255,255,255,0.1) !important;
-	background-color: #000 !important;
-	background-color: rgba(0,0,0,0.6) !important;
-	background-image: url('../img/slideshow-controls.png') !important;
+	border: 2px solid rgba(255, 255, 255, 0.1) !important;
+	background-color: rgba(0, 0, 0, 0.6) !important;
+	background-image: url(../img/slideshow-controls.png) !important;
 	background-repeat: no-repeat;
 	background-size: 142px 16px !important;
 	background-position: -34px 8px !important;
@@ -120,39 +116,47 @@ body div div.jetpack-slideshow-controls a:hover {
 	margin: 0 5px !important;
 	padding: 0 !important;
 	display: inline-block !important;
-	*display: inline;
 	zoom: 1;
 	height: 32px !important;
 	width: 32px !important;
 	line-height: 32px !important;
 	text-align: center !important;
-	-khtml-border-radius: 10em !important;
-	-webkit-border-radius: 10em !important;
-	-moz-border-radius: 10em !important;
 	border-radius: 10em !important;
-	-webkit-transition: 300ms border-color ease-out;
-	-moz-transition: 300ms border-color ease-out;
-	-o-transition: 300ms border-color ease-out;
 	transition: 300ms border-color ease-out;
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5) {
+
 	body div div.jetpack-slideshow-controls a,
 	body div div.jetpack-slideshow-controls a:hover {
-		background-image: url('../img/slideshow-controls-2x.png') !important;
+		background-image: url(../img/slideshow-controls-2x.png) !important;
 	}
 }
 
 body div div.jetpack-slideshow-controls a:hover {
-	border-color: rgba(255,255,255,1) !important;
+	border-color: rgba(255, 255, 255, 1) !important;
 }
 
-body div div.jetpack-slideshow-controls a:first-child { background-position: -76px 8px !important;}
-body div div.jetpack-slideshow-controls a:last-child { background-position: -117px 8px !important;}
-body div div.jetpack-slideshow-controls a:nth-child(2) { background-position: -34px 8px !important;}
-body div div.jetpack-slideshow-controls a.running { background-position: -34px 8px !important;}
-body div div.jetpack-slideshow-controls a.paused { background-position: 9px 8px !important;}
+body div div.jetpack-slideshow-controls a:first-child {
+	background-position: -76px 8px !important;
+}
+
+body div div.jetpack-slideshow-controls a:last-child {
+	background-position: -117px 8px !important;
+}
+
+body div div.jetpack-slideshow-controls a:nth-child(2) {
+	background-position: -34px 8px !important;
+}
+
+body div div.jetpack-slideshow-controls a.running {
+	background-position: -34px 8px !important;
+}
+
+body div div.jetpack-slideshow-controls a.paused {
+	background-position: 9px 8px !important;
+}
 
 .jetpack-slideshow-controls a img {
-	border: 50px dotted fuchsia;
+	border: 50px dotted #f0f;
 }

@@ -13,6 +13,10 @@ use Automattic\Jetpack\My_Jetpack\Product;
 use Automattic\Jetpack\My_Jetpack\Wpcom_Products;
 use WP_Post;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Class responsible for handling the Jetpack AI product
  */
@@ -48,22 +52,6 @@ class Jetpack_Ai extends Product {
 	 * @var string
 	 */
 	public static $feature_identifying_paid_plan = 'ai-assistant';
-
-	/**
-	 * Get the Product info for the API
-	 *
-	 * @throws \Exception If required attribute is not declared in the child class.
-	 * @return array
-	 */
-	public static function get_info() {
-		// Call parent method to get the default info.
-		$info = parent::get_info();
-
-		// Populate the product with the feature data.
-		$info['ai-assistant-feature'] = self::get_ai_assistant_feature();
-
-		return $info;
-	}
 
 	/**
 	 * Get the plugin slug - ovewrite it and return Jetpack's
@@ -240,7 +228,7 @@ class Jetpack_Ai extends Product {
 	 * @return string
 	 */
 	public static function get_description() {
-		return __( 'Enhance your writing and productivity with our AI suite', 'jetpack-my-jetpack' );
+		return __( 'Turn your ideas into ready‑to‑publish content at lightspeed.', 'jetpack-my-jetpack' );
 	}
 
 	/**
@@ -545,6 +533,26 @@ class Jetpack_Ai extends Product {
 	 */
 	public static function is_plugin_active() {
 		return (bool) static::is_jetpack_plugin_active();
+	}
+
+	/**
+	 * Checks whether the Product is active
+	 *
+	 * Overrides the parent method to respect the jetpack_ai_enabled filter.
+	 *
+	 * @return boolean
+	 */
+	public static function is_active() {
+		/**
+		 * Filter to enable/disable Jetpack AI.
+		 *
+		 * @since 5.28.3
+		 *
+		 * @param boolean $enabled True if Jetpack AI should be enabled, false otherwise. Default true.
+		 */
+		$is_enabled = apply_filters( 'jetpack_ai_enabled', true );
+
+		return $is_enabled && parent::is_active();
 	}
 
 	/**

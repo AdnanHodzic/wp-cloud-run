@@ -10,6 +10,10 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
 /**
@@ -249,7 +253,7 @@ class WPCOM_social_media_icons_widget extends WP_Widget {
 	 *
 	 * @access public
 	 * @param mixed $instance Instance.
-	 * @return void
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$instance = wp_parse_args( (array) $instance, $this->defaults );

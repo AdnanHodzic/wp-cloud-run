@@ -48,12 +48,15 @@ class Settings extends Controller {
 	public $image_sitemap_url       = 'image-sitemap.xml';
 	public $video_sitemap_url       = 'video-sitemap.xml';
 	public $hide_image_previews     = false;
+	public $hide_image_sitemap_xsl  = false;
+	public $hide_video_sitemap_xsl  = false;
 	public $image_mime_types        = array(
 		'image/jpeg' => true,
 		'image/png'  => true,
 		'image/gif'  => true,
 		'image/bmp'  => true,
 		'image/webp' => true,
+		'image/avif' => true,
 	);
 	public $youtube_api_key         = '';
 	public $vimeo_api_key           = '';
@@ -62,15 +65,18 @@ class Settings extends Controller {
 	public $include_woo_gallery     = false;
 
 	// Cache Settings
-	public $enable_cache             = false;
-	public $cache_timeout            = 24;
-	public $cache_timeout_period     = 3600;
-	public $clear_cache_on_save_post = false;
-	public $enable_video_api_cache   = true;
+	public $enable_cache                = false;
+	public $cache_timeout               = 24;
+	public $cache_timeout_period        = 3600;
+	public $clear_cache_on_save_post    = false;
+	public $enable_video_api_cache      = true;
+	public $disable_media_sitemap_cache = false;
 
-	public $minimize_sitemap         = false;
-	public $hide_branding            = true;
-	public $colors                   = array(
+	public $minimize_sitemap = false;
+	public $hide_branding    = true;
+	public $enable_cronjob   = false;
+	public $cronjob_runtime  = 'daily';
+	public $colors           = array(
 		'header_background_color'  => '#82a745',
 		'header_text_color'        => '#ffffff',
 		'sitemap_background_color' => '#ecf4db',
@@ -84,8 +90,8 @@ class Settings extends Controller {
 	 */
 	public function __construct() {
 		$this->home          = new PTSettings( 10, PTSettings::$DAILY );
-		$this->page          = new PTSettings( 6, PTSettings::$WEEKLY, false, true );
-		$this->post          = new PTSettings( 6, PTSettings::$MONTHLY, true, true );
+		$this->page          = new PTSettings( 6, PTSettings::$WEEKLY, false, true, true );
+		$this->post          = new PTSettings( 6, PTSettings::$MONTHLY, true, true, true );
 		$this->archive       = new PTSettings( 6, PTSettings::$DAILY );
 		$this->archive_older = new PTSettings( 3, PTSettings::$YEARLY );
 		$this->authors       = new PTSettings( 3, PTSettings::$WEEKLY );
@@ -111,7 +117,8 @@ class Settings extends Controller {
 		$settings->priority      = isset( $_POST[ $option . '_priority' ] ) ? sanitize_text_field( $_POST[ $option . '_priority' ] ) : 0;
 		$settings->frequency     = isset( $_POST[ $option . '_frequency' ] ) ? sanitize_text_field( $_POST[ $option . '_frequency' ] ) : $settings->frequency;
 		$settings->google_news   = isset( $_POST[ $option . '_google_news' ] ) ? sanitize_text_field( $_POST[ $option . '_google_news' ] ) : 0;
-		$settings->media_sitemap = isset( $_POST[ $option . '_media_sitemap' ] ) ? sanitize_text_field( $_POST[ $option . '_media_sitemap' ] ) : 0;
+		$settings->image_sitemap = isset( $_POST[ $option . '_image_sitemap' ] ) ? sanitize_text_field( $_POST[ $option . '_image_sitemap' ] ) : 0;
+		$settings->video_sitemap = isset( $_POST[ $option . '_video_sitemap' ] ) ? sanitize_text_field( $_POST[ $option . '_video_sitemap' ] ) : 0;
 
 		return $settings;
 	}

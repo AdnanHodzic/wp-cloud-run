@@ -7,21 +7,41 @@ $exclude   = get_post_meta( $post->ID, '_sitemap_exclude', true );
 $priority  = get_post_meta( $post->ID, '_sitemap_priority', true );
 $frequency = get_post_meta( $post->ID, '_sitemap_frequency', true );
 
+$frequency = isset( $frequency ) ? (string) $frequency : '';
+$priority  = isset( $priority ) ? (string) $priority : '';
+
+$frequency_options = array(
+	''         => __( 'Default', 'xml-sitemap-generator-for-google' ),
+	'always'   => __( 'Always', 'xml-sitemap-generator-for-google' ),
+	'hourly'   => __( 'Hourly', 'xml-sitemap-generator-for-google' ),
+	'daily'    => __( 'Daily', 'xml-sitemap-generator-for-google' ),
+	'weekly'   => __( 'Weekly', 'xml-sitemap-generator-for-google' ),
+	'monthly'  => __( 'Monthly', 'xml-sitemap-generator-for-google' ),
+	'yearly'   => __( 'Yearly', 'xml-sitemap-generator-for-google' ),
+	'never'    => __( 'Never', 'xml-sitemap-generator-for-google' ),
+);
+
+
 wp_enqueue_style( 'sgg-meta-box', GRIM_SG_URL . 'assets/css/meta-box.min.css', array(), GRIM_SG_VERSION );
+wp_enqueue_style( 'sgg-icons', GRIM_SG_URL . 'assets/fonts/icons/style.css', array(), GRIM_SG_VERSION );
+wp_enqueue_script( 'sgg-scripts', GRIM_SG_URL . 'assets/js/scripts.js', array( 'jquery' ), GRIM_SG_VERSION, true );
 
 wp_nonce_field( 'sgg_pro_meta_box', 'sgg_pro_meta_box_nonce' );
 ?>
-<div class="pro-wrapper <?php echo esc_attr( sgg_pro_class() ); ?>">
-	<p><?php esc_html_e( 'Custom Sitemap Options for the Current Post such as Exclude from Sitemap, Post Priority, Post Frequency.', 'xml-sitemap-generator-for-google' ); ?></p>
+<div class="grim-section grim-section-post-meta pro-wrapper <?php echo esc_attr( sgg_pro_class() ); ?>">
+	<?php sgg_show_pro_badge(); ?>
+	<p class="grim-section-desc"><?php esc_html_e( 'Custom Sitemap Options for the Current Post such as Exclude from Sitemap, Post Priority, Post Frequency.', 'xml-sitemap-generator-for-google' ); ?></p>
 
-	<table class="wp-list-table widefat fixed striped">
+	<table class="grim-table wp-list-table widefat fixed striped">
 		<?php if ( ! apply_filters( 'xml_sitemap_disable_post_meta__exclude_sitemap', false ) ) { ?>
 			<tr>
 				<td>
 					<label for="_sitemap_exclude"><?php esc_html_e( 'Exclude from Sitemap', 'xml-sitemap-generator-for-google' ); ?></label>
 				</td>
 				<td>
-					<input type="checkbox" name="_sitemap_exclude" id="_sitemap_exclude" value="1" <?php checked( $exclude, '1' ); ?> <?php disabled( ! sgg_pro_enabled() ); ?> />
+					<label for="_sitemap_exclude">
+						<input class="grim-default-checkbox" type="checkbox" name="_sitemap_exclude" id="_sitemap_exclude" value="1" <?php checked( $exclude, '1' ); ?> <?php disabled( ! sgg_pro_enabled() ); ?> />
+					</label>
 				</td>
 			</tr>
 		<?php } ?>
@@ -31,19 +51,52 @@ wp_nonce_field( 'sgg_pro_meta_box', 'sgg_pro_meta_box_nonce' );
 					<label for="_sitemap_priority"><?php esc_html_e( 'Post Priority', 'xml-sitemap-generator-for-google' ); ?></label>
 				</td>
 				<td>
-					<select name="_sitemap_priority" id="_sitemap_priority" <?php disabled( ! sgg_pro_enabled() ); ?>>
-						<option value=""><?php esc_html_e( 'Default', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="0" <?php selected( $priority, '0' ); ?>>0.0</option>
-						<option value="1" <?php selected( $priority, '1' ); ?>>0.1</option>
-						<option value="2" <?php selected( $priority, '2' ); ?>>0.2</option>
-						<option value="3" <?php selected( $priority, '3' ); ?>>0.3</option>
-						<option value="4" <?php selected( $priority, '4' ); ?>>0.4</option>
-						<option value="5" <?php selected( $priority, '5' ); ?>>0.5</option>
-						<option value="6" <?php selected( $priority, '6' ); ?>>0.6</option>
-						<option value="7" <?php selected( $priority, '7' ); ?>>0.7</option>
-						<option value="8" <?php selected( $priority, '8' ); ?>>0.8</option>
-						<option value="9" <?php selected( $priority, '9' ); ?>>0.9</option>
-						<option value="10" <?php selected( $priority, '10' ); ?>>1.0</option>
+					<div class="grim-select grim-select-default"
+						 data-name="_sitemap_priority">
+						<div class="grim-select__trigger">
+							<span>
+								<?php
+								if ( $priority === '' ) {
+									esc_html_e( 'Default', 'xml-sitemap-generator-for-google' );
+								} else {
+									echo esc_html( number_format( (int) $priority / 10, 1 ) );
+								}
+								?>
+							</span>
+							<i class="grim-icon-chevron-down"></i>
+						</div>
+
+						<div class="grim-options">
+							<div class="grim-option <?php echo $priority === '' ? 'selected' : ''; ?>" data-value="">
+								<?php esc_html_e( 'Default', 'xml-sitemap-generator-for-google' ); ?>
+							</div>
+
+							<?php for ( $i = 0; $i <= 10; $i++ ) :
+								$label = number_format( $i / 10, 1 );
+								?>
+								<div class="grim-option <?php echo (string) $priority === (string) $i ? 'selected' : ''; ?>"
+									 data-value="<?php echo esc_attr( $i ); ?>">
+									<?php echo esc_html( $label ); ?>
+								</div>
+							<?php endfor; ?>
+						</div>
+					</div>
+
+					<select id="_sitemap_priority"
+							name="_sitemap_priority"
+							class="grim-hidden-select"
+							hidden>
+						<option value="" <?php selected( $priority, '' ); ?>>
+							<?php esc_html_e( 'Default', 'xml-sitemap-generator-for-google' ); ?>
+						</option>
+
+						<?php for ( $i = 0; $i <= 10; $i++ ) :
+							$label = number_format( $i / 10, 1 );
+							?>
+							<option value="<?php echo esc_attr( $i ); ?>" <?php selected( (string) $priority, (string) $i ); ?>>
+								<?php echo esc_html( $label ); ?>
+							</option>
+						<?php endfor; ?>
 					</select>
 				</td>
 			</tr>
@@ -54,15 +107,34 @@ wp_nonce_field( 'sgg_pro_meta_box', 'sgg_pro_meta_box_nonce' );
 					<label for="_sitemap_frequency"><?php esc_html_e( 'Post Frequency', 'xml-sitemap-generator-for-google' ); ?></label>
 				</td>
 				<td>
-					<select name="_sitemap_frequency" id="_sitemap_frequency" <?php disabled( ! sgg_pro_enabled() ); ?>>
-						<option value=""><?php esc_html_e( 'Default', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="always" <?php selected( $frequency, 'always' ); ?>><?php esc_html_e( 'Always', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="hourly" <?php selected( $frequency, 'hourly' ); ?>><?php esc_html_e( 'Hourly', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="daily" <?php selected( $frequency, 'daily' ); ?>><?php esc_html_e( 'Daily', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="weekly" <?php selected( $frequency, 'weekly' ); ?>><?php esc_html_e( 'Weekly', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="monthly" <?php selected( $frequency, 'monthly' ); ?>><?php esc_html_e( 'Monthly', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="yearly" <?php selected( $frequency, 'yearly' ); ?>><?php esc_html_e( 'Yearly', 'xml-sitemap-generator-for-google' ); ?></option>
-						<option value="never" <?php selected( $frequency, 'never' ); ?>><?php esc_html_e( 'Never', 'xml-sitemap-generator-for-google' ); ?></option>
+					<div class="grim-select grim-select-default"
+						 data-name="_sitemap_frequency">
+						<div class="grim-select__trigger">
+							<span>
+								<?php echo esc_html( $frequency_options[ $frequency ] ?? __( 'Default', 'xml-sitemap-generator-for-google' ) ); ?>
+							</span>
+							<i class="grim-icon-chevron-down"></i>
+						</div>
+
+						<div class="grim-options">
+							<?php foreach ( $frequency_options as $opt_value => $label ) : ?>
+								<div class="grim-option <?php echo (string) $frequency === (string) $opt_value ? 'selected' : ''; ?>"
+									 data-value="<?php echo esc_attr( $opt_value ); ?>">
+									<?php echo esc_html( $label ); ?>
+								</div>
+							<?php endforeach; ?>
+						</div>
+					</div>
+
+					<select id="_sitemap_frequency"
+							name="_sitemap_frequency"
+							class="grim-hidden-select"
+							hidden>
+						<?php foreach ( $frequency_options as $opt_value => $label ) : ?>
+							<option value="<?php echo esc_attr( $opt_value ); ?>" <?php selected( (string) $frequency, (string) $opt_value ); ?>>
+								<?php echo esc_html( $label ); ?>
+							</option>
+						<?php endforeach; ?>
 					</select>
 				</td>
 			</tr>

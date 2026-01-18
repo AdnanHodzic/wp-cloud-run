@@ -7,6 +7,10 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
 /**
@@ -60,7 +64,7 @@ class Jetpack_Upcoming_Events_Widget extends WP_Widget {
 	 *
 	 * @param array $instance Instance configuration.
 	 *
-	 * @return void
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$defaults = array(
@@ -85,7 +89,7 @@ class Jetpack_Upcoming_Events_Widget extends WP_Widget {
 		<label for="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>"><?php esc_html_e( 'Items to show:', 'jetpack' ); ?></label>
 		<select id="<?php echo esc_attr( $this->get_field_id( 'count' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'count' ) ); ?>">
 			<?php for ( $i = 1; $i <= 10; $i++ ) { ?>
-				<option <?php selected( $instance['count'], $i ); ?>><?php echo (int) $i; ?></option>
+				<option <?php selected( $instance['count'], $i ); ?>><?php echo esc_html( (string) $i ); ?></option>
 			<?php } ?>
 			<option value="0" <?php selected( $instance['count'], 0 ); ?>><?php esc_html_e( 'All', 'jetpack' ); ?></option>
 		</select>
@@ -152,7 +156,7 @@ class Jetpack_Upcoming_Events_Widget extends WP_Widget {
 				<li>
 					<strong class="event-summary">
 						<?php
-						echo $ical->escape( stripslashes( $event['SUMMARY'] ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- this method is built to escape.
+						echo $ical->escape( stripslashes( $event['SUMMARY'] ?? '' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- this method is built to escape.
 						?>
 					</strong>
 					<span class="event-when"><?php echo esc_html( $ical->formatted_date( $event ) ); ?></span>

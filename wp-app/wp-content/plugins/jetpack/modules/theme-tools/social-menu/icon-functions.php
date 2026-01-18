@@ -5,6 +5,10 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 if ( ! function_exists( 'jetpack_social_menu_include_svg_icons' ) ) {
 	/**
 	 * Add SVG definitions to the footer.
@@ -197,8 +201,6 @@ if ( ! function_exists( 'jetpack_social_menu_social_links_icons' ) ) {
 			'getpocket.com'     => 'pocket',
 			'ravelry.com'       => 'ravelry',
 			'reddit.com'        => 'reddit',
-			'skype.com'         => 'skype',
-			'skype:'            => 'skype',
 			'slideshare.net'    => 'slideshare',
 			'sms:'              => 'sms',
 			'snapchat.com'      => 'snapchat',

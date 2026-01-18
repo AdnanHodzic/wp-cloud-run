@@ -16,7 +16,7 @@ body.jetpack-subscribe-modal-open {
 }
 
 .jetpack-subscribe-modal.open {
-	background-color: rgba(0,0,0,0.3);
+	background-color: rgba(0, 0, 0, 0.3);
 	visibility: visible;
 }
 
@@ -51,6 +51,7 @@ body.jetpack-subscribe-modal-open {
 }
 
 @media screen and (max-width: 640px) {
+
 	.jetpack-subscribe-modal__modal-content {
 		width: 94%;
 	}

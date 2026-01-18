@@ -17,6 +17,10 @@ use Automattic\Jetpack\Status;
 use Automattic\Jetpack\Status\Host;
 use Jetpack_Gutenberg;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Registers our block for use in Gutenberg
  * This is done via an action so that we can disable
@@ -90,8 +94,8 @@ function add_ai_chat_block_data() {
 	);
 	wp_add_inline_script(
 		'jetpack-blocks-editor',
-		'var Jetpack_AIChatBlock = ' . wp_json_encode( $initial_state, JSON_HEX_TAG | JSON_HEX_AMP ) . ';',
+		'var Jetpack_AIChatBlock = ' . wp_json_encode( $initial_state, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . ';',
 		'before'
 	);
 }
-add_action( 'enqueue_block_assets', __NAMESPACE__ . '\add_ai_chat_block_data' );
+add_action( 'enqueue_block_assets', __NAMESPACE__ . '\add_ai_chat_block_data', 11 );

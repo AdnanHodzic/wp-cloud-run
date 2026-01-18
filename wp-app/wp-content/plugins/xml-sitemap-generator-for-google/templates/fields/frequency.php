@@ -4,27 +4,42 @@
  */
 
 use GRIM_SG\PTSettings;
+
+$options = [
+	PTSettings::$ALWAYS  => __( 'Always', 'xml-sitemap-generator-for-google' ),
+	PTSettings::$HOURLY  => __( 'Hourly', 'xml-sitemap-generator-for-google' ),
+	PTSettings::$DAILY   => __( 'Daily', 'xml-sitemap-generator-for-google' ),
+	PTSettings::$WEEKLY  => __( 'Weekly', 'xml-sitemap-generator-for-google' ),
+	PTSettings::$MONTHLY => __( 'Monthly', 'xml-sitemap-generator-for-google' ),
+	PTSettings::$YEARLY  => __( 'Yearly', 'xml-sitemap-generator-for-google' ),
+	PTSettings::$NEVER   => __( 'Never', 'xml-sitemap-generator-for-google' ),
+];
+
+$current = $args['value'] ?? PTSettings::$NEVER;
 ?>
-<select name="<?php echo esc_attr( $args['name'] ); ?>">
-	<option value="<?php echo esc_attr( PTSettings::$ALWAYS ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$ALWAYS ); ?>>
-		<?php esc_html_e( 'Always', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
-	<option value="<?php echo esc_attr( PTSettings::$HOURLY ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$HOURLY ); ?>>
-		<?php esc_html_e( 'Hourly', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
-	<option value="<?php echo esc_attr( PTSettings::$DAILY ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$DAILY ); ?>>
-		<?php esc_html_e( 'Daily', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
-	<option value="<?php echo esc_attr( PTSettings::$WEEKLY ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$WEEKLY ); ?>>
-		<?php esc_html_e( 'Weekly', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
-	<option value="<?php echo esc_attr( PTSettings::$MONTHLY ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$MONTHLY ); ?>>
-		<?php esc_html_e( 'Monthly', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
-	<option value="<?php echo esc_attr( PTSettings::$YEARLY ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$YEARLY ); ?>>
-		<?php esc_html_e( 'Yearly', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
-	<option value="<?php echo esc_attr( PTSettings::$NEVER ); ?>" <?php selected( $args['value'] ?? '', PTSettings::$NEVER ); ?>>
-		<?php esc_html_e( 'Never', 'xml-sitemap-generator-for-google' ); ?>
-	</option>
+<div class="grim-select grim-select-default" data-name="<?php echo esc_attr( $args['name'] ); ?>">
+	<div class="grim-select__trigger">
+		<span>
+			<?php echo esc_html( $options[ $current ] ?? __( 'Never', 'xml-sitemap-generator-for-google' ) ); ?>
+		</span>
+		<i class="grim-icon-chevron-down"></i>
+	</div>
+	<div class="grim-options">
+		<?php foreach ( $options as $value => $label ) : ?>
+			<div class="grim-option <?php echo (string) $current === (string) $value ? 'selected' : ''; ?>" data-value="<?php echo esc_attr( $value ); ?>">
+				<?php echo esc_html( $label ); ?>
+			</div>
+		<?php endforeach; ?>
+	</div>
+</div>
+
+<select id="<?php echo esc_attr( $args['name'] ); ?>"
+		name="<?php echo esc_attr( $args['name'] ); ?>"
+		class="grim-hidden-select"
+		hidden>
+	<?php foreach ( $options as $value => $label ) : ?>
+		<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $current, $value ); ?>>
+			<?php echo esc_html( $label ); ?>
+		</option>
+	<?php endforeach; ?>
 </select>

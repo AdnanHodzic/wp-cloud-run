@@ -1,0 +1,1459 @@
+# Translation of Plugins - Dynamic XML Sitemaps Generator for Google - Stable (latest release) in Polish
+# This file is distributed under the same license as the Plugins - Dynamic XML Sitemaps Generator for Google - Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2025-09-10 16:26+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n == 1) ? 0 : ((n % 10 >= 2 && n % 10 <= 4 "
+"&& (n % 100 < 12 || n % 100 > 14)) ? 1 : 2);\n"
+"X-Generator: Loco https://localise.biz/\n"
+"Language: pl\n"
+"Project-Id-Version: Plugins - Dynamic XML Sitemaps Generator for Google - "
+"Stable (latest release)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-10 16:26+0000\n"
+"Last-Translator: \n"
+"X-Loco-Version: 2.8.0; wp-6.8.2; php-8.3.17\n"
+"Language-Team: Polish"
+
+#: templates/sections/advanced/wp-cli.php:30
+msgid ""
+"Also, you can set Cron Job to generate sitemaps automatically using WP CLI "
+"command. Here is an example for daily cron job:"
+msgstr ""
+"Możesz także skonfigurować zadanie Cron, aby automatycznie generować mapy "
+"witryny za pomocą polecenia WP CLI. Oto przykład dla codziennego zadania "
+"Cron:"
+
+#: templates/sections/advanced/wp-cli.php:26
+msgid "You can find more information about WP CLI in"
+msgstr "Więcej informacji o WP CLI znajdziesz w"
+
+#: templates/sections/advanced/wp-cli.php:14
+msgid ""
+"WP CLI is a feature that allows you to generate sitemaps using the command "
+"line. You can use the following command to generate sitemaps:"
+msgstr ""
+"WP CLI to funkcja, która umożliwia generowanie map witryny za pomocą wiersza "
+"poleceń. Do wygenerowania map witryny możesz użyć następującego polecenia:"
+
+#: templates/sections/advanced/wp-cli.php:11
+msgid "WP CLI"
+msgstr "WP CLI"
+
+#: templates/sections/advanced/cronjob.php:80
+msgid "Hooking WP Cron into the System Task Scheduler"
+msgstr "Podłączanie WP Cron do systemowego harmonogramu zadań"
+
+#: templates/sections/advanced/cronjob.php:79
+msgid ""
+"You can move the cron job to the system task scheduler by following the "
+"instructions"
+msgstr ""
+"Możesz przenieść zadanie cron do systemowego harmonogramu zadań, postępując "
+"zgodnie z instrukcjami"
+
+#: templates/sections/advanced/cronjob.php:77
+msgid ""
+"Cron Job will run at the time you selected and will be triggered by "
+"WordPress Cron. It will clear all caches and re-generate Sitemaps."
+msgstr ""
+"Zadanie Cron uruchomi się w wybranym czasie i będzie wyzwalane przez "
+"WordPress Cron. Wyczyści wszystkie pamięci podręczne i ponownie wygeneruje "
+"mapy witryn."
+
+#: templates/sections/advanced/cronjob.php:69
+msgid "Cron Job Next Run:"
+msgstr "Następne uruchomienie zadania Cron:"
+
+#: templates/sections/advanced/cronjob.php:53
+msgid "Cron Job Run Time:"
+msgstr "Czas uruchomienia zadania Cron:"
+
+#: templates/sections/advanced/cronjob.php:31
+msgid "Enable Cron Job"
+msgstr "Włącz zadanie Cron"
+
+#: templates/sections/advanced/cronjob.php:21
+msgid ""
+"Cron Job is a feature that allows you to schedule the generation of sitemaps "
+"at specific times."
+msgstr ""
+"Zadanie Cron to funkcja, która umożliwia planowanie generowania map witryn w "
+"określonych godzinach."
+
+#: templates/sections/advanced/cronjob.php:13
+msgid "Cron Job"
+msgstr "Zadanie Cron"
+
+#: templates/sections/advanced/cache.php:142
+msgid "Disable Media Sitemap Cache Collection"
+msgstr "Wyłącz zbieranie pamięci podręcznej dla mapy witryn mediów"
+
+#: templates/sections/advanced/cache.php:132
+msgid "Note: This will affect the performance of Media Sitemap Generation."
+msgstr "Uwaga: To wpłynie na wydajność generowania mapy witryn mediów."
+
+#: templates/sections/advanced/cache.php:130
+msgid ""
+"If you are having issues with Image and Video Sitemaps, you can try to "
+"disable Media Sitemap Cache Collection."
+msgstr ""
+"Jeśli masz problemy z mapami witryn obrazów i wideo, możesz spróbować "
+"wyłączyć zbieranie pamięci podręcznej dla mapy witryn mediów."
+
+#: templates/sections/advanced/cache.php:127
+msgid "Troubleshoot"
+msgstr "Rozwiązywanie problemów"
+
+#: templates/sections/video-sitemap/general-settings.php:97
+msgid "Vimeo"
+msgstr "Vimeo"
+
+#: templates/sections/video-sitemap/general-settings.php:53
+msgid "YouTube"
+msgstr "YouTube"
+
+#: templates/sections/image-sitemap/content.php:13
+msgid "This settings will be used for generating Image Sitemaps."
+msgstr "Te ustawienia będą używane do generowania map witryn obrazów."
+
+#: templates/sections/image-sitemap/general-settings.php:154
+msgid "AVIF"
+msgstr "AVIF"
+
+#: templates/sections/image-sitemap/general-settings.php:63
+msgid "Hide Image Previews"
+msgstr "Ukryj podglądy obrazów"
+
+#: templates/sections/image-sitemap/general-settings.php:54
+msgid ""
+"If you are experiencing long loading times, hide image previews in your "
+"Sitemap. This will not affect SEO results."
+msgstr ""
+"Jeśli doświadczasz długich czasów ładowania, ukryj podglądy obrazów w mapie "
+"witryny. Nie wpłynie to na wyniki SEO."
+
+#: templates/sections/image-sitemap/general-settings.php:52
+msgid "Image Previews"
+msgstr "Podglądy obrazów"
+
+#: templates/sections/general/exclude.php:49
+#: templates/sections/google-news/exclude.php:51
+msgid "Include only selected Categories, Tags and exclude all others:"
+msgstr "Uwzględnij tylko wybrane kategorie i tagi, a wyklucz wszystkie inne:"
+
+#: templates/sections/advanced/styles.php:108
+msgid "Hide Branding Marks"
+msgstr "Ukryj oznaczenia marki"
+
+#: templates/sections/advanced/styles.php:100
+msgid "Customize appearing of Branding Marks."
+msgstr "Dostosuj wygląd oznaczeń marki."
+
+#: templates/sections/advanced/styles.php:93
+msgid "Footer Text Color:"
+msgstr "Kolor tekstu stopki:"
+
+#: templates/sections/advanced/styles.php:80
+msgid "Sitemap Link Color:"
+msgstr "Kolor linków mapy witryny:"
+
+#: templates/sections/advanced/styles.php:67
+msgid "Sitemap Text Color:"
+msgstr "Kolor tekstu mapy witryny:"
+
+#: templates/sections/advanced/styles.php:54
+msgid "Sitemap Background Color:"
+msgstr "Kolor tła mapy witryny:"
+
+#: templates/sections/advanced/styles.php:41
+msgid "Header Text Color:"
+msgstr "Kolor tekstu nagłówka:"
+
+#: templates/sections/advanced/styles.php:28
+msgid "Header Background Color:"
+msgstr "Kolor tła nagłówka:"
+
+#: templates/sections/advanced/styles.php:20
+msgid "Customize colors of your Sitemap."
+msgstr "Dostosuj kolory mapy witryny."
+
+#: templates/sections/advanced/styles.php:13
+msgid "Sitemap Styles"
+msgstr "Style mapy witryny"
+
+#: templates/sections/general/additional.php:67
+msgid "Cancel"
+msgstr "Anuluj"
+
+#: templates/sections/general/additional.php:66
+msgid "Add URLs"
+msgstr "Dodaj adresy URL"
+
+#: templates/sections/general/additional.php:63
+msgid "Enter URLs separated by line:"
+msgstr "Wprowadź adresy URL oddzielone liniami:"
+
+#: templates/sections/general/additional.php:60
+msgid "Add Bulk URLs"
+msgstr "Dodaj wiele adresów URL"
+
+#: templates/wizard/sitemap-structure.php:20
+msgid "with all links"
+msgstr "ze wszystkimi linkami"
+
+#: templates/wizard/sitemap-structure.php:13
+msgid "with Inner Sitemaps"
+msgstr "z wewnętrznymi mapami witryn"
+
+#: templates/wizard/main.php:139
+msgid "Back"
+msgstr "Wstecz"
+
+#: templates/wizard/main.php:132
+msgid "Get Pro Now"
+msgstr "Kup wersję Pro teraz"
+
+#: templates/wizard/main.php:130
+msgid "Unlock advanced features and enhance your sitemap with the Pro version."
+msgstr ""
+"Odblokuj zaawansowane funkcje i ulepsz swoją mapę witryny dzięki wersji Pro."
+
+#: templates/wizard/main.php:129
+msgid "Upgrade to Pro"
+msgstr "Przejdź na wersję Pro"
+
+#: templates/wizard/main.php:108
+msgid ""
+"Sitemap Cache improves the loading performance of your Sitemaps by storing "
+"links in the cache."
+msgstr ""
+"Pamięć podręczna mapy witryny poprawia wydajność ładowania map witryn "
+"poprzez przechowywanie linków w pamięci podręcznej."
+
+#: templates/wizard/main.php:82
+msgid ""
+"Video Sitemap is a structured list of video URLs from your website's content,"
+" specifically designed to help Search Engines effectively index your site's "
+"videos, enhancing their visibility in search results."
+msgstr ""
+"Mapa witryn wideo to uporządkowana lista adresów URL wideo z zawartości "
+"Twojej witryny, zaprojektowana specjalnie, aby pomóc wyszukiwarkom "
+"skutecznie indeksować filmy na Twojej stronie, zwiększając ich widoczność w "
+"wynikach wyszukiwania."
+
+#: templates/wizard/main.php:72
+msgid ""
+"Image Sitemap is a detailed list of image URLs from your website's content, "
+"specifically designed to help Search Engines effectively index your site's "
+"images, enhancing their visibility in search results."
+msgstr ""
+"Mapa witryn obrazów to szczegółowa lista adresów URL obrazów z zawartości "
+"Twojej witryny, zaprojektowana specjalnie, aby pomóc wyszukiwarkom "
+"skutecznie indeksować obrazy na Twojej stronie, zwiększając ich widoczność w "
+"wynikach wyszukiwania."
+
+#: templates/wizard/main.php:62
+msgid ""
+"Google News Sitemap is a structured list of your Post's URLs designed to "
+"help Google News efficiently index your site's news."
+msgstr ""
+"Mapa witryn Google News to uporządkowana lista adresów URL Twoich postów, "
+"zaprojektowana, aby pomóc Google News skutecznie indeksować wiadomości na "
+"Twojej stronie."
+
+#: templates/wizard/main.php:51
+msgid ""
+"HTML Sitemap is a collection of your website’s URLs created to assist Users "
+"in navigating through your site’s content."
+msgstr ""
+"Mapa witryn HTML to zbiór adresów URL Twojej witryny, stworzony, aby pomóc "
+"użytkownikom w nawigacji po zawartości strony."
+
+#: templates/wizard/main.php:41
+msgid ""
+"XML Sitemap is a structured list of your website's URLs designed to help "
+"Search Engines efficiently index your site's content."
+msgstr ""
+"Mapa witryn XML to uporządkowana lista adresów URL Twojej witryny, "
+"zaprojektowana, aby pomóc wyszukiwarkom skutecznie indeksować zawartość "
+"Twojej strony."
+
+#: templates/wizard/header.php:7
+msgid "Upgrade"
+msgstr "Uaktualnij"
+
+#: templates/sections/advanced/cache.php:37 templates/wizard/main.php:117
+msgid "Cache Expiration Time:"
+msgstr "Czas wygaśnięcia pamięci podręcznej:"
+
+#: includes/Wizard.php:41
+msgid "Finish"
+msgstr "Zakończ"
+
+#: includes/Wizard.php:40 templates/wizard/main.php:143
+msgid "Continue"
+msgstr "Kontynuuj"
+
+#: includes/Wizard.php:20
+msgid "Sitemaps Wizard"
+msgstr "Kreator map witryn"
+
+#: includes/Wizard.php:19 templates/wizard/header.php:3
+msgid "Google XML Sitemaps Generator Wizard"
+msgstr "Kreator generatora map witryn XML Google"
+
+#: templates/sections/video-sitemap/general-settings.php:165
+msgid "Clear API Data Cache"
+msgstr "Wyczyść pamięć podręczną danych API"
+
+#: templates/sections/video-sitemap/general-settings.php:156
+msgid "Enable API Data Cache"
+msgstr "Włącz pamięć podręczną danych API"
+
+#: templates/sections/video-sitemap/general-settings.php:141
+msgid "API Data Cache"
+msgstr "Pamięć podręczna danych API"
+
+#: templates/sections/video-sitemap/general-settings.php:132
+msgid "Check Vimeo Access Token"
+msgstr "Sprawdź token dostępu Vimeo"
+
+#: templates/sections/video-sitemap/general-settings.php:110
+msgid "Vimeo Access Token:"
+msgstr "Token dostępu Vimeo:"
+
+#: templates/sections/video-sitemap/general-settings.php:102
+msgid ""
+"This is required field for retrieving the data from Vimeo embeds if you are "
+"using them in Contents."
+msgstr ""
+"To pole jest wymagane do pobierania danych z osadzonych treści Vimeo, jeśli "
+"używasz ich w zawartości."
+
+#: templates/sections/video-sitemap/general-settings.php:88
+msgid "Check YouTube API Key"
+msgstr "Sprawdź klucz API YouTube"
+
+#: includes/Dashboard.php:163
+msgid "Vimeo Access Token passed the check successfully."
+msgstr "Token dostępu Vimeo przeszedł weryfikację pomyślnie."
+
+#: includes/Dashboard.php:131
+msgid "Video API Data Cache cleared."
+msgstr "Pamięć podręczna danych API wideo została wyczyszczona."
+
+#: includes/Dashboard.php:389
+msgid "Get Pro Version"
+msgstr "Kup wersję Pro"
+
+#: templates/sections/general/custom-sitemaps.php:54
+msgid "Add Sitemap URL"
+msgstr "Dodaj adres URL mapy witryny"
+
+#: templates/sections/general/custom-sitemaps.php:36
+msgid "No Custom Sitemaps added!"
+msgstr "Nie dodano niestandardowych map witryn!"
+
+#: templates/sections/general/custom-sitemaps.php:28
+msgid "Custom XML Sitemap URL"
+msgstr "Niestandardowy adres URL mapy witryn XML"
+
+#: templates/sections/general/custom-sitemaps.php:23
+msgid ""
+"You can select the Last Modified datetime for the Custom Sitemap or leave it "
+"empty (default) to always show the Current Datetime on Sitemap."
+msgstr ""
+"Możesz wybrać datę i godzinę ostatniej modyfikacji dla niestandardowej mapy "
+"witryny lub pozostawić pole puste (domyślnie), aby zawsze wyświetlać "
+"aktualną datę i godzinę na mapie witryny."
+
+#: templates/sections/general/custom-sitemaps.php:19
+msgid ""
+"Enter XML Sitemap URL to your Sitemap Index. For example: https://example."
+"com/static-sitemap.xml"
+msgstr ""
+"Wprowadź adres URL mapy witryn XML do indeksu map witryn. Na przykład: https:"
+"//example.com/static-sitemap.xml"
+
+#: templates/sections/general/custom-sitemaps.php:18
+msgid "Custom XML Sitemap URL:"
+msgstr "Niestandardowy adres URL mapy witryn XML:"
+
+#: templates/sections/general/custom-sitemaps.php:15
+msgid ""
+"Here you can add Custom XML Sitemaps URLs (ex: Static Sitemaps, XML Sitmaps "
+"created by other services, etc.) to your "
+msgstr ""
+"Tutaj możesz dodać niestandardowe adresy URL map witryn XML (np. statyczne "
+"mapy witryn, mapy XML stworzone przez inne usługi itp.) do swojego "
+
+#: templates/sections/general/custom-sitemaps.php:12
+msgid "Custom Sitemaps"
+msgstr "Niestandardowe mapy witryn"
+
+#: templates/partials/sitemap-detector.php:13
+msgid ""
+"Success! No static sitemap file was detected in this URL. Above URL will "
+"open the awesome Dynamic Sitemap."
+msgstr ""
+"Sukces! Nie wykryto statycznego pliku mapy witryny pod tym adresem URL. "
+"Powyższy adres URL otworzy niesamowitą dynamiczną mapę witryny."
+
+#: templates/partials/sitemap-detector.php:10
+msgid ""
+"Warning! Static Sitemap File was detected in this URL. Please remove this "
+"file from the WordPress Root Directory to use Dynamic Sitemap."
+msgstr ""
+"Ostrzeżenie! Wykryto statyczny plik mapy witryny pod tym adresem URL. Proszę "
+"usunąć ten plik z głównego katalogu WordPress, aby używać dynamicznej mapy "
+"witryny."
+
+#: templates/sections/general/general-settings.php:77
+msgid ""
+"Number of links per page in Sitemap Index. Note: Setting a low limit per "
+"page may affect the speed of generating the Sitemap Index."
+msgstr ""
+"Liczba linków na stronę w indeksie mapy witryny. Uwaga: Ustawienie niskiego "
+"limitu na stronę może wpłynąć na szybkość generowania indeksu mapy witryny."
+
+#: templates/sections/general/general-settings.php:76
+msgid "Links per page:"
+msgstr "Linki na stronę:"
+
+#: templates/sections/google-news/general-settings.php:73
+msgid ""
+"Include posts older than 48 hours for informational purposes only. Note that "
+"they will NOT be indexed by Google News."
+msgstr ""
+"Uwzględniaj posty starsze niż 48 godzin tylko w celach informacyjnych. Uwaga:"
+" nie będą one indeksowane przez Google News."
+
+#: templates/sections/google-news/general-settings.php:67
+msgid "Include Older Posts"
+msgstr "Uwzględniaj starsze posty"
+
+#: templates/sections/general/xml-sitemap.php:23
+msgid "Enable XML Sitemap"
+msgstr "Włącz mapę witryn XML"
+
+#: templates/sections/general/webserver-configuration.php:53
+msgid ""
+"Please note that you may need to adjust the rules based on your server "
+"configuration. Rules are generated dynamically according to your Settings."
+msgstr ""
+"Proszę zauważyć, że może być konieczne dostosowanie reguł w zależności od "
+"konfiguracji serwera. Reguły są generowane dynamicznie zgodnie z Twoimi "
+"ustawieniami."
+
+#: templates/sections/general/webserver-configuration.php:13
+msgid ""
+"As you are using NGINX web server, you may need to set up the following "
+"Rewrite Rules if you encounter 404 Not Found error for your sitemap:"
+msgstr ""
+"Ponieważ używasz serwera NGINX, może być konieczne skonfigurowanie "
+"następujących reguł przepisywania, jeśli napotkasz błąd 404 Not Found dla "
+"swojej mapy witryny:"
+
+#: templates/sections/general/webserver-configuration.php:11
+msgid "Webserver Configuration"
+msgstr "Konfiguracja serwera WWW"
+
+#: templates/partials/preview-urls.php:65
+msgid "Multilingual Sitemap Index:"
+msgstr "Wielojęzyczny indeks mapy witryny:"
+
+#: includes/Sitemap.php:143
+msgid "Multilingual Sitemap"
+msgstr "Wielojęzyczna mapa witryny"
+
+#: templates/sections/general/general-settings.php:63
+msgid "Change API Key"
+msgstr "Zmień klucz API"
+
+#. translators: %s: IndexNow API Key
+#: templates/sections/general/general-settings.php:49
+msgid "INDEXNOW API KEY: %s"
+msgstr "KLUCZ API INDEXNOW: %s"
+
+#: templates/sections/general/general-settings.php:41
+msgid ""
+"IndexNow Protocol informs search engines like Microsoft Bing, Seznam.cz, "
+"Naver, and Yandex about all updates of your website, including changes when "
+"saving Posts."
+msgstr ""
+"Protokół IndexNow informuje wyszukiwarki, takie jak Microsoft Bing, Seznam."
+"cz, Naver i Yandex, o wszystkich aktualizacjach Twojej witryny, w tym o "
+"zmianach podczas zapisywania postów."
+
+#: templates/sections/general/general-settings.php:34
+msgid "Enable IndexNow Protocol (Microsoft Bing, Seznam.cz, Naver, Yandex)"
+msgstr "Włącz protokół IndexNow (Microsoft Bing, Seznam.cz, Naver, Yandex)"
+
+#: templates/partials/sidebar.php:142
+msgid "IndexNow Protocol"
+msgstr "Protokół IndexNow"
+
+#: templates/partials/sidebar.php:21
+msgid "Ping IndexNow Protocol"
+msgstr "Pinguj protokół IndexNow"
+
+#. translators: %s: error message
+#: includes/IndexNow.php:81
+msgid "IndexNow Protocol Error: %s"
+msgstr "Błąd protokołu IndexNow: %s"
+
+#: includes/IndexNow.php:77
+msgid "IndexNow Protocol Invalid URL"
+msgstr "Nieprawidłowy adres URL protokołu IndexNow"
+
+#: includes/IndexNow.php:75
+msgid "IndexNow Protocol Invalid Api Key"
+msgstr "Nieprawidłowy klucz API protokołu IndexNow"
+
+#: includes/IndexNow.php:73
+msgid "IndexNow Protocol Invalid Request"
+msgstr "Nieprawidłowe żądanie protokołu IndexNow"
+
+#: includes/IndexNow.php:69
+msgid "Changes successfully submitted to IndexNow"
+msgstr "Zmiany pomyślnie przesłane do IndexNow"
+
+#: includes/IndexNow.php:51
+msgid "IndexNow Protocol unknown error occurred"
+msgstr "Wystąpił nieznany błąd protokołu IndexNow"
+
+#: includes/Dashboard.php:91
+msgid "IndexNow API Key changed successfully."
+msgstr "Klucz API IndexNow zmieniony pomyślnie."
+
+#: templates/sections/general/exclude.php:17
+msgid ""
+"Please search and choose here Pages, Posts, Custom Posts, Categories and "
+"Tags that should be excluded from Sitemap:"
+msgstr ""
+"Proszę wyszukać i wybrać tutaj strony, posty, niestandardowe posty, "
+"kategorie i tagi, które powinny zostać wykluczone z mapy witryny:"
+
+#: templates/sections/general/additional.php:30
+#: templates/sections/general/custom-sitemaps.php:29
+msgid "Last Modified"
+msgstr "Ostatnia modyfikacja"
+
+#: templates/sections/general/additional.php:22
+msgid ""
+"You can select the Last Modified datetime for the URL or leave it empty "
+"(default) to always show the Current Datetime on Sitemap."
+msgstr ""
+"Możesz wybrać datę i godzinę ostatniej modyfikacji dla adresu URL lub "
+"pozostawić pole puste (domyślnie), aby zawsze wyświetlać aktualną datę i "
+"godzinę na mapie witryny."
+
+#: templates/sections/general/additional.php:21
+#: templates/sections/general/custom-sitemaps.php:22
+msgid "(Optional)"
+msgstr "(Opcjonalne)"
+
+#: templates/sections/general/additional.php:20
+#: templates/sections/general/custom-sitemaps.php:21
+msgid "Last Modified:"
+msgstr "Ostatnia modyfikacja:"
+
+#: templates/sections/general/additional.php:18
+msgid ""
+"Enter the URL to the External Page. For example: https://example.com/blog or "
+"www.example.com/account."
+msgstr ""
+"Wprowadź adres URL do zewnętrznej strony. Na przykład: https://example."
+"com/blog lub www.example.com/account."
+
+#: templates/sections/general/additional.php:17
+msgid "URL to External Page:"
+msgstr "Adres URL do zewnętrznej strony:"
+
+#: templates/sections/advanced/import-export.php:28
+msgid "Download Settings Data File"
+msgstr "Pobierz plik danych ustawień"
+
+#: templates/sections/advanced/import-export.php:24
+msgid ""
+"Here you can download your current Settings. Keep this safe as you can use "
+"it as a backup if anything goes wrong."
+msgstr ""
+"Tutaj możesz pobrać aktualne ustawienia. Zachowaj je w bezpiecznym miejscu, "
+"ponieważ możesz ich użyć jako kopii zapasowej w razie problemów."
+
+#: templates/sections/advanced/import-export.php:22
+msgid "Export Settings"
+msgstr "Eksportuj ustawienia"
+
+#: templates/sections/advanced/import-export.php:16
+msgid "Select the JSON file in order to Import Settings."
+msgstr "Wybierz plik JSON, aby zaimportować ustawienia."
+
+#: templates/sections/advanced/import-export.php:9
+msgid ""
+"WARNING! This will overwrite all existing Settings, please proceed with "
+"caution or backup current Settings!"
+msgstr ""
+"OSTRZEŻENIE! Spowoduje to nadpisywanie wszystkich istniejących ustawień, "
+"proszę postępować ostrożnie lub zrobić kopię zapasową bieżących ustawień!"
+
+#: templates/sections/advanced/import-export.php:7
+#: templates/sections/advanced/import-export.php:14
+msgid "Import Settings"
+msgstr "Importuj ustawienia"
+
+#: templates/partials/sidebar.php:124 templates/wizard/main.php:131
+msgid "Documentation"
+msgstr "Dokumentacja"
+
+#: includes/ImportExport.php:37
+msgid "Invalid settings file or data."
+msgstr "Nieprawidłowy plik ustawień lub dane."
+
+#: includes/ImportExport.php:27
+msgid "Settings imported successfully."
+msgstr "Ustawienia zaimportowane pomyślnie."
+
+#: templates/sections/general/sitemap-structure.php:30
+msgid "will be generated with Inner Sitemaps"
+msgstr "zostanie wygenerowana z wewnętrznymi mapami witryn"
+
+#: templates/sections/general/sitemap-structure.php:37
+msgid "will be generated with all links"
+msgstr "zostanie wygenerowana ze wszystkimi linkami"
+
+#: templates/sections/general/sitemap-structure.php:23
+msgid "Choose Sitemap Structure:"
+msgstr "Wybierz strukturę mapy witryny:"
+
+#: templates/sections/general/sitemap-structure.php:11
+#: templates/wizard/main.php:26
+msgid "Sitemap Structure"
+msgstr "Struktura mapy witryny"
+
+#: templates/post-meta-box.php:54
+msgid "Post Frequency"
+msgstr "Częstotliwość postów"
+
+#: templates/post-meta-box.php:35 templates/post-meta-box.php:58
+msgid "Default"
+msgstr "Domyślne"
+
+#: templates/post-meta-box.php:31
+msgid "Post Priority"
+msgstr "Priorytet postów"
+
+#: templates/post-meta-box.php:21
+msgid "Exclude from Sitemap"
+msgstr "Wyklucz z mapy witryny"
+
+#: templates/post-meta-box.php:15
+msgid ""
+"Custom Sitemap Options for the Current Post such as Exclude from Sitemap, "
+"Post Priority, Post Frequency."
+msgstr ""
+"Niestandardowe opcje mapy witryny dla bieżącego postu, takie jak wykluczenie "
+"z mapy witryny, priorytet postu, częstotliwość postu."
+
+#: templates/partials/pro-overlay.php:9
+msgid "Get Now"
+msgstr "Kup teraz"
+
+#: includes/PostSettings.php:94
+msgid "XML Sitemap Options"
+msgstr "Opcje mapy witryn XML"
+
+#: templates/sections/general/exclude.php:35
+#: templates/sections/google-news/exclude.php:36
+msgid "Exclude Categories and Tags:"
+msgstr "Wyklucz kategorie i tagi:"
+
+#: templates/sections/google-news/output.php:33
+msgid "Google News for other languages:"
+msgstr "Google News dla innych języków:"
+
+#: templates/sections/general/xml-sitemap.php:51
+msgid "Sitemaps for other languages:"
+msgstr "Mapy witryn dla innych języków:"
+
+#: templates/sections/general/sitemap-structure.php:36
+#: templates/wizard/sitemap-structure.php:19
+msgid "Single Sitemap"
+msgstr "Pojedyncza mapa witryny"
+
+#: templates/sections/general/html-sitemap.php:54
+msgid "HTML Sitemaps for other languages:"
+msgstr "Mapy witryn HTML dla innych języków:"
+
+#. translators: Sitemap Index URL
+#: templates/xsl/sitemap.php:102
+msgid "<a href=\"%s\">&#8592; Sitemap Index</a>"
+msgstr "<a href=\"%s\">&#8592; Indeks mapy witryny</a>"
+
+#: templates/sections/image-sitemap/general-settings.php:184
+msgid "Exclude Broken Images"
+msgstr "Wyklucz uszkodzone obrazy"
+
+#: templates/sections/image-sitemap/general-settings.php:174
+msgid ""
+"This option allows to exclude Broken or Not Existing 404 images. Recommended "
+"to use this option with Sitemap Cache, as it affects to Sitemap Generating "
+"Speed."
+msgstr ""
+"Ta opcja pozwala wykluczyć uszkodzone lub nieistniejące obrazy 404. Zaleca "
+"się korzystanie z tej opcji razem z pamięcią podręczną mapy witryny, "
+"ponieważ wpływa na szybkość generowania mapy witryny."
+
+#: templates/sections/image-sitemap/general-settings.php:169
+msgid "Broken Images"
+msgstr "Uszkodzone obrazy"
+
+#: includes/Sitemap.php:149 templates/sections/general/custom-sitemaps.php:16
+#: templates/sections/general/sitemap-structure.php:29
+#: templates/wizard/sitemap-structure.php:12
+msgid "Sitemap Index"
+msgstr "Indeks mapy witryny"
+
+#: includes/Sitemap.php:130 includes/Sitemap.php:146
+msgid "Sitemap"
+msgstr "Mapa witryny"
+
+#: includes/Notices.php:87
+msgid "Yes, Read More"
+msgstr "Tak, czytaj więcej"
+
+#: includes/Notices.php:80
+msgid "Pro version"
+msgstr "Wersja Pro"
+
+#: includes/Notices.php:65
+msgid "Yes, Rate Now"
+msgstr "Tak, oceń teraz"
+
+#: includes/Notices.php:63 includes/Notices.php:85
+msgid "Dismiss"
+msgstr "Odrzuć"
+
+#: includes/Notices.php:18
+msgid "Invalid nonce."
+msgstr "Nieprawidłowy nonce."
+
+#: templates/sections/advanced/optimize.php:29
+msgid "Minimize Sitemap source code"
+msgstr "Minimalizuj kod źródłowy mapy witryny"
+
+#: templates/sections/advanced/optimize.php:20
+msgid "Sitemap source code will be compressed into a single line."
+msgstr "Kod źródłowy mapy witryny zostanie skompresowany do jednej linii."
+
+#: templates/sections/advanced/optimize.php:13
+msgid "Optimize"
+msgstr "Optymalizuj"
+
+#: templates/wizard/main.php:127
+msgid "Pro Version"
+msgstr "Wersja Pro"
+
+#: templates/sections/video-sitemap/general-settings.php:147
+msgid ""
+"Caching API Data improves performance by storing and reusing requested Video "
+"data from YouTube, Vimeo, and Twitter API."
+msgstr ""
+"Buforowanie danych API poprawia wydajność poprzez przechowywanie i ponowne "
+"wykorzystanie żądanych danych wideo z API YouTube, Vimeo i Twitter."
+
+#: templates/sections/general/general-settings.php:58
+msgid "Check API Key"
+msgstr "Sprawdź klucz API"
+
+#: includes/Dashboard.php:147
+msgid "YouTube API key passed the check successfully."
+msgstr "Klucz API YouTube przeszedł weryfikację pomyślnie."
+
+#: templates/settings.php:24 templates/wizard/main.php:30
+msgid "Advanced"
+msgstr "Zaawansowane"
+
+#: templates/sections/advanced/cache.php:117
+msgid "Clear cache when Page/Post created or updated"
+msgstr "Wyczyść pamięć podręczną po utworzeniu lub aktualizacji strony/postu"
+
+#: templates/sections/advanced/cache.php:107
+msgid "Advanced Caching features to improve Sitemap data collection."
+msgstr ""
+"Zaawansowane funkcje buforowania w celu poprawy zbierania danych mapy "
+"witryny."
+
+#: templates/sections/advanced/cache.php:102
+msgid "Smart Caching"
+msgstr "Inteligentne buforowanie"
+
+#: templates/sections/advanced/cache.php:98
+msgid "Clear Cache"
+msgstr "Wyczyść pamięć podręczną"
+
+#: templates/sections/advanced/cache.php:93
+msgid ""
+"Note: Sitemap Cache will only be created when someone opens/visits the "
+"Sitemap on front-end."
+msgstr ""
+"Uwaga: Pamięć podręczna mapy witryny zostanie utworzona tylko wtedy, gdy "
+"ktoś otworzy/odwiedzi mapę witryny na froncie."
+
+#: templates/sections/advanced/cache.php:46
+msgid "Last Cached Time:"
+msgstr "Czas ostatniego buforowania:"
+
+#: templates/sections/advanced/cache.php:42 templates/wizard/main.php:122
+msgid "day(s)"
+msgstr "dzień(dni)"
+
+#: templates/sections/advanced/cache.php:41 templates/wizard/main.php:121
+msgid "hour(s)"
+msgstr "godzina(y)"
+
+#: templates/sections/advanced/cache.php:40 templates/wizard/main.php:120
+msgid "minute(s)"
+msgstr "minuta(y)"
+
+#: templates/sections/advanced/cache.php:28 templates/wizard/main.php:107
+msgid "Enable Sitemap Cache"
+msgstr "Włącz pamięć podręczną mapy witryny"
+
+#: templates/sections/advanced/cache.php:18
+msgid ""
+"All below options will be available after enabling Sitemap Cache. Sitemaps "
+"Content will be cached for faster loading."
+msgstr ""
+"Wszystkie poniższe opcje będą dostępne po włączeniu pamięci podręcznej mapy "
+"witryny. Zawartość map witryn będzie buforowana w celu szybszego ładowania."
+
+#: templates/sections/advanced/cache.php:15
+msgid "Cache"
+msgstr "Pamięć podręczna"
+
+#: templates/partials/sidebar.php:120
+msgid "Account & Premium Support"
+msgstr "Konto i wsparcie premium"
+
+#: templates/partials/sidebar.php:29
+msgid "Clear Sitemaps Cache"
+msgstr "Wyczyść pamięć podręczną map witryn"
+
+#: includes/Dashboard.php:110 includes/Tools.php:43
+msgid "Sitemaps Cache cleared."
+msgstr "Pamięć podręczna map witryn została wyczyszczona."
+
+#: includes/Cache.php:114
+msgid "No Cache"
+msgstr "Brak pamięci podręcznej"
+
+#. translators: %s is Cached Time
+#: includes/Cache.php:113
+msgid "%s ago"
+msgstr "%s temu"
+
+#: templates/sections/image-sitemap/general-settings.php:235
+msgid "Include WooCommerce Gallery Images"
+msgstr "Uwzględnij obrazy galerii WooCommerce"
+
+#: templates/sections/image-sitemap/general-settings.php:225
+msgid ""
+"Enabling this option includes WooCommerce Gallery Images from Products to "
+"your Image Sitemap."
+msgstr ""
+"Włączenie tej opcji uwzględnia obrazy galerii WooCommerce z produktów w "
+"mapie witryn obrazów."
+
+#: templates/sections/image-sitemap/general-settings.php:220
+msgid "WooCommerce Gallery"
+msgstr "Galeria WooCommerce"
+
+#: templates/sections/image-sitemap/general-settings.php:209
+msgid "Include Featured Images"
+msgstr "Uwzględnij wyróżnione obrazy"
+
+#: templates/sections/image-sitemap/general-settings.php:199
+msgid ""
+"Enabling this option includes Featured Images from Pages, Posts, and Custom "
+"Posts to your Image Sitemap."
+msgstr ""
+"Włączenie tej opcji uwzględnia wyróżnione obrazy ze stron, postów i "
+"niestandardowych postów w mapie witryn obrazów."
+
+#: templates/sections/image-sitemap/general-settings.php:194
+msgid "Featured Images"
+msgstr "Wyróżnione obrazy"
+
+#: templates/sections/image-sitemap/general-settings.php:14
+msgid ""
+"All below options will be available after enabling Image Sitemap. Default "
+"Sitemap will only include Images that are used in Content."
+msgstr ""
+"Wszystkie poniższe opcje będą dostępne po włączeniu mapy witryn obrazów. "
+"Domyślna mapa witryny będzie zawierać tylko obrazy używane w treści."
+
+#: templates/sections/video-sitemap/general-settings.php:66
+msgid "YouTube Data API v3 Key:"
+msgstr "Klucz API danych YouTube v3:"
+
+#: templates/sections/video-sitemap/general-settings.php:58
+msgid ""
+"This is required field for retrieving the data from Youtube embeds if you "
+"are using them in Contents."
+msgstr ""
+"To pole jest wymagane do pobierania danych z osadzonych treści YouTube, "
+"jeśli używasz ich w zawartości."
+
+#: templates/sections/video-sitemap/general-settings.php:44
+msgid "Preview your Video Sitemap:"
+msgstr "Podgląd mapy witryn wideo:"
+
+#: templates/sections/video-sitemap/general-settings.php:37
+msgid "Video Sitemap URL:"
+msgstr "Adres URL mapy witryn wideo:"
+
+#: templates/sections/video-sitemap/general-settings.php:22
+msgid "Enable Video Sitemap"
+msgstr "Włącz mapę witryn wideo"
+
+#: templates/sections/video-sitemap/general-settings.php:13
+msgid ""
+"All below options will be available after enabling Video Sitemap. Sitemap "
+"will only include Videos that are used in Content."
+msgstr ""
+"Wszystkie poniższe opcje będą dostępne po włączeniu mapy witryn wideo. Mapa "
+"witryny będzie zawierać tylko filmy używane w treści."
+
+#: templates/sections/image-sitemap/general-settings.php:141
+msgid "WEBP"
+msgstr "WEBP"
+
+#: templates/sections/image-sitemap/general-settings.php:128
+msgid "GIF"
+msgstr "GIF"
+
+#: templates/sections/image-sitemap/general-settings.php:115
+msgid "BMP"
+msgstr "BMP"
+
+#: templates/sections/image-sitemap/general-settings.php:102
+msgid "PNG"
+msgstr "PNG"
+
+#: templates/sections/image-sitemap/general-settings.php:89
+msgid "JPEG"
+msgstr "JPEG"
+
+#: templates/sections/image-sitemap/general-settings.php:78
+msgid "Allow Image Types in your Image Sitemap."
+msgstr "Zezwalaj na typy obrazów w mapie witryn obrazów."
+
+#: templates/sections/image-sitemap/general-settings.php:72
+msgid "Image MIME Types"
+msgstr "Typy MIME obrazów"
+
+#: templates/sections/image-sitemap/general-settings.php:46
+msgid "Preview your Image Sitemap:"
+msgstr "Podgląd mapy witryn obrazów:"
+
+#: templates/sections/image-sitemap/general-settings.php:39
+msgid "Image Sitemap URL:"
+msgstr "Adres URL mapy witryn obrazów:"
+
+#: templates/sections/image-sitemap/general-settings.php:24
+msgid "Enable Image Sitemap"
+msgstr "Włącz mapę witryn obrazów"
+
+#: templates/sections/video-sitemap/content.php:13
+msgid "This settings will be used for generating Video Sitemap."
+msgstr "Te ustawienia będą używane do generowania mapy witryn wideo."
+
+#: templates/sections/google-news/output.php:11
+msgid "Google News URL"
+msgstr "Adres URL Google News"
+
+#: templates/sections/google-news/content.php:11
+#: templates/sections/image-sitemap/content.php:11
+#: templates/sections/video-sitemap/content.php:11
+msgid "Content Options"
+msgstr "Opcje treści"
+
+#: includes/Sitemap.php:140 templates/partials/sidebar.php:76
+#: templates/sections/advanced/cache.php:85
+#: templates/sections/video-sitemap/general-settings.php:11
+#: templates/settings.php:23 templates/wizard/main.php:81
+msgid "Video Sitemap"
+msgstr "Mapa witryn wideo"
+
+#: includes/Sitemap.php:137 templates/partials/sidebar.php:68
+#: templates/sections/advanced/cache.php:77
+#: templates/sections/image-sitemap/general-settings.php:11
+#: templates/settings.php:22 templates/wizard/main.php:71
+msgid "Image Sitemap"
+msgstr "Mapa witryn obrazów"
+
+#: templates/partials/sidebar.php:139
+msgid "Show up in Google News"
+msgstr "Pokaż się w Google News"
+
+#: templates/partials/sidebar.php:96
+msgid "WPBakery (Visual Composer)"
+msgstr "WPBakery (Visual Composer)"
+
+#: templates/partials/sidebar.php:94
+msgid "Gutenberg"
+msgstr "Gutenberg"
+
+#: templates/partials/sidebar.php:92
+msgid "Elementor"
+msgstr "Elementor"
+
+#: templates/partials/sidebar.php:89
+msgid "can be displayed using Page Builder Widget or Shortcode"
+msgstr "może być wyświetlany za pomocą widżetu Page Builder lub krótkiego kodu"
+
+#: templates/sections/google-news/stock-tickers.php:33
+msgid ""
+"Once this option is enabled, you will be able to specify values under the "
+"custom Stock Tickers Taxonomy."
+msgstr ""
+"Po włączeniu tej opcji będziesz mógł określić wartości w niestandardowej "
+"taksonomii Stock Tickers."
+
+#: templates/sections/google-news/stock-tickers.php:31
+msgid "Stock tickers are most commonly used in articles related to business."
+msgstr ""
+"Tickery giełdowe są najczęściej używane w artykułach związanych z biznesem."
+
+#: templates/sections/google-news/stock-tickers.php:24
+msgid "Enable Stock Tickers "
+msgstr "Włącz tickery giełdowe "
+
+#: templates/sections/google-news/stock-tickers.php:12
+msgid "Stock Tickers"
+msgstr "Tickery giełdowe"
+
+#: templates/sections/google-news/keywords.php:38
+msgid ""
+"Custom Keywords Taxonomy will be available for Posts after enabling this "
+"option."
+msgstr ""
+"Niestandardowa taksonomia słów kluczowych będzie dostępna dla postów po "
+"włączeniu tej opcji."
+
+#: templates/sections/google-news/keywords.php:31
+msgid "Keywords Taxonomy"
+msgstr "Taksonomia słów kluczowych"
+
+#: templates/sections/google-news/keywords.php:30
+msgid "Categories"
+msgstr "Kategorie"
+
+#: templates/sections/google-news/keywords.php:29
+msgid "Tags"
+msgstr "Tagi"
+
+#: templates/sections/google-news/keywords.php:24
+msgid "Keywords from:"
+msgstr "Słowa kluczowe z:"
+
+#: templates/sections/google-news/keywords.php:17
+msgid ""
+"Please select the source from which the Google News Keywords should be "
+"extracted."
+msgstr ""
+"Proszę wybrać źródło, z którego powinny być pobierane słowa kluczowe Google "
+"News."
+
+#: templates/sections/google-news/keywords.php:12
+msgid "Keywords"
+msgstr "Słowa kluczowe"
+
+#: templates/partials/sidebar.php:151
+msgid "XML Sitemap Validator"
+msgstr "Walidator mapy witryn XML"
+
+#: templates/partials/sidebar.php:148
+msgid "Yandex Webmaster"
+msgstr "Yandex Webmaster"
+
+#: templates/partials/sidebar.php:145
+msgid "Bing Webmaster Tools"
+msgstr "Narzędzia dla webmasterów Bing"
+
+#: templates/partials/sidebar.php:136
+msgid "Google News Help Center"
+msgstr "Centrum pomocy Google News"
+
+#: templates/partials/sidebar.php:133
+msgid "Google Search Console"
+msgstr "Google Search Console"
+
+#: templates/partials/sidebar.php:127
+msgid "Support Forum"
+msgstr "Forum wsparcia"
+
+#: templates/partials/sidebar.php:115
+msgid "Links"
+msgstr "Linki"
+
+#: templates/partials/sidebar.php:107
+msgid "Read More"
+msgstr "Czytaj więcej"
+
+#: templates/partials/sidebar.php:106
+msgid ""
+" to take your Search Engine Optimization to the Next Level with unlocking "
+"Premium Features."
+msgstr ""
+" aby przenieść optymalizację dla wyszukiwarek na wyższy poziom dzięki "
+"odblokowaniu funkcji premium."
+
+#: templates/partials/sidebar.php:105
+msgid "Get Pro Version now"
+msgstr "Kup wersję Pro teraz"
+
+#: templates/partials/sidebar.php:85
+msgid "Tips"
+msgstr "Wskazówki"
+
+#: templates/partials/sidebar.php:38
+msgid "Preview"
+msgstr "Podgląd"
+
+#: templates/partials/sidebar.php:25
+msgid "Flush Rewrite Rules"
+msgstr "Wyczyść reguły przepisywania"
+
+#: templates/partials/sidebar.php:15
+msgid "Tools"
+msgstr "Narzędzia"
+
+#: templates/fields/select.php:9
+msgid "None"
+msgstr "Brak"
+
+#: includes/Tools.php:39
+msgid "WordPress Rewrite Rules flushed."
+msgstr "Reguły przepisywania WordPress zostały wyczyszczone."
+
+#: includes/Dashboard.php:407 templates/partials/sidebar.php:130
+msgid "Rate ★★★★★"
+msgstr "Oceń ★★★★★"
+
+#: includes/Dashboard.php:406
+msgid "Support"
+msgstr "Wsparcie"
+
+#: includes/Dashboard.php:26
+msgid "XML Sitemaps"
+msgstr "Mapy witryn XML"
+
+#: includes/Dashboard.php:25 templates/settings.php:11
+msgid "Google XML Sitemaps Generator Settings"
+msgstr "Ustawienia generatora map witryn XML Google"
+
+#. Description of the plugin
+#: xml-sitemap-generator-for-google.php
+msgid ""
+"Greatly improves SEO by generating XML Sitemaps, HTML Sitemaps and Google "
+"News, helping search engines like Google, Bing, Yahoo and others index your "
+"site more effectively."
+msgstr ""
+"Znacznie poprawia SEO poprzez generowanie map witryn XML, map witryn HTML i "
+"Google News, pomagając wyszukiwarkom, takim jak Google, Bing, Yahoo i innym, "
+"skuteczniej indeksować Twoją witrynę."
+
+#. Plugin Name of the plugin
+#: xml-sitemap-generator-for-google.php
+msgid "Google XML Sitemaps Generator"
+msgstr "Generator map witryn XML Google"
+
+#: templates/settings.php:20 templates/wizard/main.php:22
+msgid "General"
+msgstr "Ogólne"
+
+#: templates/sections/google-news/output.php:32
+msgid "Preview your Google News:"
+msgstr "Podgląd Google News:"
+
+#: templates/sections/google-news/output.php:21
+msgid "Google News URL:"
+msgstr "Adres URL Google News:"
+
+#: includes/Sitemap.php:134 templates/partials/sidebar.php:60
+#: templates/sections/advanced/cache.php:69 templates/settings.php:21
+#: templates/wizard/main.php:61
+msgid "Google News"
+msgstr "Google News"
+
+#: templates/sections/google-news/content.php:13
+msgid "This settings will be used for generating your Google News."
+msgstr "Te ustawienia będą używane do generowania Google News."
+
+#: templates/sections/google-news/general-settings.php:49
+msgid "Source Labels:"
+msgstr "Etykiety źródła:"
+
+#: templates/sections/google-news/general-settings.php:37
+msgid "Publication Name:"
+msgstr "Nazwa publikacji:"
+
+#: templates/sections/google-news/general-settings.php:22
+msgid "Enable Google News"
+msgstr "Włącz Google News"
+
+#: templates/sections/google-news/exclude.php:23
+msgid "Exclude Posts:"
+msgstr "Wyklucz posty:"
+
+#: templates/sections/google-news/exclude.php:17
+msgid ""
+"Please search and choose here Posts that should be excluded from Google News:"
+msgstr ""
+"Proszę wyszukać i wybrać tutaj posty, które powinny zostać wykluczone z "
+"Google News:"
+
+#: templates/sections/general/html-sitemap.php:27
+msgid "Enable HTML Sitemap"
+msgstr "Włącz mapę witryn HTML"
+
+#: templates/sections/general/html-sitemap.php:18
+msgid "Here you can enable HTML Sitemap, customize Output URL and preview."
+msgstr ""
+"Tutaj możesz włączyć mapę witryn HTML, dostosować adres URL wyjściowy i "
+"podgląd."
+
+#: templates/sections/general/xml-sitemap.php:50
+msgid "Preview your XML Sitemap:"
+msgstr "Podgląd mapy witryn XML:"
+
+#: templates/sections/general/xml-sitemap.php:39
+msgid "XML Sitemap URL:"
+msgstr "Adres URL mapy witryn XML:"
+
+#: templates/sections/general/xml-sitemap.php:13
+msgid "Here you can enable XML Sitemap and customize Output URL."
+msgstr "Tutaj możesz włączyć mapę witryn XML i dostosować adres URL wyjściowy."
+
+#: templates/sections/general/posts-priority.php:56
+msgid "Average Comments Count will be used for Priority Calculation"
+msgstr "Średnia liczba komentarzy będzie używana do obliczania priorytetu"
+
+#: templates/sections/general/posts-priority.php:55
+msgid "Comments Average"
+msgstr "Średnia komentarzy"
+
+#: templates/sections/general/posts-priority.php:41
+msgid "Number of Post Comments will be used for Priority Calculation"
+msgstr "Liczba komentarzy do postu będzie używana do obliczania priorytetu"
+
+#: templates/sections/general/posts-priority.php:40
+msgid "Comments Count"
+msgstr "Liczba komentarzy"
+
+#: templates/sections/general/posts-priority.php:26
+msgid ""
+"Posts will have the same priority which is defined in \"Sitemap Options\""
+msgstr ""
+"Posty będą miały ten sam priorytet, który jest zdefiniowany w \"Opcjach mapy "
+"witryny\""
+
+#: templates/sections/general/posts-priority.php:25
+msgid "Do not use Priority Calculation"
+msgstr "Nie używaj obliczania priorytetu"
+
+#: templates/sections/general/posts-priority.php:18
+msgid "Please choose a priority for calculating each of posts:"
+msgstr "Proszę wybrać priorytet do obliczania dla każdego z postów:"
+
+#: templates/sections/general/posts-priority.php:12
+msgid "Posts Priority"
+msgstr "Priorytet postów"
+
+#: templates/sections/general/html-sitemap.php:53
+msgid "Preview your HTML Sitemap:"
+msgstr "Podgląd mapy witryn HTML:"
+
+#: templates/sections/general/html-sitemap.php:42
+msgid "HTML Sitemap URL:"
+msgstr "Adres URL mapy witryn HTML:"
+
+#: templates/sections/google-news/output.php:13
+msgid "Here you can preview your Google News and customize Output URL."
+msgstr ""
+"Tutaj możesz wyświetlić podgląd Google News i dostosować adres URL wyjściowy."
+
+#: templates/partials/sidebar.php:52 templates/partials/sidebar.php:88
+#: templates/sections/advanced/cache.php:61
+#: templates/sections/general/html-sitemap.php:12 templates/wizard/main.php:50
+msgid "HTML Sitemap"
+msgstr "Mapa witryn HTML"
+
+#: templates/sections/general/exclude.php:23
+msgid "Exclude Pages/Posts:"
+msgstr "Wyklucz strony/posty:"
+
+#: templates/sections/general/additional.php:15
+msgid "External URLs which should be included in your Sitemap:"
+msgstr ""
+"Zewnętrzne adresy URL, które powinny zostać uwzględnione w mapie witryny:"
+
+#: templates/partials/pro-overlay.php:8
+msgid "This feature is available on Premium version"
+msgstr "Ta funkcja jest dostępna w wersji Premium"
+
+#: includes/Dashboard.php:283
+msgid "Changes saved!"
+msgstr "Zmiany zapisane!"
+
+#: templates/fields/autocomplete.php:11
+msgid "Type to Search..."
+msgstr "Wpisz, aby wyszukać..."
+
+#: templates/partials/sidebar.php:44 templates/sections/advanced/cache.php:53
+#: templates/sections/general/xml-sitemap.php:11 templates/wizard/main.php:40
+msgid "XML Sitemap"
+msgstr "Mapa witryn XML"
+
+#: includes/Dashboard.php:380
+msgid "Settings"
+msgstr "Ustawienia"
+
+#: templates/fields/frequency.php:28 templates/post-meta-box.php:65
+msgid "Never"
+msgstr "Nigdy"
+
+#: templates/fields/frequency.php:25 templates/post-meta-box.php:64
+msgid "Yearly"
+msgstr "Rocznie"
+
+#: templates/fields/frequency.php:22 templates/post-meta-box.php:63
+msgid "Monthly"
+msgstr "Miesięcznie"
+
+#: templates/fields/frequency.php:19 templates/post-meta-box.php:62
+msgid "Weekly"
+msgstr "Tygodniowo"
+
+#: templates/fields/frequency.php:16 templates/post-meta-box.php:61
+msgid "Daily"
+msgstr "Codziennie"
+
+#: templates/fields/frequency.php:13 templates/post-meta-box.php:60
+msgid "Hourly"
+msgstr "Co godzinę"
+
+#: templates/fields/frequency.php:10 templates/post-meta-box.php:59
+msgid "Always"
+msgstr "Zawsze"
+
+#: templates/fields/content.php:11 templates/fields/post-row.php:13
+#: templates/sections/general/exclude.php:12
+#: templates/sections/google-news/exclude.php:12
+msgid "Exclude"
+msgstr "Wyklucz"
+
+#: templates/sections/general/sitemap-options.php:42
+#: templates/sections/google-news/content.php:42
+#: templates/sections/image-sitemap/content.php:31
+#: templates/sections/video-sitemap/content.php:31
+msgid "Custom Post Types"
+msgstr "Niestandardowe typy postów"
+
+#: templates/fields/content.php:10 templates/fields/post-row.php:12
+#: templates/sections/general/sitemap-options.php:18
+#: templates/sections/general/sitemap-options.php:47
+#: templates/sections/google-news/content.php:19
+#: templates/sections/google-news/content.php:51
+#: templates/sections/image-sitemap/content.php:19
+#: templates/sections/image-sitemap/content.php:41
+#: templates/sections/video-sitemap/content.php:19
+#: templates/sections/video-sitemap/content.php:41
+msgid "Include"
+msgstr "Uwzględnij"
+
+#: templates/sections/general/sitemap-options.php:17
+#: templates/sections/general/sitemap-options.php:46
+#: templates/sections/google-news/content.php:18
+#: templates/sections/google-news/content.php:50
+#: templates/sections/image-sitemap/content.php:18
+#: templates/sections/image-sitemap/content.php:40
+#: templates/sections/video-sitemap/content.php:18
+#: templates/sections/video-sitemap/content.php:40
+msgid "Content"
+msgstr "Treść"
+
+#: templates/sections/general/sitemap-options.php:13
+msgid "This Options will be used for generating your Sitemap."
+msgstr "Te opcje będą używane do generowania mapy witryny."
+
+#: templates/sections/general/sitemap-options.php:11
+msgid "Sitemap Options"
+msgstr "Opcje mapy witryny"
+
+#: templates/sections/general/additional.php:59
+msgid "Add New URL"
+msgstr "Dodaj nowy adres URL"
+
+#: templates/sections/general/additional.php:37
+msgid "No URLs added yet!"
+msgstr "Nie dodano jeszcze żadnych adresów URL!"
+
+#: templates/sections/general/additional.php:29
+#: templates/sections/general/sitemap-options.php:20
+#: templates/sections/general/sitemap-options.php:49
+msgid "Update Frequency"
+msgstr "Częstotliwość aktualizacji"
+
+#: templates/sections/general/additional.php:28
+#: templates/sections/general/sitemap-options.php:19
+#: templates/sections/general/sitemap-options.php:48
+msgid "Priority"
+msgstr "Priorytet"
+
+#: templates/sections/general/additional.php:27
+msgid "URL to External Page"
+msgstr "Adres URL do zewnętrznej strony"
+
+#: templates/sections/general/additional.php:12
+msgid "Additional URLs"
+msgstr "Dodatkowe adresy URL"
+
+#: templates/sections/general/general-settings.php:22
+msgid "Add Sitemap Output URLs to site \"robots.txt\" file"
+msgstr ""
+"Dodaj adresy URL wyjściowe mapy witryny do pliku \"robots.txt\" witryny"
+
+#: templates/sections/general/general-settings.php:13
+msgid ""
+"Basic Settings for your Sitemaps. Enabling all below options is recommended."
+msgstr ""
+"Podstawowe ustawienia dla Twoich map witryn. Zaleca się włączenie wszystkich "
+"poniższych opcji."
+
+#: templates/sections/general/general-settings.php:11
+#: templates/sections/google-news/general-settings.php:11
+msgid "General Settings"
+msgstr "Ustawienia ogólne"
+
+#. Author URI of the plugin
+#: xml-sitemap-generator-for-google.php
+msgid "https://wpgrim.com/"
+msgstr "https://wpgrim.com/"
+
+#. Author of the plugin
+#: xml-sitemap-generator-for-google.php
+msgid "WPGrim"
+msgstr "WPGrim"
+
+#. Plugin URI of the plugin
+#: xml-sitemap-generator-for-google.php
+msgid "https://wordpress.org/plugins/xml-sitemap-generator-for-google/"
+msgstr "https://wordpress.org/plugins/xml-sitemap-generator-for-google/"

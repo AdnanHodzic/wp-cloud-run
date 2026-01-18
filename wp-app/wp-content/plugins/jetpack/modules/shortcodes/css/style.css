@@ -92,12 +92,7 @@ body.presentation-wrapper-fullscreen-parent {
 	background-repeat: no-repeat;
 	z-index: 2;
 	opacity: 0;
-
-	-webkit-transition : opacity .25s;
-	-moz-transition    : opacity .25s;
-	-ms-transition     : opacity .25s;
-	-o-transition      : opacity .25s;
-	transition         : opacity .25s;
+	transition: opacity 0.25s;
 }
 
 .presentation .nav-arrow-left,
@@ -137,6 +132,8 @@ body.presentation-wrapper-fullscreen-parent {
 	opacity: 0.8;
 }
 
+/* stylelint-disable-next-line no-duplicate-selectors
+-- This is part of the larger nav arrows section. */
 .presentation-wrapper-fullscreen .nav-fullscreen-button {
 	background-image: url(../images/collapse.png);
 }
@@ -152,14 +149,8 @@ body.presentation-wrapper-fullscreen-parent {
 	z-index: 100;
 	display: table;
 	border-radius: 50px;
-	background-color: #dcdcde;
 	background-color: rgba(0, 0, 0, 0.75);
-
-	-webkit-transition : opacity .5s;
-	-moz-transition    : opacity .5s;
-	-ms-transition     : opacity .5s;
-	-o-transition      : opacity .5s;
-	transition         : opacity .5s;
+	transition: opacity 0.5s;
 }
 
 .presentation .autoplay-overlay .overlay-msg {
@@ -179,10 +170,5 @@ body.presentation-wrapper-fullscreen-parent {
 
 .presentation .do-fade {
 	opacity: 1;
-
-	-webkit-transition : opacity .5s;
-	-moz-transition    : opacity .5s;
-	-ms-transition     : opacity .5s;
-	-o-transition      : opacity .5s;
-	transition         : opacity .5s;
+	transition: opacity 0.5s;
 }

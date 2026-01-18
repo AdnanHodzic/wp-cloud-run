@@ -240,18 +240,18 @@ class Jetpack_Stats_Upgrade_Nudges {
 				height: 100%;
 			}
 			.dops-banner.dops-card.is-product.jp-stats-report-upgrade-item {
-				margin-bottom: 0px;
-				border-left: 0px;
+				margin-bottom: 0;
+				border-left: 0;
 				box-shadow: none;
 				border-top: 1px solid #c3c4c7;
 				padding: 12px 24px;
 			}
 			.dops-banner.dops-card.jp-stats-report-upgrade-item.jp-stats-report-upgrade-subitem {
 				margin-left: 72px;
-				padding-left: 0px;
+				padding-left: 0;
 			}
 			.jp-stats-report-upgrade-item .dops-banner__action {
-				margin-right: 0px;
+				margin-right: 0;
 			}
 			#jp-stats-report-upgrade-wrap .dops-card::after {
 				content: "";
@@ -296,7 +296,7 @@ class Jetpack_Stats_Upgrade_Nudges {
 							method: 'post',
 							body: JSON.stringify( { collapse_nudges: collapseValue } ),
 							headers: {
-								'X-WP-Nonce': "<?php echo esc_js( wp_create_nonce( 'wp_rest' ) ); ?>",
+								'X-WP-Nonce': <?php echo wp_json_encode( wp_create_nonce( 'wp_rest' ), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>,
 								'Content-type': 'application/json' }
 						} );
 					};

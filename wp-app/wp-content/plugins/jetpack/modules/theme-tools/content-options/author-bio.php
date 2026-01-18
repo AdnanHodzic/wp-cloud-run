@@ -5,6 +5,10 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 if ( ! function_exists( 'jetpack_author_bio' ) ) {
 
 	/**
@@ -84,7 +88,7 @@ if ( ! function_exists( 'jetpack_author_bio' ) ) {
 					?>
 				</a>
 			</p><!-- .author-bio -->
-		</div><!-- .entry-auhtor -->
+		</div><!-- .entry-author -->
 		<?php
 	}
 
@@ -105,7 +109,7 @@ if ( ! function_exists( 'jetpack_has_gravatar' ) ) {
 		$headers = get_headers( $url );
 
 		// If 200 is found, the user has a Gravatar; otherwise, they don't.
-		return preg_match( '|200|', $headers[0] ) ? true : false;
+		return str_contains( $headers[0], '200' );
 	}
 
 }

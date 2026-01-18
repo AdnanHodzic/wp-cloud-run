@@ -1,4 +1,5 @@
 #loginform {
+
 	/* We set !important because sometimes static is added inline */
 	position: relative !important;
 	padding-bottom: 92px;
@@ -52,7 +53,7 @@
 }
 
 #loginform #jetpack-sso-wrap p {
-	color: #777777;
+	color: #777;
 	margin-bottom: 16px;
 }
 
@@ -77,8 +78,8 @@
 }
 
 
-.jetpack-sso-form-display #loginform>p,
-.jetpack-sso-form-display #loginform>div {
+.jetpack-sso-form-display #loginform > p,
+.jetpack-sso-form-display #loginform > div {
 	display: none;
 }
 
@@ -96,9 +97,9 @@
 	text-align: center;
 }
 
-.jetpack-sso-or:before {
+.jetpack-sso-or::before {
 	background: #dcdcde;
-	content: '';
+	content: "";
 	height: 1px;
 	position: absolute;
 	left: 0;
@@ -111,7 +112,7 @@
 	color: #777;
 	position: relative;
 	padding: 0 8px;
-	text-transform: uppercase
+	text-transform: uppercase;
 }
 
 #jetpack-sso-wrap .button {
@@ -142,7 +143,7 @@
 }
 
 #jetpack-sso-wrap__user h2 span {
-	font-weight: bold;
+	font-weight: 700;
 }
 
 .jetpack-sso-wrap__reauth {
@@ -157,7 +158,7 @@
 	margin: 24px 0 0;
 }
 
-.jetpack-sso-clear:after {
+.jetpack-sso-clear::after {
 	content: "";
 	display: table;
 	clear: both;

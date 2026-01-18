@@ -10,6 +10,7 @@ namespace Automattic\Jetpack\External_Media;
 use Automattic\Jetpack\Assets;
 use Automattic\Jetpack\Connection\Initial_State as Connection_Initial_State;
 use Automattic\Jetpack\Constants;
+use Automattic\Jetpack\External_Connections;
 use Automattic\Jetpack\Status\Host;
 use Jetpack_Options;
 
@@ -17,7 +18,7 @@ use Jetpack_Options;
  * Class External_Media
  */
 class External_Media {
-	const PACKAGE_VERSION = '0.2.3';
+	const PACKAGE_VERSION = '0.7.2';
 	const BASE_DIR        = __DIR__ . '/';
 	const BASE_FILE       = __FILE__;
 
@@ -32,7 +33,22 @@ class External_Media {
 			require_once __DIR__ . '/features/admin/external-media-import.php';
 		}
 
+		// @todo this current approach results in a console warning in the editor related to adding the css to the iframe incorrectly.
+		// It has been temporarily added back to prevent performance issues in the site editor. See pdWQjU-1rA-p2 for more details.
 		add_action( 'enqueue_block_editor_assets', array( __CLASS__, 'enqueue_block_editor_assets' ) );
+
+		External_Connections::add_settings_for_service(
+			'media',
+			array(
+				'service'      => 'google_photos',
+				'title'        => __( 'Google Photos', 'jetpack-external-media' ),
+				'description'  => __( 'Access photos stored in your Google Photos library.', 'jetpack-external-media' ),
+				'support_link' => array(
+					'wpcom'   => 'https://wordpress.com/support/google-photos/',
+					'jetpack' => 'using-your-google-photos-with-jetpack/',
+				),
+			)
+		);
 	}
 
 	/**
@@ -54,7 +70,7 @@ class External_Media {
 
 		wp_add_inline_script(
 			$asset_name,
-			sprintf( 'var JetpackExternalMediaData = %s;', wp_json_encode( self::get_data() ) ),
+			sprintf( 'var JetpackExternalMediaData = %s;', wp_json_encode( self::get_data(), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) ),
 			'before'
 		);
 

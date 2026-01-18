@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.13] - 2025-11-03
+### Fixed
+- Phan: Address PhanRedundantCondition, PhanRedundantArrayValuesCall, and PhanPluginRedundantAssignment violations. [#45681]
+
+## [0.9.12] - 2025-10-27
+### Changed
+- Internal updates.
+
+## [0.9.11] - 2025-08-18
+### Changed
+- Internal updates.
+
+## [0.9.10] - 2025-08-11
+### Fixed
+- Prevent PHP errors when directly accessing various files. [#44646]
+
+## [0.9.9] - 2025-08-04
+### Changed
+- Internal updates.
+
+## [0.9.8] - 2025-04-28
+### Changed
+- Internal updates.
+
+## [0.9.7] - 2025-03-24
+### Changed
+- Internal updates.
+
+## [0.9.6] - 2025-03-12
+### Changed
+- Internal updates.
+
+## [0.9.5] - 2025-03-10
+### Changed
+- Internal updates.
+
 ## [0.9.4] - 2025-02-24
 ### Fixed
 - Code: Prevent dynamic class properties. [#41857]
@@ -142,6 +178,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixed various imported resources hierarchies [#29012]
 
+[0.9.13]: https://github.com/Automattic/jetpack-import/compare/v0.9.12...v0.9.13
+[0.9.12]: https://github.com/Automattic/jetpack-import/compare/v0.9.11...v0.9.12
+[0.9.11]: https://github.com/Automattic/jetpack-import/compare/v0.9.10...v0.9.11
+[0.9.10]: https://github.com/Automattic/jetpack-import/compare/v0.9.9...v0.9.10
+[0.9.9]: https://github.com/Automattic/jetpack-import/compare/v0.9.8...v0.9.9
+[0.9.8]: https://github.com/Automattic/jetpack-import/compare/v0.9.7...v0.9.8
+[0.9.7]: https://github.com/Automattic/jetpack-import/compare/v0.9.6...v0.9.7
+[0.9.6]: https://github.com/Automattic/jetpack-import/compare/v0.9.5...v0.9.6
+[0.9.5]: https://github.com/Automattic/jetpack-import/compare/v0.9.4...v0.9.5
 [0.9.4]: https://github.com/Automattic/jetpack-import/compare/v0.9.3...v0.9.4
 [0.9.3]: https://github.com/Automattic/jetpack-import/compare/v0.9.2...v0.9.3
 [0.9.2]: https://github.com/Automattic/jetpack-import/compare/v0.9.1...v0.9.2

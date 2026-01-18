@@ -5,6 +5,70 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.6] - 2025-12-08
+### Fixed
+- Ensure proper flags are used with `json_encode()`. [#46092]
+
+## [0.7.5] - 2025-12-01
+### Changed
+- Update dependencies. [#44736]
+
+## [0.7.4] - 2025-10-20
+### Changed
+- Internal updates.
+
+## [0.7.3] - 2025-09-15
+### Changed
+- Internal updates.
+
+## [0.7.2] - 2025-08-11
+### Changed
+- Update dependencies. [#44673]
+
+## [0.7.1] - 2025-08-04
+### Changed
+- Internal updates.
+
+## [0.7.0] - 2025-07-30
+### Added
+- Ensure user is fully aware that deleting an extension via delete-fixer may break their site. [#44521]
+
+## [0.6.1] - 2025-07-21
+### Changed
+- Update dependencies.
+
+## [0.6.0] - 2025-06-05
+### Added
+- Add functionality to correctly display database threats in the Protect UI. [#43663]
+
+## [0.5.11] - 2025-05-05
+### Changed
+- Update dependencies.
+
+## [0.5.10] - 2025-04-28
+### Changed
+- Internal updates.
+
+## [0.5.9] - 2025-03-31
+### Changed
+- Update dependencies.
+
+## [0.5.8] - 2025-03-21
+### Changed
+- Internal updates.
+
+## [0.5.7] - 2025-03-18
+### Changed
+- Update dependencies.
+
+## [0.5.6] - 2025-03-17
+### Changed
+- Internal updates.
+
+## [0.5.5] - 2025-03-12
+### Changed
+- Internal updates.
+
 ## [0.5.4] - 2025-03-05
 ### Changed
 - Internal updates.
@@ -92,6 +156,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Updated package dependencies. [#37894]
 
+[0.7.6]: https://github.com/Automattic/jetpack-protect-status/compare/v0.7.5...v0.7.6
+[0.7.5]: https://github.com/Automattic/jetpack-protect-status/compare/v0.7.4...v0.7.5
+[0.7.4]: https://github.com/Automattic/jetpack-protect-status/compare/v0.7.3...v0.7.4
+[0.7.3]: https://github.com/Automattic/jetpack-protect-status/compare/v0.7.2...v0.7.3
+[0.7.2]: https://github.com/Automattic/jetpack-protect-status/compare/v0.7.1...v0.7.2
+[0.7.1]: https://github.com/Automattic/jetpack-protect-status/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/Automattic/jetpack-protect-status/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/Automattic/jetpack-protect-status/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.11...v0.6.0
+[0.5.11]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.10...v0.5.11
+[0.5.10]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.9...v0.5.10
+[0.5.9]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.8...v0.5.9
+[0.5.8]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.7...v0.5.8
+[0.5.7]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.6...v0.5.7
+[0.5.6]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.5...v0.5.6
+[0.5.5]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Automattic/jetpack-protect-status/compare/v0.5.1...v0.5.2

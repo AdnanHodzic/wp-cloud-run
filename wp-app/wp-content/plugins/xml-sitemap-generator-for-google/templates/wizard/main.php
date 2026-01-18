@@ -19,15 +19,15 @@ Dashboard::render( 'wizard/header.php' );
 				<ul>
 					<li class="wizard-step-menu-1 active">
 						<span>1</span>
-						<?php echo esc_html__( 'General', 'xml-sitemap-generator-for-google' ) ?>
+						<?php echo esc_html__( 'General', 'xml-sitemap-generator-for-google' ); ?>
 					</li>
 					<li class="wizard-step-menu-2">
 						<span>2</span>
-						<?php echo esc_html__( 'Sitemap Structure', 'xml-sitemap-generator-for-google' ) ?>
+						<?php echo esc_html__( 'Sitemap Structure', 'xml-sitemap-generator-for-google' ); ?>
 					</li>
 					<li class="wizard-step-menu-3">
 						<span>3</span>
-						<?php echo esc_html__( 'Advanced', 'xml-sitemap-generator-for-google' ) ?>
+						<?php echo esc_html__( 'Advanced', 'xml-sitemap-generator-for-google' ); ?>
 					</li>
 				</ul>
 			</div>
@@ -135,13 +135,17 @@ Dashboard::render( 'wizard/header.php' );
 			</div>
 
 			<div class="wizard-form-btn-wrapper">
-				<button class="wizard-back-btn">
-					<?php echo esc_html__( 'Back', 'xml-sitemap-generator-for-google' ) ?>
-				</button>
+				<div class="wizard-form-btn-wrapper">
+					<button class="grim-button white left-icon wizard-back-btn active">
+						<span><i class="grim-icon-arrow-left"></i>Back</span>
+					</button>
+				</div>
 
-				<button class="wizard-btn">
-					<?php echo esc_html__( 'Continue', 'xml-sitemap-generator-for-google' ) ?>
-				</button>
+				<div class="wizard-form-btn-wrapper">
+					<button class="grim-button secondary wizard-btn right-icon">
+						<span>Continue <i class="grim-icon-arrow-right"></i></span>
+					</button>
+				</div>
 			</div>
 		</form>
 	</div>

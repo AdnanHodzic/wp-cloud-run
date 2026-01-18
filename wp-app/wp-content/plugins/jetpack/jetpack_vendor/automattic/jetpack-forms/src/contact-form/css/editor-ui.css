@@ -3,9 +3,9 @@ i.mce-i-grunion {
 	font-family: dashicons;
 }
 
-i.mce-i-grunion:before,
-.jetpack-contact-form-icon:before {
-	content: '\f175';
+i.mce-i-grunion::before,
+.jetpack-contact-form-icon::before {
+	content: "\f175";
 	vertical-align: top;
 }
 

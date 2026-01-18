@@ -1,12 +1,26 @@
+/**
+ * Breakpoint Mixin
+ *
+ * Uses Sass Maps which requires Sass v3.3.0 or newer
+ *
+ *
+ * EXAMPLE
+ *
+ * body {
+ * 	@include breakpoint(tablet){
+ * 		font-size: 14px;
+ * 	};
+ * }
+ */
 .j-row {
   width: 100%;
   margin: 0 auto;
 }
-.j-row:before, .j-row:after {
+.j-row::before, .j-row::after {
   content: " ";
   display: table;
 }
-.j-row:after {
+.j-row::after {
   clear: both;
 }
 
@@ -92,31 +106,46 @@
     transform: rotate(-1turn);
   }
 }
+/**
+ * em()
+ *
+ * Convert px to em in a readable fashion.
+ * ==========================================================================
+
+ * Examples:
+ * 1. font-size: em(14px);
+ * 2. font-size: em(30px/14px);
+ */
 .button,
 .download-jetpack {
   transition: all 0.1s ease-in-out;
 }
 
-.jp-button, .jp-button--settings {
+.jp-button,
+.jp-button--settings {
   display: inline-block;
   position: relative;
   padding: 0.7692307692em 1.4615384615em;
   color: #efefef;
-  font-weight: bold;
+  font-weight: 700;
   font-size: 0.9285714286em;
   line-height: 1;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   background: #6f7476;
   border-radius: 3px;
 }
-.jp-button:visited, .jp-button--settings:visited {
+.jp-button:visited,
+.jp-button--settings:visited {
   color: #efefef;
 }
-.jp-button:hover, .jp-button--settings:hover, .jp-button:focus, .jp-button--settings:focus {
+.jp-button:hover, .jp-button:focus,
+.jp-button--settings:hover,
+.jp-button--settings:focus {
   color: #fff;
   background: #57972d;
 }
-.jp-button:active, .jp-button--settings:active {
+.jp-button:active,
+.jp-button--settings:active {
   background: #57972d;
   opacity: 0.8;
 }
@@ -135,7 +164,7 @@
 .jp-button--settings.current {
   background: #3c6621;
   color: #fff;
-  box-shadow: inset 0 2px 0 #365A1F, inset 0 1px 3px #3c6621;
+  box-shadow: inset 0 2px 0 #365a1f, inset 0 1px 3px #3c6621;
 }
 
 .download-jetpack {
@@ -161,12 +190,12 @@
 }
 .download-jetpack:active {
   top: 6px;
-  box-shadow: 0 0px 0 #3e6c20, 0 0 0 rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 0 #3e6c20, 0 0 0 rgba(0, 0, 0, 0.4);
 }
-.download-jetpack:active:after {
+.download-jetpack:active::after {
   top: -6px;
 }
-.download-jetpack:before {
+.download-jetpack::before {
   content: "";
   display: inline-block;
   position: relative;
@@ -178,7 +207,7 @@
   background: url(../images/connect-plug.svg) center center no-repeat;
   background-size: 100%;
 }
-.download-jetpack:after {
+.download-jetpack::after {
   content: "";
   position: absolute;
   top: 0;
@@ -190,7 +219,7 @@
   .download-jetpack {
     font-size: 1.2857142857em;
   }
-  .download-jetpack:before {
+  .download-jetpack::before {
     top: -1px;
     width: 23px;
     height: 23px;
@@ -206,7 +235,7 @@
     font-size: 1.2142857143em;
     font-weight: 600;
   }
-  .download-jetpack:before {
+  .download-jetpack::before {
     width: 19px;
     height: 19px;
     margin-left: 9px;
@@ -242,14 +271,19 @@
   opacity: 0.4;
 }
 
+/**
+ * Automatticons
+ *
+ * A quick reference
+ */
 @font-face {
-  font-family: "automatticons";
+  font-family: automatticons;
   src: url(../_inc/fonts/automatticons/automatticons.eot);
   src: url(../_inc/fonts/automatticons/automatticons.eot?#iefix) format("embedded-opentype"), url(../_inc/fonts/automatticons/automatticons.woff) format("woff"), url(../_inc/fonts/automatticons/automatticons.ttf) format("truetype"), url(../_inc/fonts/automatticons/automatticons.svg#automatticonsregular) format("svg");
-  font-weight: normal;
+  font-weight: 400;
   font-style: normal;
 }
-.nav-horizontal:after {
+.nav-horizontal::after {
   content: ".";
   display: block;
   height: 0;
@@ -347,13 +381,13 @@
   background-size: 183px auto;
   color: #fff;
   line-height: 60px;
-  font-weight: normal;
+  font-weight: 400;
 }
 .header-nav .jetpack-logo a span {
   text-indent: -9999px;
   visibility: hidden;
 }
-.header-nav .jetpack-logo a:before {
+.header-nav .jetpack-logo a::before {
   content: "";
   position: absolute;
   top: 0;
@@ -384,7 +418,8 @@
 .jetpack-pagestyles #screen-meta-links .screen-meta-toggle {
   z-index: 2;
 }
-.jetpack-pagestyles #screen-options-link-wrap, .jetpack-pagestyles #contextual-help-link-wrap {
+.jetpack-pagestyles #screen-options-link-wrap,
+.jetpack-pagestyles #contextual-help-link-wrap {
   border: none;
 }
 .jetpack-pagestyles .update-nag {
@@ -417,7 +452,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  font: 300 1.7142857143em "genericons" !important;
+  font: 300 1.7142857143em Genericons !important;
   color: #777;
   content: "\f405";
   display: inline-block;
@@ -553,19 +588,19 @@
   padding: 10em 0 4.2857142857em;
   text-align: center;
 }
-.footer:before, .footer:after {
+.footer::before, .footer::after {
   content: "";
   position: absolute;
   right: 0;
   pointer-events: none;
 }
-.footer:before {
+.footer::before {
   top: 0;
   margin-top: -1px;
   width: 100%;
   height: 195px;
 }
-.footer:after {
+.footer::after {
   display: none;
 }
 .footer .download-jetpack {
@@ -581,7 +616,7 @@
     padding-top: 165px;
     padding-bottom: 0;
   }
-  .footer:before {
+  .footer::before {
     background-size: 160% auto;
   }
   .footer ul {
@@ -701,7 +736,7 @@
   left: 9999px;
   outline: 0;
 }
-.footer .a8c-attribution a:after {
+.footer .a8c-attribution a::after {
   content: "A";
   position: absolute;
   top: 2px;
@@ -712,7 +747,7 @@
   font-family: "automatticons";
   text-align: center;
 }
-.footer .a8c-attribution a:hover:after {
+.footer .a8c-attribution a:hover::after {
   animation: jetpack-candy 0.4s ease-in-out;
 }
 
@@ -730,8 +765,8 @@
 }
 
 .jetpack-message {
-  background: #00a113;
-  border: 1px solid #006e0d;
+  background: rgb(0, 160.5, 19.0222222222);
+  border: 1px solid rgb(0, 109.5, 12.9777777778);
   margin: 33px auto 0;
   max-width: 90%;
   position: relative;
@@ -753,18 +788,15 @@
   background: transparent;
   box-shadow: none;
 }
-.subhead .jetpack-message.is-opt-in .jp-button, .subhead .jetpack-message.is-opt-in .jp-button--settings {
+.subhead .jetpack-message.is-opt-in .jp-button {
   display: inline-block;
 }
 .jetpack-message.is-opt-in p {
   color: #3c4549;
 }
-.jetpack-message.is-opt-in .jp-button, .jetpack-message.is-opt-in .jp-button--settings {
+.jetpack-message.is-opt-in .jp-button {
   margin-top: 15px;
   display: none;
-}
-.jetpack-message .squeezer h2 {
-  font-size: 1em;
 }
 .jetpack-message h2 {
   color: #fff;
@@ -780,10 +812,10 @@
   position: relative;
   text-align: right;
 }
-.jetpack-message .squeezer:before {
+.jetpack-message .squeezer::before {
   color: #fff;
   content: "\f418";
-  font-family: "Genericons";
+  font-family: Genericons;
   font-size: 33px;
   height: 33px;
   right: 25px;
@@ -792,22 +824,25 @@
   top: 23px;
   top: calc(50% - 22px);
 }
+.jetpack-message .squeezer h2 {
+  font-size: 1em;
+}
 @media (max-width: 530px) {
   .jetpack-message .squeezer {
     padding: 23px;
   }
-  .jetpack-message .squeezer:before {
+  .jetpack-message .squeezer::before {
     display: none;
   }
 }
 .jetpack-message .squeezer a {
-  color: #FFF;
-  border-bottom: 1px solid #D5E4BD;
+  color: #fff;
+  border-bottom: 1px solid #d5e4bd;
 }
 .jetpack-message .squeezer a:hover {
-  border-bottom: 1px solid #F1F6E9;
+  border-bottom: 1px solid #f1f6e9;
 }
-.jetpack-message.error .squeezer:before, .jetpack-message.jetpack-err .squeezer:before {
+.jetpack-message.error .squeezer::before, .jetpack-message.jetpack-err .squeezer::before {
   content: "\f414";
 }
 
@@ -861,6 +896,25 @@
   margin-right: 10px;
 }
 
+/**
+ * $gray color functions:
+ *
+ *   color.adjust( $gray, $lightness: 10% )
+ *   color.adjust( $gray, $lightness: 20% )
+ *   color.adjust( $gray, $lightness: 30% )
+ *   color.adjust( $gray, $lightness: -10% )
+ *   color.adjust( $gray, $lightness: -20% )
+ *   color.adjust( $gray, $lightness: -30% )
+ *
+ * See wordpress.com/design-handbook/colors/ for more info.
+ */
+/**
+ * Rem module
+ *
+ * Convert px to rem in a readable fashion.
+ *
+ * Example: font-size: rem.convert( 21px );
+ */
 .page-content.configure {
   margin-top: 0;
 }
@@ -919,7 +973,7 @@
   }
 }
 .filter-search .button {
-  background: rgb(255, 255, 255);
+  background: #fff;
   border: 1.5px solid rgb(0, 0, 0);
   border-radius: 4px;
   font-size: 1rem;
@@ -930,7 +984,7 @@
 
 .fixed-top {
   box-sizing: border-box;
-  border-bottom: 1px solid #DCDCDE;
+  border-bottom: 1px solid #dcdcde;
   /* Auto layout */
   display: flex;
   flex-direction: row;
@@ -947,7 +1001,7 @@
 .fixed-top select#bulk-action-selector-top {
   width: 180px;
   height: 40px;
-  border: 1px solid #DCDCDE;
+  border: 1px solid #dcdcde;
   border-radius: 4px;
   padding: 8px 16px;
   margin-left: 8px;
@@ -966,9 +1020,8 @@
   justify-content: center;
   align-items: center;
   padding: 6px 24px;
-  width: 93px;
   height: 40px;
-  background: rgb(255, 255, 255);
+  background: #fff;
   border: 1.5px solid rgb(0, 0, 0);
   border-radius: 4px;
   font-size: 1rem;
@@ -999,7 +1052,7 @@
   line-height: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  background: rgb(255, 255, 255);
+  background: #fff;
   border: 1.5px solid rgb(0, 0, 0);
   border-radius: 4px;
   box-shadow: none;
@@ -1007,8 +1060,8 @@
   padding: 3px 8px;
 }
 #jp-plugin-container .table-bordered .row-actions .delete a.dops-button.is-compact {
-  color: #D63638;
-  border: 1px solid #DCDCDE;
+  color: #d63638;
+  border: 1px solid #dcdcde;
 }
 #jp-plugin-container .table-bordered .row-actions .configure a {
   color: rgb(0, 0, 0);
@@ -1055,7 +1108,7 @@
   line-height: 24px;
   letter-spacing: -0.02em;
   font-weight: 700;
-  color: #2C3338;
+  color: #2c3338;
   margin: 16px 0 4px 0;
 }
 .wrap .manage-right .bumper {
@@ -1081,7 +1134,7 @@
   position: static;
 }
 .wrap .manage-right p.search-box input[type=search] {
-  border: 1px solid #DCDCDE;
+  border: 1px solid #dcdcde;
   border-radius: 4px;
   padding: 8px 40px 8px 16px;
   line-height: 24px;
@@ -1097,7 +1150,7 @@
   float: none;
 }
 .wrap .manage-right p.search-box input[type=search]::placeholder {
-  color: #8C8F94;
+  color: #8c8f94;
 }
 @media (max-width: 782px) {
   .wrap .manage-right p.search-box input[type=search] {
@@ -1117,30 +1170,30 @@
   padding-right: 24px;
   padding-left: 24px;
   min-width: 90px;
-  border: 1px solid #DCDCDE;
+  border: 1px solid #dcdcde;
   color: rgb(0, 0, 0);
   height: 40px;
   font-size: 13px;
   line-height: 18px;
   font-weight: 400;
-  background: rgb(255, 255, 255);
+  background: #fff;
 }
 .wrap .manage-right .button-group .button:hover {
-  background: #F6F7F7;
+  background: #f6f7f7;
 }
 .wrap .manage-right .button-group .button:focus {
   border-color: rgb(0, 0, 0);
 }
 .wrap .manage-right .button-group button.dops-button.button.active {
   background: rgb(0, 0, 0);
-  color: rgb(255, 255, 255);
+  color: #fff;
   font-weight: 600;
 }
 .wrap .manage-right .button-group button.dops-button.button.active:hover {
-  background: #2C3338;
+  background: #2c3338;
 }
 .wrap .manage-right .button-group button.dops-button.button.active:focus {
-  border-color: rgb(255, 255, 255);
+  border-color: #fff;
   box-shadow: 0 0 0 1px rgb(0, 0, 0);
 }
 .wrap .manage-right .subsubsub {
@@ -1169,8 +1222,9 @@
   background: rgb(0, 0, 0);
   padding: 2px 6px;
 }
-.wrap .manage-right .subsubsub li.current a, .wrap .manage-right .subsubsub li.current .count {
-  color: rgb(255, 255, 255);
+.wrap .manage-right .subsubsub li.current a,
+.wrap .manage-right .subsubsub li.current .count {
+  color: #fff;
   text-decoration: none;
   font-weight: 700;
 }
@@ -1246,8 +1300,8 @@ tr.jetpack-module {
   gap: 16px;
   width: 100%;
   height: 60px;
-  background: rgb(255, 255, 255);
-  border-bottom: 1px solid #DCDCDE;
+  background: #fff;
+  border-bottom: 1px solid #dcdcde;
 }
 @media (max-width: 782px) {
   tr.jetpack-module {
@@ -1262,23 +1316,24 @@ tr.jetpack-module th.check-column {
   padding-top: 0;
   width: auto;
 }
-tr.jetpack-module a, tr.jetpack-module p {
+tr.jetpack-module a,
+tr.jetpack-module p {
   text-decoration: none;
 }
 
 tr.jetpack-module.unavailable {
-  background: #F9F9F6;
+  background: #f9f9f6;
 }
 
 tr.jetpack-module.active {
-  background: #F9F9F6;
+  background: #f9f9f6;
 }
 tr.jetpack-module.active .column-name .info {
   font-weight: 700;
 }
 
 tr.jetpack-module .column-name {
-  color: #2C3338;
+  color: #2c3338;
   float: right;
   align-items: center;
   display: flex;
@@ -1296,12 +1351,13 @@ tr.jetpack-module .row-actions span.configure {
   margin-left: 16px;
 }
 
-/* 'Pages' is a temporary location for these styles, until we can break them up into their proper atmoic locations */
+/* 'Pages' is a temporary location for these styles until we
+ * can break them up into their proper atomic locations */
 .configure-module p {
   font-size: 14px;
 }
 .configure-module p.success, .configure-module p.error {
-  color: rgb(255, 255, 255);
+  color: #fff;
   padding: 10px;
 }
 .configure-module p.success {
@@ -1341,7 +1397,7 @@ tr.jetpack-module .row-actions span.configure {
   opacity: 0.5;
 }
 .configure-module input.button-primary {
-  font-weight: bold;
+  font-weight: 700;
 }
 
 /* whitelist table */
@@ -1379,7 +1435,7 @@ tr.jetpack-module .row-actions span.configure {
 
 .manage__title .genericon {
   font-size: 38px;
-  color: #81A944;
+  color: #81a944;
 }
 
 .manage__link {
@@ -1387,7 +1443,7 @@ tr.jetpack-module .row-actions span.configure {
   padding: 0 20px;
   height: 40px;
   line-height: 40px;
-  font-weight: normal;
+  font-weight: 400;
 }
 .manage__link .genericon {
   font-size: 28px;
@@ -1419,10 +1475,10 @@ tr.jetpack-module .row-actions span.configure {
   margin-top: 0;
   background-image: none;
 }
-.jp-content .footer:before {
+.jp-content .footer::before {
   height: inherit;
 }
-.jp-content .more-info:before {
+.jp-content .more-info::before {
   content: none;
 }
 

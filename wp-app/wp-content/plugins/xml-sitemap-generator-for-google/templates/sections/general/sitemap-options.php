@@ -7,11 +7,11 @@ use GRIM_SG\Dashboard;
 
 $settings = $args['settings'] ?? new stdClass();
 ?>
-<div class="postbox">
-	<h3 class="hndle"><?php esc_html_e( 'Sitemap Options', 'xml-sitemap-generator-for-google' ); ?></h3>
+<div class="grim-section">
+	<h3 class="grim-section-title" data-search-id="sitemap_options"><?php esc_html_e( 'Sitemap Options', 'xml-sitemap-generator-for-google' ); ?></h3>
 	<div class="inside">
-		<p><?php esc_html_e( 'This Options will be used for generating your Sitemap.', 'xml-sitemap-generator-for-google' ); ?></p>
-		<table class="wp-list-table widefat fixed striped">
+		<p class="grim-section-desc grim-mb-20"><?php esc_html_e( 'This Options will be used for generating your Sitemap.', 'xml-sitemap-generator-for-google' ); ?></p>
+		<table class="grim-table wp-list-table widefat fixed striped">
 			<thead>
 			<tr>
 				<th scope="col"><?php esc_html_e( 'Content', 'xml-sitemap-generator-for-google' ); ?></th>
@@ -37,26 +37,28 @@ $settings = $args['settings'] ?? new stdClass();
 			?>
 			</tbody>
 		</table>
-
-		<?php if ( ! empty( $args['cpt'] ) ) { ?>
-			<h3 class="hndle"><?php esc_html_e( 'Custom Post Types', 'xml-sitemap-generator-for-google' ); ?></h3>
-			<table class="wp-list-table widefat fixed striped tags">
-				<thead>
-				<tr>
-					<th scope="col"><?php esc_html_e( 'Content', 'xml-sitemap-generator-for-google' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Include', 'xml-sitemap-generator-for-google' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Priority', 'xml-sitemap-generator-for-google' ); ?></th>
-					<th scope="col"><?php esc_html_e( 'Update Frequency', 'xml-sitemap-generator-for-google' ); ?></th>
-				</tr>
-				</thead>
-				<tbody>
-				<?php
-				foreach ( $args['cpt'] as $cpt ) {
-					Dashboard::render_post_row( $cpt->label, $cpt->name, ! empty( $settings->cpt[ $cpt->name ] ) ? $settings->cpt[ $cpt->name ] : $settings->post );
-				}
-				?>
-				</tbody>
-			</table>
-		<?php } ?>
 	</div>
 </div>
+
+<?php if ( ! empty( $args['cpt'] ) ) { ?>
+	<div class="grim-section">
+		<h3 class="grim-section-title grim-mb-20" data-search-id="general_custom_post_types"><?php esc_html_e( 'Custom Post Types', 'xml-sitemap-generator-for-google' ); ?></h3>
+		<table class="grim-table wp-list-table widefat fixed striped tags">
+			<thead>
+			<tr>
+				<th scope="col"><?php esc_html_e( 'Content', 'xml-sitemap-generator-for-google' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'Include', 'xml-sitemap-generator-for-google' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'Priority', 'xml-sitemap-generator-for-google' ); ?></th>
+				<th scope="col"><?php esc_html_e( 'Update Frequency', 'xml-sitemap-generator-for-google' ); ?></th>
+			</tr>
+			</thead>
+			<tbody>
+			<?php
+			foreach ( $args['cpt'] as $cpt ) {
+				Dashboard::render_post_row( $cpt->label, $cpt->name, ! empty( $settings->cpt[ $cpt->name ] ) ? $settings->cpt[ $cpt->name ] : $settings->post );
+			}
+			?>
+			</tbody>
+		</table>
+	</div>
+<?php } ?>

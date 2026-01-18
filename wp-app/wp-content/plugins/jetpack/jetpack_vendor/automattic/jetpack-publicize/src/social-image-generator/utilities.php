@@ -7,10 +7,11 @@
 
 namespace Automattic\Jetpack\Publicize\Social_Image_Generator;
 
-use Automattic\Jetpack\Connection\Client;
-use Automattic\Jetpack\Publicize\REST_Controller;
+use Automattic\Jetpack\Publicize\Publicize_Utils as Utils;
+use Automattic\Jetpack\Publicize\REST_API\Proxy_Requests;
 use Automattic\Jetpack\Redirect;
 use WP_Error;
+use WP_REST_Request;
 
 /**
  * Given a post ID, returns the image URL for the generated image.
@@ -38,13 +39,15 @@ function get_image_url( $post_id ) {
  * @param string $text Text to use in the generated image.
  * @param string $image_url Image to use in the generated image.
  * @param string $template Template to use in the generated image.
+ * @param string $font Font to use in the generated image.
  * @return array
  */
-function get_token_body( $text, $image_url, $template ) {
+function get_token_body( $text, $image_url, $template, $font = '' ) {
 	return array(
 		'text'      => $text,
 		'image_url' => $image_url,
 		'template'  => $template,
+		'font'      => $font,
 	);
 }
 
@@ -54,20 +57,29 @@ function get_token_body( $text, $image_url, $template ) {
  * @param string $text      The text that will be displayed on the generated image.
  * @param string $image_url The background image URL to be used in the generated image.
  * @param string $template  The template slug to use for generating the image.
+ * @param string $font The font slug to use for the text in the image.
  * @return string|WP_Error  The generated token or a WP_Error object if there's been a problem.
  */
-function fetch_token( $text, $image_url, $template ) {
-	$body            = get_token_body( $text, $image_url, $template );
-	$rest_controller = new REST_Controller();
-	$response        = Client::wpcom_json_api_request_as_blog(
-		sprintf( 'sites/%d/jetpack-social/generate-image-token', absint( \Jetpack_Options::get_option( 'id' ) ) ),
-		'2',
-		array(
-			'headers' => array( 'content-type' => 'application/json' ),
-			'method'  => 'POST',
-		),
-		wp_json_encode( array_filter( $body ) ),
-		'wpcom'
-	);
-	return $rest_controller->make_proper_response( $response );
+function fetch_token( $text, $image_url, $template, $font = '' ) {
+
+	$args = get_token_body( $text, $image_url, $template, $font );
+
+	if ( Utils::is_wpcom() ) {
+		require_lib( 'social-image-generator-token' );
+		require_lib( 'publicize/util/social-image-generator' );
+
+		if ( ! \Publicize\Social_Image_Generator\is_enabled() ) {
+			return new WP_Error( 'social_image_generator_not_enabled', __( 'Social Image Generator is not enabled.', 'jetpack-publicize-pkg' ) );
+		}
+
+		return \Social_Image_Generator\generate_token( $args );
+	}
+
+	$proxy = new Proxy_Requests( 'publicize/social-image-generator' );
+
+	$request = new WP_REST_Request( 'POST' );
+
+	$request->set_body( wp_json_encode( $args, JSON_UNESCAPED_SLASHES ) );
+
+	return $proxy->proxy_request_to_wpcom_as_blog( $request, 'generate-token' );
 }

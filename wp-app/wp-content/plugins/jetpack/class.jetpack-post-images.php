@@ -5,6 +5,7 @@
  * @package automattic/jetpack
  */
 
+use Automattic\Block_Scanner;
 use Automattic\Jetpack\Image_CDN\Image_CDN_Core;
 
 /**
@@ -30,8 +31,7 @@ class Jetpack_PostImages {
 		$images = array();
 
 		$post = get_post( $post_id );
-
-		if ( ! $post ) {
+		if ( ! $post instanceof WP_Post ) {
 			return $images;
 		}
 
@@ -46,7 +46,7 @@ class Jetpack_PostImages {
 		$permalink = get_permalink( $post->ID );
 
 		// Mechanic: Somebody set us up the bomb.
-		$old_post                  = $GLOBALS['post'];
+		$old_post                  = $GLOBALS['post'] ?? null;
 		$GLOBALS['post']           = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
 		$old_shortcodes            = $GLOBALS['shortcode_tags'];
 		$GLOBALS['shortcode_tags'] = array( 'slideshow' => $old_shortcodes['slideshow'] ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
@@ -149,8 +149,7 @@ class Jetpack_PostImages {
 		$images = array();
 
 		$post = get_post( $post_id );
-
-		if ( ! $post ) {
+		if ( ! $post instanceof WP_Post ) {
 			return $images;
 		}
 
@@ -245,6 +244,9 @@ class Jetpack_PostImages {
 		$images = array();
 
 		$post = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return $images;
+		}
 
 		if ( ! empty( $post->post_password ) ) {
 			return $images;
@@ -283,7 +285,7 @@ class Jetpack_PostImages {
 
 		foreach ( $html_images as $html_image ) {
 			$src = wp_parse_url( $html_image['src'] );
-			if ( ! $src ) {
+			if ( ! $src || empty( $src['path'] ) ) {
 				continue;
 			}
 
@@ -318,6 +320,9 @@ class Jetpack_PostImages {
 		$images = array();
 
 		$post = get_post( $post_id );
+		if ( ! $post instanceof WP_Post ) {
+			return $images;
+		}
 
 		if ( ! empty( $post->post_password ) ) {
 			return $images;
@@ -338,8 +343,8 @@ class Jetpack_PostImages {
 			if ( ! isset( $meta['height'] ) || $meta['height'] < $height ) {
 				return $images;
 			}
-
-			$too_big = ( ( ! empty( $meta['width'] ) && $meta['width'] > 1200 ) || ( ! empty( $meta['height'] ) && $meta['height'] > 1200 ) );
+			$max_dimension = self::get_max_thumbnail_dimension();
+			$too_big       = ( ( ! empty( $meta['width'] ) && $meta['width'] > $max_dimension ) || ( ! empty( $meta['height'] ) && $meta['height'] > $max_dimension ) );
 
 			if (
 				$too_big &&
@@ -348,7 +353,11 @@ class Jetpack_PostImages {
 					( defined( 'IS_WPCOM' ) && IS_WPCOM )
 				)
 			) {
-				$img_src = wp_get_attachment_image_src( $thumb, array( 1200, 1200 ) );
+				$size        = self::determine_thumbnail_size_for_photon( $meta['width'], $meta['height'] );
+				$photon_args = array(
+					'fit' => $size['width'] . ',' . $size['height'],
+				);
+				$img_src     = array( Image_CDN_Core::cdn_url( wp_get_attachment_url( $thumb ), $photon_args ), $size['width'], $size['height'], true ); // Match the signature of wp_get_attachment_image_src
 			} else {
 				$img_src = wp_get_attachment_image_src( $thumb, 'full' );
 			}
@@ -362,7 +371,7 @@ class Jetpack_PostImages {
 			// Let's try to use the postmeta if we can, since it seems to be
 			// more reliable
 			if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
-				$featured_image = get_post_meta( $post->ID, '_jetpack_featured_image' );
+				$featured_image = get_post_meta( $post->ID, '_jetpack_featured_image', false );
 				if ( $featured_image ) {
 					$url = $featured_image[0];
 				} else {
@@ -417,6 +426,8 @@ class Jetpack_PostImages {
 	 * Get images from Gutenberg Image blocks.
 	 *
 	 * @since 6.9.0
+	 * @since 14.8 Updated to use Block_Delimiter for improved performance.
+	 * @since 14.9 Updated to use Block_Scanner for improved performance.
 	 *
 	 * @param mixed $html_or_id The HTML string to parse for images, or a post id.
 	 * @param int   $width      Minimum Image width.
@@ -431,32 +442,43 @@ class Jetpack_PostImages {
 			return $images;
 		}
 
-		// Look for block information in the HTML.
-		$blocks = parse_blocks( $html_info['html'] );
-		if ( empty( $blocks ) ) {
+		$scanner = Block_Scanner::create( $html_info['html'] );
+		if ( ! $scanner ) {
 			return $images;
 		}
 
 		/*
-		 * Let's loop through our blocks.
-		 * Some blocks may include some other blocks. Let's go 2 levels deep to look for blocks
-		 * that we support and that may include images (see get_images_from_block)
-		 *
-		 * @to-do: instead of looping manually (that's a lot of if and loops), search recursively instead.
+		 * Use Block_Scanner to parse our post content HTML,
+		 * and find all the block delimiters for supported blocks,
+		 * whether they're parent or nested blocks.
 		 */
-		foreach ( $blocks as $block ) {
-			if ( ! self::is_nested_block( $block ) || 'core/media-text' === $block['blockName'] ) {
-				$images = self::get_images_from_block( $images, $block, $html_info, $width, $height );
-			} else {
-				foreach ( $block['innerBlocks'] as $inner_block ) {
-					if ( ! self::is_nested_block( $inner_block ) ) {
-						$images = self::get_images_from_block( $images, $inner_block, $html_info, $width, $height );
-					} else {
-						foreach ( $inner_block['innerBlocks'] as $inner_inner_block ) {
-							$images = self::get_images_from_block( $images, $inner_inner_block, $html_info, $width, $height );
-						}
-					}
-				}
+		$supported_blocks = array(
+			'core/image',
+			'core/media-text',
+			'core/gallery',
+			'jetpack/tiled-gallery',
+			'jetpack/slideshow',
+			'jetpack/story',
+		);
+
+		while ( $scanner->next_delimiter() ) {
+			$type = $scanner->get_delimiter_type();
+			// Only process opening delimiters for supported block types.
+			if ( Block_Scanner::OPENER !== $type ) {
+				continue;
+			}
+
+			$block_type         = $scanner->get_block_type();
+			$is_supported_block = in_array( $block_type, $supported_blocks, true );
+			if ( ! $is_supported_block ) {
+				continue;
+			}
+
+			$attributes   = $scanner->allocate_and_return_parsed_attributes() ?? array();
+			$block_images = self::get_images_from_block_attributes( $block_type, $attributes, $html_info, $width, $height );
+
+			if ( ! empty( $block_images ) ) {
+				$images = array_merge( $images, $block_images );
 			}
 		}
 
@@ -465,6 +487,64 @@ class Jetpack_PostImages {
 		 * for unsuccessful attempts.
 		 */
 		return array_filter( $images );
+	}
+
+	/**
+	 * Extract images from block attributes based on block type.
+	 *
+	 * @since 14.8
+	 *
+	 * @param string $block_type Block type name.
+	 * @param array  $attributes Block attributes.
+	 * @param array  $html_info  Info about the post where the block is found.
+	 * @param int    $width      Desired image width.
+	 * @param int    $height     Desired image height.
+	 *
+	 * @return array Array of images found.
+	 */
+	private static function get_images_from_block_attributes( $block_type, $attributes, $html_info, $width, $height ) {
+		$images = array();
+
+		switch ( $block_type ) {
+			case 'core/image':
+			case 'core/media-text':
+				$id_key = 'core/image' === $block_type ? 'id' : 'mediaId';
+				if ( ! empty( $attributes[ $id_key ] ) ) {
+					$image = self::get_attachment_data( $attributes[ $id_key ], $html_info['post_url'], $width, $height );
+					if ( false !== $image ) {
+						$images[] = $image;
+					}
+				}
+				break;
+
+			case 'core/gallery':
+			case 'jetpack/tiled-gallery':
+			case 'jetpack/slideshow':
+				if ( ! empty( $attributes['ids'] ) && is_array( $attributes['ids'] ) ) {
+					foreach ( $attributes['ids'] as $img_id ) {
+						$image = self::get_attachment_data( $img_id, $html_info['post_url'], $width, $height );
+						if ( false !== $image ) {
+							$images[] = $image;
+						}
+					}
+				}
+				break;
+
+			case 'jetpack/story':
+				if ( ! empty( $attributes['mediaFiles'] ) && is_array( $attributes['mediaFiles'] ) ) {
+					foreach ( $attributes['mediaFiles'] as $media_file ) {
+						if ( ! empty( $media_file['id'] ) ) {
+							$image = self::get_attachment_data( $media_file['id'], $html_info['post_url'], $width, $height );
+							if ( false !== $image ) {
+								$images[] = $image;
+							}
+						}
+					}
+				}
+				break;
+		}
+
+		return $images;
 	}
 
 	/**
@@ -648,12 +728,12 @@ class Jetpack_PostImages {
 	 * @return array containing details of the image, or empty array if none.
 	 */
 	public static function from_gravatar( $post_id, $size = 96, $default = false ) {
-		$post      = get_post( $post_id );
-		$permalink = get_permalink( $post_id );
-
+		$post = get_post( $post_id );
 		if ( ! $post instanceof WP_Post ) {
 			return array();
 		}
+
+		$permalink = get_permalink( $post_id );
 
 		if ( function_exists( 'wpcom_get_avatar_url' ) ) {
 			$url = wpcom_get_avatar_url( $post->post_author, $size, $default, true );
@@ -933,8 +1013,7 @@ class Jetpack_PostImages {
 	public static function get_post_html( $html_or_id ) {
 		if ( is_numeric( $html_or_id ) ) {
 			$post = get_post( $html_or_id );
-
-			if ( empty( $post ) || ! empty( $post->post_password ) ) {
+			if ( ! $post instanceof WP_Post || ! empty( $post->post_password ) ) {
 				return '';
 			}
 
@@ -1025,77 +1104,67 @@ class Jetpack_PostImages {
 	}
 
 	/**
-	 * Get an image from a block.
+	 * Determine the size to use with Photon for a thumbnail image.
+	 * Images larger than the maximum thumbnail dimension in either dimension are resized to maintain aspect ratio.
 	 *
-	 * @since 7.8.0
+	 * @since 14.6
+	 * @see https://github.com/Automattic/jetpack/issues/40349
 	 *
-	 * @param array $images    Images found.
-	 * @param array $block     Block and its attributes.
-	 * @param array $html_info Info about the post where the block is found.
-	 * @param int   $width     Desired image width.
-	 * @param int   $height    Desired image height.
-	 *
-	 * @return array Array of images found.
+	 * @param int $width Original image width.
+	 * @param int $height Original image height.
+	 * @return array Array containing the width and height to use with Photon (null means auto).
 	 */
-	private static function get_images_from_block( $images, $block, $html_info, $width, $height ) {
-		/**
-		 * Parse content from Core Image blocks.
-		 * If it is an image block for an image hosted on our site, it will have an ID.
-		 * If it does not have an ID, let `from_html` parse that content later,
-		 * and extract an image if it has size parameters.
-		 */
-		if (
-			'core/image' === $block['blockName']
-			&& ! empty( $block['attrs']['id'] )
-		) {
-			$images[] = self::get_attachment_data( $block['attrs']['id'], $html_info['post_url'], $width, $height );
-		} elseif (
-			'core/media-text' === $block['blockName']
-			&& ! empty( $block['attrs']['mediaId'] )
-		) {
-			$images[] = self::get_attachment_data( $block['attrs']['mediaId'], $html_info['post_url'], $width, $height );
-		} elseif (
-			/**
-			 * Parse content from Core Gallery blocks as well from Jetpack's Tiled Gallery and Slideshow blocks.
-			 * Gallery blocks include the ID of each one of the images in the gallery.
-			 */
-			in_array( $block['blockName'], array( 'core/gallery', 'jetpack/tiled-gallery', 'jetpack/slideshow' ), true )
-			&& ! empty( $block['attrs']['ids'] )
-		) {
-			foreach ( $block['attrs']['ids'] as $img_id ) {
-				$images[] = self::get_attachment_data( $img_id, $html_info['post_url'], $width, $height );
-			}
-		} elseif (
-			/**
-			 * Parse content from Jetpack's Story block.
-			 */
-			'jetpack/story' === $block['blockName']
-			&& ! empty( $block['attrs']['mediaFiles'] )
-		) {
-			foreach ( $block['attrs']['mediaFiles'] as $media_file ) {
-				if ( ! empty( $media_file['id'] ) ) {
-					$images[] = self::get_attachment_data( $media_file['id'], $html_info['post_url'], $width, $height );
-				}
-			}
+	public static function determine_thumbnail_size_for_photon( $width, $height ) {
+		$max_dimension = self::get_max_thumbnail_dimension();
+
+		// If neither dimension exceeds max size, return original dimensions.
+		if ( $width <= $max_dimension && $height <= $max_dimension ) {
+			return array(
+				'width'  => $width,
+				'height' => $height,
+			);
 		}
 
-		return $images;
+		if ( $width >= $height ) {
+			// For landscape or square images.
+			$dims = image_resize_dimensions( $width, $height, $max_dimension, 0 ); // Height will be calculated automatically.
+		} else {
+			// For portrait images.
+			$dims = image_resize_dimensions( $width, $height, 0, $max_dimension ); // Width will be calculated automatically.
+		}
+
+		// $dims can be false if the image is virtually the same size as the max dimension, e.g. wp_fuzzy_number_match.
+		if ( $dims && isset( $dims[4] ) && isset( $dims[5] ) ) {
+			return array(
+				'width'  => $dims[4],
+				'height' => $dims[5],
+			);
+		}
+
+			return array(
+				'width'  => $width,
+				'height' => $height,
+			);
 	}
 
 	/**
-	 * Check if a block has inner blocks.
+	 * Function to provide the maximum dimension for a thumbnail image.
+	 * Filterable via the `jetpack_post_images_max_dimension` filter.
 	 *
-	 * @since 7.8.0
+	 * @since 14.6
+	 * @see https://github.com/Automattic/jetpack/issues/40349
 	 *
-	 * @param array $block Block and its attributes.
-	 *
-	 * @return bool
+	 * @return int The maximum dimension for a thumbnail image.
 	 */
-	private static function is_nested_block( $block ) {
-		if ( ! empty( $block['innerBlocks'] ) ) {
-			return true;
-		}
-
-		return false;
+	public static function get_max_thumbnail_dimension() {
+		/**
+		 * Filter the maximum dimension allowed for a thumbnail image.
+		 * The default value is 1200 pixels.
+		 *
+		 * @since 14.6
+		 *
+		 * @param int $max_dimension Maximum dimension in pixels.
+		 */
+		return (int) apply_filters( 'jetpack_post_images_max_thumbnail_dimension', 1200 );
 	}
 }

@@ -9,6 +9,10 @@ namespace Automattic\Jetpack\Sync\Modules;
 
 use Automattic\Jetpack\Sync\Defaults;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Class to handle sync for constants.
  */
@@ -146,17 +150,23 @@ class Constants extends Module {
 	 * @access public
 	 *
 	 * @param array $config Full sync configuration for this sync module.
+	 * @param array $status This module Full Sync status.
 	 * @param int   $send_until The timestamp until the current request can send.
-	 * @param array $state This module Full Sync status.
+	 * @param int   $started The timestamp when the full sync started.
 	 *
 	 * @return array This module Full Sync status.
 	 */
-	public function send_full_sync_actions( $config, $send_until, $state ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function send_full_sync_actions( $config, $status, $send_until, $started ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		// we call this instead of do_action when sending immediately.
-		$this->send_action( 'jetpack_full_sync_constants', array( true ) );
+		$result = $this->send_action( 'jetpack_full_sync_constants', array( true ) );
 
-		// The number of actions enqueued, and next module state (true == done).
-		return array( 'finished' => true );
+		if ( is_wp_error( $result ) ) {
+			$status['error'] = true;
+			return $status;
+		}
+		$status['finished'] = true;
+		$status['sent']     = $status['total'];
+		return $status;
 	}
 
 	/**
@@ -166,7 +176,7 @@ class Constants extends Module {
 	 *
 	 * @param array $config Full sync configuration for this sync module.
 	 *
-	 * @return array Number of items yet to be enqueued.
+	 * @return int Number of items yet to be enqueued.
 	 */
 	public function estimate_full_sync_actions( $config ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return 1;

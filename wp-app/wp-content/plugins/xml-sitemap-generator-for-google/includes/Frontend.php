@@ -15,7 +15,7 @@ class Frontend extends Controller {
 		self::set_rewrite_hooks();
 
 		add_filter( 'query_vars', array( $this, 'register_query_vars' ), 1 );
-		add_action( 'template_redirect', array( $this, 'template_redirect' ), 1 );
+		add_action( 'parse_request', array( $this, 'render_sitemaps' ), 1 );
 		add_action( 'do_robots', array( $this, 'do_robots_link' ), 100 );
 		add_action( 'admin_init', array( $this, 'reset_rewrite_rules' ) );
 	}
@@ -42,22 +42,22 @@ class Frontend extends Controller {
 	/**
 	 * Template Redirect
 	 */
-	public function template_redirect() {
+	public function render_sitemaps( $wp ) {
 		global $wp_query;
 
-		$is_xsl_sitemap   = ! empty( $wp_query->query_vars['sitemap_xsl'] );
-		$is_xml_sitemap   = ! empty( $wp_query->query_vars['sitemap_xml'] );
-		$is_html_sitemap  = ! empty( $wp_query->query_vars['sitemap_html'] );
-		$is_google_news   = ! empty( $wp_query->query_vars['google_news'] );
-		$is_image_sitemap = ! empty( $wp_query->query_vars['image_sitemap'] );
-		$is_video_sitemap = ! empty( $wp_query->query_vars['video_sitemap'] );
-		$is_multilingual  = ! empty( $wp_query->query_vars['multilingual_sitemap'] );
+		$is_xsl_sitemap   = ! empty( $wp->query_vars['sitemap_xsl'] );
+		$is_xml_sitemap   = ! empty( $wp->query_vars['sitemap_xml'] );
+		$is_html_sitemap  = ! empty( $wp->query_vars['sitemap_html'] );
+		$is_google_news   = ! empty( $wp->query_vars['google_news'] );
+		$is_image_sitemap = ! empty( $wp->query_vars['image_sitemap'] );
+		$is_video_sitemap = ! empty( $wp->query_vars['video_sitemap'] );
+		$is_multilingual  = ! empty( $wp->query_vars['multilingual_sitemap'] );
 
 		if ( $is_xsl_sitemap || $is_xml_sitemap || $is_html_sitemap || $is_google_news || $is_image_sitemap || $is_video_sitemap || $is_multilingual ) {
 			$wp_query->is_404  = false;
 			$wp_query->is_feed = true;
-			$inner_sitemap     = $wp_query->query_vars['inner_sitemap'] ?? null;
-			$current_page      = $wp_query->query_vars['page'] ?? null;
+			$inner_sitemap     = $wp->query_vars['inner_sitemap'] ?? null;
+			$current_page      = $wp->query_vars['page'] ?? null;
 
 			if ( ! empty( $inner_sitemap ) && empty( $current_page ) ) {
 				$current_page = 0;
@@ -65,12 +65,12 @@ class Frontend extends Controller {
 
 			if ( $is_xsl_sitemap ) {
 				// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				Sitemap::generate_sitemap_xsl( sanitize_text_field( $_GET['template'] ?? $wp_query->query_vars['sitemap_xsl'] ) );
+				Sitemap::generate_sitemap_xsl( sanitize_text_field( $_GET['template'] ?? $wp->query_vars['sitemap_xsl'] ) );
 			} elseif ( $is_google_news ) {
 				( new GoogleNews() )->show_sitemap( GoogleNews::$template );
 			} elseif ( $is_image_sitemap || 'image' === $inner_sitemap ) {
 				( new ImageSitemap() )->show_sitemap( ImageSitemap::$template, true, $inner_sitemap, $current_page );
-			} elseif ( $is_video_sitemap || 'video' === $inner_sitemap) {
+			} elseif ( $is_video_sitemap || 'video' === $inner_sitemap ) {
 				( new VideoSitemap() )->show_sitemap( VideoSitemap::$template, true, $inner_sitemap, $current_page );
 			} elseif ( $is_multilingual ) {
 				( new MultilingualSitemap() )->show_sitemap( MultilingualSitemap::$template );
@@ -176,7 +176,7 @@ class Frontend extends Controller {
 		}
 
 		if ( sgg_is_multilingual() ) {
-			$languages = sgg_get_languages();
+			$languages = sgg_get_languages( true );
 			if ( ! empty( $languages ) ) {
 				global $wp_rewrite;
 

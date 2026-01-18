@@ -10,8 +10,13 @@ use Automattic\Jetpack\Blocks;
 use Automattic\Jetpack\Extensions\Premium_Content\Subscription_Service\Abstract_Token_Subscription_Service;
 use Automattic\Jetpack\Status;
 use Automattic\Jetpack\Status\Host;
+use Automattic\Jetpack\Status\Request;
 use const Automattic\Jetpack\Extensions\Subscriptions\META_NAME_FOR_POST_LEVEL_ACCESS_SETTINGS;
 use const Automattic\Jetpack\Extensions\Subscriptions\META_NAME_FOR_POST_TIER_ID_SETTINGS;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 require_once __DIR__ . '/../../extensions/blocks/subscriptions/constants.php';
 
@@ -246,7 +251,7 @@ class Jetpack_Memberships {
 		add_filter( 'jetpack_sync_post_meta_whitelist', array( $this, 'allow_sync_post_meta' ) );
 		$this->setup_cpts();
 
-		if ( Jetpack::is_module_active( 'subscriptions' ) && jetpack_is_frontend() ) {
+		if ( Jetpack::is_module_active( 'subscriptions' ) && Request::is_frontend() ) {
 			add_action( 'wp_logout', array( $this, 'subscriber_logout' ) );
 		}
 	}
@@ -533,10 +538,51 @@ class Jetpack_Memberships {
 			$content       = str_replace( 'recurring-payments-id', $block_id, $content );
 			$content       = str_replace( 'wp-block-jetpack-recurring-payments', 'wp-block-jetpack-recurring-payments wp-block-button', $content );
 			$subscribe_url = $this->get_subscription_url( $plan_id );
-			return preg_replace( '/(href=".*")/U', 'href="' . $subscribe_url . '"', $content );
+
+			$content = preg_replace( '/(href=".*")/U', 'href="' . $subscribe_url . '"', $content );
+			$content = wp_kses_post( $content );
+
+			return $content;
 		}
 
 		return $this->deprecated_render_button_v1( $attributes, $plan_id );
+	}
+
+	/**
+	 * Render email callback.
+	 *
+	 * @param string $block_content The block content.
+	 * @param array  $parsed_block  The parsed block data.
+	 * @param object $rendering_context The email rendering context.
+	 *
+	 * @return string
+	 */
+	public function render_button_email( $block_content, array $parsed_block, $rendering_context ) {
+		// Check for the required renderers.
+		if ( ! function_exists( '\Automattic\Jetpack\Extensions\Button\render_email' ) || ! class_exists( '\Automattic\WooCommerce\EmailEditor\Integrations\Core\Renderer\Blocks\Button' ) ) {
+			return '';
+		}
+
+		// Get the first inner block, which should be the button block.
+		$button_block = $parsed_block['innerBlocks'][0] ?? array();
+
+		// We should only accept button blocks.
+		if ( empty( $button_block['blockName'] ) || 'jetpack/button' !== $button_block['blockName'] ) {
+			return '';
+		}
+
+		// We need attributes.
+		if ( ! isset( $button_block['attrs'] ) || ! is_array( $button_block['attrs'] ) ) {
+			return '';
+		}
+
+		// If the button block is missing text or url, return empty string.
+		if ( empty( $button_block['attrs']['text'] ) || empty( $button_block['attrs']['url'] ) ) {
+			return '';
+		}
+
+		// Reuse the button block's email rendering method.
+		return \Automattic\Jetpack\Extensions\Button\render_email( $block_content, $button_block, $rendering_context );
 	}
 
 	/**
@@ -909,9 +955,11 @@ class Jetpack_Memberships {
 	 * This function is used both on WPCOM or on Jetpack self-hosted.
 	 * Depending on the environment we need to mitigate where the data is retrieved from.
 	 *
+	 * @param bool $allow_deleted Whether to allow deleted plans to be returned. Defaults to true.
+	 *
 	 * @return array
 	 */
-	public static function get_all_newsletter_plan_ids() {
+	public static function get_all_newsletter_plan_ids( $allow_deleted = true ) {
 
 		if ( ! self::is_enabled_jetpack_recurring_payments() ) {
 			return array();
@@ -920,21 +968,33 @@ class Jetpack_Memberships {
 		// We can retrieve the data directly except on a Jetpack/Atomic cached site or
 		$is_cached_site = ( new Host() )->is_wpcom_simple() && is_jetpack_site();
 		if ( ! $is_cached_site ) {
+			$meta_query = array(
+				array(
+					'key'   => 'jetpack_memberships_type',
+					'value' => self::$type_tier,
+				),
+			);
+
+			if ( $allow_deleted === false ) {
+				$meta_query[] = array(
+					'key'     => 'jetpack_memberships_is_deleted',
+					'compare' => 'NOT EXISTS',
+				);
+			}
+
 			return get_posts(
 				array(
 					'posts_per_page' => -1,
 					'fields'         => 'ids',
 					'post_type'      => self::$post_type_plan,
-					'meta_key'       => 'jetpack_memberships_type',
-					'meta_value'     => self::$type_tier,
+					'meta_query'     => $meta_query,
 				)
 			);
 
 		} else {
 			// On cached site on WPCOM
 			require_lib( 'memberships' );
-			$allow_deleted = true;
-			$list          = Memberships_Product::get_product_list( get_current_blog_id(), self::$type_tier, null, $allow_deleted );
+			$list = Memberships_Product::get_product_list( get_current_blog_id(), self::$type_tier, null, $allow_deleted );
 
 			if ( is_wp_error( $list ) ) {
 				return array();
@@ -964,9 +1024,10 @@ class Jetpack_Memberships {
 			Blocks::jetpack_register_block(
 				'jetpack/recurring-payments',
 				array(
-					'render_callback'  => array( $this, 'render_button' ),
-					'uses_context'     => array( 'isPremiumContentChild' ),
-					'provides_context' => array(
+					'render_callback'       => array( $this, 'render_button' ),
+					'render_email_callback' => array( $this, 'render_button_email' ),
+					'uses_context'          => array( 'isPremiumContentChild' ),
+					'provides_context'      => array(
 						'jetpack/parentBlockWidth' => 'width',
 					),
 				)

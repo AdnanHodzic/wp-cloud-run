@@ -1,7 +1,7 @@
 <?php
 /**
  * Module Name: Jetpack Stats
- * Module Description: Collect valuable traffic stats and insights.
+ * Module Description: Clear, concise traffic insights right in your WordPress dashboard.
  * Sort Order: 1
  * Recommendation Order: 2
  * First Introduced: 1.1
@@ -16,18 +16,21 @@
 
 use Automattic\Jetpack\Admin_UI\Admin_Menu;
 use Automattic\Jetpack\Connection\Client;
-use Automattic\Jetpack\Connection\Manager as Connection_Manager;
-use Automattic\Jetpack\Connection\XMLRPC_Async_Call;
 use Automattic\Jetpack\Redirect;
 use Automattic\Jetpack\Stats\Main as Stats;
 use Automattic\Jetpack\Stats\Options as Stats_Options;
 use Automattic\Jetpack\Stats\Tracking_Pixel as Stats_Tracking_Pixel;
 use Automattic\Jetpack\Stats\WPCOM_Stats;
 use Automattic\Jetpack\Stats\XMLRPC_Provider as Stats_XMLRPC;
+use Automattic\Jetpack\Stats_Admin\Admin_Post_List_Column;
 use Automattic\Jetpack\Stats_Admin\Dashboard as Stats_Dashboard;
 use Automattic\Jetpack\Stats_Admin\Main as Stats_Main;
 use Automattic\Jetpack\Status\Host;
 use Automattic\Jetpack\Tracking;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 if ( defined( 'STATS_DASHBOARD_SERVER' ) ) {
 	return;
@@ -59,16 +62,12 @@ function stats_load() {
 		add_action( 'wp_head', 'stats_admin_bar_head', 100 );
 	}
 
+	Admin_Post_List_Column::register();
+
 	add_action( 'jetpack_admin_menu', 'stats_admin_menu' );
 
 	add_filter( 'pre_option_db_version', 'stats_ignore_db_version' );
 
-	// Add an icon to see stats in WordPress.com for a particular post.
-	add_action( 'admin_print_styles-edit.php', 'jetpack_stats_load_admin_css' );
-	add_filter( 'manage_posts_columns', 'jetpack_stats_post_table' );
-	add_filter( 'manage_pages_columns', 'jetpack_stats_post_table' );
-	add_action( 'manage_posts_custom_column', 'jetpack_stats_post_table_cell', 10, 2 );
-	add_action( 'manage_pages_custom_column', 'jetpack_stats_post_table_cell', 10, 2 );
 	// Filter for adding the Jetpack plugin version to tracking stats.
 	add_filter( 'stats_array', 'filter_stats_array_add_jp_version' );
 
@@ -253,9 +252,7 @@ function stats_admin_menu() {
 		add_action( "load-$hook", 'stats_reports_load' );
 	} else {
 		// Enable the new Odyssey Stats experience.
-		$stats_dashboard = new Stats_Dashboard();
-		$hook            = Admin_Menu::add_menu( __( 'Stats', 'jetpack' ), __( 'Stats', 'jetpack' ), 'view_stats', 'stats', array( $stats_dashboard, 'render' ), 1 );
-		add_action( "load-$hook", array( $stats_dashboard, 'admin_init' ) );
+		Stats_Dashboard::init();
 	}
 }
 
@@ -317,8 +314,8 @@ function stats_script_dismiss_nudge_handler() {
 		// Send an AJAX request.
 		// Note we can provide a 'postponed_for' parameter to set the delay.
 		// Without a parameter it defaults to 30 days which is what we want here.
-		let nonce = <?php echo wp_json_encode( wp_create_nonce( 'wp_rest' ) ); ?>;
-		let url = <?php echo wp_json_encode( rest_url( '/jetpack/v4/stats-app/stats/notices' ) ); ?>;
+		let nonce = <?php echo wp_json_encode( wp_create_nonce( 'wp_rest' ), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>;
+		let url = <?php echo wp_json_encode( rest_url( '/jetpack/v4/stats-app/stats/notices' ), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>;
 		let data = {
 			id: 'opt_in_new_stats',
 			status: 'postponed',
@@ -363,7 +360,7 @@ function stats_js_remove_stnojs_cookie() {
 	?>
 <script type="text/javascript">
 /* <![CDATA[ */
-document.cookie = 'stnojs=0; expires=Wed, 9 Mar 2011 16:55:50 UTC; path=<?php echo esc_js( $parsed['path'] ); ?>';
+document.cookie = <?php echo wp_json_encode( 'stnojs=0; expires=Wed, 9 Mar 2011 16:55:50 UTC; path=' . $parsed['path'], JSON_UNESCAPED_SLASHES | JSON_HEX_TAG ); ?>;
 /* ]]> */
 </script>
 	<?php
@@ -604,7 +601,7 @@ function stats_reports_page( $main_chart_only = false ) {
 
 	$get      = Client::remote_request( compact( 'url', 'method', 'timeout', 'user_id' ) );
 	$get_code = wp_remote_retrieve_response_code( $get );
-	if ( is_wp_error( $get ) || ( 2 !== (int) ( $get_code / 100 ) && 304 !== $get_code ) || empty( $get['body'] ) ) {
+	if ( is_wp_error( $get ) || $get_code === '' || ( 2 !== (int) ( $get_code / 100 ) && 304 !== $get_code ) || empty( $get['body'] ) ) {
 		stats_print_wp_remote_error( $get, $url );
 	} elseif ( ! empty( $get['headers']['content-type'] ) ) {
 		$type = $get['headers']['content-type'];
@@ -825,22 +822,6 @@ function stats_admin_bar_menu( &$wp_admin_bar ) {
 	);
 
 	$wp_admin_bar->add_menu( $menu );
-}
-
-/**
- *
- * Deprecated. The stats module should not update blog details. This is handled by Sync.
- *
- * Stats Update Blog.
- *
- * @access public
- * @return void
- *
- * @deprecated since 10.3.
- */
-function stats_update_blog() {
-	_deprecated_function( __METHOD__, 'jetpack-10.3' );
-	XMLRPC_Async_Call::add_call( 'jetpack.updateBlog', 0, stats_get_blog() );
 }
 
 /**
@@ -1073,7 +1054,7 @@ function stats_dashboard_widget_content() {
 
 	$get      = Client::remote_request( compact( 'url', 'method', 'timeout', 'user_id' ) );
 	$get_code = wp_remote_retrieve_response_code( $get );
-	if ( is_wp_error( $get ) || ( 2 !== (int) ( $get_code / 100 ) && 304 !== $get_code ) || empty( $get['body'] ) ) {
+	if ( is_wp_error( $get ) || $get_code === '' || ( 2 !== (int) ( $get_code / 100 ) && 304 !== $get_code ) || empty( $get['body'] ) ) {
 		stats_print_wp_remote_error( $get, $url );
 	} else {
 		$body = stats_convert_post_titles( $get['body'] );
@@ -1192,7 +1173,7 @@ function stats_dashboard_widget_content() {
 function stats_print_wp_remote_error( $get, $url ) {
 	$state_name     = 'stats_remote_error_' . substr( md5( $url ), 0, 8 );
 	$previous_error = Jetpack::state( $state_name );
-	$error          = md5( wp_json_encode( compact( 'get', 'url' ) ) );
+	$error          = md5( wp_json_encode( compact( 'get', 'url' ), JSON_UNESCAPED_SLASHES ) );
 	Jetpack::state( $state_name, $error );
 	if ( $error !== $previous_error ) {
 		?>
@@ -1354,7 +1335,7 @@ function stats_get_remote_csv( $url ) {
 
 	$get      = Client::remote_request( compact( 'url', 'method', 'timeout', 'user_id' ) );
 	$get_code = wp_remote_retrieve_response_code( $get );
-	if ( is_wp_error( $get ) || ( 2 !== (int) ( $get_code / 100 ) && 304 !== $get_code ) || empty( $get['body'] ) ) {
+	if ( is_wp_error( $get ) || $get_code === '' || ( 2 !== (int) ( $get_code / 100 ) && 304 !== $get_code ) || empty( $get['body'] ) ) {
 		return array(); // @todo: return an error?
 	} else {
 		return stats_str_getcsv( $get['body'] );
@@ -1407,7 +1388,7 @@ function stats_get_from_restapi( $args = array(), $resource = '' ) {
 	$endpoint    = jetpack_stats_api_path( $resource );
 	$api_version = '1.1';
 	$args        = wp_parse_args( $args, array() );
-	$cache_key   = md5( implode( '|', array( $endpoint, $api_version, wp_json_encode( $args ) ) ) );
+	$cache_key   = md5( implode( '|', array( $endpoint, $api_version, wp_json_encode( $args, JSON_UNESCAPED_SLASHES ) ) ) );
 
 	$transient_name = "jetpack_restapi_stats_cache_{$cache_key}";
 
@@ -1443,108 +1424,6 @@ function stats_get_from_restapi( $args = array(), $resource = '' ) {
 	set_transient( $transient_name, array( time() => $data ), 5 * MINUTE_IN_SECONDS );
 
 	return $return;
-}
-
-/**
- * Load CSS needed for Stats column width in WP-Admin area.
- *
- * @since 4.7.0
- */
-function jetpack_stats_load_admin_css() {
-	?>
-	<style type="text/css">
-		.fixed .column-stats {
-			width: 5em;
-		}
-	</style>
-	<?php
-}
-
-/**
- * Set header for column that allows to view an entry's stats.
- *
- * @param array $columns An array of column names.
- *
- * @since 4.7.0
- *
- * @return mixed
- */
-function jetpack_stats_post_table( $columns ) {
-	/*
-	 * Stats can be accessed in wp-admin or in Calypso,
-	 * depending on what version of the stats screen is enabled on your site.
-	 *
-	 * In both cases, the user must be allowed to access stats.
-	 *
-	 * If the Odyssey Stats experience isn't enabled, the user will need to go to Calypso,
-	 * so they need to be connected to WordPress.com to be able to access that page.
-	 */
-	if (
-		! current_user_can( 'view_stats' )
-		|| (
-			! Stats_Options::get_option( 'enable_odyssey_stats' )
-			&& ! ( new Connection_Manager( 'jetpack' ) )->is_user_connected()
-		)
-	) {
-		return $columns;
-	}
-
-	// Array-Fu to add before comments.
-	$pos = array_search( 'comments', array_keys( $columns ), true );
-
-	// Fallback to the last position if the post type does not support comments.
-	if ( ! is_int( $pos ) ) {
-		$pos = count( $columns );
-	}
-
-	// Final fallback, if the array was malformed by another plugin for example.
-	if ( ! is_int( $pos ) ) {
-		return $columns;
-	}
-
-	$chunks             = array_chunk( $columns, $pos, true );
-	$chunks[0]['stats'] = esc_html__( 'Stats', 'jetpack' );
-
-	return call_user_func_array( 'array_merge', $chunks );
-}
-
-/**
- * Set content for cell with link to an entry's stats in Odyssey Stats.
- *
- * @param string $column  The name of the column to display.
- * @param int    $post_id The current post ID.
- *
- * @since 4.7.0
- *
- * @return mixed
- */
-function jetpack_stats_post_table_cell( $column, $post_id ) {
-	if ( 'stats' === $column ) {
-		if ( 'publish' !== get_post_status( $post_id ) ) {
-			printf(
-				'<span aria-hidden="true">—</span><span class="screen-reader-text">%s</span>',
-				esc_html__( 'No stats', 'jetpack' )
-			);
-		} else {
-			// Link to the wp-admin stats page.
-			$stats_post_url = admin_url( sprintf( 'admin.php?page=stats#!/stats/post/%d/%d', $post_id, Jetpack_Options::get_option( 'id', 0 ) ) );
-			// Unless the user is on a Default style WOA site, in which case link to Calypso.
-			if ( ( new Host() )->is_woa_site() && Stats_Options::get_option( 'enable_odyssey_stats' ) && 'wp-admin' !== get_option( 'wpcom_admin_interface' ) ) {
-				$stats_post_url = Redirect::get_url(
-					'calypso-stats-post',
-					array(
-						'path' => $post_id,
-					)
-				);
-			}
-
-			printf(
-				'<a href="%s" title="%s" class="dashicons dashicons-chart-bar" target="_blank"></a>',
-				esc_url( $stats_post_url ),
-				esc_html__( 'View stats for this post', 'jetpack' )
-			);
-		}
-	}
 }
 
 /**

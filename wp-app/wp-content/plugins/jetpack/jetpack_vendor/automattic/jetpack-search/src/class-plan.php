@@ -12,6 +12,10 @@ use Automattic\Jetpack\Connection\Client;
 use Jetpack_Options;
 use WP_Error;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Registers the REST routes for Search.
  */
@@ -159,6 +163,9 @@ class Plan {
 	 * @param array $plan_info - the decoded plan info array.
 	 */
 	public function set_plan_options( $plan_info ) {
+		if ( isset( $plan_info['swap_classic_to_inline_search'] ) && is_bool( $plan_info['swap_classic_to_inline_search'] ) ) {
+			update_option( Module_Control::SEARCH_MODULE_SWAP_CLASSIC_TO_INLINE_OPTION_KEY, (bool) $plan_info['swap_classic_to_inline_search'] );
+		}
 		if ( ! isset( $plan_info['supports_instant_search'] ) ) {
 			return false;
 		}

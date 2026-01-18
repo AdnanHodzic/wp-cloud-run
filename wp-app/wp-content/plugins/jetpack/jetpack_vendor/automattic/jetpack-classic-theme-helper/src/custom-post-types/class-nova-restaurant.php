@@ -604,7 +604,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Nova_Restaurant' ) ) {
 		public function set_custom_font_icon() {
 			?>
 		<style type="text/css">
-		#menu-posts-nova_menu_item .wp-menu-image:before {
+		#menu-posts-nova_menu_item .wp-menu-image::before {
 			font-family: 'nova-font' !important;
 			content: '\e603' !important;
 		}
@@ -1254,7 +1254,7 @@ if ( ! class_exists( __NAMESPACE__ . '\Nova_Restaurant' ) ) {
 			<p>
 			<?php
 			echo wp_kses(
-				__( 'Use the <kbd>TAB</kbd> key on your keyboard to move between colums and the <kbd>ENTER</kbd> or <kbd>RETURN</kbd> key to save each row and move on to the next.', 'jetpack-classic-theme-helper' ),
+				__( 'Use the <kbd>TAB</kbd> key on your keyboard to move between columns and the <kbd>ENTER</kbd> or <kbd>RETURN</kbd> key to save each row and move on to the next.', 'jetpack-classic-theme-helper' ),
 				array(
 					'kbd' => array(),
 				)

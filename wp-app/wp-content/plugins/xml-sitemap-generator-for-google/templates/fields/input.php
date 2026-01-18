@@ -3,10 +3,15 @@
  * @var $args
  */
 ?>
-<label for="<?php echo esc_attr( $args['name'] ); ?>" class="<?php echo esc_attr( $args['class'] ?? '' ); ?>"><?php echo esc_html( $args['label'] ); ?></label>
-<input type="<?php echo esc_attr( $args['type'] ?? 'text' ); ?>" id="<?php echo esc_attr( $args['name'] ); ?>"
-	name="<?php echo esc_attr( $args['name'] ); ?>" size="50"
+<label for="<?php echo esc_attr( $args['name'] ?? '' ); ?>"
+	data-search-id="<?php echo esc_attr( $args['name'] ?? '' ); ?>"
+	class="<?php echo esc_attr( $args['class'] ?? '' ); ?>">
+	<?php echo esc_html( $args['label'] ?? '' ) ; ?>
+</label>
+<input type="<?php echo esc_attr( $args['type'] ?? 'text' ); ?>" id="<?php echo esc_attr( $args['name'] ?? '' ); ?>"
+	name="<?php echo esc_attr( $args['name'] ?? '' ); ?>" size="50"
 	class="<?php echo esc_attr( $args['class'] ?? '' ); ?>"
+	placeholder="<?php echo esc_attr( $args['placeholder'] ?? '' ); ?>"
 	value="<?php echo esc_attr( $args['value'] ); ?>"/>
 
 <?php if ( ! empty( $args['description'] ) ) { ?>

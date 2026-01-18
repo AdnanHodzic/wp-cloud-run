@@ -63,6 +63,8 @@ class Current_Plan {
 				'core/video',
 				'core/cover',
 				'core/audio',
+				'multistep-form',
+				'form-webhooks',
 			),
 		),
 		'personal' => array(
@@ -135,7 +137,9 @@ class Current_Plan {
 				'wooexpress-medium-bundle-monthly',
 				'wp_com_hundred_year_bundle_centennially',
 			),
-			'supports' => array(),
+			'supports' => array(
+				'ai-seo-enhancer',
+			),
 		),
 
 		'complete' => array(
@@ -144,7 +148,10 @@ class Current_Plan {
 				'jetpack_complete_monthly',
 				'vip',
 			),
-			'supports' => array(),
+			'supports' => array(
+				'field-file', // Forms
+				'social-image-generator',
+			),
 		),
 	);
 

@@ -4,25 +4,24 @@
  */
 
 use GRIM_SG\Dashboard;
-
-settings_errors( Dashboard::$slug );
 ?>
-<div class="wrap grim-wrapper">
-	<h1><?php esc_html_e( 'Google XML Sitemaps Generator Settings', 'xml-sitemap-generator-for-google' ); ?></h1>
 
-	<div id="poststuff" class="metabox-holder has-right-sidebar">
-		<div class="has-sidebar">
-			<form method="post" enctype="multipart/form-data">
+<div class="grim-container grim-mb-20">
+	<?php
+		settings_errors( Dashboard::$slug );
+	?>
+</div>
+
+<div class="wrap grim-wrapper grim-container">
+	<div id="poststuff" class="metabox-holder">
+		<div>
+			<form method="post" enctype="multipart/form-data" id="settings-form">
+			<?php
+			Dashboard::render( 'partials/navigation.php', $args );
+			?>
 				<?php wp_nonce_field( GRIM_SG_BASENAME . '-settings', 'sgg_settings_nonce' ); ?>
 				<div id="post-body-content" class="has-sidebar-content">
 					<div class="meta-box-sortabless">
-						<nav class="nav-tab-wrapper">
-							<a href="#" class="nav-tab nav-tab-active" data-id="general"><?php esc_html_e( 'General', 'xml-sitemap-generator-for-google' ); ?></a>
-							<a href="#" class="nav-tab" data-id="google-news"><?php esc_html_e( 'Google News', 'xml-sitemap-generator-for-google' ); ?></a>
-							<a href="#" class="nav-tab" data-id="media-sitemaps"><?php esc_html_e( 'Media Sitemaps', 'xml-sitemap-generator-for-google' ); ?></a>
-							<a href="#" class="nav-tab" data-id="advanced"><?php esc_html_e( 'Advanced', 'xml-sitemap-generator-for-google' ); ?></a>
-						</nav>
-
 						<div class="nav-tabs-content">
 							<div class="section">
 								<!-- General -->
@@ -31,15 +30,15 @@ settings_errors( Dashboard::$slug );
 								<!-- Output URLs -->
 								<?php Dashboard::render( 'sections/general/xml-sitemap.php', $args ); ?>
 
+								<!-- HTML Sitemap -->
+								<?php Dashboard::render( 'sections/general/html-sitemap.php', $args ); ?>
+
 								<!-- Webserver Configuration -->
 								<?php
 								if ( sgg_is_nginx() && sgg_is_using_mod_rewrite() ) {
 									Dashboard::render( 'sections/general/webserver-configuration.php', $args );
 								}
 								?>
-
-								<!-- HTML Sitemap -->
-								<?php Dashboard::render( 'sections/general/html-sitemap.php', $args ); ?>
 
 								<!-- Sitemap Structure -->
 								<?php Dashboard::render( 'sections/general/sitemap-structure.php', $args ); ?>
@@ -82,13 +81,18 @@ settings_errors( Dashboard::$slug );
 
 							<div class="section">
 								<!-- Image Sitemap -->
-								<?php Dashboard::render( 'sections/media-sitemaps/image-sitemap.php', $args ); ?>
-
-								<!-- Video Sitemap -->
-								<?php Dashboard::render( 'sections/media-sitemaps/video-sitemap.php', $args ); ?>
+								<?php Dashboard::render( 'sections/image-sitemap/general-settings.php', $args ); ?>
 
 								<!-- Content -->
-								<?php Dashboard::render( 'sections/media-sitemaps/content.php', $args ); ?>
+								<?php Dashboard::render( 'sections/image-sitemap/content.php', $args ); ?>
+							</div>
+
+							<div class="section">
+								<!-- Video Sitemap -->
+								<?php Dashboard::render( 'sections/video-sitemap/general-settings.php', $args ); ?>
+
+								<!-- Content -->
+								<?php Dashboard::render( 'sections/video-sitemap/content.php', $args ); ?>
 							</div>
 
 							<div class="section">
@@ -101,17 +105,23 @@ settings_errors( Dashboard::$slug );
 								<!-- Styles -->
 								<?php Dashboard::render( 'sections/advanced/styles.php', $args ); ?>
 
+								<!-- Cron Job -->
+								<?php Dashboard::render( 'sections/advanced/cronjob.php', $args ); ?>
+
+								<!-- WP CLI -->
+								<?php Dashboard::render( 'sections/advanced/wp-cli.php', $args ); ?>
+
 								<!-- Import & Export -->
 								<?php Dashboard::render( 'sections/advanced/import-export.php', $args ); ?>
 							</div>
 						</div>
+						<div class="tools-sidebar">
+							<?php Dashboard::render( 'partials/sidebar.php', $args ); ?>
+						</div>
 					</div>
 				</div>
 				<input type="hidden" name="save_settings">
-				<?php submit_button(); ?>
 			</form>
-
-			<?php Dashboard::render( 'partials/sidebar.php', $args ); ?>
 		</div>
 	</div>
 </div>

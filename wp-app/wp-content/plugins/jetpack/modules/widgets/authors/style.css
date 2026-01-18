@@ -1,8 +1,10 @@
 /* Authors Widget */
-.widget_authors > ul, .widget.widget_authors li > ul {
+.widget_authors > ul,
+.widget.widget_authors li > ul {
 	margin-left: inherit;
 	padding-left: 0;
 }
+
 .widget_authors ul li li {
 	padding-left: 0;
 }
@@ -20,6 +22,5 @@
 	margin-right: 5px;
 	margin-bottom: 5px;
 	vertical-align: middle;
-	-webkit-box-shadow: none;
 	box-shadow: none;
 }

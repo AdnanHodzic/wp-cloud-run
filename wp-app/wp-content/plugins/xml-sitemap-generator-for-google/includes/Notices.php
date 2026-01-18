@@ -37,58 +37,61 @@ class Notices extends Controller {
 			$disable_rate = get_option( 'sgg_disable_notice_' . self::RATE, false );
 			$disable_pro  = get_option( 'sgg_disable_notice_' . self::BUY_PRO, false );
 
-			if ( $days >= 7 && ! $disable_rate ) {
-				add_action( 'admin_notices', array( $this, 'rate_notice' ) );
-			}
+			add_action( 'current_screen', function ( $screen ) use ( $days, $disable_rate, $disable_pro ) {
+				if ( strpos( $screen->id, 'xml-sitemap-generator-for-google' ) === false ) {
+					return;
+				}
 
-			if ( $days >= 15 && ! sgg_pro_enabled() && ! $disable_pro ) {
-				add_action( 'admin_notices', array( $this, 'pro_notice' ) );
-			}
+				remove_all_actions( 'admin_notices' );
+				remove_all_actions( 'all_admin_notices' );
+
+				if ( $days >= 3 && ! $disable_rate ) {
+					add_action( 'admin_notices', array( $this, 'rate_notice' ) );
+				}
+
+				if ( $days >= 5 && ! sgg_pro_enabled() && ! $disable_pro ) {
+					add_action( 'admin_notices', array( $this, 'pro_notice' ) );
+				}
+			});
 		}
 	}
 
 	public function rate_notice() {
 		$this->enqueue_scripts();
-		?>
-		<div class="notice notice-info is-dismissible" data-notice="<?php echo esc_attr( self::RATE ); ?>">
-			<p>
-				<?php
-				printf(
-					wp_kses_post( 'Hi, thank you for using <strong>Google XML Sitemaps Generator</strong>! If you like the plugin, please leave us a %s rating. A huge thank you from the team in advance!' ),
-					'<a href="' . esc_url( sgg_get_review_url() ) . '" target="_blank">★★★★★</a>'
-				);
-				?>
-			</p>
-			<p>
-				<a href="#" class="button sgg-notice"><?php esc_html_e( 'Dismiss', 'xml-sitemap-generator-for-google' ); ?></a>
-				<a href="<?php echo esc_url( sgg_get_review_url() ); ?>" class="button button-primary sgg-notice" target="_blank">
-					<?php esc_html_e( 'Yes, Rate Now', 'xml-sitemap-generator-for-google' ); ?>
-				</a>
-			</p>
-		</div>
-		<?php
+
+		Dashboard::render(
+			'partials/rate-banner.php',
+			array(
+				'label'        => esc_html__( 'Hi, thank you for using Google XML Sitemaps Generator!', 'xml-sitemap-generator-for-google' ),
+				'description'  => sprintf(
+					esc_html__( 'If you like the plugin, please leave us a %s rating. A huge thank you from the team in advance!', 'xml-sitemap-generator-for-google' ),
+					'<span><a href="' . esc_url( sgg_get_review_url() ) . '" target="_blank">★★★★★</a></span>'
+				),
+				'button_text'  => esc_html__( 'Yes, Rate Now', 'xml-sitemap-generator-for-google' ),
+				'button_url'   => esc_url( sgg_get_review_url() ),
+				'data_notice'  => self::RATE,
+				'notice_class' => 'grim-dynamic-notice',
+			)
+		);
 	}
 
 	public function pro_notice() {
 		$this->enqueue_scripts();
-		?>
-		<div class="notice notice-info is-dismissible" data-notice="<?php echo esc_attr( self::BUY_PRO ); ?>">
-			<p>
-				<?php
-				printf(
-					wp_kses_post( 'Hi, thank you for using <strong>Google XML Sitemaps Generator</strong>! If you want to unlock more features, please check out our %s.' ),
+
+		Dashboard::render(
+			'partials/rate-banner.php',
+			array(
+				'label'        => esc_html__( 'Hi, thank you for using Google XML Sitemaps Generator!', 'xml-sitemap-generator-for-google' ),
+				'description'  => sprintf(
+					esc_html__( 'If you want to unlock more features, please check out our %s.', 'xml-sitemap-generator-for-google' ),
 					'<a href="' . esc_url( sgg_get_pro_url( 'notice' ) ) . '" target="_blank">' . esc_html__( 'Pro version', 'xml-sitemap-generator-for-google' ) . '</a>'
-				);
-				?>
-			</p>
-			<p>
-				<a href="#" class="button sgg-notice"><?php esc_html_e( 'Dismiss', 'xml-sitemap-generator-for-google' ); ?></a>
-				<a href="<?php echo esc_url( sgg_get_pro_url( 'notice' ) ); ?>" class="button button-primary sgg-notice" target="_blank">
-					<?php esc_html_e( 'Yes, Read More', 'xml-sitemap-generator-for-google' ); ?>
-				</a>
-			</p>
-		</div>
-		<?php
+				),
+				'button_text'  => esc_html__( 'Yes, Read More', 'xml-sitemap-generator-for-google' ),
+				'button_url'   => esc_url( sgg_get_pro_url( 'notice' ) ),
+				'data_notice'  => self::BUY_PRO,
+				'notice_class' => 'grim-pro-notice grim-dynamic-notice',
+			)
+		);
 	}
 
 	public function enqueue_scripts() {

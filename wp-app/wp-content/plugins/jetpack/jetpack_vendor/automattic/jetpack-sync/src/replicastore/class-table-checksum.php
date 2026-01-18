@@ -289,6 +289,21 @@ class Table_Checksum {
 			),
 			'links'                      => $wpdb->links, // TODO describe in the array format or add exceptions.
 			'options'                    => $wpdb->options, // TODO describe in the array format or add exceptions.
+			'wc_product_lookup'          => array( // wc_product_lookup is a table in the cache database
+				'table'                     => $wpdb->posts,
+				'range_field'               => 'ID',
+				'key_fields'                => array( 'ID' ),
+				'checksum_fields'           => array( 'post_modified_gmt' ),
+				'filter_values'             => array(
+					'post_type' => array(
+						'operator' => 'IN',
+						'values'   => array( 'product', 'product_variation' ),
+					),
+				),
+				'is_table_enabled_callback' => function () {
+					return false !== Sync\Modules::get_module( 'woocommerce_products' );
+				},
+			),
 			'woocommerce_order_items'    => array(
 				'table'                     => "{$wpdb->prefix}woocommerce_order_items",
 				'range_field'               => 'order_item_id',
@@ -306,7 +321,9 @@ class Table_Checksum {
 				'parent_table'              => 'woocommerce_order_items',
 				'parent_join_field'         => 'order_item_id',
 				'table_join_field'          => 'order_item_id',
-				'is_table_enabled_callback' => 'Automattic\Jetpack\Sync\Replicastore\Table_Checksum::enable_woocommerce_tables',
+				'is_table_enabled_callback' => function () {
+					return false !== Sync\Modules::get_module( 'meta' ) && self::enable_woocommerce_tables();
+				},
 			),
 			'wc_orders'                  => array(
 				'table'                     => "{$wpdb->prefix}wc_orders",

@@ -30,6 +30,7 @@ class Wizard extends Dashboard {
 		}
 
 		wp_enqueue_style( 'sgg-wizard-styles', GRIM_SG_URL . 'assets/css/wizard.min.css', array(), GRIM_SG_VERSION );
+		wp_enqueue_style( 'sgg-icons', GRIM_SG_URL . 'assets/fonts/icons/style.css', array(), GRIM_SG_VERSION );
 		wp_enqueue_script( 'sgg-wizard-scripts', GRIM_SG_URL . 'assets/js/wizard.js', array( 'jquery' ), GRIM_SG_VERSION, true );
 		wp_localize_script(
 			'sgg-wizard-scripts',
@@ -87,7 +88,7 @@ class Wizard extends Dashboard {
 
 		wp_send_json(
 			array(
-				'success' => true,
+				'success'  => true,
 				'redirect' => admin_url( 'admin.php?page=' . self::$slug ),
 			)
 		);

@@ -9,9 +9,9 @@ use GRIM_SG\Vendor\SitemapGenerator;
 class Sitemap extends Controller {
 	public static $template = 'sitemap';
 
-	protected $urls = array();
+	public $urls = array();
 
-	protected $settings;
+	public $settings;
 
 	public function __construct() {
 		$this->settings = $this->get_settings();
@@ -22,7 +22,7 @@ class Sitemap extends Controller {
 	 */
 	public function show_sitemap( $template, $is_xml = true, $inner_sitemap = null, $current_page = null ) {
 		if ( sgg_is_sitemap_index( $template, $this->settings ) && ! empty( $inner_sitemap ) ) {
-			if ( in_array( $template, array( ImageSitemap::$template, VideoSitemap::$template ) ) ) {
+			if ( in_array( $template, array( ImageSitemap::$template, VideoSitemap::$template ), true ) ) {
 				$template .= '-inner-sitemap';
 			} else {
 				$template = 'inner-sitemap';
@@ -227,7 +227,7 @@ class Sitemap extends Controller {
 			$last_modified = ( $front_page_id ) ? get_post_modified_time( DATE_W3C, false, $front_page_id ) : gmdate( 'c' );
 
 			$this->add_url(
-				sgg_get_home_url(),
+				sgg_get_home_url_with_trailing_slash(),
 				$home->priority,
 				$home->frequency,
 				$last_modified,
@@ -243,9 +243,9 @@ class Sitemap extends Controller {
 		global $wpdb;
 
 		$front_page_id    = get_option( 'page_on_front' );
-		$exclude_post_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_posts ?? '' );
-		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_terms ?? '' );
-		$include_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->include_only_terms ?? '' );
+		$exclude_post_ids = apply_filters( 'sgg_sitemap_exclude_post_ids', apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_posts ?? '' ) );
+		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_term_ids', apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->exclude_terms ?? '' ) );
+		$include_term_ids = apply_filters( 'sgg_sitemap_include_only_term_ids', apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->include_only_terms ?? '' ) );
 		$per_page         = intval( $this->settings->links_per_page ?? 1000 );
 
 		if ( ! empty( $front_page_id ) ) {
@@ -260,13 +260,13 @@ class Sitemap extends Controller {
 		$terms_join_sql  = '';
 		$terms_where_sql = '';
 		if ( ! empty( $include_term_ids ) ) {
-			$terms_join_sql  = "INNER JOIN (
+			$terms_join_sql = "INNER JOIN (
 				SELECT DISTINCT tr.object_id
 				FROM {$wpdb->term_relationships} tr
 				INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
 				WHERE tt.term_id IN (" . implode( ',', array_unique( $include_term_ids ) ) . ')
 			) included_posts ON posts.ID = included_posts.object_id';
-		} else if ( ! empty( $exclude_term_ids ) ) {
+		} elseif ( ! empty( $exclude_term_ids ) ) {
 			$terms_join_sql  = "LEFT JOIN (
 				SELECT DISTINCT tr.object_id
 				FROM {$wpdb->term_relationships} tr
@@ -277,7 +277,7 @@ class Sitemap extends Controller {
 		}
 
 		if ( ! empty( $post_type ) ) {
-			if ( ( isset( $this->settings->{$post_type}->include ) && $this->settings->{$post_type}->include ) 
+			if ( ( isset( $this->settings->{$post_type}->include ) && $this->settings->{$post_type}->include )
 				|| ( ! empty( $this->settings->cpt[ $post_type ] ) && ! empty( $this->settings->cpt[ $post_type ]->include ) ) ) {
 				$post_types = array( $post_type );
 			}
@@ -305,6 +305,7 @@ class Sitemap extends Controller {
 		$sql = "SELECT
 	            posts.ID,
 				posts.post_name,
+				posts.post_parent,
 				posts.post_type,
 				posts.post_date,
 				posts.post_modified
@@ -398,7 +399,7 @@ class Sitemap extends Controller {
 		$terms_where_sql  = '';
 		if ( ! empty( $include_term_ids ) ) {
 			$terms_where_sql = 'AND terms.term_id IN (' . implode( ',', array_unique( $include_term_ids ) ) . ')';
-		} else if ( ! empty( $exclude_term_ids ) ) {
+		} elseif ( ! empty( $exclude_term_ids ) ) {
 			$terms_where_sql = 'AND terms.term_id NOT IN (' . implode( ',', array_unique( $exclude_term_ids ) ) . ')';
 		}
 
@@ -700,7 +701,9 @@ class Sitemap extends Controller {
 					continue;
 				}
 
-				$polylang_term_ids[] = absint( $lang_model->get_tax_prop( $tax_language, 'term_taxonomy_id' ) );
+				if ( $lang_model ) {
+					$polylang_term_ids[] = absint( $lang_model->get_tax_prop( $tax_language, 'term_taxonomy_id' ) );
+				}
 			}
 
 			if ( ! empty( $polylang_term_ids ) ) {

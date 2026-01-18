@@ -33,7 +33,7 @@ class Initial_State {
 			'connectedPlugins'   => REST_Connector::get_connection_plugins( false ),
 			'wpVersion'          => $wp_version,
 			'siteSuffix'         => $status->get_site_suffix(),
-			'connectionErrors'   => Error_Handler::get_instance()->get_verified_errors(),
+			'connectionErrors'   => Error_Handler::get_instance()->get_displayable_errors(),
 			'isOfflineMode'      => $status->is_offline_mode(),
 			'calypsoEnv'         => ( new Status\Host() )->get_calypso_env(),
 		);
@@ -57,7 +57,7 @@ class Initial_State {
 	 * @return string
 	 */
 	public static function render() {
-		return 'var JP_CONNECTION_INITIAL_STATE; typeof JP_CONNECTION_INITIAL_STATE === "object" || (JP_CONNECTION_INITIAL_STATE = JSON.parse(decodeURIComponent("' . rawurlencode( wp_json_encode( self::get_data() ) ) . '")));';
+		return 'var JP_CONNECTION_INITIAL_STATE; typeof JP_CONNECTION_INITIAL_STATE === "object" || (JP_CONNECTION_INITIAL_STATE = ' . wp_json_encode( self::get_data(), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ) . ');';
 	}
 
 	/**

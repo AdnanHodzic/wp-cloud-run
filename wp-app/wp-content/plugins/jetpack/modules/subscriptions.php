@@ -1,7 +1,7 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName)
 /**
  * Module Name: Newsletter
- * Module Description: Let visitors subscribe to new posts and comments via email
+ * Module Description: Grow your subscriber list and deliver your content directly to their email inbox.
  * Sort Order: 9
  * Recommendation Order: 8
  * First Introduced: 1.2
@@ -18,9 +18,15 @@
 use Automattic\Jetpack\Admin_UI\Admin_Menu;
 use Automattic\Jetpack\Connection\Manager as Connection_Manager;
 use Automattic\Jetpack\Connection\XMLRPC_Async_Call;
+use Automattic\Jetpack\Newsletter\Settings as Newsletter_Settings;
 use Automattic\Jetpack\Redirect;
 use Automattic\Jetpack\Status;
 use Automattic\Jetpack\Status\Host;
+use Automattic\Jetpack\Subscribers_Dashboard\Dashboard as Subscribers_Dashboard;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 add_action( 'jetpack_modules_loaded', 'jetpack_subscriptions_load' );
 
@@ -59,6 +65,8 @@ function jetpack_subscriptions_cherry_pick_server_data() {
 
 /**
  * Main class file for the Subscriptions module.
+ *
+ * @phan-constructor-used-for-side-effects
  */
 class Jetpack_Subscriptions {
 	/**
@@ -129,6 +137,7 @@ class Jetpack_Subscriptions {
 
 		// Set "social_notifications_subscribe" option during the first-time activation.
 		add_action( 'jetpack_activate_module_subscriptions', array( $this, 'set_social_notifications_subscribe' ) );
+		add_action( 'jetpack_activate_module_subscriptions', array( $this, 'set_featured_image_in_email_default' ) );
 
 		// Hide subscription messaging in Publish panel for posts that were published in the past
 		add_action( 'init', array( $this, 'register_post_meta' ), 20 );
@@ -147,6 +156,11 @@ class Jetpack_Subscriptions {
 
 		// Track categories created through the category editor page
 		add_action( 'wp_ajax_add-tag', array( $this, 'track_newsletter_category_creation' ), 1 );
+		$subscribers_dashboard = new Subscribers_Dashboard();
+		$subscribers_dashboard::init();
+
+		$newsletter_settings = new Newsletter_Settings();
+		$newsletter_settings::init();
 	}
 
 	/**
@@ -556,6 +570,7 @@ class Jetpack_Subscriptions {
 			if ( $async ) {
 				XMLRPC_Async_Call::add_call( 'jetpack.subscribeToSite', 0, $email, $post_id, serialize( $extra_data ) ); //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			} else {
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $xml is set when $async is false
 				$xml->addCall( 'jetpack.subscribeToSite', $email, $post_id, serialize( $extra_data ) ); //phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			}
 		}
@@ -565,17 +580,22 @@ class Jetpack_Subscriptions {
 		}
 
 		// Call.
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $xml is set when $async is false, otherwise we return early
 		$xml->query();
 
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $xml is set when $async is false, otherwise we return early
 		if ( $xml->isError() ) {
+			// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $xml is set when $async is false, otherwise we return early
 			return $xml->get_jetpack_error();
 		}
 
+		// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $xml is set when $async is false
 		$responses = $xml->getResponse();
 
 		$r = array();
 		foreach ( (array) $responses as $response ) {
 			if ( isset( $response['faultCode'] ) || isset( $response['faultString'] ) ) {
+				// @phan-suppress-next-line PhanPossiblyUndeclaredVariable -- $xml is set when $async is false
 				$r[] = $xml->get_jetpack_error( $response['faultCode'], $response['faultString'] );
 				continue;
 			}
@@ -857,7 +877,7 @@ class Jetpack_Subscriptions {
 		$post_id = (int) $post_id;
 
 		/** This filter is already documented in core/wp-includes/comment-functions.php */
-		$cookie_lifetime = apply_filters( 'comment_cookie_lifetime', 30000000 );
+		$cookie_lifetime = apply_filters( 'comment_cookie_lifetime', YEAR_IN_SECONDS );
 
 		/**
 		 * Filter the Jetpack Comment cookie path.
@@ -882,13 +902,13 @@ class Jetpack_Subscriptions {
 		$cookie_domain = apply_filters( 'jetpack_comment_cookie_domain', COOKIE_DOMAIN );
 
 		if ( $subscribe_to_post && $post_id >= 0 ) {
-			setcookie( 'jetpack_comments_subscribe_' . self::$hash . '_' . $post_id, 1, time() + $cookie_lifetime, $cookie_path, $cookie_domain, is_ssl(), true );
+			setcookie( 'jetpack_comments_subscribe_' . self::$hash . '_' . $post_id, '1', time() + $cookie_lifetime, $cookie_path, $cookie_domain, is_ssl(), true );
 		} else {
 			setcookie( 'jetpack_comments_subscribe_' . self::$hash . '_' . $post_id, '', time() - 3600, $cookie_path, $cookie_domain, is_ssl(), true );
 		}
 
 		if ( $subscribe_to_blog ) {
-			setcookie( 'jetpack_blog_subscribe_' . self::$hash, 1, time() + $cookie_lifetime, $cookie_path, $cookie_domain, is_ssl(), true );
+			setcookie( 'jetpack_blog_subscribe_' . self::$hash, '1', time() + $cookie_lifetime, $cookie_path, $cookie_domain, is_ssl(), true );
 		} else {
 			setcookie( 'jetpack_blog_subscribe_' . self::$hash, '', time() - 3600, $cookie_path, $cookie_domain, is_ssl(), true );
 		}
@@ -905,6 +925,15 @@ class Jetpack_Subscriptions {
 		if ( false === get_option( 'social_notifications_subscribe' ) ) {
 			add_option( 'social_notifications_subscribe', 'off' );
 		}
+	}
+
+	/**
+	 * Set the featured image in email option to `1` when the Subscriptions module is activated in the first time.
+	 *
+	 * @return void
+	 */
+	public function set_featured_image_in_email_default() {
+		add_option( 'wpcom_featured_image_in_email', 1 );
 	}
 
 	/**
@@ -973,6 +1002,17 @@ class Jetpack_Subscriptions {
 	 * @return void
 	 */
 	public function add_subscribers_menu() {
+		/**
+		 * Enables the new in development subscribers in wp-admin dashboard.
+		 *
+		 * @since 9.5.0
+		 *
+		 * @param bool If the new dashboard is enabled. Default false.
+		 */
+		if ( apply_filters( 'jetpack_wp_admin_subscriber_management_enabled', false ) ) {
+			return;
+		}
+
 		/*
 		 * Do not display any menu on WoA and WordPress.com Simple sites (unless Classic wp-admin is enabled).
 		 * They already get a menu item under Users via nav-unification.
@@ -1048,3 +1088,4 @@ require __DIR__ . '/subscriptions/views.php';
 require __DIR__ . '/subscriptions/subscribe-modal/class-jetpack-subscribe-modal.php';
 require __DIR__ . '/subscriptions/subscribe-overlay/class-jetpack-subscribe-overlay.php';
 require __DIR__ . '/subscriptions/subscribe-floating-button/class-jetpack-subscribe-floating-button.php';
+require __DIR__ . '/subscriptions/newsletter-widget/class-jetpack-newsletter-dashboard-widget.php';

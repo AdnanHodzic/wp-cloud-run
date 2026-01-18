@@ -11,6 +11,10 @@ use Automattic\Jetpack\Modules;
 use Automattic\Jetpack\Status\Host;
 use Automattic\Jetpack\Tracking;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Checks whether the navigation customizations should be performed for the given class.
  *
@@ -31,43 +35,7 @@ function should_customize_nav( $admin_menu_class ) {
 		return false;
 	}
 
-	// No nav customizations on WP Admin of Jetpack sites.
-	if ( is_a( $admin_menu_class, Jetpack_Admin_Menu::class, true ) && ! $is_api_request ) {
-		return false;
-	}
-
 	return true;
-}
-
-/**
- * Hides the Customizer menu items when the block theme is active by removing the dotcom-specific actions.
- * They are not needed for block themes.
- *
- * @see https://github.com/Automattic/jetpack/pull/36017
- */
-function hide_customizer_menu_on_block_theme() {
-	add_action(
-		'init',
-		function () {
-			if ( wp_is_block_theme() && ! is_customize_preview() ) {
-				remove_action( 'customize_register', 'add_logotool_button', 20 );
-				remove_action( 'customize_register', 'footercredits_register', 99 );
-				remove_action( 'customize_register', 'wpcom_disable_customizer_site_icon', 20 );
-
-				if ( class_exists( '\Jetpack_Fonts' ) ) {
-					$jetpack_fonts_instance = \Jetpack_Fonts::get_instance();
-					remove_action( 'customize_register', array( $jetpack_fonts_instance, 'register_controls' ) );
-					remove_action( 'customize_register', array( $jetpack_fonts_instance, 'maybe_prepopulate_option' ), 0 );
-				}
-
-				remove_action( 'customize_register', array( 'Jetpack_Fonts_Typekit', 'maybe_override_for_advanced_mode' ), 20 );
-
-				remove_action( 'customize_register', 'Automattic\Jetpack\Masterbar\register_css_nudge_control' );
-
-				remove_action( 'customize_register', array( 'Jetpack_Custom_CSS_Enhancements', 'customize_register' ) );
-			}
-		}
-	);
 }
 
 /**
@@ -76,8 +44,6 @@ function hide_customizer_menu_on_block_theme() {
  * @return string Class name.
  */
 function get_admin_menu_class() {
-	hide_customizer_menu_on_block_theme();
-
 	// WordPress.com Atomic sites.
 	if ( ( new Host() )->is_woa_site() ) {
 
@@ -115,21 +81,14 @@ function get_admin_menu_class() {
 			return Domain_Only_Admin_Menu::class;
 		}
 
-		// P2 sites.
-		require_once WP_CONTENT_DIR . '/lib/wpforteams/functions.php';
-		if ( \WPForTeams\is_wpforteams_site( $blog_id ) ) {
-			require_once __DIR__ . '/class-p2-admin-menu.php';
-			return P2_Admin_Menu::class;
-		}
-
 		// Rest of simple sites.
 		require_once __DIR__ . '/class-wpcom-admin-menu.php';
 		return WPcom_Admin_Menu::class;
 	}
 
-	// Jetpack sites.
-	require_once __DIR__ . '/class-jetpack-admin-menu.php';
-	return Jetpack_Admin_Menu::class;
+	// Default menu class.
+	require_once __DIR__ . '/class-admin-menu.php';
+	return Admin_Menu::class;
 }
 
 /**

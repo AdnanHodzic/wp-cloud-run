@@ -14,6 +14,10 @@ use Automattic\Jetpack\Sync\Replicastore;
 use Automattic\Jetpack\Sync\Sender;
 use Automattic\Jetpack\Sync\Settings;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Basic methods implemented by Jetpack Sync extensions.
  *
@@ -195,7 +199,7 @@ abstract class Module {
 	 * @access public
 	 *
 	 * @param array $config Full sync configuration for this sync module.
-	 * @return array Number of items yet to be enqueued.
+	 * @return int Number of items yet to be enqueued.
 	 */
 	public function estimate_full_sync_actions( $config ) {
 		// In subclasses, return the number of items yet to be enqueued.
@@ -242,7 +246,12 @@ abstract class Module {
 		if ( $sort && is_array( $values ) ) {
 			$this->recursive_ksort( $values );
 		}
-		return crc32( wp_json_encode( Functions::json_wrap( $values ) ) );
+		return crc32(
+			wp_json_encode(
+				Functions::json_wrap( $values ),
+				0 // phpcs:ignore Jetpack.Functions.JsonEncodeFlags.ZeroFound -- No `json_encode()` flags because we don't want disrupt the checksum algorithm.
+			)
+		);
 	}
 
 	/**
@@ -401,10 +410,11 @@ abstract class Module {
 	 * @param string $config Full sync configuration for this module.
 	 * @param array  $status the current module full sync status.
 	 * @param float  $send_until timestamp until we want this request to send full sync events.
+	 * @param int    $started The timestamp when the full sync started.
 	 *
 	 * @return array Status, the module full sync status updated.
 	 */
-	public function send_full_sync_actions( $config, $status, $send_until ) {
+	public function send_full_sync_actions( $config, $status, $send_until, $started ) {
 		global $wpdb;
 
 		if ( empty( $status['last_sent'] ) ) {
@@ -414,9 +424,16 @@ abstract class Module {
 		$limits = Settings::get_setting( 'full_sync_limits' )[ $this->name() ] ??
 			Defaults::get_default_setting( 'full_sync_limits' )[ $this->name() ] ??
 			array(
-				'max_chunks' => 10,
-				'chunk_size' => 100,
+				'max_chunks' => null,
+				'chunk_size' => null,
 			);
+
+		$limits = array(
+			'max_chunks' => is_numeric( $limits['max_chunks'] ) ? (int) $limits['max_chunks'] : 10,
+			'chunk_size' => is_numeric( $limits['chunk_size'] ) ? (int) $limits['chunk_size'] : 100,
+		);
+
+		$limits['chunk_size'] = $this->adjust_chunk_size_if_stuck( $status['last_sent'], $limits['chunk_size'], $started );
 
 		$chunks_sent = 0;
 
@@ -437,7 +454,7 @@ abstract class Module {
 			// If we have objects as a key it means get_next_chunk is being overridden, we need to check for it being an empty array.
 			// In case it is an empty array, we should not send the action or increase the chunks_sent, we just need to update the status.
 			if ( ! isset( $objects['objects'] ) || array() !== $objects['objects'] ) {
-				$key    = $this->full_sync_action_name() . '_' . crc32( wp_json_encode( $status['last_sent'] ) );
+				$key    = $this->full_sync_action_name() . '_' . crc32( wp_json_encode( $status['last_sent'], JSON_UNESCAPED_SLASHES ) );
 				$result = $this->send_action( $this->full_sync_action_name(), array( $objects, $status['last_sent'] ), $key );
 				if ( is_wp_error( $result ) || $wpdb->last_error ) {
 					$status['error'] = true;
@@ -455,6 +472,59 @@ abstract class Module {
 		}
 
 		return $status;
+	}
+
+	/**
+	 * Adjust chunk size using adaptive logic and update transient for tracking stuck state.
+	 *
+	 * @param string $last_sent The current last_sent marker.
+	 * @param int    $default_chunk_size The default chunk size.
+	 * @param int    $started The timestamp when the full sync started.
+	 * @return int Adjusted chunk size.
+	 */
+	private function adjust_chunk_size_if_stuck( $last_sent, $default_chunk_size, $started ) {
+		$transient_key       = 'jetpack_sync_last_sent_' . $this->name() . '_' . $started;
+		$stuck_data          = get_transient( $transient_key );
+		$stuck_count         = 0;
+		$adjusted_chunk_size = $default_chunk_size;
+		$is_stuck            = isset( $stuck_data['last_sent'] ) && $stuck_data['last_sent'] === $last_sent;
+		if ( $is_stuck && $stuck_data['adjusted_chunk_size'] === 1 ) {
+			return 1; // If we are already at the minimum chunk size, do not adjust further.
+		}
+
+		// We will adjust if it is stuck after 10 minutes.
+		if (
+			$is_stuck &&
+			( time() - $stuck_data['timestamp'] ) >= 10 * MINUTE_IN_SECONDS
+		) {
+			$stuck_count         = ++$stuck_data['stuck_count'];
+			$adjusted_chunk_size = max( 1, (int) ( $default_chunk_size / ( 2 ** $stuck_count ) ) ); // Halve the chunk size for each stuck iteration.
+			// If we are stuck, we will send an action to notify about the adjustment.
+			$this->send_action(
+				'jetpack_full_sync_stuck_adjustment',
+				array(
+					'module'              => $this->name(),
+					'last_sent'           => $last_sent,
+					'stuck_count'         => $stuck_count,
+					'adjusted_chunk_size' => $adjusted_chunk_size,
+				)
+			);
+		}
+
+		// Set or update the transient with the new last_sent, timestamp, and stuck_count.
+		// If we are not stuck, reset the timestamp and stuck_count.
+		set_transient(
+			$transient_key,
+			array(
+				'last_sent'           => $last_sent,
+				'timestamp'           => $is_stuck ? $stuck_data['timestamp'] : time(),
+				'stuck_count'         => $stuck_count,
+				'adjusted_chunk_size' => $adjusted_chunk_size,
+			),
+			HOUR_IN_SECONDS
+		);
+
+		return $adjusted_chunk_size;
 	}
 
 	/**
@@ -737,7 +807,7 @@ abstract class Module {
 		$current_size        = 0;
 
 		foreach ( $objects as $object ) {
-			$object_size      = strlen( maybe_serialize( $object ) );
+			$object_size      = strlen( (string) maybe_serialize( $object ) );
 			$current_metadata = array();
 			$metadata_size    = 0;
 			$id_field         = $this->id_field();
@@ -745,12 +815,13 @@ abstract class Module {
 
 			foreach ( $metadata as $key => $metadata_item ) {
 				if ( (int) $metadata_item->{$type . '_id'} === $object_id ) {
-					$metadata_item_size = strlen( maybe_serialize( $metadata_item->meta_value ) );
+					$metadata_item_size = strlen( (string) maybe_serialize( $metadata_item ) );
 					if ( $metadata_item_size >= $max_meta_size ) {
 						$metadata_item->meta_value = ''; // Trim metadata if too large.
+						$metadata_item_size        = strlen( (string) maybe_serialize( $metadata_item ) );
 					}
 					$current_metadata[] = $metadata_item;
-					$metadata_size     += $metadata_item_size >= $max_meta_size ? 0 : $metadata_item_size;
+					$metadata_size     += $metadata_item_size;
 
 					if ( ! empty( $filtered_object_ids ) && ( $current_size + $object_size + $metadata_size ) > $max_total_size ) {
 						break 2; // Exit both loops.

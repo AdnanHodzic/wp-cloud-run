@@ -71,7 +71,7 @@ class Functions {
 	public static function sanitize_taxonomy( $taxonomy ) {
 
 		// Lets clone the taxonomy object instead of modifing the global one.
-		$cloned_taxonomy = json_decode( wp_json_encode( $taxonomy ) );
+		$cloned_taxonomy = json_decode( wp_json_encode( $taxonomy, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) );
 
 		// recursive taxonomies are no fun.
 		if ( $cloned_taxonomy === null ) {
@@ -146,7 +146,7 @@ class Functions {
 		$post_type_object->add_rewrite_rules();
 		$post_type_object->add_hooks();
 		$post_type_object->register_taxonomies();
-		return (object) $post_type_object;
+		return $post_type_object;
 	}
 
 	/**
@@ -534,7 +534,7 @@ class Functions {
 		$formatted_gmt_offset = str_replace(
 			array( '.25', '.5', '.75' ),
 			array( ':15', ':30', ':45' ),
-			(string) $formatted_gmt_offset
+			$formatted_gmt_offset
 		);
 
 		/* translators: %s is UTC offset, e.g. "+1" */
@@ -604,7 +604,21 @@ class Functions {
 	 */
 	public static function json_wrap( &$any, $seen_nodes = array() ) {
 		if ( is_object( $any ) ) {
-			$input        = get_object_vars( $any );
+			$input = get_object_vars( $any );
+
+			// WordPress 6.9 introduced lazy-loading of WP_User `roles`, `caps`, and `allcaps` properties.
+			// It also made said properties protected, so we need to access them and set them as keys manually.
+			if ( $any instanceof \WP_User ) {
+				$roles   = $any->roles;
+				$caps    = $any->caps;
+				$allcaps = $any->allcaps;
+
+				// For WordPress <6.8 the below are redundant. :shrug:
+				$input['roles']   = $roles;
+				$input['caps']    = $caps;
+				$input['allcaps'] = $allcaps;
+			}
+
 			$input['__o'] = 1;
 		} else {
 			$input = &$any;
@@ -736,5 +750,16 @@ class Functions {
 		$modules = array_unique( $modules );
 		$modules = array_map( 'wp_normalize_path', $modules );
 		return $modules;
+	}
+
+	/**
+	 * Return the list of Jetpack package versions.
+	 *
+	 * @since 4.11.1
+	 *
+	 * @return array
+	 */
+	public static function get_jetpack_package_versions() {
+		return apply_filters( 'jetpack_package_versions', array() );
 	}
 }

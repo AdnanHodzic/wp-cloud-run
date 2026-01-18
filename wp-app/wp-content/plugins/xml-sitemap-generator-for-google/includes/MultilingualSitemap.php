@@ -34,10 +34,15 @@ class MultilingualSitemap extends Sitemap {
 		$this->urls[] = sgg_get_sitemap_url( $this->settings->sitemap_url, 'sitemap_xml' );
 
 		// Polylang, TranslatePress
-		$languages = sgg_get_languages();
+		$languages        = sgg_get_languages();
+		$default_language = sgg_get_default_language_code();
+
 		if ( ! empty( $languages ) ) {
 			foreach ( $languages as $language ) {
-				$this->urls[] = sgg_get_sitemap_url( "{$language}/{$this->settings->sitemap_url}", 'sitemap_xml' );
+				$url          = sgg_get_sitemap_url( "{$language}/{$this->settings->sitemap_url}", 'sitemap_xml' );
+				$this->urls[] = ! empty( $default_language )
+					? str_replace( "/{$default_language}/", '/', $url )
+					: $url;
 			}
 		}
 

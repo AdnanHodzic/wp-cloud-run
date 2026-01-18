@@ -14,6 +14,8 @@ use WP_REST_Request;
 /**
  * The class to register the field and augment requests
  * to Publicize supported post types.
+ *
+ * @phan-constructor-used-for-side-effects
  */
 class Connections_Post_Field {
 
@@ -32,6 +34,13 @@ class Connections_Post_Field {
 	 * @var array
 	 */
 	public $memoized_updates = array();
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		add_action( 'rest_api_init', array( $this, 'register_fields' ) );
+	}
 
 	/**
 	 * Registers the jetpack_publicize_connections field. Called

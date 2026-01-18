@@ -2,6 +2,10 @@
 
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 add_action( 'widgets_init', 'jetpack_facebook_likebox_init' );
 /**
  * Register the widget for use in Appearance -> Widgets
@@ -238,6 +242,7 @@ class WPCOM_Widget_Facebook_LikeBox extends WP_Widget {
 	 * Outputs the widget settings form.
 	 *
 	 * @param array $instance Current settings.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$instance  = wp_parse_args(

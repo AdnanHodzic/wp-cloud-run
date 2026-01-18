@@ -1,44 +1,35 @@
-@charset "UTF-8";
-/*
-The MIT License (MIT)
-
-Copyright © 2011–2015 thoughtbot, inc.
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
-documentation files (the “Software”), to deal in the Software without restriction, including without limitation the
-rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
-persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial
-portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
-WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
-COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-https://github.com/thoughtbot/bourbon
-*/
+/**
+ * $gray color functions:
+ *
+ *   color.adjust( $gray, $lightness: 10% )
+ *   color.adjust( $gray, $lightness: 20% )
+ *   color.adjust( $gray, $lightness: 30% )
+ *   color.adjust( $gray, $lightness: -10% )
+ *   color.adjust( $gray, $lightness: -20% )
+ *   color.adjust( $gray, $lightness: -30% )
+ *
+ * See wordpress.com/design-handbook/colors/ for more info.
+ */
 :root {
   --font-title-large: 36px;
   --font-title-small: 24px;
   --font-body: 16px;
   --font-label: 12px;
-  --jp-black: #000000;
+  --jp-black: #000;
   --jp-black-80: #2c3338;
-  --jp-white: #ffffff;
+  --jp-white: #fff;
   --jp-white-off: #f9f9f6;
   --jp-gray: #dcdcde;
-  --jp-gray-0: #F6F7F7;
+  --jp-gray-0: #f6f7f7;
   --jp-gray-5: #dcdcde;
   --jp-gray-10: #c3c4c7;
-  --jp-gray-20: #A7AAAD;
+  --jp-gray-20: #a7aaad;
   --jp-gray-30: #8c8f94;
-  --jp-gray-40: #787C82;
+  --jp-gray-40: #787c82;
   --jp-gray-50: #646970;
-  --jp-gray-60: #50575E;
+  --jp-gray-60: #50575e;
   --jp-gray-70: #3c434a;
-  --jp-gray-80: #2C3338;
+  --jp-gray-80: #2c3338;
   --jp-gray-90: #1d2327;
   --jp-gray-100: #101517;
   --jp-gray-off: #e2e2df;
@@ -47,12 +38,12 @@ https://github.com/thoughtbot/bourbon
   --jp-yellow-40: #c08c00;
   --jp-orange-20: #faa754;
   --jp-blue-5: #ced9f2;
-  --jp-red-0: #F7EBEC;
-  --jp-red-50: #D63638;
-  --jp-red-60: #B32D2E;
-  --jp-red-80: #8A2424;
+  --jp-red-0: #f7ebec;
+  --jp-red-50: #d63638;
+  --jp-red-60: #b32d2e;
+  --jp-red-80: #8a2424;
   --jp-red: #d63639;
-  --jp-pink: #C9356E;
+  --jp-pink: #c9356e;
   --jp-green-0: #f0f2eb;
   --jp-green-5: #d0e6b8;
   --jp-green-10: #9dd977;
@@ -66,6 +57,7 @@ https://github.com/thoughtbot/bourbon
   --jp-green-90: #003010;
   --jp-green-100: #001c09;
   --jp-green: #069e08;
+  --jp-green-mint: #d3f6d5;
   --jp-green-primary: var(--jp-green-40);
   --jp-green-secondary: var(--jp-green-30);
   --jp-border-radius: 4px;
@@ -102,10 +94,10 @@ https://github.com/thoughtbot/bourbon
 #jetpack_summary_widget pre.stats-widget-error {
   overflow: scroll;
 }
-#jetpack_summary_widget .js-toggle-stats_dashboard_widget_control .toggle-indicator:before {
+#jetpack_summary_widget .js-toggle-stats_dashboard_widget_control .toggle-indicator::before {
   content: "\f111";
   display: inline-block;
-  font: normal 20px/1 dashicons;
+  font: 400 20px/1 dashicons;
 }
 #jetpack_summary_widget .inside {
   margin: 0;
@@ -297,7 +289,7 @@ https://github.com/thoughtbot/bourbon
 }
 #jetpack_summary_widget footer h3 {
   font-size: 1em;
-  font-weight: normal;
+  font-weight: 400;
   margin: 0 0 0.25em 0;
   padding: 0;
 }

@@ -8,10 +8,10 @@ use GRIM_SG\PTSettings;
 
 $settings = $args['settings'] ?? new stdClass();
 ?>
-<div class="postbox sitemap-index-depended">
-	<h3 class="hndle"><?php esc_html_e( 'Custom Sitemaps', 'xml-sitemap-generator-for-google' ); ?></h3>
+<div class="grim-section">
+	<h3 class="grim-section-title sitemap-index-depended" data-search-id="custom_sitemaps"><?php esc_html_e( 'Custom Sitemaps', 'xml-sitemap-generator-for-google' ); ?></h3>
 	<div class="inside">
-		<p>
+		<p class="grim-section-desc grim-mb-20 sitemap-index-depended line-height-2">
 			<?php esc_html_e( 'Here you can add Custom XML Sitemaps URLs (ex: Static Sitemaps, XML Sitmaps created by other services, etc.) to your ', 'xml-sitemap-generator-for-google' ); ?>
 			<b><?php esc_html_e( 'Sitemap Index', 'xml-sitemap-generator-for-google' ); ?></b>.
 			<br>
@@ -22,12 +22,11 @@ $settings = $args['settings'] ?? new stdClass();
 			<i><?php esc_html_e( '(Optional)', 'xml-sitemap-generator-for-google' ); ?></i>
 			<?php esc_html_e( 'You can select the Last Modified datetime for the Custom Sitemap or leave it empty (default) to always show the Current Datetime on Sitemap.', 'xml-sitemap-generator-for-google' ); ?>
 		</p>
-		<table class="wp-list-table widefat striped additional_urls" cellpadding="3" cellspacing="3">
+		<table class="grim-table grim-mb-20 wp-list-table widefat striped additional_urls sitemap-index-depended" cellpadding="3" cellspacing="3">
 			<thead>
 			<tr>
 				<th scope="col"><?php esc_html_e( 'Custom XML Sitemap URL', 'xml-sitemap-generator-for-google' ); ?></th>
 				<th scope="col"><?php esc_html_e( 'Last Modified', 'xml-sitemap-generator-for-google' ); ?></th>
-				<th scope="col">#</th>
 			</tr>
 			</thead>
 			<tbody id="custom_sitemaps">
@@ -40,9 +39,9 @@ $settings = $args['settings'] ?? new stdClass();
 				foreach ( $settings->custom_sitemaps as $custom_sitemap ) {
 					?>
 					<tr>
-						<td><input type="text" name="custom_sitemap_urls[]" value="<?php echo esc_attr( $custom_sitemap['url'] ); ?>"></td>
-						<td><input type="datetime-local" name="custom_sitemap_lastmods[]" value="<?php echo esc_attr( $custom_sitemap['lastmod'] ?? '' ); ?>"></td>
-						<td><a href="#" class="remove_url">x</a></td>
+						<td><input class="grim-input" type="text" name="custom_sitemap_urls[]" value="<?php echo esc_attr( $custom_sitemap['url'] ); ?>"></td>
+						<td><input class="grim-input" type="datetime-local" name="custom_sitemap_lastmods[]" value="<?php echo esc_attr( $custom_sitemap['lastmod'] ?? '' ); ?>"></td>
+						<td><a href="#" class="remove_url"><i class="grim-icon-trash"></i></a></td>
 					</tr>
 					<?php
 				}
@@ -50,7 +49,13 @@ $settings = $args['settings'] ?? new stdClass();
 			?>
 			</tbody>
 		</table>
-		<br>
-		<a href="#" id="add_sitemap_url" class="button button-default"><?php esc_html_e( 'Add Sitemap URL', 'xml-sitemap-generator-for-google' ); ?></a>
+		<div class="general-settings-actions sitemap-index-depended">
+			<a href="#" id="add_sitemap_url" class="grim-button white">
+				<span>
+					<i class="grim-icon-plus"></i>
+					<?php esc_html_e( 'Add Sitemap URL', 'xml-sitemap-generator-for-google' ); ?>
+				</span>
+			</a>
+		</div>
 	</div>
 </div>

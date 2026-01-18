@@ -6,6 +6,10 @@
  * First Introduced: 1.2
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
 add_action( 'widgets_init', 'jetpack_image_widget_init', 11 );
@@ -204,6 +208,7 @@ class Jetpack_Image_Widget extends WP_Widget {
 	 * @see WP_Widget::form()
 	 *
 	 * @param array $instance Previously saved values from database.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		// Defaults.

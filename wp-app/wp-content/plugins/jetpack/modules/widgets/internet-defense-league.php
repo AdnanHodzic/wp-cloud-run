@@ -1,5 +1,9 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
 /**
@@ -112,6 +116,7 @@ class Jetpack_Internet_Defense_League_Widget extends WP_Widget {
 	 * @see WP_Widget::form()
 	 *
 	 * @param array $instance Previously saved values from database.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$instance = wp_parse_args( $instance, $this->defaults );

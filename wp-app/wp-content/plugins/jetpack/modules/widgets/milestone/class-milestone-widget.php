@@ -7,6 +7,10 @@
 
 use Automattic\Jetpack\Assets;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Class Milestone_Widget
  */
@@ -632,6 +636,7 @@ class Milestone_Widget extends WP_Widget {
 	 * Form
 	 *
 	 * @param array $instance Widget instance.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$instance = $this->sanitize_instance( $instance );

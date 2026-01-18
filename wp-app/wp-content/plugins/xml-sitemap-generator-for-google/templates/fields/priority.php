@@ -3,16 +3,36 @@
  * @var $args
  */
 ?>
-<select name="<?php echo esc_attr( $args['name'] ); ?>">
-	<option value="0" <?php selected( $args['value'] ?? '', '0' ); ?>>0.0</option>
-	<option value="1" <?php selected( $args['value'] ?? '', '1' ); ?>>0.1</option>
-	<option value="2" <?php selected( $args['value'] ?? '', '2' ); ?>>0.2</option>
-	<option value="3" <?php selected( $args['value'] ?? '', '3' ); ?>>0.3</option>
-	<option value="4" <?php selected( $args['value'] ?? '', '4' ); ?>>0.4</option>
-	<option value="5" <?php selected( $args['value'] ?? '', '5' ); ?>>0.5</option>
-	<option value="6" <?php selected( $args['value'] ?? '', '6' ); ?>>0.6</option>
-	<option value="7" <?php selected( $args['value'] ?? '', '7' ); ?>>0.7</option>
-	<option value="8" <?php selected( $args['value'] ?? '', '8' ); ?>>0.8</option>
-	<option value="9" <?php selected( $args['value'] ?? '', '9' ); ?>>0.9</option>
-	<option value="10" <?php selected( $args['value'] ?? '', '10' ); ?>>1.0</option>
+<div class="grim-select grim-select-default" data-name="<?php echo esc_attr( $args['name'] ); ?>">
+	<div class="grim-select__trigger">
+		<span>
+			<?php
+			$value = $args['value'] ?? '0';
+			echo esc_html( number_format( (int) $value / 10, 1 ) );
+			?>
+		</span>
+		<i class="grim-icon-chevron-down"></i>
+	</div>
+	<div class="grim-options">
+		<?php for ( $i = 0; $i <= 10; $i++ ) :
+			$label = number_format( $i / 10, 1 );
+			?>
+			<div class="grim-option <?php echo (string) $value === (string) $i ? 'selected' : ''; ?>" data-value="<?php echo esc_attr( $i ); ?>">
+				<?php echo esc_html( $label ); ?>
+			</div>
+		<?php endfor; ?>
+	</div>
+</div>
+
+<select id="<?php echo esc_attr( $args['name'] ); ?>"
+		name="<?php echo esc_attr( $args['name'] ); ?>"
+		class="grim-hidden-select"
+		hidden>
+	<?php for ( $i = 0; $i <= 10; $i++ ) :
+		$label = number_format( $i / 10, 1 );
+		?>
+		<option value="<?php echo esc_attr( $i ); ?>" <?php selected( (string) $value, (string) $i ); ?>>
+			<?php echo esc_html( $label ); ?>
+		</option>
+	<?php endfor; ?>
 </select>

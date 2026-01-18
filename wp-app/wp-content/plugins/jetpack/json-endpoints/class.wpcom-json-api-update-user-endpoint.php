@@ -5,6 +5,10 @@
  * Endpoint: /sites/%s/users/%d/delete
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 new WPCOM_JSON_API_Update_User_Endpoint(
 	array(
 		'description'          => 'Deletes or removes a user of a site.',
@@ -42,6 +46,8 @@ new WPCOM_JSON_API_Update_User_Endpoint(
 
 /**
  * Update site users API class.
+ *
+ * @phan-constructor-used-for-side-effects
  */
 class WPCOM_JSON_API_Update_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 	/**
@@ -59,7 +65,7 @@ class WPCOM_JSON_API_Update_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 
 		if ( defined( 'IS_WPCOM' ) && IS_WPCOM ) {
 			if ( (int) wpcom_get_blog_owner( $blog_id ) === (int) $user_id ) {
-				return new WP_Error( 'forbidden', 'A site owner can not be removed through this endpoint.', 403 );
+				return new WP_Error( 'forbidden', 'A site owner cannot be removed through this endpoint.', 403 );
 			}
 		}
 
@@ -134,10 +140,6 @@ class WPCOM_JSON_API_Update_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 			}
 		}
 
-		if ( get_current_user_id() === (int) $user_id ) {
-			return new WP_Error( 'invalid_input', 'User can not remove or delete self through this endpoint.', 400 );
-		}
-
 		if ( ! $this->user_exists( $user_id ) ) {
 			return new WP_Error( 'invalid_input', 'A user does not exist with that ID.', 400 );
 		}
@@ -152,7 +154,8 @@ class WPCOM_JSON_API_Update_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 	 * @return array|WP_Error
 	 */
 	public function remove_user( $user_id ) {
-		if ( ! current_user_can( 'remove_users' ) ) {
+		// Skip the check if the user is removing themselves.
+		if ( ! current_user_can( 'remove_users' ) && get_current_user_id() !== (int) $user_id ) {
 			return new WP_Error( 'unauthorized', 'User cannot remove users for specified site.', 403 );
 		}
 
@@ -172,24 +175,28 @@ class WPCOM_JSON_API_Update_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 	 * @return array|WP_Error
 	 */
 	public function delete_user( $user_id ) {
-		if ( ! current_user_can( 'delete_users' ) ) {
+		// Skip the check if the user is deleting themselves.
+		if ( ! current_user_can( 'delete_users' ) && get_current_user_id() !== (int) $user_id ) {
 			return new WP_Error( 'unauthorized', 'User cannot delete users for specified site.', 403 );
 		}
 
-		$input = (array) $this->input();
+		$input    = (array) $this->input();
+		$reassign = isset( $input['reassign'] ) ? (int) $input['reassign'] : null;
 
-		if ( isset( $input['reassign'] ) ) {
-			if ( (int) $user_id === (int) $input['reassign'] ) {
-				return new WP_Error( 'invalid_input', 'Can not reassign posts to user being deleted.', 400 );
+		if ( $reassign !== null ) {
+			if ( (int) $user_id === $reassign ) {
+				return new WP_Error( 'invalid_input', 'Cannot reassign posts to user being deleted.', 400 );
 			}
 
-			if ( ! $this->user_exists( $input['reassign'] ) ) {
+			if ( ! $this->user_exists( $reassign ) ) {
 				return new WP_Error( 'invalid_input', 'User specified in reassign argument is not a member of the specified site.', 400 );
 			}
 		}
 
+		$success = $reassign !== null ? wp_delete_user( $user_id, $reassign ) : wp_delete_user( $user_id );
+
 		return array(
-			'success' => wp_delete_user( $user_id, (int) $input['reassign'] ),
+			'success' => $success,
 		);
 	}
 }

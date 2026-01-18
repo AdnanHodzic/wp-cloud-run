@@ -9,6 +9,11 @@ jQuery(document).ready(function ($) {
         let $notice = $(this).closest('.notice');
         let noticeId = $notice.attr('data-notice');
 
+        if(!noticeId) {
+            $notice = $(this).closest('.grim-notice-data');
+            noticeId = $notice.attr('data-notice');
+        }
+
         if (!['sgg_rate', 'sgg_buy_pro'].includes(noticeId)) {
             return;
         }

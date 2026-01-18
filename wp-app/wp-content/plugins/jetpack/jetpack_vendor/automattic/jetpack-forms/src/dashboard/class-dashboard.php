@@ -7,27 +7,39 @@
 
 namespace Automattic\Jetpack\Forms\Dashboard;
 
+use Automattic\Jetpack\Admin_UI\Admin_Menu;
 use Automattic\Jetpack\Assets;
 use Automattic\Jetpack\Connection\Initial_State as Connection_Initial_State;
-use Automattic\Jetpack\Connection\Manager as Connection_Manager;
 use Automattic\Jetpack\Forms\ContactForm\Contact_Form_Plugin;
-use Automattic\Jetpack\Forms\Jetpack_Forms;
-use Automattic\Jetpack\Forms\Service\Google_Drive;
-use Automattic\Jetpack\Redirect;
-use Automattic\Jetpack\Status;
-use Automattic\Jetpack\Status\Host;
 use Automattic\Jetpack\Tracking;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
 
 /**
  * Handles the Jetpack Forms dashboard.
  */
 class Dashboard {
+
+	/**
+	 * Load wp-build generated files if available.
+	 * This is for the new DataViews-based responses list.
+	 */
+	public static function load_wp_build() {
+		$wp_build_index = dirname( __DIR__, 2 ) . '/build/index.php';
+		if ( file_exists( $wp_build_index ) ) {
+			require_once $wp_build_index;
+		}
+	}
 	/**
 	 * Script handle for the JS file we enqueue in the Feedback admin page.
 	 *
 	 * @var string
 	 */
 	const SCRIPT_HANDLE = 'jp-forms-dashboard';
+
+	const ADMIN_SLUG = 'jetpack-forms-admin';
 
 	/**
 	 * Priority for the dashboard menu.
@@ -38,38 +50,35 @@ class Dashboard {
 	const MENU_PRIORITY = 999;
 
 	/**
-	 * Dashboard_View_Switch instance
-	 *
-	 * @var Dashboard_View_Switch
-	 */
-	private $switch;
-
-	/**
-	 * Creates a new Dashboard instance.
-	 *
-	 * @param Dashboard_View_Switch $switch Dashboard_View_Switch instance to use.
-	 */
-	public function __construct( Dashboard_View_Switch $switch ) {
-		$this->switch = $switch;
-	}
-
-	/**
 	 * Initialize the dashboard.
 	 */
 	public function init() {
-		add_action( 'admin_menu', array( $this, 'add_admin_submenu' ), self::MENU_PRIORITY );
+		$is_wp_build_enabled = apply_filters( 'jetpack_forms_alpha', false );
+
+		if ( $is_wp_build_enabled ) {
+			// Load wp-build generated files for the new DataViews-based UI.
+			self::load_wp_build();
+		}
+
+		add_action( 'admin_menu', array( $this, 'add_new_admin_submenu' ), self::MENU_PRIORITY );
+
+		if ( $is_wp_build_enabled ) {
+			add_action( 'admin_menu', array( $this, 'add_forms2_submenu' ), self::MENU_PRIORITY );
+		}
+
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_scripts' ) );
 
-		$this->switch->init();
+		// Removed all admin notices on the Jetpack Forms admin page.
+		if ( isset( $_GET['page'] ) && $_GET['page'] === self::ADMIN_SLUG ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+			remove_all_actions( 'admin_notices' );
+		}
 	}
 
 	/**
 	 * Load JavaScript for the dashboard.
-	 *
-	 * @param string $hook The current admin page.
 	 */
-	public function load_admin_scripts( $hook ) {
-		if ( 'toplevel_page_jetpack-forms' !== $hook ) {
+	public function load_admin_scripts() {
+		if ( ! self::is_jetpack_forms_admin_page() ) {
 			return;
 		}
 
@@ -81,7 +90,7 @@ class Dashboard {
 				'in_footer'    => true,
 				'textdomain'   => 'jetpack-forms',
 				'enqueue'      => true,
-				'dependencies' => array( 'wp-api-fetch' ),
+				'dependencies' => array( 'wp-api-fetch', 'wp-data', 'wp-core-data', 'wp-dom-ready' ),
 			)
 		);
 
@@ -92,59 +101,84 @@ class Dashboard {
 		// Adds Connection package initial state.
 		Connection_Initial_State::render_script( self::SCRIPT_HANDLE );
 
-		$api_root = defined( 'IS_WPCOM' ) && IS_WPCOM
-			? sprintf( '/wpcom/v2/sites/%s/', esc_url_raw( rest_url() ) )
-			: '/wp-json/wpcom/v2/';
+		// Preload Forms endpoints needed in dashboard context.
+		// Pre-fetch the first inbox page so the UI renders instantly on first load.
+		$preload_params = array(
+			'context'  => 'edit',
+			'order'    => 'desc',
+			'orderby'  => 'date',
+			'page'     => 1,
+			'per_page' => 20,
+			'status'   => 'draft,publish',
+		);
+		\ksort( $preload_params );
+		$initial_responses_path        = \add_query_arg( $preload_params, '/wp/v2/feedback' );
+		$initial_responses_locale_path = \add_query_arg(
+			\array_merge(
+				$preload_params,
+				array( '_locale' => 'user' )
+			),
+			'/wp/v2/feedback'
+		);
+		$filters_path                  = '/wp/v2/feedback/filters';
+		$filters_locale_path           = \add_query_arg( array( '_locale' => 'user' ), $filters_path );
+		$preload_paths                 = array(
+			'/wp/v2/types?context=view',
+			'/wp/v2/feedback/config',
+			'/wp/v2/feedback/integrations-metadata',
+			'/wp/v2/feedback/counts',
+			$filters_path,
+			$filters_locale_path,
+			$initial_responses_path,
+			$initial_responses_locale_path,
+		);
+		$preload_data_raw              = array_reduce( $preload_paths, 'rest_preload_api_request', array() );
+
+		// Normalize keys to match what apiFetch will request (without domain).
+		$preload_data = array();
+		foreach ( $preload_data_raw as $key => $value ) {
+			$normalized_key                  = preg_replace( '#^https?://[^/]+/wp-json#', '', $key );
+			$preload_data[ $normalized_key ] = $value;
+		}
 
 		wp_add_inline_script(
 			self::SCRIPT_HANDLE,
-			'window.jetpackFormsData = ' . wp_json_encode( array( 'apiRoot' => $api_root ) ) . ';',
+			sprintf(
+				'wp.apiFetch.use( wp.apiFetch.createPreloadingMiddleware( %s ) );',
+				wp_json_encode( $preload_data, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP )
+			),
 			'before'
 		);
-
-		if ( ( new Host() )->is_wpcom_platform() ) {
-			Assets::register_script(
-				'jp-forms-dashboard-wpcom',
-				'../../dist/dashboard/jetpack-forms-dashboard.wpcom.js',
-				__FILE__,
-				array(
-					'in_footer'    => true,
-					'textdomain'   => 'jetpack-forms',
-					'enqueue'      => true,
-					'dependencies' => array( self::SCRIPT_HANDLE ),
-				)
-			);
-		}
 	}
 
 	/**
-	 * Register the dashboard admin submenu.
+	 * Register the NEW dashboard admin submenu Forms under Jetpack menu.
 	 */
-	public function add_admin_submenu() {
-		if ( $this->switch->get_preferred_view() === Dashboard_View_Switch::CLASSIC_VIEW ) {
-			// We still need to register the jetpack forms page so it can be accessed manually.
-			add_submenu_page(
-				'',
-				__( 'Form Responses', 'jetpack-forms' ),
-				_x( 'Feedback', 'post type name shown in menu', 'jetpack-forms' ),
-				'edit_pages',
-				'jetpack-forms',
-				array( $this, 'render_dashboard' )
-			);
-
-			return;
-		}
-
-		remove_menu_page( 'feedback' );
-
-		add_menu_page(
-			__( 'Form Responses', 'jetpack-forms' ),
-			_x( 'Feedback', 'post type name shown in menu', 'jetpack-forms' ),
+	public function add_new_admin_submenu() {
+		Admin_Menu::add_menu(
+			/** "Jetpack Forms" and "Forms" are Product names, do not translate. */
+			'Jetpack Forms',
+			'Forms',
 			'edit_pages',
-			'jetpack-forms',
+			self::ADMIN_SLUG,
 			array( $this, 'render_dashboard' ),
-			'dashicons-feedback',
-			25 // Places 'Feedback' under 'Comments' in the menu
+			10
+		);
+	}
+
+	/**
+	 * Register Forms2 submenu under Jetpack menu using wp-build page.
+	 */
+	public function add_forms2_submenu() {
+		$url = admin_url( 'admin.php?page=jetpack-forms-responses-wp-admin&p=' . rawurlencode( '/responses/inbox' ) );
+
+		Admin_Menu::add_menu(
+			'Forms2',
+			'Forms2',
+			'edit_pages',
+			$url,
+			null,
+			11
 		);
 	}
 
@@ -152,31 +186,8 @@ class Dashboard {
 	 * Render the dashboard.
 	 */
 	public function render_dashboard() {
-		if ( ! class_exists( 'Jetpack_AI_Helper' ) ) {
-			require_once JETPACK__PLUGIN_DIR . '_inc/lib/class-jetpack-ai-helper.php';
-		}
-
-		$ai_feature = \Jetpack_AI_Helper::get_ai_assistance_feature();
-		$has_ai     = ! is_wp_error( $ai_feature ) ? $ai_feature['has-feature'] : false;
-
-		$jetpack_connected = ( defined( 'IS_WPCOM' ) && IS_WPCOM ) || ( new Connection_Manager( 'jetpack-forms' ) )->is_user_connected( get_current_user_id() );
-		$user_id           = (int) get_current_user_id();
-
-		$config = array(
-			'blogId'                  => get_current_blog_id(),
-			'exportNonce'             => wp_create_nonce( 'feedback_export' ),
-			'newFormNonce'            => wp_create_nonce( 'create_new_form' ),
-			'gdriveConnection'        => $jetpack_connected && Google_Drive::has_valid_connection( $user_id ),
-			'gdriveConnectURL'        => esc_url( Redirect::get_url( 'jetpack-forms-responses-connect' ) ),
-			'gdriveConnectSupportURL' => esc_url( Redirect::get_url( 'jetpack-support-contact-form-export' ) ),
-			'checkForSpamNonce'       => wp_create_nonce( 'grunion_recheck_queue' ),
-			'pluginAssetsURL'         => Jetpack_Forms::assets_url(),
-			'siteURL'                 => ( new Status() )->get_site_suffix(),
-			'hasFeedback'             => $this->has_feedback(),
-			'hasAI'                   => $has_ai,
-		);
 		?>
-		<div id="jp-forms-dashboard" style="min-height: calc(100vh - 100px);" data-config="<?php echo esc_attr( wp_json_encode( $config, JSON_FORCE_OBJECT ) ); ?>"></div>
+		<div id="jp-forms-dashboard"></div>
 		<?php
 	}
 
@@ -185,14 +196,63 @@ class Dashboard {
 	 *
 	 * @return boolean
 	 */
-	private function has_feedback() {
+	public function has_feedback() {
 		$posts = new \WP_Query(
 			array(
-				'post_type'   => 'feedback',
-				'post_status' => array( 'publish', 'draft', 'spam', 'trash' ),
+				'post_type'              => 'feedback',
+				'post_status'            => array( 'publish', 'draft', 'spam', 'trash' ),
+				'posts_per_page'         => 1,
+				'fields'                 => 'ids',
+				'no_found_rows'          => true,
+				'update_post_meta_cache' => false,
+				'update_post_term_cache' => false,
+				'suppress_filters'       => true,
 			)
 		);
+		return $posts->have_posts();
+	}
 
-		return $posts->found_posts > 0;
+	/**
+	 * Returns url of forms admin page.
+	 *
+	 * @param string|null $tab Tab to open in the forms admin page.
+	 *
+	 * @return string
+	 */
+	public static function get_forms_admin_url( $tab = null ) {
+		$base_url = get_admin_url() . 'admin.php?page=jetpack-forms-admin';
+
+		return self::append_tab_to_url( $base_url, $tab );
+	}
+
+	/**
+	 * Appends the appropriate tab parameter to the URL based on the view type.
+	 *
+	 * @param string $url              Base URL to append to.
+	 * @param string $tab              Tab to open.
+	 *
+	 * @return string
+	 */
+	private static function append_tab_to_url( $url, $tab ) {
+		$valid_tabs = array( 'spam', 'inbox', 'trash' );
+		if ( ! in_array( $tab, $valid_tabs, true ) ) {
+			return $url;
+		}
+
+		return $url . '#/responses?status=' . $tab;
+	}
+
+	/**
+	 * Returns true if the current screen is the Jetpack Forms admin page.
+	 *
+	 * @return boolean
+	 */
+	public static function is_jetpack_forms_admin_page() {
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return false;
+		}
+
+		$screen = get_current_screen();
+		return $screen && $screen->id === 'jetpack_page_jetpack-forms-admin';
 	}
 }

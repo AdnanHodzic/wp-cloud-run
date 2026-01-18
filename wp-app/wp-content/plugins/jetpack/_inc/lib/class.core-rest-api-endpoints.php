@@ -824,7 +824,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 				'method'  => 'POST',
 				'headers' => array( 'Content-Type' => 'application/json; charset=utf-8' ),
 			),
-			wp_json_encode( array() ),
+			wp_json_encode( array(), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ),
 			'wpcom'
 		);
 
@@ -922,7 +922,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 
 		$user_connected = ( new Connection_Manager( 'jetpack' ) )->is_user_connected( get_current_user_id() );
 		if ( ! $user_connected ) {
-			return wp_json_encode( array() );
+			return wp_json_encode( array(), JSON_UNESCAPED_SLASHES );
 		}
 
 		$request_path  = sprintf( '/sites/%s/jetpack-recommendations/product-suggestions?locale=' . get_user_locale(), $blog_id );
@@ -1531,7 +1531,8 @@ class Jetpack_Core_Json_Api_Endpoints {
 				'rest_route' => isset( $_GET['rest_route'] ) ? filter_var( wp_unslash( $_GET['rest_route'] ) ) : null,
 				'timestamp'  => (int) $_GET['timestamp'],
 				'url'        => esc_url_raw( wp_unslash( $_GET['url'] ) ),
-			)
+			),
+			0 // phpcs:ignore Jetpack.Functions.JsonEncodeFlags.ZeroFound -- No `json_encode()` flags because this needs to match whatever is calculating the hash on the other end.
 		);
 
 		if (
@@ -1596,7 +1597,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 			}
 		}
 
-		$result = wp_json_encode( $result );
+		$result = wp_json_encode( $result, JSON_UNESCAPED_SLASHES );
 
 		$encrypted = $cxntests->encrypt_string_for_wpcom( $result );
 
@@ -1662,7 +1663,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 				array(
 					'code'    => 'success',
 					'message' => esc_html__( 'Backup & Scan data correctly received.', 'jetpack' ),
-					'data'    => wp_json_encode( $rewind_data ),
+					'data'    => wp_json_encode( $rewind_data, JSON_UNESCAPED_SLASHES ),
 				)
 			);
 		}
@@ -1745,7 +1746,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 				array(
 					'code'    => 'success',
 					'message' => esc_html__( 'Scan state correctly received.', 'jetpack' ),
-					'data'    => wp_json_encode( $scan_state ),
+					'data'    => wp_json_encode( $scan_state, JSON_UNESCAPED_SLASHES ),
 				)
 			);
 		}
@@ -1918,7 +1919,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 						'X-Forwarded-For' => ( new Visitor() )->get_ip( true ),
 					),
 				),
-				wp_json_encode( $request->get_params() )
+				wp_json_encode( $request->get_params(), JSON_UNESCAPED_SLASHES )
 			);
 			if ( ! is_wp_error( $response ) ) {
 				$response = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -1994,7 +1995,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 				array(
 					'code'    => 'success',
 					'message' => esc_html__( 'Site data correctly received.', 'jetpack' ),
-					'data'    => wp_json_encode( $site_data ),
+					'data'    => wp_json_encode( $site_data, JSON_UNESCAPED_SLASHES ),
 				)
 			);
 		}
@@ -2335,7 +2336,6 @@ class Jetpack_Core_Json_Api_Endpoints {
 				'validate_callback' => __CLASS__ . '::validate_posint',
 				'jp_group'          => 'settings',
 			),
-
 			// WAF.
 			'jetpack_waf_automatic_rules'               => array(
 				'description'       => esc_html__( 'Enable automatic rules - Protect your site against untrusted traffic sources with automatic security rules.', 'jetpack' ),
@@ -2936,6 +2936,11 @@ class Jetpack_Core_Json_Api_Endpoints {
 				'validate_callback' => __CLASS__ . '::validate_alphanum',
 				'jp_group'          => 'google-analytics',
 			),
+			'jetpack_wga'                               => array(
+				'description' => esc_html__( 'Google Analytics', 'jetpack' ),
+				'type'        => 'object',
+				'jp_group'    => 'settings',
+			),
 
 			// Stats.
 			'admin_bar'                                 => array(
@@ -3095,6 +3100,19 @@ class Jetpack_Core_Json_Api_Endpoints {
 				'jp_group'          => 'videopress',
 			),
 		);
+
+		// SEO Tools - SEO Enhancer.
+		// TODO: move this to the main options array? The filter was there while developing the feature.
+		// It might come in handy to hold its availability behind the filter since it still depends on AI to be available.
+		if ( apply_filters( 'ai_seo_enhancer_enabled', true ) ) {
+			$options['ai_seo_enhancer_enabled'] = array(
+				'description'       => esc_html__( 'Automatically generate SEO title, SEO description, and image alt text for new posts.', 'jetpack' ),
+				'type'              => 'boolean',
+				'default'           => 0,
+				'validate_callback' => __CLASS__ . '::validate_boolean',
+				'jp_group'          => 'seo-tools',
+			);
+		}
 
 		// Add modules to list so they can be toggled.
 		$modules = Jetpack::get_available_modules();
@@ -3778,7 +3796,7 @@ class Jetpack_Core_Json_Api_Endpoints {
 	 */
 	public static function get_module_requested( $route = '/module/(?P<slug>[a-z\-]+)' ) {
 
-		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
+		if ( empty( $GLOBALS['wp']->query_vars['rest_route'] ) || ! is_string( $GLOBALS['wp']->query_vars['rest_route'] ) ) {
 			return '';
 		}
 

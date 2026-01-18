@@ -19,6 +19,13 @@ const socialWebpackConfig = {
 	module: {
 		strictExportPresence: true,
 		rules: [
+			// Gutenberg packages' ESM builds don't fully specify their imports. Sigh.
+			// https://github.com/WordPress/gutenberg/issues/73362
+			{
+				test: /\/node_modules\/@wordpress\/.*\/build-module\/.*\.js$/,
+				resolve: { fullySpecified: false },
+			},
+
 			// Transpile JavaScript
 			jetpackWebpackConfig.TranspileRule( {
 				exclude: /node_modules\//,
@@ -38,7 +45,7 @@ const socialWebpackConfig = {
 							postcssOptions: { config: path.join( __dirname, 'postcss.config.js' ) },
 						},
 					},
-					'sass-loader',
+					{ loader: 'sass-loader', options: { api: 'modern-compiler' } },
 				],
 			} ),
 
@@ -62,11 +69,12 @@ module.exports = [
 			'classic-editor-connections': './src/js/classic-editor-connections.js',
 		},
 	},
-
 	{
 		...socialWebpackConfig,
 		entry: {
 			'social-admin-page': './src/js/social-admin-page.js',
+			'editor-jetpack-sidebar': './src/js/editor-jetpack-sidebar.js',
+			'editor-social-sidebar': './src/js/editor-social-sidebar.js',
 		},
 	},
 ];

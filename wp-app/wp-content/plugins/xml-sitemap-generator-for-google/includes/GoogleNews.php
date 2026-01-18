@@ -38,9 +38,9 @@ class GoogleNews extends Sitemap {
 
 		$front_page_id    = get_option( 'page_on_front' );
 		$post_types       = array( 'page', 'post' );
-		$exclude_post_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_exclude ?? '' );
-		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_exclude_terms ?? '' );
-		$include_term_ids = apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_include_only_terms ?? '' );
+		$exclude_post_ids = apply_filters( 'sgg_sitemap_exclude_post_ids', apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_exclude ?? '' ) );
+		$exclude_term_ids = apply_filters( 'sgg_sitemap_exclude_term_ids', apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_exclude_terms ?? '' ) );
+		$include_term_ids = apply_filters( 'sgg_sitemap_include_only_term_ids', apply_filters( 'sgg_sitemap_exclude_ids', array(), $this->settings->google_news_include_only_terms ?? '' ) );
 
 		if ( ! empty( $front_page_id ) ) {
 			$exclude_post_ids[] = $front_page_id;
@@ -78,13 +78,13 @@ class GoogleNews extends Sitemap {
 		$terms_where_sql = '';
 
 		if ( ! empty( $include_term_ids ) ) {
-			$terms_join_sql  = "INNER JOIN (
+			$terms_join_sql = "INNER JOIN (
 				SELECT DISTINCT tr.object_id
 				FROM {$wpdb->term_relationships} tr
 				INNER JOIN {$wpdb->term_taxonomy} tt ON tt.term_taxonomy_id = tr.term_taxonomy_id
 				WHERE tt.term_id IN (" . implode( ',', array_unique( $include_term_ids ) ) . ')
 			) included_posts ON posts.ID = included_posts.object_id';
-		} else if ( ! empty( $exclude_term_ids ) ) {
+		} elseif ( ! empty( $exclude_term_ids ) ) {
 			$terms_join_sql  = "LEFT JOIN (
 				SELECT DISTINCT tr.object_id
 				FROM {$wpdb->term_relationships} tr
@@ -101,6 +101,7 @@ class GoogleNews extends Sitemap {
 	            posts.ID,
 				posts.post_title,
 				posts.post_name,
+				posts.post_parent,
 				posts.post_type,
 				posts.post_date,
 				posts.post_date_gmt
@@ -122,7 +123,7 @@ class GoogleNews extends Sitemap {
 				$this->add_url(
 					get_permalink( $post ),
 					$post->ID,
-					$post->post_title,
+					apply_filters( 'xml_sitemap_google_news_title', $post->post_title, $post->ID ),
 					gmdate( DATE_W3C, strtotime( $post_date ) ),
 					$post->post_type
 				);

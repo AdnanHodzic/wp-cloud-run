@@ -7,16 +7,15 @@ use GRIM_SG\Dashboard;
 
 $settings = $args['settings'] ?? new stdClass();
 ?>
-<div class="postbox">
-	<h3 class="hndle"><?php
-		esc_html_e( 'Posts Priority', 'xml-sitemap-generator-for-google' );
-
-		sgg_show_pro_badge();
-	?></h3>
+<div class="grim-section grim-post-priority <?php echo esc_attr( sgg_pro_class() ); ?>">
+	<?php sgg_show_pro_badge(); ?>
+	<div class="grim-section-flex">
+		<h3 class="grim-section-title" data-search-id="posts_priority"><?php esc_html_e( 'Posts Priority', 'xml-sitemap-generator-for-google' ); ?></h3>
+	</div>
 
 	<div class="inside">
-		<p><?php esc_html_e( 'Please choose a priority for calculating each of posts:', 'xml-sitemap-generator-for-google' ); ?></p>
-		<ul>
+		<p class="grim-section-desc grim-mb-20"><?php esc_html_e( 'Please choose a priority for calculating each of posts:', 'xml-sitemap-generator-for-google' ); ?></p>
+		<ul class="grim-post-priority-box">
 			<li>
 				<?php
 				Dashboard::render(

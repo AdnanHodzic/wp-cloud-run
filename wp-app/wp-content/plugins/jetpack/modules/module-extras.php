@@ -7,14 +7,16 @@
  * @package automattic/jetpack
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Features available all the time:
  *    - When in offline mode.
  *    - When connected to WordPress.com.
  */
 $tools = array(
-	// Always loaded, but only registered if theme supports it.
-	'geo-location.php',
 	// Those oEmbed providers are always available.
 	'shortcodes/facebook.php',
 	'shortcodes/others.php',
@@ -36,12 +38,14 @@ $connected_tools = array(
 	'external-media/external-media.php',
 	'plugin-search.php',
 	'scan/scan.php', // Shows Jetpack Scan alerts in the admin bar if threats found.
-	'simple-payments/simple-payments.php',
+	'simple-payments.php',
 	'wpcom-tos/wpcom-tos.php',
 	// These oEmbed providers are available when connected to WordPress.com.
 	// Starting from 2020-10-24, they need an authentication token, and that token is stored on WordPress.com.
 	// More information: https://developers.facebook.com/docs/instagram/oembed/.
 	'shortcodes/instagram.php',
+	// This Twitter oEmbed provider relies on a connection to WordPress.com to proxy the request.
+	'shortcodes/twitter.php',
 );
 
 // Add connected features to our existing list if the site is currently connected.

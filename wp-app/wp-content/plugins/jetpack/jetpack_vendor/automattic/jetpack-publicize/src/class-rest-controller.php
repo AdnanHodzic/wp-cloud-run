@@ -8,7 +8,6 @@
 
 namespace Automattic\Jetpack\Publicize;
 
-use Automattic\Jetpack\Connection\Client;
 use Automattic\Jetpack\Connection\Rest_Authentication;
 use Automattic\Jetpack\Publicize\REST_API\Proxy_Requests;
 use Jetpack_Options;
@@ -35,8 +34,6 @@ class REST_Controller {
 	 */
 	const JETPACK_SOCIAL_V1_YEARLY = 'jetpack_social_v1_yearly';
 
-	const SOCIAL_SHARES_POST_META_KEY = '_publicize_shares';
-
 	/**
 	 * Constructor
 	 *
@@ -47,7 +44,7 @@ class REST_Controller {
 	}
 
 	/**
-	 * Registers the REST routes for Search.
+	 * Registers the REST routes for Social.
 	 *
 	 * @access public
 	 * @static
@@ -109,6 +106,13 @@ class REST_Controller {
 							return is_array( $param );
 						},
 						'sanitize_callback' => function ( $param ) {
+							if ( ! is_array( $param ) ) {
+								return new WP_Error(
+									'rest_invalid_param',
+									esc_html__( 'The skipped_connections argument must be an array of connection IDs.', 'jetpack-publicize-pkg' ),
+									array( 'status' => 400 )
+								);
+							}
 							return array_map( 'absint', $param );
 						},
 					),
@@ -450,9 +454,18 @@ class REST_Controller {
 	/**
 	 * Gets information about the current social product plans.
 	 *
+	 * @deprecated 0.63.0 Swapped to using the /my-jetpack/v1/site/products endpoint instead.
+	 *
 	 * @return string|WP_Error A JSON object of the current social product being if the request was successful, or a WP_Error otherwise.
 	 */
 	public static function get_social_product_info() {
+		Publicize_Utils::endpoint_deprecated_warning(
+			__METHOD__,
+			'jetpack-14.6, jetpack-social-6.4.0',
+			'jetpack/v4/social-product-info',
+			'my-jetpack/v1/site/products?products=social'
+		);
+
 		$request_url   = 'https://public-api.wordpress.com/rest/v1.1/products?locale=' . get_user_locale() . '&type=jetpack';
 		$wpcom_request = wp_remote_get( esc_url_raw( $request_url ) );
 		$response_code = wp_remote_retrieve_response_code( $wpcom_request );
@@ -480,41 +493,25 @@ class REST_Controller {
 	 *
 	 * POST jetpack/v4/publicize/(?P<postId>\d+)
 	 *
+	 * @deprecated 0.61.2
+	 *
 	 * @param WP_REST_Request $request The request object, which includes the parameters.
 	 */
 	public function share_post( $request ) {
-		$post_id             = $request->get_param( 'postId' );
-		$message             = trim( $request->get_param( 'message' ) );
-		$skip_connection_ids = $request->get_param( 'skipped_connections' );
-		$async               = (bool) $request->get_param( 'async' );
+		$post_id = $request->get_param( 'postId' );
 
-		/*
-		 * Publicize endpoint on WPCOM:
-		 * [POST] wpcom/v2/sites/{$siteId}/posts/{$postId}/publicize
-		 * body:
-		 *   - message: string
-		 *   - skipped_connections: array of connection ids to skip
-		 */
-		$url = sprintf(
-			'/sites/%d/posts/%d/publicize',
-			$this->get_blog_id(),
-			$post_id
+		Publicize_Utils::endpoint_deprecated_warning(
+			__METHOD__,
+			'jetpack-14.4.1, jetpack-social-6.2.0',
+			'jetpack/v4/publicize/:postId',
+			'wpcom/v2/publicize/share-post/:postId'
 		);
 
-		$response = Client::wpcom_json_api_request_as_user(
-			$url,
-			'v2',
-			array(
-				'method' => 'POST',
-			),
-			array(
-				'message'             => $message,
-				'skipped_connections' => $skip_connection_ids,
-				'async'               => $async,
-			)
-		);
+		$proxy = new Proxy_Requests( 'publicize/share-post' );
 
-		return rest_ensure_response( $this->make_proper_response( $response ) );
+		return rest_ensure_response(
+			$proxy->proxy_request_to_wpcom_as_user( $request, $post_id )
+		);
 	}
 
 	/**
@@ -554,16 +551,24 @@ class REST_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 */
 	public function update_post_shares( $request ) {
+
+		Publicize_Utils::endpoint_deprecated_warning(
+			__METHOD__,
+			'jetpack-14.6, jetpack-social-6.4.0',
+			'jetpack/v4/social/sync-shares/post/:id',
+			'wpcom/v2/publicize/share-status/sync'
+		);
+
 		$request_body = $request->get_json_params();
 
 		$post_id   = $request->get_param( 'id' );
 		$post_meta = $request_body['meta'];
 		$post      = get_post( $post_id );
 
-		if ( $post && 'publish' === $post->post_status && isset( $post_meta[ self::SOCIAL_SHARES_POST_META_KEY ] ) ) {
-			update_post_meta( $post_id, self::SOCIAL_SHARES_POST_META_KEY, $post_meta[ self::SOCIAL_SHARES_POST_META_KEY ] );
+		if ( $post && 'publish' === $post->post_status && isset( $post_meta[ Share_Status::SHARES_META_KEY ] ) ) {
+			update_post_meta( $post_id, Share_Status::SHARES_META_KEY, $post_meta[ Share_Status::SHARES_META_KEY ] );
 			$urls = array();
-			foreach ( $post_meta[ self::SOCIAL_SHARES_POST_META_KEY ] as $share ) {
+			foreach ( $post_meta[ Share_Status::SHARES_META_KEY ] as $share ) {
 				if ( isset( $share['status'] ) && 'success' === $share['status'] ) {
 					$urls[] = array(
 						'url'     => $share['message'],
@@ -596,13 +601,20 @@ class REST_Controller {
 	 *
 	 * GET `jetpack/v4/social/share-status/<post_id>`
 	 *
+	 * @deprecated 0.63.0
+	 *
 	 * @param WP_REST_Request $request The request object.
 	 */
 	public function get_post_share_status( WP_REST_Request $request ) {
-		global $publicize;
-
 		$post_id = $request->get_param( 'post_id' );
 
-		return rest_ensure_response( $publicize->get_post_share_status( $post_id ) );
+		Publicize_Utils::endpoint_deprecated_warning(
+			__METHOD__,
+			'jetpack-14.6, jetpack-social-6.4.0',
+			'jetpack/v4/social/share-status/:postId',
+			'wpcom/v2/publicize/share-status'
+		);
+
+		return rest_ensure_response( Share_Status::get_post_share_status( $post_id ) );
 	}
 }

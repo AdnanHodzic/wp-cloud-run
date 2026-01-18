@@ -1,5 +1,8 @@
 <?php
 
+use GRIM_SG\ImageSitemap;
+use GRIM_SG\VideoSitemap;
+
 function sgg_pro_enabled() {
 	return defined( 'SGG_PRO_VERSION' );
 }
@@ -51,7 +54,7 @@ function sgg_is_sitemap_index( $template, $settings = null ) {
 	}
 
 	// Detect Media Sitemap Structure
-	if ( in_array( $template, array( 'image-sitemap', 'video-sitemap' ), true ) && ! empty( $settings->sitemap_view ) ) {
+	if ( in_array( $template, array( ImageSitemap::$template, VideoSitemap::$template ), true ) && ! empty( $settings->sitemap_view ) ) {
 		$sitemap_structure = get_option( "sgg_{$template}_structure" );
 
 		return 'multiple' === $sitemap_structure;
@@ -85,6 +88,10 @@ function sgg_get_home_url( $path = '' ) {
 	return ! empty( $path ) ? "{$home_url}/{$path}" : $home_url;
 }
 
+function sgg_get_home_url_with_trailing_slash() {
+	return trailingslashit( untrailingslashit( sgg_get_home_url() ) );
+}
+
 function sgg_is_nginx() {
 	return isset( $_SERVER['SERVER_SOFTWARE'] ) && stristr( sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ), 'nginx' ) !== false;
 }
@@ -103,14 +110,14 @@ function sgg_get_sitemap_url( $sitemap_url, $sitemap_type, $suffix = true ) {
 	}
 }
 
-function sgg_get_languages() {
+function sgg_get_languages( $with_default = false ) {
 	$languages = array();
 
 	if ( function_exists( 'pll_languages_list' ) ) {
 		$languages    = pll_languages_list( array( 'fields' => 'slug' ) );
 		$default_lang = array_search( pll_default_language(), $languages, true );
 
-		if ( false !== $default_lang ) {
+		if ( false !== $default_lang && ! $with_default ) {
 			unset( $languages[ $default_lang ] );
 		}
 	}
@@ -119,12 +126,22 @@ function sgg_get_languages() {
 		$trp_settings = get_option( 'trp_settings' );
 		$trp_slugs    = $trp_settings['url-slugs'] ?? array();
 
-		unset( $trp_slugs[ $trp_settings['default-language'] ?? '' ] );
+		if ( ! $with_default ) {
+			unset( $trp_slugs[ $trp_settings['default-language'] ?? '' ] );
+		}
 
 		$languages = array_values( $trp_slugs );
 	}
 
 	return $languages;
+}
+
+function sgg_get_default_language_code() {
+	if ( function_exists( 'pll_default_language' ) ) {
+		return pll_default_language();
+	}
+
+	return apply_filters( 'wpml_default_language', null );
 }
 
 function sgg_is_multilingual() {
@@ -140,3 +157,18 @@ function sgg_maybe_remove_inner_suffix( $template ) {
 
 	return $template;
 }
+
+function sgg_pro_features_page_tab( $tabs ) {
+	if ( ! sgg_pro_enabled() ) {
+		$tabs['xml_sitemap_generator_for_google_pro'] = sprintf(
+			'<a href="%s" target="_blank" class="sgg-plugin-pro-feature">%s</a>',
+			esc_url( 'https://wpgrim.com/google-xml-sitemaps-generator-pro/?utm_source=sgg-plugin&utm_medium=plugins&utm_campaign=xml_sitemap' ),
+			esc_html__( 'XML Sitemaps Generator Pro Features', 'xml-sitemap-generator-for-google' )
+		);
+		wp_enqueue_style( 'sgg-styles', GRIM_SG_URL . 'assets/css/styles.min.css', array(), GRIM_SG_VERSION );
+	}
+
+	return $tabs;
+}
+
+add_filter( 'install_plugins_tabs', 'sgg_pro_features_page_tab' );

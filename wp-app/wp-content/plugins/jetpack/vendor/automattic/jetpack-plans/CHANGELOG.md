@@ -5,6 +5,54 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.1] - 2025-12-08
+### Fixed
+- Ensure proper flags are used with `json_encode()`. [#46092]
+
+## [0.11.0] - 2025-12-01
+### Changed
+- Add form-webhooks support on free Jetpack plans. [#46059]
+
+## [0.10.0] - 2025-08-06
+### Added
+- Plan features: add Social Image Generator [#44661]
+
+## [0.9.1] - 2025-08-04
+### Changed
+- Internal updates.
+
+## [0.9.0] - 2025-07-21
+### Added
+- Forms: Include multistep form in Jetpack and WordPress.com plans. [#44309]
+
+## [0.8.0] - 2025-05-05
+### Added
+- Forms: Add feature/block field-file support to Personal and Complete plans. [#43177]
+
+## [0.7.1] - 2025-04-28
+### Changed
+- Internal updates.
+
+## [0.7.0] - 2025-03-31
+### Added
+- Add `ai-seo-enhancer` as a feature supported by the Business plan. [#42731]
+
+## [0.6.1] - 2025-03-21
+### Changed
+- Internal updates.
+
+## [0.6.0] - 2025-03-18
+### Changed
+- Add `Plans::get_plan_short_name()` for WordPress.com environments. [#42485]
+
+## [0.5.6] - 2025-03-17
+### Changed
+- Internal updates.
+
+## [0.5.5] - 2025-03-12
+### Changed
+- Internal updates.
+
 ## [0.5.4] - 2025-03-05
 ### Changed
 - Internal updates.
@@ -182,6 +230,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Deprecated
 - Moved the options class into Connection. [#24095]
 
+[0.11.1]: https://github.com/Automattic/jetpack-plans/compare/v0.11.0...v0.11.1
+[0.11.0]: https://github.com/Automattic/jetpack-plans/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/Automattic/jetpack-plans/compare/v0.9.1...v0.10.0
+[0.9.1]: https://github.com/Automattic/jetpack-plans/compare/v0.9.0...v0.9.1
+[0.9.0]: https://github.com/Automattic/jetpack-plans/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/Automattic/jetpack-plans/compare/v0.7.1...v0.8.0
+[0.7.1]: https://github.com/Automattic/jetpack-plans/compare/v0.7.0...v0.7.1
+[0.7.0]: https://github.com/Automattic/jetpack-plans/compare/v0.6.1...v0.7.0
+[0.6.1]: https://github.com/Automattic/jetpack-plans/compare/v0.6.0...v0.6.1
+[0.6.0]: https://github.com/Automattic/jetpack-plans/compare/v0.5.6...v0.6.0
+[0.5.6]: https://github.com/Automattic/jetpack-plans/compare/v0.5.5...v0.5.6
+[0.5.5]: https://github.com/Automattic/jetpack-plans/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/Automattic/jetpack-plans/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/Automattic/jetpack-plans/compare/v0.5.2...v0.5.3
 [0.5.2]: https://github.com/Automattic/jetpack-plans/compare/v0.5.1...v0.5.2

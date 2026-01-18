@@ -1,5 +1,9 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 new WPCOM_JSON_API_Site_User_Endpoint(
 	array(
 		'description'          => 'Get details of a user of a site by ID.',
@@ -107,6 +111,8 @@ new WPCOM_JSON_API_Site_User_Endpoint(
  * Site user endpoint class.
  *
  * /sites/%s/users/%d -> $blog_id, $user_id
+ *
+ * @phan-constructor-used-for-side-effects
  */
 class WPCOM_JSON_API_Site_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 
@@ -144,8 +150,7 @@ class WPCOM_JSON_API_Site_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 		if ( is_wp_error( $blog_id ) ) {
 			return $blog_id;
 		}
-		// @phan-suppress-next-line PhanDeprecatedFunction -- @todo Switch to current_user_can_for_site when we drop support for WP 6.6.
-		if ( ! current_user_can_for_blog( $blog_id, 'list_users' ) ) {
+		if ( ! current_user_can_for_site( $blog_id, 'list_users' ) ) {
 			return new WP_Error( 'unauthorized', 'User cannot view users for specified site', 403 );
 		}
 
@@ -164,8 +169,7 @@ class WPCOM_JSON_API_Site_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 		if ( 'GET' === $this->api->method ) {
 			return $this->get_user( $user->ID );
 		} elseif ( 'POST' === $this->api->method ) {
-			// @phan-suppress-next-line PhanDeprecatedFunction -- @todo Switch to current_user_can_for_site when we drop support for WP 6.6.
-			if ( ! current_user_can_for_blog( $blog_id, 'promote_users' ) ) {
+			if ( ! current_user_can_for_site( $blog_id, 'promote_users' ) ) {
 				return new WP_Error( 'unauthorized_no_promote_cap', 'User cannot promote users for specified site', 403 );
 			}
 			return $this->update_user( $user_id, $blog_id );
@@ -213,7 +217,7 @@ class WPCOM_JSON_API_Site_User_Endpoint extends WPCOM_JSON_API_Endpoint {
 		}
 
 		if ( $is_wpcom && $user_id !== get_current_user_id() && (int) $user_id === wpcom_get_blog_owner( $blog_id ) ) {
-			return new WP_Error( 'unauthorized_edit_owner', 'Current user can not edit blog owner', 403 );
+			return new WP_Error( 'unauthorized_edit_owner', 'Current user cannot edit blog owner', 403 );
 		}
 
 		if ( ! $is_wpcom ) {

@@ -11,6 +11,7 @@ if ( ! is_textdomain_loaded( 'xml-sitemap-generator-for-google' ) ) {
 // Autoload Files
 require_once GRIM_SG_INCLUDES . 'hooks.php';
 require_once GRIM_SG_INCLUDES . 'helpers.php';
+require_once GRIM_SG_INCLUDES . 'search-settings.php';
 
 // Autoload
 require_once GRIM_SG_INCLUDES . 'vendor/Controller.php';
@@ -31,6 +32,7 @@ require_once GRIM_SG_INCLUDES . 'MultilingualSitemap.php';
 require_once GRIM_SG_INCLUDES . 'Tools.php';
 require_once GRIM_SG_INCLUDES . 'ImportExport.php';
 require_once GRIM_SG_INCLUDES . 'PostSettings.php';
+require_once GRIM_SG_INCLUDES . 'SitemapCLI.php';
 
 function sgg_init() {
 	new GRIM_SG\Vendor\Migration();

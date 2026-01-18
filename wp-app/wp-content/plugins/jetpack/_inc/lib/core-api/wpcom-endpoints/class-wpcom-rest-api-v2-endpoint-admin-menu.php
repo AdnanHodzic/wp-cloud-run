@@ -8,6 +8,10 @@
 
 use Automattic\Jetpack\Status\Host;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 /**
  * Class WPCOM_REST_API_V2_Endpoint_Admin_Menu
  */
@@ -85,47 +89,25 @@ class WPCOM_REST_API_V2_Endpoint_Admin_Menu extends WP_REST_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter, VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+
+		/*
+		 * Load the `Jetpack_Admin` class, since it's only loaded on admin requests (not on API requests), and this is where
+		 * many Jetpack menus are registered. We don't need to run this on WPCOM because we replicate an admin request there.
+		 *
+		 * @see https://github.com/Automattic/jetpack/blob/dcdeb8fe772215b514bbbd6c4ddb38f6446e7ea1/projects/plugins/jetpack/load-jetpack.php#L61-L64
+		 * @see https://github.com/Automattic/jetpack/blob/dcdeb8fe772215b514bbbd6c4ddb38f6446e7ea1/projects/plugins/wpcomsh/feature-plugins/masterbar.php#L29
+		 */
 		if ( ! ( new Host() )->is_wpcom_platform() ) {
-			require_once JETPACK__PLUGIN_DIR . 'jetpack_vendor/automattic/jetpack-masterbar/src/admin-menu/load.php';
+			require_once JETPACK__PLUGIN_DIR . 'class.jetpack-admin.php';
 		}
 
 		// All globals need to be declared for menu items to properly register.
 		global $admin_page_hooks, $menu, $menu_order, $submenu, $_wp_menu_nopriv, $_wp_submenu_nopriv; // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 
-		$this->hide_customizer_menu_on_block_theme();
 		require_once ABSPATH . 'wp-admin/includes/admin.php';
 		require_once ABSPATH . 'wp-admin/menu.php';
 
 		return rest_ensure_response( $this->prepare_menu_for_response( $menu ) );
-	}
-
-	/**
-	 * Hides the Customizer menu items when the block theme is active by removing the dotcom-specific actions.
-	 * They are not needed for block themes.
-	 *
-	 * @see https://github.com/Automattic/jetpack/pull/36017
-	 */
-	private function hide_customizer_menu_on_block_theme() {
-		if ( wp_is_block_theme() && ! is_customize_preview() ) {
-			remove_action( 'customize_register', 'add_logotool_button', 20 );
-			remove_action( 'customize_register', 'footercredits_register', 99 );
-			remove_action( 'customize_register', 'wpcom_disable_customizer_site_icon', 20 );
-
-			if ( class_exists( '\Jetpack_Fonts' ) ) {
-				$jetpack_fonts_instance = \Jetpack_Fonts::get_instance();
-				remove_action( 'customize_register', array( $jetpack_fonts_instance, 'register_controls' ) );
-				remove_action( 'customize_register', array( $jetpack_fonts_instance, 'maybe_prepopulate_option' ), 0 );
-			}
-
-			remove_action( 'customize_register', array( 'Jetpack_Fonts_Typekit', 'maybe_override_for_advanced_mode' ), 20 );
-
-			if ( class_exists( 'Automattic\Jetpack\Masterbar' ) ) {
-				remove_action( 'customize_register', 'Automattic\Jetpack\Masterbar\register_css_nudge_control' );
-			}
-
-			// @phan-suppress-next-line PhanUndeclaredClassInCallable
-			remove_action( 'customize_register', array( 'Jetpack_Custom_CSS_Enhancements', 'customize_register' ) );
-		}
 	}
 
 	/**
@@ -153,6 +135,12 @@ class WPCOM_REST_API_V2_Endpoint_Admin_Menu extends WP_REST_Controller {
 
 				// Add submenu items.
 				foreach ( $submenu_items as $submenu_item ) {
+					// As $submenu_item can be null or false due to combination of plugins/themes, its value
+					// must be checked before passing it to the prepare_submenu_item method. It may be related
+					// to the common usage of null as a "hidden" submenu item like was fixed in CRM in #29945.
+					if ( ! is_array( $submenu_item ) ) {
+						continue;
+					}
 					$submenu_item = $this->prepare_submenu_item( $submenu_item, $menu_item );
 					if ( ! empty( $submenu_item ) ) {
 						$item['children'][] = $submenu_item;
@@ -462,6 +450,11 @@ class WPCOM_REST_API_V2_Endpoint_Admin_Menu extends WP_REST_Controller {
 	 * @return array
 	 */
 	private function parse_menu_item( $title ) {
+		// Handle non-string input
+		if ( ! is_string( $title ) ) {
+			return array();
+		}
+
 		$item = array();
 
 		if (

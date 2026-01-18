@@ -5,9 +5,85 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.7] - 2025-12-15
+### Changed
+- Improve Post Stats cache handling for invalid or error data. [#46211]
+
+## [0.17.6] - 2025-12-08
+### Fixed
+- Ensure proper flags are used with `json_encode()`. [#46092]
+
+## [0.17.5] - 2025-11-12
+### Changed
+- Internal updates.
+
+## [0.17.4] - 2025-11-10
+### Changed
+- Tests: Ensure PHP 8.5 compatibility. [#45769]
+
+## [0.17.3] - 2025-10-10
+### Changed
+- Handle lazy-loading of `WP_User` object properties. [#45450]
+
+## [0.17.2] - 2025-07-21
+### Changed
+- Internal updates. [#39260]
+
+## [0.17.1] - 2025-06-23
+### Fixed
+- Autoloader: Prevent double slash in autoloader path. [#44030]
+
+## [0.17.0] - 2025-06-23
+### Added
+- Add archives endpoint support. [#44028]
+
+## [0.16.3] - 2025-06-16
+### Fixed
+- Fix tracking of search terms and tags. [#43879]
+- Fix parsing of taxonomies query. [#43879]
+
+## [0.16.2] - 2025-04-28
+### Changed
+- Internal updates.
+
+## [0.16.1] - 2025-04-15
+### Fixed
+- Fix PHP TypeError. [#43072]
+
+## [0.16.0] - 2025-04-14
+### Added
+- Support tracking of archived pages and searches in tracking pixel. [#42368]
+
+### Changed
+- Update home tracking pixel to match archive ones. [#43043]
+
+## [0.15.9] - 2025-03-31
+### Changed
+- Internal updates.
+
+## [0.15.8] - 2025-03-24
+### Changed
+- Internal updates.
+
+## [0.15.7] - 2025-03-18
+### Changed
+- Internal updates.
+
+## [0.15.6] - 2025-03-17
+### Changed
+- Internal updates.
+
+## [0.15.5] - 2025-03-12
+### Changed
+- Internal updates.
+
+## [0.15.4] - 2025-03-10
+### Changed
+- Internal updates.
+
 ## [0.15.3] - 2025-03-03
 ### Fixed
-- Tracking Pixel: ensure the tracking script can be deferred, so it is not blocking. [#42175]
+- Tracking Pixel: Ensure the tracking script can be deferred, so it is not blocking. [#42175]
 
 ## [0.15.2] - 2025-02-24
 ### Changed
@@ -218,6 +294,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Fixing static method which was called without self reference. [#26640]
 
+[0.17.7]: https://github.com/Automattic/jetpack-stats/compare/v0.17.6...v0.17.7
+[0.17.6]: https://github.com/Automattic/jetpack-stats/compare/v0.17.5...v0.17.6
+[0.17.5]: https://github.com/Automattic/jetpack-stats/compare/v0.17.4...v0.17.5
+[0.17.4]: https://github.com/Automattic/jetpack-stats/compare/v0.17.3...v0.17.4
+[0.17.3]: https://github.com/Automattic/jetpack-stats/compare/v0.17.2...v0.17.3
+[0.17.2]: https://github.com/Automattic/jetpack-stats/compare/v0.17.1...v0.17.2
+[0.17.1]: https://github.com/Automattic/jetpack-stats/compare/v0.17.0...v0.17.1
+[0.17.0]: https://github.com/Automattic/jetpack-stats/compare/v0.16.3...v0.17.0
+[0.16.3]: https://github.com/Automattic/jetpack-stats/compare/v0.16.2...v0.16.3
+[0.16.2]: https://github.com/Automattic/jetpack-stats/compare/v0.16.1...v0.16.2
+[0.16.1]: https://github.com/Automattic/jetpack-stats/compare/v0.16.0...v0.16.1
+[0.16.0]: https://github.com/Automattic/jetpack-stats/compare/v0.15.9...v0.16.0
+[0.15.9]: https://github.com/Automattic/jetpack-stats/compare/v0.15.8...v0.15.9
+[0.15.8]: https://github.com/Automattic/jetpack-stats/compare/v0.15.7...v0.15.8
+[0.15.7]: https://github.com/Automattic/jetpack-stats/compare/v0.15.6...v0.15.7
+[0.15.6]: https://github.com/Automattic/jetpack-stats/compare/v0.15.5...v0.15.6
+[0.15.5]: https://github.com/Automattic/jetpack-stats/compare/v0.15.4...v0.15.5
+[0.15.4]: https://github.com/Automattic/jetpack-stats/compare/v0.15.3...v0.15.4
 [0.15.3]: https://github.com/Automattic/jetpack-stats/compare/v0.15.2...v0.15.3
 [0.15.2]: https://github.com/Automattic/jetpack-stats/compare/v0.15.1...v0.15.2
 [0.15.1]: https://github.com/Automattic/jetpack-stats/compare/v0.15.0...v0.15.1

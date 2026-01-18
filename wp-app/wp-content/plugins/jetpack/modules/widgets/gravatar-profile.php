@@ -1,5 +1,9 @@
 <?php // phpcs:ignore WordPress.Files.FileName.InvalidClassFileName
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit( 0 );
+}
+
 // phpcs:disable Universal.Files.SeparateFunctionsFromOO.Mixed -- TODO: Move classes to appropriately-named class files.
 
 add_action( 'widgets_init', 'jetpack_gravatar_profile_widget_init' );
@@ -151,7 +155,7 @@ class Jetpack_Gravatar_Profile_Widget extends WP_Widget {
 			}
 
 			if ( $instance['show_account_links'] ) {
-				$this->display_accounts( (array) $profile['accounts'] );
+				$this->display_accounts( (array) $profile['accounts'], $profile['displayName'] );
 			}
 
 			?>
@@ -236,9 +240,10 @@ class Jetpack_Gravatar_Profile_Widget extends WP_Widget {
 	/**
 	 * Displays the "Verified Services" accounts.
 	 *
-	 * @param array $accounts Array of social accounts.
+	 * @param array  $accounts     Array of social accounts.
+	 * @param string $display_name Gravatar display name of the user.
 	 */
-	public function display_accounts( $accounts = array() ) {
+	public function display_accounts( $accounts = array(), $display_name = '' ) {
 		if ( empty( $accounts ) ) {
 			return;
 		}
@@ -274,9 +279,9 @@ class Jetpack_Gravatar_Profile_Widget extends WP_Widget {
 
 			$sanitized_service_name = $this->get_sanitized_service_name( $account['shortname'] );
 			$link_title             = sprintf(
-				/* translators: %1$s: service username. %2$s: service name ( Facebook, Twitter, etc.) */
+				/* translators: %1$s: account display name. %2$s: service name ( Facebook, Twitter, etc.) */
 				_x( '%1$s on %2$s', '1: User Name, 2: Service Name (Facebook, Twitter, ...)', 'jetpack' ),
-				esc_html( $account['display'] ),
+				esc_html( $display_name ),
 				esc_html( $sanitized_service_name )
 			);
 			?>
@@ -321,6 +326,7 @@ class Jetpack_Gravatar_Profile_Widget extends WP_Widget {
 	 * Outputs the widget settings form.
 	 *
 	 * @param array $instance Current settings.
+	 * @return string|void
 	 */
 	public function form( $instance ) {
 		$title               = isset( $instance['title'] ) ? $instance['title'] : '';

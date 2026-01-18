@@ -7,26 +7,25 @@ use GRIM_SG\Dashboard;
 
 $settings = $args['settings'] ?? new stdClass();
 ?>
-<div class="postbox">
-	<h3 class="hndle"><?php esc_html_e( 'General Settings', 'xml-sitemap-generator-for-google' ); ?></h3>
+<div class="grim-section">
+	<p class="grim-toggle-section">
+		<strong>
+			<?php
+			Dashboard::render(
+				'fields/checkbox.php',
+				array(
+					'name'  => 'enable_google_news',
+					'value' => $settings->enable_google_news ?? false,
+					'label' => esc_html__( 'Google News', 'xml-sitemap-generator-for-google' ),
+					'class' => 'has-dependency',
+					'data'  => array( 'target' => 'google-news-depended' ),
+				)
+			);
+			?>
+		</strong>
+	</p>
 	<div class="inside">
-		<p><?php echo wp_kses_post( 'All options will be available after enabling Google News. Note that <strong>only posts from the last 48 hours</strong> will be processed by <a href="https://news.google.com" target="_blank">Google News</a>.' ); ?></p>
-		<div>
-			<strong>
-				<?php
-				Dashboard::render(
-					'fields/checkbox.php',
-					array(
-						'name'  => 'enable_google_news',
-						'value' => $settings->enable_google_news ?? false,
-						'label' => esc_html__( 'Enable Google News', 'xml-sitemap-generator-for-google' ),
-						'class' => 'has-dependency',
-						'data'  => array( 'target' => 'google-news-depended' ),
-					)
-				);
-				?>
-			</strong>
-		</div>
+		<p class="grim-section-desc grim-mb-20"><?php echo wp_kses_post( 'All options will be available after enabling Google News. Note that only posts from the last 48 hours will be processed by <a href="https://news.google.com" target="_blank">Google News</a>.' ); ?></p>
 		<p>
 			<?php
 			Dashboard::render(
@@ -40,23 +39,39 @@ $settings = $args['settings'] ?? new stdClass();
 						wp_kses_post( 'Default value is General Settings > <a href="%s" target="_blank">Site Title</a>.' ),
 						esc_url( admin_url( 'options-general.php' ) )
 					),
-					'class'       => 'google-news-depended',
+					'class'       => 'grim-input google-news-depended',
+					'placeholder' => 'Enter publication name',
 				)
 			);
 			?>
 		</p>
-		<p class="google-news-depended">
-			<label><?php esc_html_e( 'Source Labels:', 'xml-sitemap-generator-for-google' ); ?></label>
-			<span>
-				<?php
-				printf(
-					/* translators: %s General Settings URL */
-					wp_kses_post( 'To manage your Site Source Labels, please go to the <a href="%s" target="_blank">Google News Publisher Center</a>.' ),
-					'https://publishercenter.google.com/'
-				)
-				?>
-			</span>
-		</p>
+		<div class="google-news-depended">
+			<div class="grim-notice notice inline sitemap-detector grim-mb-20">
+				<i class="grim-icon-information"></i>
+				<p>
+					<?php
+					echo sprintf(
+					/* translators: %s: URL to Google News Publisher Center */
+						esc_html__( 'Source Labels: %s', 'xml-sitemap-generator-for-google' ),
+						sprintf(
+							wp_kses(
+							/* translators: %s: URL */
+								'<span>' . __( 'To manage your Site Source Labels, please go to the <a href="%s" target="_blank">Google News Publisher Center</a>.', 'xml-sitemap-generator-for-google' ) . '</span>',
+								array(
+									'a'    => array(
+										'href'   => array(),
+										'target' => array(),
+									),
+									'span' => array(),
+								)
+							),
+							esc_url( 'https://publishercenter.google.com/' )
+						)
+					);
+					?>
+				</p>
+			</div>
+		</div>
 		<p>
 			<?php
 			Dashboard::render(
@@ -65,11 +80,11 @@ $settings = $args['settings'] ?? new stdClass();
 					'name'  => 'google_news_old_posts',
 					'value' => $settings->google_news_old_posts ?? false,
 					'label' => esc_html__( 'Include Older Posts', 'xml-sitemap-generator-for-google' ),
-					'class' => 'google-news-depended',
+					'class' => 'grim-toggle-label google-news-depended',
 				)
 			);
 			?>
 			<br>
-			<small class="google-news-depended"><?php esc_html_e( 'Include posts older than 48 hours for informational purposes only. Note that they will NOT be indexed by Google News.', 'xml-sitemap-generator-for-google' ); ?></small>
+			<small class="google-news-depended grim-section-desc grim-ml-45"><?php esc_html_e( 'Include posts older than 48 hours for informational purposes only. Note that they will NOT be indexed by Google News.', 'xml-sitemap-generator-for-google' ); ?></small>
 	</div>
 </div>
