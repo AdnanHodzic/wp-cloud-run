@@ -47,7 +47,7 @@ return [
     'title'           => 'WooCommerce',
     'plugin_files'    => ['woocommerce/woocommerce.php'],
     'addon_file'      => 'wp-stateless-woocommerce-addon/wp-stateless-woocommerce-addon.php',
-    'icon'            => 'https://ps.w.org/woocommerce/assets/icon-128x128.gif',
+    'icon'            => 'https://ps.w.org/woocommerce/assets/icon.svg',
     'repo'            => 'udx/wp-stateless-woocommerce-addon',
     'wp'              => 'https://wordpress.org/plugins/wp-stateless-woocommerce-addon/',
     'hubspot_id'      => '151478251047',
@@ -155,6 +155,26 @@ return [
     'repo'            => 'udx/wp-stateless-polylang-pro-addon',
     'wp'              => 'https://wordpress.org/plugins/wp-stateless-polylang-pro-addon/',
     'hubspot_id'      => '151478250876',
+  ],
+
+  'simple-local-avatars' => [
+    'title'           => 'Simple Local Avatars',
+    'plugin_files'    => ['simple-local-avatars/simple-local-avatars.php'],
+    'addon_file'      => 'wp-stateless-simple-local-avatars-addon/wp-stateless-simple-local-avatars-addon.php',
+    'icon'            => 'https://ps.w.org/simple-local-avatars/assets/icon.svg',
+    'repo'            => 'udx/wp-stateless-simple-local-avatars-addon',
+    'wp'              => 'https://wordpress.org/plugins/wp-stateless-simple-local-avatars-addon/',
+    'hubspot_id'      => '151480507697',
+  ],
+
+  'woo-extra-product-options' => [
+    'title'           => 'WooCommerce Extra Product Options Addon',
+    'plugin_files'    => ['woocommerce-tm-extra-product-options/tm-woo-extra-product-options.php'],
+    'addon_file'      => 'wp-stateless-woocommerce-extra-product-options-addon/wp-stateless-woo-extra-product-options-addon.php.php',
+    'icon'            => 'https://ps.w.org/woocommerce/assets/icon.svg',
+    'repo'            => 'udx/wp-stateless-woo-extra-product-options-addon',
+    'wp'              => 'https://wordpress.org/plugins/wp-stateless-woocommerce-extra-product-options-addon/',
+    'hubspot_id'      => '151478251017',
   ],
 
 ];

@@ -46,19 +46,9 @@ namespace wpCloud\StatelessMedia {
       new ShortPixel();
 
       /**
-       * Support for Simple Local Avatars
-       */
-      new SimpleLocalAvatars();
-
-      /**
        * Support for The Events Calendar
        */
       new TheEventsCalendar();
-
-      /**
-       * Support for WooCommerce Extra Product Options
-       */
-      new CompatibilityWooExtraProductOptions();
 
       /**
        * Support for WPBakery Page Builder

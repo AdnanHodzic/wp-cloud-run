@@ -7,31 +7,31 @@ namespace Composer\Autoload;
 class ComposerStaticInitc59d002476a452800baaf79c430753cb
 {
     public static $prefixLengthsPsr4 = array (
-        'F' => 
+        'F' =>
         array (
             'Firebase\\JWT\\' => 13,
         ),
-        'C' => 
+        'C' =>
         array (
             'Composer\\Installers\\' => 20,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Firebase\\JWT\\' => 
+        'Firebase\\JWT\\' =>
         array (
             0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
-        'Composer\\Installers\\' => 
+        'Composer\\Installers\\' =>
         array (
             0 => __DIR__ . '/..' . '/composer/installers/src/Composer/Installers',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'C' => 
+        'C' =>
         array (
-            'ChromePhp' => 
+            'ChromePhp' =>
             array (
                 0 => __DIR__ . '/..' . '/ccampbell/chromephp',
             ),
@@ -73,7 +73,6 @@ class ComposerStaticInitc59d002476a452800baaf79c430753cb
         'wpCloud\\StatelessMedia\\Batch\\Migration' => __DIR__ . '/../..' . '/lib/classes/batch/class-migration.php',
         'wpCloud\\StatelessMedia\\Bootstrap' => __DIR__ . '/../..' . '/lib/classes/class-bootstrap.php',
         'wpCloud\\StatelessMedia\\Compatibility' => __DIR__ . '/../..' . '/lib/classes/class-compatibility.php',
-        'wpCloud\\StatelessMedia\\CompatibilityWooExtraProductOptions' => __DIR__ . '/../..' . '/lib/classes/compatibility/woo-extra-product-options.php',
         'wpCloud\\StatelessMedia\\DB' => __DIR__ . '/../..' . '/lib/classes/class-db.php',
         'wpCloud\\StatelessMedia\\DynamicImageSupport' => __DIR__ . '/../..' . '/lib/classes/class-dynamic-image-support.php',
         'wpCloud\\StatelessMedia\\EWWW' => __DIR__ . '/../..' . '/lib/classes/compatibility/ewww.php',
@@ -88,7 +87,6 @@ class ComposerStaticInitc59d002476a452800baaf79c430753cb
         'wpCloud\\StatelessMedia\\Module' => __DIR__ . '/../..' . '/lib/classes/class-module.php',
         'wpCloud\\StatelessMedia\\Settings' => __DIR__ . '/../..' . '/lib/classes/class-settings.php',
         'wpCloud\\StatelessMedia\\ShortPixel' => __DIR__ . '/../..' . '/lib/classes/compatibility/shortpixel.php',
-        'wpCloud\\StatelessMedia\\SimpleLocalAvatars' => __DIR__ . '/../..' . '/lib/classes/compatibility/simple-local-avatars.php',
         'wpCloud\\StatelessMedia\\Singleton' => __DIR__ . '/../..' . '/lib/classes/trait-singleton.php',
         'wpCloud\\StatelessMedia\\Status' => __DIR__ . '/../..' . '/lib/classes/class-status.php',
         'wpCloud\\StatelessMedia\\Status\\GoogleCloudInfo' => __DIR__ . '/../..' . '/lib/classes/status/class-info-google_cloud.php',

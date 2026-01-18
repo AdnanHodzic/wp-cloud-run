@@ -47,6 +47,7 @@ New to Google Cloud? Google is offering you a [$300 credit](https://console.clou
 * [BuddyPress Addon](https://wordpress.org/plugin/wp-stateless-buddypress-addon/)
 * [BuddyBoss Platform Addon](https://wordpress.org/plugins/wp-stateless-buddyboss-platform-addon/)
 * [Polylang Pro Addon](https://wordpress.org/plugins/wp-stateless-polylang-pro-addon/)
+* [Simple Local Avatars](https://wordpress.org/plugins/wp-stateless-simple-local-avatars-addon/)
 
 ### Support, Feedback, & Contribute
 We welcome community involvement via the [GitHub repository](https://github.com/udx/wp-stateless).
@@ -62,13 +63,13 @@ Looking for a unique feature for your next project? [Hire us!](https://udx.io/)
 4. Set a Google Cloud Project, Google Cloud Storage Bucket, and Google Cloud Billing Account and click "Continue."
 5. Installation and setup are now complete. Visit *Media > Stateless Settings* for more options.
 
-For a more detailed installation and setup walkthrough, please see the [manual setup instructions on Github](https://stateless.udx.io/docs/manual-setup/).
+For a more detailed installation and setup walkthrough, please see the [manual setup instructions on Github](https://stateless.udx.io/setup/).
 
 ## Frequently Asked Questions
 
 ### What are the minimum server requirements for this plugin?
 
-Beyond the [official WordPress minimum requirements](https://codex.wordpress.org/Template:Server_requirements), WP-Stateless requires a minimum PHP version of 7.2 or higher and OpenSSL to be enabled.
+Beyond the [official WordPress minimum requirements](https://codex.wordpress.org/Template:Server_requirements), WP-Stateless requires a minimum PHP version of 8.0 or higher and OpenSSL to be enabled.
 
 ### What wp-config constants are supported?
 

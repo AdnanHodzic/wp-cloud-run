@@ -50,10 +50,11 @@ class RWMB_Map_Field extends RWMB_Field {
 		$attributes['value'] = $meta;
 
 		$html .= sprintf(
-			'<div class="rwmb-map-canvas" data-default-loc="%s" data-region="%s"></div>
+			'<div class="rwmb-map-canvas" data-default-loc="%s" data-region="%s"  data-marker_draggable="%s"></div>
 			<input %s>',
 			esc_attr( $field['std'] ),
 			esc_attr( $field['region'] ),
+			esc_attr( $field['marker_draggable'] ? 'true' : 'false' ),
 			self::render_attributes( $attributes )
 		);
 
@@ -72,14 +73,15 @@ class RWMB_Map_Field extends RWMB_Field {
 	public static function normalize( $field ) {
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, [
-			'std'           => '',
-			'address_field' => '',
-			'language'      => '',
-			'region'        => '',
+			'std'              => '',
+			'address_field'    => '',
+			'language'         => '',
+			'region'           => '',
+			'marker_draggable' => true,
 
 			// Default API key, required by Google Maps since June 2016.
 			// Users should overwrite this key with their own key.
-			'api_key'       => 'AIzaSyC1mUh87SGFyf133tpZQJa-s96p0tgnraQ',
+			'api_key'          => 'AIzaSyC1mUh87SGFyf133tpZQJa-s96p0tgnraQ',
 		] );
 
 		return $field;
@@ -103,7 +105,7 @@ class RWMB_Map_Field extends RWMB_Field {
 			$location = [];
 			foreach ( $value as $clone ) {
 				list( $latitude, $longitude, $zoom ) = explode( ',', $clone . ',,' );
-				$location[]                            = compact( 'latitude', 'longitude', 'zoom' );
+				$location[]                          = compact( 'latitude', 'longitude', 'zoom' );
 			}
 			return $location;
 		}
@@ -114,13 +116,13 @@ class RWMB_Map_Field extends RWMB_Field {
 
 	/**
 	 * Format value before render map
-	 * @param mixed $field
-	 * @param mixed $value
-	 * @param mixed $args
-	 * @param mixed $post_id
+	 * @param array $field    Field settings.
+	 * @param mixed $value    Field value.
+	 * @param mixed $args     Additional arguments.
+	 * @param mixed $post_id  Post ID.
 	 * @return string
 	 */
-	public static function format_single_value( $field, $value, $args, $post_id ): string {
+	public static function format_single_value( $field, $value, $args, $post_id ) {
 		$args = wp_parse_args( $args, [
 			'api_key' => $field['api_key'] ?? '',
 		] );
@@ -136,16 +138,17 @@ class RWMB_Map_Field extends RWMB_Field {
 	 * @return string
 	 */
 	public static function render_map( $location, $args = [] ) {
-        // For compatibility with previous version, or within groups.
+		// For compatibility with previous version, or within groups.
 		if ( is_string( $location ) ) {
 			list( $latitude, $longitude, $zoom ) = explode( ',', $location . ',,' );
 		} else {
+			// phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 			extract( $location );
 		}
 
-        if ( ! $latitude || ! $longitude ) {
-            return '';
-        }
+		if ( ! $latitude || ! $longitude ) {
+			return '';
+		}
 
 		$args = wp_parse_args( $args, [
 			'latitude'     => $latitude,

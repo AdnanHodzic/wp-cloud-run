@@ -96,7 +96,7 @@ abstract class RWMB_Input_Field extends RWMB_Field {
 		return $attributes;
 	}
 
-	protected static function datalist( array $field ) : string {
+	protected static function datalist( array $field ): string {
 		if ( empty( $field['datalist'] ) ) {
 			return '';
 		}

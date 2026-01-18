@@ -37,11 +37,12 @@ class RWMB_OSM_Field extends RWMB_Field {
 		$attributes['value'] = $meta;
 
 		$html .= sprintf(
-			'<div class="rwmb-osm-canvas" data-default-loc="%s" data-region="%s" data-language="%s"></div>
+			'<div class="rwmb-osm-canvas" data-default-loc="%s" data-region="%s" data-language="%s" data-marker_draggable="%s"></div>
 			<input %s>',
 			esc_attr( $field['std'] ),
 			esc_attr( $field['region'] ),
 			esc_attr( $field['language'] ),
+			esc_attr( $field['marker_draggable'] ? 'true' : 'false' ),
 			self::render_attributes( $attributes )
 		);
 
@@ -60,10 +61,11 @@ class RWMB_OSM_Field extends RWMB_Field {
 	public static function normalize( $field ) {
 		$field = parent::normalize( $field );
 		$field = wp_parse_args( $field, [
-			'std'           => '',
-			'address_field' => '',
-			'language'      => '',
-			'region'        => '',
+			'std'              => '',
+			'address_field'    => '',
+			'language'         => '',
+			'region'           => '',
+			'marker_draggable' => true,
 		] );
 
 		return $field;
@@ -87,7 +89,7 @@ class RWMB_OSM_Field extends RWMB_Field {
 			$location = [];
 			foreach ( $value as $clone ) {
 				list( $latitude, $longitude, $zoom ) = explode( ',', $clone . ',,' );
-				$location[]                            = compact( 'latitude', 'longitude', 'zoom' );
+				$location[]                          = compact( 'latitude', 'longitude', 'zoom' );
 			}
 			return $location;
 		}
@@ -98,13 +100,13 @@ class RWMB_OSM_Field extends RWMB_Field {
 
 	/**
 	 * Format value before render map
-	 * @param mixed $field
-	 * @param mixed $value
-	 * @param mixed $args
-	 * @param mixed $post_id
-	 * @return string
+	 * @param array $field    Field settings.
+	 * @param mixed $value    Field value.
+	 * @param mixed $args     Additional arguments.
+	 * @param mixed $post_id  Post ID.
+	 * @return string HTML.
 	 */
-	public static function format_single_value( $field, $value, $args, $post_id ): string {
+	public static function format_single_value( $field, $value, $args, $post_id ) {
 		return self::render_map( $value, $args );
 	}
 
@@ -112,21 +114,22 @@ class RWMB_OSM_Field extends RWMB_Field {
 	 * Render a map in the frontend.
 	 *
 	 * @param string|array $location The "latitude,longitude[,zoom]" location.
-	 * @param array  $args     Additional arguments for the map.
+	 * @param array        $args     Additional arguments for the map.
 	 *
 	 * @return string
 	 */
 	public static function render_map( $location, $args = [] ) {
-        // For compatibility with previous version, or within groups.
+		// For compatibility with previous version, or within groups.
 		if ( is_string( $location ) ) {
 			list( $latitude, $longitude, $zoom ) = explode( ',', $location . ',,' );
 		} else {
+			// phpcs:ignore WordPress.PHP.DontExtract.extract_extract
 			extract( $location );
 		}
 
-        if ( ! $latitude || ! $longitude ) {
-            return '';
-        }
+		if ( ! $latitude || ! $longitude ) {
+			return '';
+		}
 
 		$args = wp_parse_args( $args, [
 			'latitude'     => $latitude,
@@ -165,6 +168,10 @@ class RWMB_OSM_Field extends RWMB_Field {
 
 	private static function enqueue_map_assets() {
 		wp_enqueue_style( 'leaflet', RWMB_JS_URL . 'leaflet/leaflet.css', [], '1.9.4' );
+		wp_style_add_data( 'leaflet', 'path', RWMB_JS_URL . 'leaflet/leaflet.css' );
 		wp_enqueue_script( 'leaflet', RWMB_JS_URL . 'leaflet/leaflet.js', [], '1.9.4', true );
+		wp_enqueue_style( 'leaflet-gesture-handling', RWMB_JS_URL . 'leaflet/leaflet-gesture-handling.min.css', [ 'leaflet' ], '1.2.2' );
+		wp_style_add_data( 'leaflet-gesture-handling', 'path', RWMB_JS_URL . 'leaflet/leaflet-gesture-handling.min.css' );
+		wp_enqueue_script( 'leaflet-gesture-handling', RWMB_JS_URL . 'leaflet/leaflet-gesture-handling.min.js', [ 'leaflet' ], '1.2.2', true );
 	}
 }

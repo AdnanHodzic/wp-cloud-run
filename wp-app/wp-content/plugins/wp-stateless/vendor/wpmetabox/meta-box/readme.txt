@@ -2,10 +2,10 @@
 Contributors: elightup, metabox, rilwis, f-j-kaiser, funkatronic, PerWiklander, ruanmer, tanng
 Donate link: https://metabox.io/pricing/
 Tags: custom fields, custom post types, post type, custom taxonomies, meta box
-Requires at least: 5.9
-Requires PHP: 7.0
-Tested up to: 6.7.2
-Stable tag: 5.10.7
+Requires at least: 6.5
+Requires PHP: 7.1
+Tested up to: 6.8.3
+Stable tag: 5.10.19
 License: GPLv2 or later
 
 Meta Box plugin is a powerful, professional developer toolkit to create custom meta boxes and custom fields for your custom post types in WordPress.
@@ -66,6 +66,7 @@ If you prefer a more visual system to create custom fields in WordPress, please 
 - Export your custom fields and settings to PHP. Then, add it to a new site without needing to install this extension for an incredibly lightweight option.
 
 ### Free Extensions
+
 - Migrations from [ACF](https://metabox.io/plugins/mb-acf-migration/) or [Toolset](https://metabox.io/plugins/mb-toolset-migration/).
 - Integrations with all page builder plugins like [Elementor](https://metabox.io/plugins/mb-elementor-integrator/), [Beaver Builder](https://metabox.io/plugins/meta-box-beaver-themer-integrator/), Divi, Bricks, Brizy, etc.
 - Integrations with SEO plugins like [Yoast SEO](https://wordpress.org/plugins/meta-box-yoast-seo/), [Rank Math](https://metabox.io/plugins/mb-rank-math/), or Slim SEO.
@@ -116,8 +117,6 @@ Here are a few guides to quickly get you started with Meta Box and creating your
 If you like this plugin, you might also like our other WordPress products:
 
 - [Slim SEO](https://wpslimseo.com) - A fast, lightweight and full-featured SEO plugin for WordPress with minimal configuration.
-- [Slim SEO Schema](https://wpslimseo.com/products/slim-seo-schema/) - An advanced, powerful and flexible plugin to add schemas to WordPress.
-- [Slim SEO Link Manager](https://wpslimseo.com/products/slim-seo-link-manager/) - Build internal link easier in WordPress with real-time reports.
 - [GretaThemes](https://gretathemes.com) - Free and premium WordPress themes that clean, simple and just work.
 - [Auto Listings](https://wpautolistings.com) - A car sale and dealership plugin for WordPress.
 
@@ -147,6 +146,57 @@ If you want to use Meta Box, please follow these steps:
 1. Post Taxonomy Fields
 
 == Changelog ==
+
+= 5.10.19 - 2025-11-24 =
+
+- Fix the `use` statement with non-compound name has no effect
+
+= 5.10.18 - 2025-11-24 =
+
+- Fix deprecation message for `datetime` field
+
+= 5.10.17 - 2025-11-07 =
+
+- WPML integration: fix error when filtering value for helper functions when no fields are found.
+
+= 5.10.16 - 2025-11-05 =
+
+- WPML integration: filter helper functions to get the translated IDs for `post` field
+- Fix cloning `post` field not clearing the value
+
+= 5.10.15 - 2025-10-06 =
+
+- Add `marker_draggable` option for `map`/`osm` fields to disable changing the pin on the map.
+
+= 5.10.14 - 2025-09-15 =
+
+- Update dependencies
+
+= 5.10.13 - 2025-08-14 =
+
+- Fix `get_current_screen()` error for term meta
+
+= 5.10.12 - 2025-08-13 =
+
+- Fix Open Street Maps field not showing (sometimes) with conditional logic
+- Enqueue assets for the iframed editor, to make all fields are rendered properly in the iframed editor
+
+= 5.10.11 - 2025-07-15 =
+
+Fix validation for blocks
+
+= 5.10.10 - 2025-05-21 =
+- Fix datetime field returns null
+- Fix single image field not working with Polylang Pro
+- Fix reveal password icon not working
+
+= 5.10.9 - 2025-05-08 =
+- Add button to toggle password (#1630)
+- Add gesture handling support for OSM field (#1631)
+- Datetime & select2: use user's locale instead of site's locale
+
+= 5.10.8 - 2025-03-14 =
+- Redesign the dashboard
 
 = 5.10.7 - 2025-02-25 =
 - Fix: max clone with clone empty start
@@ -186,89 +236,6 @@ If you want to use Meta Box, please follow these steps:
 
 = 5.10.1 - 2024-09-07 =
 - Fix issue with `clone_empty_start` (validation, now showing data for the 1st clone, broken `text_list` field, etc.)
-
-= 5.10.0 - 2024-08-19 =
-
-**Highlights:**
-
-This version introduces new parameter for field: `clone_empty_start` that makes cloneable groups **not** showing inputs at first. When users want to enter data, they'll need to click the "+ Add new" button. This feature updates the UI and makes it cleaner.
-
-See more details on our [blog post](https://metabox.io/clone-empty-start/).
-
-Other changes:
-
-- Replace `sprintf` with string concatenation in `RWMB_Field::show` to fix issues when `$field['before']` or `$field['after']` contains special characters (`%`). Props Daniel Haim.
-- Fix mismatch filter params for `rwmb_meta` when no fields are found.
-
-= 5.9.11 - 2024-07-10.0 =
-- Make validation work for blocks
-- Fix JavaScript validation error in site editor
-- Set default minute step = 5 for datetime/time pickers
-- Security fix for ajax getting posts
-
-= 5.9.10 - 2024-07-02 =
-- Fix modal not updating URL (when add new)
-- Security fix for ajax get posts/users
-
-= 5.9.9 - 2024-06-20 =
-- Fix show hide checkbox tree
-- Fix default value not display as selected time
-- Fix datetime field not removing value when set inline & timestamp = true
-
-= 5.9.8 - 2024-05-08 =
-- Fix activation error on ajax request since WordPress 6.5
-
-= 5.9.7 - 2024-04-18 =
-- Revert fix for Meta Box Conditional Logic
-
-= 5.9.6 - 2024-04-17 =
-- Add progress bar for field `file_upload`
-- Force returned value of sanitize color to string
-- Enqueue assets for FSE and widget (with block editor) screens
-- Fix jumping layout for Meta Box Conditional Logic
-- Fix errors when using cloneable map/osm fields
-
-= 5.9.5 - 2024-03-26 =
-- Add `save_format` settings to `time` field
-- Field icon SVG not displaying
-
-= 5.9.4 - 2024-02-27 =
-- Fix security issue when users set object id in the helper functions where they don't have permission to view (such as private posts)
-
-= 5.9.3 - 2024-02-02 =
-
-**Highlights:**
-
-Fix security issue of the output shortcode `[rwmb_meta]` not escaping. Users can disable escaping (to revert the previous behavior) by adding this snippet:
-
-`add_filter( 'rwmb_meta_shortcode_secure', '__return_false' );
-// or
-add_filter( 'rwmb_meta_shortcode_secure_{$field_id}', '__return_false' );`
-
-Other changes:
-
-- Fix compatibility with PHP 8.3
-- Fix not showing more than 10 saved users or terms
-
-= 5.9.2 - 2024-01-22 =
-- Validation: fix PHP warning when fields has non-consecutive keys
-- Icon field: fix custom icon not working
-- Update jQuery Validation to 1.20.0. Props Maarten.
-- Prepare css to be inlined. Props Maarten.
-
-= 5.9.1 - 2023-12-25 =
-- Fix preview posts not working in the block editor in WP 6.4.
-- Icon field: allow to set relative path/URL for settings
-- Icon field: add support for scanning CSS file (`icon_css` setting) and parsing CSS class
-- Autocomplete field: fix not saving first value if the value is 0 (integer).
-
-= 5.9.0 - 2023-11-22 =
-
-**Highlights:**
-
-Add new `icon` field type, which supports Font Awesome Free, Font Awesome Pro and custom icon set. Can be used with icon font with CSS file or with SVGs. See the [plugin docs](https://docs.metabox.io/fields/icon/) for how to use it.
-
-The `icon` field type will be added to the new version of Meta Box Builder soon, which will allow you to configure its settings with UI.
 
 [See full changelog here](https://metabox.io/changelog/).
 
