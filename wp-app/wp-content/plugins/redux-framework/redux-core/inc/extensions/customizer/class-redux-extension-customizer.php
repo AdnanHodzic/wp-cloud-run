@@ -173,6 +173,10 @@ if ( ! class_exists( 'Redux_Extension_Customizer', false ) ) {
 			try {
 				$return_array = array();
 
+				if ( ! is_user_logged_in() && ! is_admin() && ! current_user_can( $this->parent->args['page_permissions'] ) ) {
+					wp_die( esc_html__( 'You do not have permission to perform this action.', 'redux-framework' ) );
+				}
+
 				if ( isset( $_POST['nonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['nonce'] ) ), 'redux_customer_nonce' ) && isset( $_POST['opt_name'] ) && '' !== $_POST['opt_name'] ) {
 					$redux = Redux::instance( sanitize_text_field( wp_unslash( $_POST['opt_name'] ) ) );
 
@@ -345,6 +349,7 @@ if ( ! class_exists( 'Redux_Extension_Customizer', false ) ) {
 							$key          = str_replace( $this->parent->args['opt_name'] . '[', '', rtrim( $key, ']' ) );
 							$data[ $key ] = $value;
 
+							// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals
 							$GLOBALS[ $this->parent->args['global_variable'] ][ $key ] = $value;
 							$this->parent->options[ $key ]                             = $value;
 						}

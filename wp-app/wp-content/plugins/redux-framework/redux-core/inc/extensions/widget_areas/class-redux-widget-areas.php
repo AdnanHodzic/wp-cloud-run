@@ -72,7 +72,9 @@ if ( ! class_exists( 'Redux_Widget_Areas' ) ) {
 			add_action( 'init', array( &$this, 'register_custom_widget_areas' ), 1000 );
 
 			if ( 'widgets.php' === $pagenow ) {
-				add_action( 'admin_print_scripts', array( $this, 'add_new_widget_area_box' ) );
+				if ( true === $redux->args['widget_area'] ) {
+					add_action( 'admin_print_scripts', array( $this, 'add_new_widget_area_box' ) );
+				}
 				add_action( 'load-widgets.php', array( $this, 'add_widget_area_area' ), 100 );
 				add_action( 'load-widgets.php', array( $this, 'enqueue' ), 100 );
 			}
@@ -251,6 +253,10 @@ if ( ! class_exists( 'Redux_Widget_Areas' ) ) {
 		 * Delete widget area.
 		 */
 		public function redux_delete_widget_area_area() {
+			if ( ! is_user_logged_in() && ! is_admin() && ! current_user_can( $this->parent->args['page_permissions'] ) ) {
+				wp_die( esc_html__( 'You do not have permission to perform this action.', 'redux-framework' ) );
+			}
+
 			if ( isset( $_POST ) && isset( $_POST['_wpnonce'] ) && wp_verify_nonce( sanitize_key( wp_unslash( $_POST['_wpnonce'] ) ), 'delete-redux-widget_area-nonce' ) ) {
 				if ( isset( $_POST['name'] ) && ! empty( sanitize_text_field( wp_unslash( $_POST['name'] ) ) ) ) {
 					$name               = sanitize_text_field( wp_unslash( $_POST['name'] ) );

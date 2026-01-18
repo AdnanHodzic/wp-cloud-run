@@ -3,12 +3,12 @@ Contributors: kprovance, dovyp, redux
 Tags: admin, options, theme options, plugin options, options framework
 Requires at least: 5.0
 Requires PHP: 7.4
-Tested up to: 6.8
-Stable tag: 4.5.7
+Tested up to: 6.9
+Stable tag: 4.5.10
 License: GPL-3.0+
 License URI: http://www.gnu.org/licenses/gpl-3.0.txt
 
-Redux is a simple, truly extensible and fully responsive options framework for WordPress themes and plugins. It ships with an integrated demo.
+Redux is a simple, truly extensible, and fully responsive options framework for WordPress themes and plugins. It ships with an integrated demo.
 
 == Description ==
 Redux was built by developers for developers. We save you months if not years in your development time. Everything we do is to help innovation in the industry.
@@ -121,6 +121,29 @@ NOTE: Redux is not intended to be used on its own. It requires a config file pro
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 == Changelog ==
+
+= 4.5.10
+* Fixed: Tighten security in `import_export`, `custom_fonts`, `color_scheme`, and Google Font updating.
+* Fixed: `box_shadow` slider not updating value in real-time.
+* Fixed: Missing translations. Thanks, @DAnn2012.
+* Release date: January 07, 2026
+
+= 4.5.9
+* Fix: Deprecation warning in `get_wordpress_data()` function.
+* Modified: Compliance with new PCP criteria.
+* Improved: Tighter security for shortcode extension.
+* Updated: parsedown.php for PHP 8.5.
+* Release date: November 24, 2025
+
+= 4.5.8
+* Fix: Reported XSS vulnerability in the shortcode extension.
+* Fix: #4074 - Gallery field won't load on screen refresh.
+* Fix: Prevent fatal error for improperly coded CPTs with metaboxes.
+* Added: New global arg `custom_fonts` to enable or disable the extension.
+* Added: New global arg `widget_area` to enable or disable the extension.
+* Added: `social_profiles` now support an argument for FA 6 classnames.
+* Improved: Callback validation for data fetching. Thanks @afonsolpjr
+* Release date: October 01, 2025
 
 = 4.5.7 =
 * Fixed: Bullet-proofed some global args when omitted from the config.

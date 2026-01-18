@@ -163,6 +163,8 @@ if ( ! class_exists( 'Redux_Args', false ) ) {
 				'font_display'                     => 'swap', // block|swap|fallback|optional.
 				'load_on_cron'                     => false,
 				'search'                           => false,
+				'widget_area'                      => false,
+				'custom_fonts'                     => true,
 			);
 
 			$args = Redux_Functions::parse_args( $args, $default );
@@ -262,9 +264,9 @@ if ( ! class_exists( 'Redux_Args', false ) ) {
 
 				$footer_text = sprintf(
 				/* translators: 1: Redux, 2: Link to plugin review */
-					__( 'Enjoyed %1$s? Please leave us a %2$s rating. We really appreciate your support!', 'redux-framework' ),
+					__( 'Enjoyed %1$s? Please leave us a %2$s. We really appreciate your support!', 'redux-framework' ),
 					'<strong>' . __( 'Redux', 'redux-framework' ) . '</strong>',
-					'<a href="https://wordpress.org/support/plugin/redux-framework/reviews/?filter=5/#new-post" target="_blank">&#9733;&#9733;&#9733;&#9733;&#9733;</a>'
+					'<a href="https://wordpress.org/support/plugin/redux-framework/reviews/#new-post" target="_blank">' . __( 'review', 'redux-framework' ) . '</a>'
 				);
 				$args['footer_credit'] = '<span id="footer-thankyou">' . $footer_text . '</span>';
 			}

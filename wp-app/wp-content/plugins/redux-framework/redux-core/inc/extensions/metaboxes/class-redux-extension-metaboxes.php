@@ -472,6 +472,7 @@ if ( ! class_exists( 'Redux_Extension_Metaboxes', false ) ) {
 		 * @return array|void
 		 */
 		public function loop_start( $the_post = array() ) {
+			// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals -- Cannot rename 'this.'
 			if ( is_admin() ) {
 				return $the_post;
 			}
@@ -497,6 +498,8 @@ if ( ! class_exists( 'Redux_Extension_Metaboxes', false ) ) {
 				$GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] = $GLOBALS[ $this->parent->args['global_variable'] ];
 				$GLOBALS[ $this->parent->args['global_variable'] ]           = wp_parse_args( $meta, $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] );
 			}
+
+			// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals -- Cannot rename 'this.'
 		}
 
 		/**
@@ -504,6 +507,7 @@ if ( ! class_exists( 'Redux_Extension_Metaboxes', false ) ) {
 		 */
 		public function loop_end() {
 			if ( isset( $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] ) ) {
+				// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals -- Cannot rename 'this.'  C'mon WP guys. Dumbest fucking misflag ever!
 				$GLOBALS[ $this->parent->args['global_variable'] ] = $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ];
 
 				unset( $GLOBALS[ $this->parent->args['global_variable'] . '-loop' ] );
@@ -866,10 +870,6 @@ if ( ! class_exists( 'Redux_Extension_Metaboxes', false ) ) {
 						}
 					}
 
-					if ( ( empty( $query['page'] ) ) && ( empty( $query['pagename'] ) ) ) {
-						return 0;
-					}
-
 					$query = new WP_Query( $query );
 
 					if ( ! empty( $query->posts ) && $query->is_singular ) {
@@ -880,7 +880,9 @@ if ( ! class_exists( 'Redux_Extension_Metaboxes', false ) ) {
 						if ( isset( $query->query['post_type'] ) && 'product' === $query->query['post_type'] && class_exists( 'WooCommerce' ) ) {
 							return get_option( 'woocommerce_shop_page_id' );
 						}
+					}
 
+					if ( ( empty( $query->page ) ) && ( empty( $query->pagename ) ) ) {
 						return 0;
 					}
 				}
