@@ -49,9 +49,11 @@ class Ai1wm_Compatibility {
 		foreach ( $extensions as $extension_name => $extension_data ) {
 			if ( ! Ai1wm_Compatibility::check( $extension_data ) ) {
 				if ( defined( 'WP_CLI' ) ) {
-					$messages[] = sprintf( __( '%s is out of date. Please update this extension before using it.', AI1WM_PLUGIN_NAME ), $extension_data['title'] );
+					/* translators: Extension name. */
+					$messages[] = sprintf( __( '%s is out of date. Please update this extension before using it.', 'all-in-one-wp-migration' ), $extension_data['title'] );
 				} else {
-					$messages[] = sprintf( __( '<strong>%s</strong> is out of date. You must <a href="%s">update this extension</a> before using it.<br />', AI1WM_PLUGIN_NAME ), $extension_data['title'], network_admin_url( 'plugins.php' ) );
+					/* translators: 1: Extension name, 2: Plugins update page. */
+					$messages[] = sprintf( __( '<strong>%1$s</strong> is out of date. You must <a href="%2$s">update this extension</a> before using it.<br />', 'all-in-one-wp-migration' ), $extension_data['title'], network_admin_url( 'plugins.php' ) );
 				}
 			}
 		}

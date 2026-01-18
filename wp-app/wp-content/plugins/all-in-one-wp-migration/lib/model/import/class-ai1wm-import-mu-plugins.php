@@ -34,7 +34,7 @@ class Ai1wm_Import_Mu_Plugins {
 	public static function execute( $params ) {
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Activating mu-plugins...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Activating mu-plugins...', 'all-in-one-wp-migration' ) );
 
 		$exclude_files = array(
 			AI1WM_MUPLUGINS_NAME . DIRECTORY_SEPARATOR . AI1WM_ENDURANCE_PAGE_CACHE_NAME,
@@ -62,7 +62,7 @@ class Ai1wm_Import_Mu_Plugins {
 		$archive->close();
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Mu-plugins activated.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Mu-plugins activated.', 'all-in-one-wp-migration' ) );
 
 		return $params;
 	}

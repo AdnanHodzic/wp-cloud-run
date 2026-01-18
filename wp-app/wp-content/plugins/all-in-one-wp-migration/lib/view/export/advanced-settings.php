@@ -34,27 +34,28 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="ai1wm-accordion ai1wm-expandable">
 		<h4>
 			<i class="ai1wm-icon-arrow-right"></i>
-			<?php _e( 'Advanced options', AI1WM_PLUGIN_NAME ); ?>
-			<small><?php _e( '(click to expand)', AI1WM_PLUGIN_NAME ); ?></small>
+			<?php esc_html_e( 'Advanced options', 'all-in-one-wp-migration' ); ?>
+			<small><?php esc_html_e( '(click to expand)', 'all-in-one-wp-migration' ); ?></small>
 		</h4>
 		<ul>
+			<li><strong><?php esc_html_e( 'Security Options' ); ?></strong></li>
 			<?php if ( ai1wm_can_encrypt() ) : ?>
 				<li class="ai1wm-encrypt-backups-container">
 					<label for="ai1wm-encrypt-backups">
 						<input type="checkbox" id="ai1wm-encrypt-backups" name="options[encrypt_backups]" />
-						<?php _e( 'Encrypt this backup with a password', AI1WM_PLUGIN_NAME ); ?>
+						<?php esc_html_e( 'Encrypt this backup with a password', 'all-in-one-wp-migration' ); ?>
 					</label>
 					<div class="ai1wm-encrypt-backups-passwords-toggle">
 						<div class="ai1wm-encrypt-backups-passwords-container">
 							<div class="ai1wm-input-password-container">
-								<input type="password" placeholder="<?php _e( 'Enter a password', AI1WM_PLUGIN_NAME ); ?>" name="options[encrypt_password]" id="ai1wm-backup-encrypt-password">
+								<input type="password" placeholder="<?php esc_attr_e( 'Enter a password', 'all-in-one-wp-migration' ); ?>" name="options[encrypt_password]" id="ai1wm-backup-encrypt-password">
 								<a href="#ai1wm-backup-encrypt-password" class="ai1wm-toggle-password-visibility ai1wm-icon-eye-blocked"></a>
-								<div class="ai1wm-error-message"><?php _e( 'A password is required', AI1WM_PLUGIN_NAME ); ?></div>
+								<div class="ai1wm-error-message"><?php esc_html_e( 'A password is required', 'all-in-one-wp-migration' ); ?></div>
 							</div>
 							<div class="ai1wm-input-password-container">
-								<input type="password" name="options[encrypt_password_confirmation]" placeholder="<?php _e( 'Repeat the password', AI1WM_PLUGIN_NAME ); ?>" id="ai1wm-backup-encrypt-password-confirmation">
+								<input type="password" name="options[encrypt_password_confirmation]" placeholder="<?php esc_attr_e( 'Repeat the password', 'all-in-one-wp-migration' ); ?>" id="ai1wm-backup-encrypt-password-confirmation">
 								<a href="#ai1wm-backup-encrypt-password-confirmation" class="ai1wm-toggle-password-visibility ai1wm-icon-eye-blocked"></a>
-								<div class="ai1wm-error-message"><?php _e( 'The passwords do not match', AI1WM_PLUGIN_NAME ); ?></div>
+								<div class="ai1wm-error-message"><?php esc_html_e( 'The passwords do not match', 'all-in-one-wp-migration' ); ?></div>
 							</div>
 						</div>
 					</div>
@@ -62,32 +63,57 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<?php else : ?>
 				<li class="ai1wm-encrypt-backups-container-disabled">
 					<input type="checkbox" id="ai1wm-encrypt-backups" name="options[encrypt_backups]" disabled />
-					<?php _e( 'Password-protect and encrypt backups', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Password-protect and encrypt backups', 'all-in-one-wp-migration' ); ?>
 					<a href="https://help.servmask.com/knowledgebase/unable-to-encrypt-and-decrypt-backups/" target="_blank"><span class="ai1wm-icon-help"></span></a>
 				</li>
 			<?php endif; ?>
+
+			<li><strong><?php esc_html_e( 'Database Options' ); ?></strong></li>
 			<li>
 				<label for="ai1wm-no-spam-comments">
 					<input type="checkbox" id="ai1wm-no-spam-comments" name="options[no_spam_comments]" />
-					<?php _e( 'Exclude spam comments', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Exclude spam comments', 'all-in-one-wp-migration' ); ?>
 				</label>
 			</li>
 			<li>
 				<label for="ai1wm-no-post-revisions">
 					<input type="checkbox" id="ai1wm-no-post-revisions" name="options[no_post_revisions]" />
-					<?php _e( 'Exclude post revisions', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Exclude post revisions', 'all-in-one-wp-migration' ); ?>
 				</label>
 			</li>
 			<li>
+				<label for="ai1wm-no-database">
+					<input type="checkbox" id="ai1wm-no-database" name="options[no_database]" />
+					<?php esc_html_e( 'Exclude database', 'all-in-one-wp-migration' ); ?>
+				</label>
+			</li>
+			<li>
+				<label for="ai1wm-no-email-replace">
+					<input type="checkbox" id="ai1wm-no-email-replace" name="options[no_email_replace]" />
+					<?php
+					echo wp_kses(
+						__( 'Do <strong>not</strong> replace email domain', 'all-in-one-wp-migration' ),
+						ai1wm_allowed_html_tags()
+					);
+					?>
+				</label>
+			</li>
+
+			<?php do_action( 'ai1wm_export_exclude_db_tables' ); ?>
+
+			<?php do_action( 'ai1wm_export_include_db_tables' ); ?>
+
+			<li><strong><?php esc_html_e( 'File Options' ); ?></strong></li>
+			<li>
 				<label for="ai1wm-no-media">
 					<input type="checkbox" id="ai1wm-no-media" name="options[no_media]" />
-					<?php _e( 'Exclude media library (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Exclude media library', 'all-in-one-wp-migration' ); ?>
 				</label>
 			</li>
 			<li>
 				<label for="ai1wm-no-themes">
 					<input type="checkbox" id="ai1wm-no-themes" name="options[no_themes]" />
-					<?php _e( 'Exclude themes (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Exclude themes', 'all-in-one-wp-migration' ); ?>
 				</label>
 			</li>
 
@@ -96,14 +122,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<li>
 				<label for="ai1wm-no-muplugins">
 					<input type="checkbox" id="ai1wm-no-muplugins" name="options[no_muplugins]" />
-					<?php _e( 'Exclude must-use plugins (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Exclude must-use plugins', 'all-in-one-wp-migration' ); ?>
 				</label>
 			</li>
 
 			<li>
 				<label for="ai1wm-no-plugins">
 					<input type="checkbox" id="ai1wm-no-plugins" name="options[no_plugins]" />
-					<?php _e( 'Exclude plugins (files)', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Exclude plugins', 'all-in-one-wp-migration' ); ?>
 				</label>
 			</li>
 
@@ -111,22 +137,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 			<?php do_action( 'ai1wm_export_cache_files' ); ?>
 
-			<li>
-				<label for="ai1wm-no-database">
-					<input type="checkbox" id="ai1wm-no-database" name="options[no_database]" />
-					<?php _e( 'Exclude database (sql)', AI1WM_PLUGIN_NAME ); ?>
-				</label>
-			</li>
-			<li>
-				<label for="ai1wm-no-email-replace">
-					<input type="checkbox" id="ai1wm-no-email-replace" name="options[no_email_replace]" />
-					<?php _e( 'Do <strong>not</strong> replace email domain (sql)', AI1WM_PLUGIN_NAME ); ?>
-				</label>
-			</li>
-
 			<?php do_action( 'ai1wm_export_advanced_settings' ); ?>
 
-			<?php do_action( 'ai1wm_export_exclude_db_tables' ); ?>
 		</ul>
 	</div>
 </div>

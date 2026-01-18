@@ -36,27 +36,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="ai1wm-holder">
 				<h1>
 					<i class="ai1wm-icon-export"></i>
-					<?php _e( 'Backups', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Backups', 'all-in-one-wp-migration' ); ?>
 				</h1>
 
 				<?php if ( is_readable( AI1WM_BACKUPS_PATH ) && is_writable( AI1WM_BACKUPS_PATH ) ) : ?>
 					<div id="ai1wm-backups-list">
-						<?php include AI1WM_TEMPLATES_PATH . '/backups/backups-list.php'; ?>
+						<?php require_once AI1WM_TEMPLATES_PATH . '/backups/backups-list.php'; ?>
 					</div>
 
 					<form action="" method="post" id="ai1wm-export-form" class="ai1wm-clear">
 						<div id="ai1wm-backups-create">
 							<p class="ai1wm-backups-empty-spinner-holder ai1wm-hide">
 								<span class="spinner"></span>
-								<?php _e( 'Refreshing backup list...', AI1WM_PLUGIN_NAME ); ?>
+								<?php esc_html_e( 'Refreshing backup list...', 'all-in-one-wp-migration' ); ?>
 							</p>
 							<p class="ai1wm-backups-empty <?php echo empty( $backups ) ? null : 'ai1wm-hide'; ?>">
-								<?php _e( 'No backups found. Create a new one?', AI1WM_PLUGIN_NAME ); ?>
+								<?php esc_html_e( 'No backups found. Create a new one?', 'all-in-one-wp-migration' ); ?>
 							</p>
 							<p>
 								<a href="#" id="ai1wm-create-backup" class="ai1wm-button-green">
 									<i class="ai1wm-icon-export"></i>
-									<?php _e( 'Create backup', AI1WM_PLUGIN_NAME ); ?>
+									<?php esc_html_e( 'Create backup', 'all-in-one-wp-migration' ); ?>
 								</a>
 							</p>
 						</div>
@@ -67,7 +67,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<?php else : ?>
 
-					<?php include AI1WM_TEMPLATES_PATH . '/backups/backups-permissions.php'; ?>
+					<?php require_once AI1WM_TEMPLATES_PATH . '/backups/backups-permissions.php'; ?>
 
 				<?php endif; ?>
 			</div>
@@ -78,7 +78,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		</div>
 
-		<?php include AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
+		<?php require_once AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
 
 	</div>
 </div>

@@ -35,7 +35,7 @@ class Ai1wm_Export_Config {
 		global $table_prefix, $wp_version;
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Preparing configuration...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Preparing configuration...', 'all-in-one-wp-migration' ) );
 
 		// Get options
 		$options = wp_load_alloptions();
@@ -147,6 +147,13 @@ class Ai1wm_Export_Config {
 			}
 		}
 
+		// Include selected db tables
+		if ( isset( $params['options']['include_db_tables'], $params['included_db_tables'] ) ) {
+			if ( ( $included_db_tables = explode( ',', $params['included_db_tables'] ) ) ) {
+				$config['Database']['IncludedTables'] = $included_db_tables;
+			}
+		}
+
 		// Set PHP version
 		$config['PHP'] = array( 'Version' => PHP_VERSION, 'System' => PHP_OS, 'Integer' => PHP_INT_SIZE );
 
@@ -179,7 +186,7 @@ class Ai1wm_Export_Config {
 		ai1wm_close( $handle );
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Configuration prepared.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Configuration prepared.', 'all-in-one-wp-migration' ) );
 
 		return $params;
 	}

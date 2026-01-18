@@ -79,7 +79,8 @@ class Ai1wm_Export_Content {
 		$progress = (int) min( ( $processed_files_size / $total_content_files_size ) * 100, 100 );
 
 		// Set progress
-		Ai1wm_Status::info( sprintf( __( 'Archiving %d content files...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $total_content_files_count, $progress ) );
+		/* translators: 1: Number of files, 2: Progress. */
+		Ai1wm_Status::info( sprintf( __( 'Archiving %1$d content files...<br />%2$d%% complete', 'all-in-one-wp-migration' ), $total_content_files_count, $progress ) );
 
 		// Flag to hold if file data has been processed
 		$completed = true;
@@ -118,7 +119,8 @@ class Ai1wm_Export_Content {
 				$progress = (int) min( ( $processed_files_size / $total_content_files_size ) * 100, 100 );
 
 				// Set progress
-				Ai1wm_Status::info( sprintf( __( 'Archiving %d content files...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $total_content_files_count, $progress ) );
+				/* translators: 1: Number of files, 2: Progress. */
+				Ai1wm_Status::info( sprintf( __( 'Archiving %1$d content files...<br />%2$d%% complete', 'all-in-one-wp-migration' ), $total_content_files_count, $progress ) );
 
 				// More than 10 seconds have passed, break and do another request
 				if ( ( $timeout = apply_filters( 'ai1wm_completed_timeout', 10 ) ) ) {

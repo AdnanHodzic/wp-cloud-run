@@ -33,14 +33,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="error">
 	<p>
 		<?php
-		_e(
+		esc_html_e(
 			'WordPress Multisite requires our All-in-One WP Migration Multisite Extension. Get it here: ',
-			AI1WM_PLUGIN_NAME
+			'all-in-one-wp-migration'
 		);
 		?>
 		<a href="https://servmask.com/products/multisite-extension" target="_blank" class="ai1wm-label">
 			<i class="ai1wm-icon-notification"></i>
-			<?php _e( 'Get multisite', AI1WM_PLUGIN_NAME ); ?>
+			<?php esc_html_e( 'Get multisite', 'all-in-one-wp-migration' ); ?>
 		</a>
 	</p>
 </div>

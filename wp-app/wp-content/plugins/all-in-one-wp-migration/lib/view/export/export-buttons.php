@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="ai1wm-buttons">
 		<div class="ai1wm-button-group ai1wm-button-export ai1wm-expandable">
 			<div class="ai1wm-button-main">
-				<span role="list" aria-label="<?php _e( 'Export Site To', AI1WM_PLUGIN_NAME ); ?>"><?php _e( 'Export Site To', AI1WM_PLUGIN_NAME ); ?></span>
+				<span role="list" aria-label="<?php esc_attr_e( 'Export Site To', 'all-in-one-wp-migration' ); ?>"><?php esc_html_e( 'Export Site To', 'all-in-one-wp-migration' ); ?></span>
 				<span class="ai1mw-lines">
 					<span class="ai1wm-line ai1wm-line-first"></span>
 					<span class="ai1wm-line ai1wm-line-second"></span>
@@ -44,7 +44,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<ul class="ai1wm-dropdown-menu ai1wm-export-providers">
 				<?php foreach ( apply_filters( 'ai1wm_export_buttons', array() ) as $button ) : ?>
 					<li>
-						<?php echo $button; ?>
+						<?php echo wp_kses( $button, ai1wm_allowed_html_tags() ); ?>
 					</li>
 				<?php endforeach; ?>
 			</ul>

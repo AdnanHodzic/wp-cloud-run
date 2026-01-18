@@ -51,14 +51,14 @@ class Ai1wm_Import_Check_Decryption_Password {
 				$archive = new Ai1wm_Extractor( ai1wm_archive_path( $params ), $params['decryption_password'] );
 				$archive->extract_by_files_array( ai1wm_storage_path( $params ), array( AI1WM_MULTISITE_NAME, AI1WM_DATABASE_NAME ), array(), array() );
 
-				Ai1wm_Status::info( __( 'Decryption password validated.', AI1WM_PLUGIN_NAME ) );
+				Ai1wm_Status::info( __( 'Decryption password validated.', 'all-in-one-wp-migration' ) );
 
 				$ai1wm_params = $params;
 
 				return $params;
 			}
 
-			$decryption_password_error = __( 'The decryption password is not valid. The process cannot continue.', AI1WM_PLUGIN_NAME );
+			$decryption_password_error = __( 'The decryption password is not valid. The process cannot continue.', 'all-in-one-wp-migration' );
 
 			if ( defined( 'WP_CLI' ) ) {
 				WP_CLI::error( $decryption_password_error );

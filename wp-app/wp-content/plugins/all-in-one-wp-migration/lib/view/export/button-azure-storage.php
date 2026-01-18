@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/microsoft-azure-storage-extension" target="_blank">Azure Storage</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">Azure Storage</a>

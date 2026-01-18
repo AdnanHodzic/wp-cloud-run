@@ -85,9 +85,7 @@ class Ai1wm_Feedback_Controller {
 
 		$purchases = array();
 		foreach ( $extensions as $extension ) {
-			if ( ( $uuid = get_option( $extension['key'] ) ) ) {
-				$purchases[] = $uuid;
-			}
+			$purchases[] = $extension['key'];
 		}
 
 		try {

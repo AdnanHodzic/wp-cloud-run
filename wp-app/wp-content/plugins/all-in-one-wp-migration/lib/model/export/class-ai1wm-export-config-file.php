@@ -59,7 +59,8 @@ class Ai1wm_Export_Config_File {
 		$progress = (int) min( ( $package_bytes_offset / $total_package_size ) * 100, 100 );
 
 		// Set progress
-		Ai1wm_Status::info( sprintf( __( 'Archiving configuration...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $progress ) );
+		/* translators: Progress. */
+		Ai1wm_Status::info( sprintf( __( 'Archiving configuration...<br />%d%% complete', 'all-in-one-wp-migration' ), $progress ) );
 
 		// Open the archive file for writing
 		$archive = new Ai1wm_Compressor( ai1wm_archive_path( $params ) );
@@ -71,7 +72,7 @@ class Ai1wm_Export_Config_File {
 		if ( $archive->add_file( ai1wm_package_path( $params ), AI1WM_PACKAGE_NAME, $package_bytes_written, $package_bytes_offset ) ) {
 
 			// Set progress
-			Ai1wm_Status::info( __( 'Configuration archived.', AI1WM_PLUGIN_NAME ) );
+			Ai1wm_Status::info( __( 'Configuration archived.', 'all-in-one-wp-migration' ) );
 
 			// Unset archive bytes offset
 			unset( $params['archive_bytes_offset'] );
@@ -94,7 +95,8 @@ class Ai1wm_Export_Config_File {
 			$progress = (int) min( ( $package_bytes_offset / $total_package_size ) * 100, 100 );
 
 			// Set progress
-			Ai1wm_Status::info( sprintf( __( 'Archiving configuration...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $progress ) );
+			/* translators: Progress. */
+			Ai1wm_Status::info( sprintf( __( 'Archiving configuration...<br />%d%% complete', 'all-in-one-wp-migration' ), $progress ) );
 
 			// Set archive bytes offset
 			$params['archive_bytes_offset'] = $archive_bytes_offset;

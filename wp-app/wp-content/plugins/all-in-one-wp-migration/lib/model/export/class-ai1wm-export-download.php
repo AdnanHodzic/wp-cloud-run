@@ -34,7 +34,7 @@ class Ai1wm_Export_Download {
 	public static function execute( $params ) {
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Renaming export file...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Renaming export file...', 'all-in-one-wp-migration' ) );
 
 		// Open the archive file for writing
 		$archive = new Ai1wm_Compressor( ai1wm_archive_path( $params ) );
@@ -64,29 +64,30 @@ class Ai1wm_Export_Download {
 			if ( ai1wm_direct_download_supported() ) {
 				Ai1wm_Status::download(
 					sprintf(
+						/* translators: 1: Link to archive, 2: Archive title, 3: File name, 4: Archive title, 5: File size. */
 						__(
-							'<a href="%s" class="ai1wm-button-green ai1wm-emphasize ai1wm-button-download" title="%s" download="%s">' .
-							'<span>Download %s</span>' .
-							'<em>Size: %s</em>' .
-							'</a>',
-							AI1WM_PLUGIN_NAME
+							'<a href="%1$s" class="ai1wm-button-green ai1wm-emphasize ai1wm-button-download" title="%2$s" download="%3$s">
+							<span>Download %2$s</span>
+							<em>Size: %4$s</em>
+							</a>',
+							'all-in-one-wp-migration'
 						),
 						$link,
 						$name,
 						$file,
-						$name,
 						$size
 					)
 				);
 			} else {
 				Ai1wm_Status::download(
 					sprintf(
+						/* translators: 1: Archive title, 2: File name, 3: Archive title, 4: File size. */
 						__(
-							'<a href="#" class="ai1wm-button-green ai1wm-emphasize ai1wm-direct-download" title="%s" download="%s">' .
-							'<span>Download %s</span>' .
-							'<em>Size: %s</em>' .
-							'</a>',
-							AI1WM_PLUGIN_NAME
+							'<a href="#" class="ai1wm-button-green ai1wm-emphasize ai1wm-direct-download" title="%1$s" download="%2$s">
+							<span>Download %3$s</span>
+							<em>Size: %4$s</em>
+							</a>',
+							'all-in-one-wp-migration'
 						),
 						$name,
 						$file,

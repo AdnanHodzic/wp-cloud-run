@@ -32,25 +32,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Ai1wm_File_Htaccess {
 
 	/**
-	 * Create .htaccess file (ServMask)
+	 * Create backups .htaccess file
 	 *
 	 * @param  string  $path Path to file
 	 * @return boolean
 	 */
-	public static function create( $path ) {
+	public static function backups( $path ) {
 		return Ai1wm_File::create(
 			$path,
 			implode(
 				PHP_EOL,
 				array(
 					'<IfModule mod_mime.c>',
-					'AddType application/octet-stream .wpress',
+					'	AddType application/octet-stream .wpress',
 					'</IfModule>',
 					'<IfModule mod_dir.c>',
-					'DirectoryIndex index.php',
+					'	DirectoryIndex index.php',
 					'</IfModule>',
 					'<IfModule mod_autoindex.c>',
-					'Options -Indexes',
+					'	Options -Indexes',
 					'</IfModule>',
 				)
 			)
@@ -58,18 +58,60 @@ class Ai1wm_File_Htaccess {
 	}
 
 	/**
-	 * Create .htaccess file (LiteSpeed)
+	 * Create storage .htaccess file
+	 *
+	 * @param  string  $path Path to file
+	 * @return boolean
+	 */
+	public static function storage( $path ) {
+		return Ai1wm_File::create(
+			$path,
+			implode(
+				PHP_EOL,
+				array(
+					'<IfModule mod_authz_core.c>',
+					'	<FilesMatch ".*">',
+					'		Require all denied',
+					'	</FilesMatch>',
+					'	<FilesMatch "\.log$">',
+					'		Require all granted',
+					'	</FilesMatch>',
+					'</IfModule>',
+					'<IfModule !mod_authz_core.c>',
+					'	Order allow,deny',
+					'	Deny from all',
+					'	<FilesMatch "\.log$">',
+					'		Order allow,deny',
+					'		Allow from all',
+					'	</FilesMatch>',
+					'</IfModule>',
+					'<IfModule mod_mime.c>',
+					'	AddType text/plain .log',
+					'</IfModule>',
+					'<IfModule mod_dir.c>',
+					'	DirectoryIndex index.php',
+					'</IfModule>',
+					'<IfModule mod_autoindex.c>',
+					'	Options -Indexes',
+					'</IfModule>',
+				)
+			)
+		);
+	}
+
+	/**
+	 * Create LiteSpeed .htaccess file
 	 *
 	 * @param  string  $path Path to file
 	 * @return boolean
 	 */
 	public static function litespeed( $path ) {
-		return Ai1wm_File::create_with_markers(
+		return Ai1wm_File::insert_with_markers(
 			$path,
 			'LiteSpeed',
 			array(
 				'<IfModule Litespeed>',
-				'SetEnv noabort 1',
+				'	SetEnv noabort 1',
 				'</IfModule>',
 			)
 		);

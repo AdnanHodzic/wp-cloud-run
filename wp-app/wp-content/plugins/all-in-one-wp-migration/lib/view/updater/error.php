@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<span class="ai1wm-error-message"><?php printf( __( 'Error: %s', AI1WM_PLUGIN_NAME ), $message ); ?></span>
+<span class="ai1wm-error-message"><?php /* translators: 1: Error message. */ echo wp_kses( sprintf( __( 'Error: %s', 'all-in-one-wp-migration' ), $message ), ai1wm_allowed_html_tags() ); ?></span>

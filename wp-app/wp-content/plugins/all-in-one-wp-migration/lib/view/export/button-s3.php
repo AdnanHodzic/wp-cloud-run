@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/amazon-s3-extension" target="_blank">Amazon S3</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">Amazon S3</a>

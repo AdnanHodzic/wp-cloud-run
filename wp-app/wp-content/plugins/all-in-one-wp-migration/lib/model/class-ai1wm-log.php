@@ -35,7 +35,7 @@ class Ai1wm_Log {
 		$data = array();
 
 		// Add date
-		$data[] = date( 'M d Y H:i:s' );
+		$data[] = gmdate( 'M d Y H:i:s', time() );
 
 		// Add params
 		$data[] = json_encode( $params );

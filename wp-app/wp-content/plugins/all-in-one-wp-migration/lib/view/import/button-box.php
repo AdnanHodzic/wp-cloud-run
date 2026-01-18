@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/box-extension" target="_blank">Box</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">Box</a>

@@ -50,7 +50,7 @@ class Ai1wm_Export_Enumerate_Media {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Gathering media files...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Gathering media files...', 'all-in-one-wp-migration' ) );
 
 		// Exclude selected files
 		if ( isset( $params['options']['exclude_files'], $params['excluded_files'] ) ) {
@@ -92,7 +92,7 @@ class Ai1wm_Export_Enumerate_Media {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Media files gathered.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Media files gathered.', 'all-in-one-wp-migration' ) );
 
 		// Set total media files count
 		$params['total_media_files_count'] = $total_media_files_count;

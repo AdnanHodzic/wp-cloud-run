@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="#" aria-label="<?php _e( 'To choose a file please go inside the link and click on the browse button.', AI1WM_PLUGIN_NAME ); ?>" id="ai1wm-import-file">
-	<?php _e( 'File', AI1WM_PLUGIN_NAME ); ?>
+<a href="#" aria-label="<?php esc_attr_e( 'To choose a file please go inside the link and click on the browse button.', 'all-in-one-wp-migration' ); ?>" id="ai1wm-import-file">
+	<?php esc_html_e( 'File', 'all-in-one-wp-migration' ); ?>
 	<input type="file" id="ai1wm-select-file" />
 </a>

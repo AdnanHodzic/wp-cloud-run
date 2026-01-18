@@ -33,10 +33,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="error">
 	<p>
 		<?php
-		_e(
-			'Your current profile role does not have Export/Import capabilities enabled. ' .
-			'<a href="https://help.servmask.com/knowledgebase/how-to-add-import-and-export-capabilities-to-wordpress-users/" target="_blank">Technical details</a>',
-			AI1WM_PLUGIN_NAME
+		echo wp_kses(
+			__(
+				'Your current profile role does not have Export/Import capabilities enabled.
+				<a href="https://help.servmask.com/knowledgebase/how-to-add-import-and-export-capabilities-to-wordpress-users/" target="_blank">Technical details</a>',
+				'all-in-one-wp-migration'
+			),
+			ai1wm_allowed_html_tags()
 		);
 		?>
 	</p>

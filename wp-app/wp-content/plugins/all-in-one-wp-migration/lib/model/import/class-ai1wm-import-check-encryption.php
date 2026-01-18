@@ -47,7 +47,7 @@ class Ai1wm_Import_Check_Encryption {
 		}
 
 		if ( ! ai1wm_can_decrypt() ) {
-			$message = __( 'Importing an encrypted backup is not supported on this server. The process cannot continue. <a href="https://help.servmask.com/knowledgebase/unable-to-encrypt-and-decrypt-backups/" target="_blank">Technical details</a>', AI1WM_PLUGIN_NAME );
+			$message = __( 'Importing an encrypted backup is not supported on this server. The process cannot continue. <a href="https://help.servmask.com/knowledgebase/unable-to-encrypt-and-decrypt-backups/" target="_blank">Technical details</a>', 'all-in-one-wp-migration' );
 
 			if ( defined( 'WP_CLI' ) ) {
 				WP_CLI::error( $message );
@@ -60,7 +60,7 @@ class Ai1wm_Import_Check_Encryption {
 		if ( defined( 'WP_CLI' ) ) {
 			$message = __(
 				'Backup is encrypted. Please provide decryption password: ',
-				AI1WM_PLUGIN_NAME
+				'all-in-one-wp-migration'
 			);
 
 			$params['decryption_password'] = readline( $message );

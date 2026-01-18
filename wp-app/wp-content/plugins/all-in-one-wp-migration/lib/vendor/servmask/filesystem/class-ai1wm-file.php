@@ -78,7 +78,7 @@ class Ai1wm_File {
 	 * @param  string $content Content of the file
 	 * @return boolean
 	 */
-	public static function create_with_markers( $path, $marker, $content ) {
+	public static function insert_with_markers( $path, $marker, $content ) {
 		return @insert_with_markers( $path, $marker, $content );
 	}
 

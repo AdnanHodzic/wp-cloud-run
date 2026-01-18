@@ -36,10 +36,13 @@ class Ai1wm_Import_Validate {
 		// Verify file if size > 2GB and PHP = 32-bit
 		if ( ! ai1wm_is_filesize_supported( ai1wm_archive_path( $params ) ) ) {
 			throw new Ai1wm_Import_Exception(
-				__(
-					'Your server uses 32-bit PHP and cannot process files larger than 2GB. Please switch to 64-bit PHP and try again. ' .
-					'<a href="https://help.servmask.com/knowledgebase/php-32bit/" target="_blank">Technical details</a>',
-					AI1WM_PLUGIN_NAME
+				wp_kses(
+					__(
+						'Your server uses 32-bit PHP and cannot process files larger than 2GB. Please switch to 64-bit PHP and try again.
+						<a href="https://help.servmask.com/knowledgebase/php-32bit/" target="_blank">Technical details</a>',
+						'all-in-one-wp-migration'
+					),
+					ai1wm_allowed_html_tags()
 				)
 			);
 		}
@@ -47,10 +50,13 @@ class Ai1wm_Import_Validate {
 		// Verify file name extension
 		if ( ! ai1wm_is_filename_supported( ai1wm_archive_path( $params ) ) ) {
 			throw new Ai1wm_Import_Exception(
-				__(
-					'Invalid file type. Please ensure your file is a <strong>.wpress</strong> backup created with All-in-One WP Migration. ' .
-					'<a href="https://help.servmask.com/knowledgebase/invalid-backup-file/" target="_blank">Technical details</a>',
-					AI1WM_PLUGIN_NAME
+				wp_kses(
+					__(
+						'Invalid file type. Please ensure your file is a <strong>.wpress</strong> backup created with All-in-One WP Migration.
+						<a href="https://help.servmask.com/knowledgebase/invalid-backup-file/" target="_blank">Technical details</a>',
+						'all-in-one-wp-migration'
+					),
+					ai1wm_allowed_html_tags()
 				)
 			);
 		}
@@ -80,7 +86,8 @@ class Ai1wm_Import_Validate {
 		$progress = (int) min( ( $archive_bytes_offset / $total_archive_size ) * 100, 100 );
 
 		// Set progress
-		Ai1wm_Status::info( sprintf( __( 'Unpacking archive...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $progress ) );
+		/* translators: Progress. */
+		Ai1wm_Status::info( sprintf( __( 'Unpacking archive...<br />%d%% complete', 'all-in-one-wp-migration' ), $progress ) );
 
 		// Open the archive file for reading
 		$archive = new Ai1wm_Extractor( ai1wm_archive_path( $params ) );
@@ -90,7 +97,12 @@ class Ai1wm_Import_Validate {
 
 		// Validate the archive file consistency
 		if ( ! $archive->is_valid() ) {
-			throw new Ai1wm_Import_Exception( __( 'The archive file appears to be corrupted. Follow <a href="https://help.servmask.com/knowledgebase/corrupted-archive/" target="_blank">this article</a> for possible fixes.', AI1WM_PLUGIN_NAME ) );
+			throw new Ai1wm_Import_Exception(
+				wp_kses(
+					__( 'The archive file appears to be corrupted. Follow <a href="https://help.servmask.com/knowledgebase/corrupted-archive/" target="_blank">this article</a> for possible fixes.', 'all-in-one-wp-migration' ),
+					ai1wm_allowed_html_tags()
+				)
+			);
 		}
 
 		// Flag to hold if file data has been processed
@@ -114,16 +126,19 @@ class Ai1wm_Import_Validate {
 			// Check package.json file
 			if ( false === is_file( ai1wm_package_path( $params ) ) ) {
 				throw new Ai1wm_Import_Exception(
-					__(
-						'Please ensure your file was created with the All-in-One WP Migration plugin. ' .
-						'<a href="https://help.servmask.com/knowledgebase/invalid-backup-file/" target="_blank">Technical details</a>',
-						AI1WM_PLUGIN_NAME
+					wp_kses(
+						__(
+							'Please ensure your file was created with the All-in-One WP Migration plugin.
+							<a href="https://help.servmask.com/knowledgebase/invalid-backup-file/" target="_blank">Technical details</a>',
+							'all-in-one-wp-migration'
+						),
+						ai1wm_allowed_html_tags()
 					)
 				);
 			}
 
 			// Set progress
-			Ai1wm_Status::info( __( 'Archive unpacked.', AI1WM_PLUGIN_NAME ) );
+			Ai1wm_Status::info( __( 'Archive unpacked.', 'all-in-one-wp-migration' ) );
 
 			// Unset archive bytes offset
 			unset( $params['archive_bytes_offset'] );
@@ -143,7 +158,8 @@ class Ai1wm_Import_Validate {
 			$progress = (int) min( ( $archive_bytes_offset / $total_archive_size ) * 100, 100 );
 
 			// Set progress
-			Ai1wm_Status::info( sprintf( __( 'Unpacking archive...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $progress ) );
+			/* translators: Progress. */
+			Ai1wm_Status::info( sprintf( __( 'Unpacking archive...<br />%d%% complete', 'all-in-one-wp-migration' ), $progress ) );
 
 			// Set archive bytes offset
 			$params['archive_bytes_offset'] = $archive_bytes_offset;

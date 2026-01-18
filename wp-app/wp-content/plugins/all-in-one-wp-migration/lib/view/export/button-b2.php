@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/backblaze-b2-extension" target="_blank">Backblaze B2</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">Backblaze B2</a>

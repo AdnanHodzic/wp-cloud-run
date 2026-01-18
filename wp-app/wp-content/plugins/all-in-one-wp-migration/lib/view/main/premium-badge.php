@@ -29,4 +29,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
 
-printf( ' <span class="ai1wm-menu-premium">%s</span>', __( 'Premium', AI1WM_PLUGIN_NAME ) );
+?>
+<span class="ai1wm-menu-premium"><?php esc_html_e( 'Premium', 'all-in-one-wp-migration' ); ?></span>

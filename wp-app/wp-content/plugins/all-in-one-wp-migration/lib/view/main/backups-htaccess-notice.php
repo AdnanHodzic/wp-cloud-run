@@ -33,12 +33,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="error">
 	<p>
 		<?php
-		printf(
-			__(
-				'Could not create <strong>%s</strong> file. Please ensure the parent folder has read/write permissions.',
-				AI1WM_PLUGIN_NAME
+		echo wp_kses(
+			sprintf(
+				/* translators: File name. */
+				__(
+					'Could not create <strong>%s</strong> file. Please ensure the parent folder has read/write permissions.',
+					'all-in-one-wp-migration'
+				),
+				AI1WM_BACKUPS_HTACCESS
 			),
-			AI1WM_BACKUPS_HTACCESS
+			ai1wm_allowed_html_tags()
 		)
 		?>
 	</p>

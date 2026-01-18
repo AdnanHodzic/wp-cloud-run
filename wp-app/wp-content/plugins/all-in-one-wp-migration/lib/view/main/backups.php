@@ -29,4 +29,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
 
-printf( ' <span class="ai1wm-menu-count %s" title="%s">%d</span>', ( $count === 0 ? 'ai1wm-menu-hide' : null ), sprintf( _n( 'You have %d backup', 'You have %d backups', $count, AI1WM_PLUGIN_NAME ), $count ), $count );
+?>
+<span class="<?php echo esc_attr( 'ai1wm-menu-count ' . ( $count === 0 ? 'ai1wm-menu-hide' : null ) ); ?>" title="<?php echo esc_attr( sprintf( /* translators: Numbers of backups. */ _n( 'You have %d backup', 'You have %d backups', $count, 'all-in-one-wp-migration' ), $count ) ); ?>"><?php echo esc_html( $count ); ?></span>

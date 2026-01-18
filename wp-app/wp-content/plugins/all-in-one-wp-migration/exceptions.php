@@ -34,7 +34,7 @@ class Ai1wm_Backups_Exception extends Exception {}
 class Ai1wm_Export_Exception extends Exception {}
 class Ai1wm_Http_Exception extends Exception {}
 class Ai1wm_Import_Exception extends Exception {}
-class Ai1wm_Import_Retry_Exception extends Exception {}
+class Ai1wm_Upload_Exception extends Exception {}
 class Ai1wm_Not_Accessible_Exception extends Exception {}
 class Ai1wm_Not_Seekable_Exception extends Exception {}
 class Ai1wm_Not_Tellable_Exception extends Exception {}

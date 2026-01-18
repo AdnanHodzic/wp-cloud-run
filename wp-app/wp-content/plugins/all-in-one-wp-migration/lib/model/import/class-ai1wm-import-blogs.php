@@ -34,7 +34,7 @@ class Ai1wm_Import_Blogs {
 	public static function execute( $params ) {
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Preparing blogs...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Preparing blogs...', 'all-in-one-wp-migration' ) );
 
 		$blogs = array();
 
@@ -133,13 +133,13 @@ class Ai1wm_Import_Blogs {
 							),
 						);
 					} else {
-						throw new Ai1wm_Import_Exception( __( 'The archive must contain only a single WordPress site. The process cannot continue. Please revisit your export settings.', AI1WM_PLUGIN_NAME ) );
+						throw new Ai1wm_Import_Exception( esc_html__( 'The archive must contain only a single WordPress site. The process cannot continue. Please revisit your export settings.', 'all-in-one-wp-migration' ) );
 					}
 				} else {
-					throw new Ai1wm_Import_Exception( __( 'The archive must contain at least one WordPress site. The process cannot continue. Please check your export settings.', AI1WM_PLUGIN_NAME ) );
+					throw new Ai1wm_Import_Exception( esc_html__( 'The archive must contain at least one WordPress site. The process cannot continue. Please check your export settings.', 'all-in-one-wp-migration' ) );
 				}
 			} else {
-				throw new Ai1wm_Import_Exception( __( 'Could not import a WordPress Network into a single WordPress site. The process cannot continue. Please check your import settings.', AI1WM_PLUGIN_NAME ) );
+				throw new Ai1wm_Import_Exception( esc_html__( 'Could not import a WordPress Network into a single WordPress site. The process cannot continue. Please check your import settings.', 'all-in-one-wp-migration' ) );
 			}
 		}
 
@@ -149,7 +149,7 @@ class Ai1wm_Import_Blogs {
 		ai1wm_close( $handle );
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Blogs prepared.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Blogs prepared.', 'all-in-one-wp-migration' ) );
 
 		return $params;
 	}

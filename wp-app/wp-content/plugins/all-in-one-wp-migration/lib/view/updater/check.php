@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="<?php echo esc_url( $url ); ?>"><?php _e( 'Check for updates', AI1WM_PLUGIN_NAME ); ?></a>
+<a href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'Check for updates', 'all-in-one-wp-migration' ); ?></a>

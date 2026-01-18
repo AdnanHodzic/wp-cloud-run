@@ -33,11 +33,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 <div class="ai1wm-reset-container">
 	<div class="ai1wm-reset-content">
 		<h1>
-			<img src="<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/img/reset/star.png?v=<?php echo AI1WM_VERSION; ?>" alt="<?php _e( 'Star', AI1WM_PLUGIN_NAME ); ?>" />
-			<?php _e( 'Experience Full Functionality with Premium!', AI1WM_PLUGIN_NAME ); ?>
+			<img src="<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/img/reset/star.png?v=' . AI1WM_VERSION ); ?>" alt="<?php esc_attr_e( 'Star', 'all-in-one-wp-migration' ); ?>" />
+			<?php esc_html_e( 'Experience Full Functionality with Premium!', 'all-in-one-wp-migration' ); ?>
 		</h1>
-		<p><?php _e( 'Please note, the features displayed below are part of an image showcasing the potential of Reset Hub in its Premium version. To activate and enjoy these advanced features, <a href="https://servmask.com/products/unlimited-extension" title="Upgrade to Premium" target="_blank">upgrade to Premium now</a>! Elevate your website management experience with these exclusive functionalities and priority support.', AI1WM_PLUGIN_NAME ); ?></p>
+		<p><?php echo wp_kses( __( 'Please note, the features displayed below are part of an image showcasing the potential of Reset Hub in its Premium version. To activate and enjoy these advanced features, <a href="https://servmask.com/products/unlimited-extension" title="Upgrade to Premium" target="_blank">upgrade to Premium now</a>! Elevate your website management experience with these exclusive functionalities and priority support.', 'all-in-one-wp-migration' ), ai1wm_allowed_html_tags() ); ?></p>
 
-		<a href="https://servmask.com/products/unlimited-extension" target="_blank" title="<?php _e( 'Upgrade to Premium ', AI1WM_PLUGIN_NAME ); ?>"><img src="<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/img/reset/screen.jpg?v=<?php echo AI1WM_VERSION; ?>" alt="<?php _e( 'Reset Hub Demo', AI1WM_PLUGIN_NAME ); ?>" /></a>
+		<a href="https://servmask.com/products/unlimited-extension" target="_blank" title="<?php esc_attr_e( 'Upgrade to Premium ', 'all-in-one-wp-migration' ); ?>"><img src="<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/img/reset/screen.jpg?v=' . AI1WM_VERSION ); ?>" alt="<?php esc_attr_e( 'Reset Hub Demo', 'all-in-one-wp-migration' ); ?>" /></a>
 	</div>
 </div>

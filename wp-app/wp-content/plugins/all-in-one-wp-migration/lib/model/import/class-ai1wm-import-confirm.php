@@ -48,21 +48,23 @@ class Ai1wm_Import_Confirm {
 		// Confirm message
 		if ( defined( 'WP_CLI' ) ) {
 			$messages[] = sprintf(
+				/* translators: Link to Unlimited Extension */
 				__(
-					'Importing this file will only replace matching content. Other items stay unchanged. ' .
-					'Need a full reset first? Try Reset Hub in our Unlimited Extension (%s). ' .
-					'Ensure you have a current backup. Proceed?',
-					AI1WM_PLUGIN_NAME
+					'Importing this file will only replace matching content. Other items stay unchanged.
+					Need a full reset first? Try Reset Hub in our Unlimited Extension (%s).
+					Ensure you have a current backup. Proceed?',
+					'all-in-one-wp-migration'
 				),
 				'https://servmask.com/products/unlimited-extension'
 			);
 		} else {
 			$messages[] = sprintf(
+				/* translators: Link to Unlimited Extension */
 				__(
-					'Importing this file will only replace matching content. Other items stay unchanged. ' .
-					'Need a full reset first? Try Reset Hub in our <a href="%s" target="_blank">Unlimited Extension</a>.<br />' .
-					'Ensure you have a current backup. Proceed?',
-					AI1WM_PLUGIN_NAME
+					'Importing this file will only replace matching content. Other items stay unchanged.
+					Need a full reset first? Try Reset Hub in our <a href="%s" target="_blank">Unlimited Extension</a>.<br />
+					Ensure you have a current backup. Proceed?',
+					'all-in-one-wp-migration'
 				),
 				'https://servmask.com/products/unlimited-extension?utm_source=import-confirm&utm_medium=plugin&utm_campaign=ai1wm'
 			);
@@ -90,20 +92,28 @@ class Ai1wm_Import_Confirm {
 
 			if ( isset( $from_php, $to_php ) ) {
 				if ( defined( 'WP_CLI' ) ) {
-					$message = __(
-						'Your backup is from a PHP %s but the site that you are importing to is PHP %s. ' .
-						'This could cause the import to fail. Technical details: https://help.servmask.com/knowledgebase/migrate-wordpress-from-php-5-to-php-7/',
-						AI1WM_PLUGIN_NAME
+					$messages[] = sprintf(
+						/* translators: 1: Source PHP version, 2: Target PHP version. */
+						__(
+							'Your backup is from a PHP %1$s but the site that you are importing to is PHP %2$s.
+							This could cause the import to fail. Technical details: https://help.servmask.com/knowledgebase/migrate-wordpress-from-php-5-to-php-7/',
+							'all-in-one-wp-migration'
+						),
+						$from_php,
+						$to_php
 					);
 				} else {
-					$message = __(
-						'<i class="ai1wm-import-info">Your backup is from a PHP %s but the site that you are importing to is PHP %s. ' .
-						'This could cause the import to fail. <a href="https://help.servmask.com/knowledgebase/migrate-wordpress-from-php-5-to-php-7/" target="_blank">Technical details</a></i>',
-						AI1WM_PLUGIN_NAME
+					$messages[] = sprintf(
+						'<i class="ai1wm-import-info">' .
+						/* translators: 1: Source PHP version, 2: Target PHP version. */
+						__(
+							'Your backup is from a PHP %1$s but the site that you are importing to is PHP %2$s. This could cause the import to fail. <a href="https://help.servmask.com/knowledgebase/migrate-wordpress-from-php-5-to-php-7/" target="_blank">Technical details</a>',
+							'all-in-one-wp-migration'
+						) . '</i>',
+						$from_php,
+						$to_php
 					);
 				}
-
-				$messages[] = sprintf( $message, $from_php, $to_php );
 			}
 		}
 

@@ -33,11 +33,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 <style type="text/css" media="all">
 	@font-face {
 		font-family: 'servmask';
-		src: url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/font/servmask.eot?v=<?php echo AI1WM_VERSION; ?>');
-		src: url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/font/servmask.eot?v=<?php echo AI1WM_VERSION; ?>#iefix') format('embedded-opentype'),
-		url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/font/servmask.woff?v=<?php echo AI1WM_VERSION; ?>') format('woff'),
-		url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/font/servmask.ttf?v=<?php echo AI1WM_VERSION; ?>') format('truetype'),
-		url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/font/servmask.svg?v=<?php echo AI1WM_VERSION; ?>#servmask') format('svg');
+		src: url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/font/servmask.eot?v=' . AI1WM_VERSION ); ?>');
+		src: url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/font/servmask.eot?v=' . AI1WM_VERSION ); ?>#iefix') format('embedded-opentype'),
+		url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/font/servmask.woff?v=' . AI1WM_VERSION ); ?>') format('woff'),
+		url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/font/servmask.ttf?v=' . AI1WM_VERSION ); ?>') format('truetype'),
+		url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/font/servmask.svg?v=' . AI1WM_VERSION ); ?>#servmask') format('svg');
 		font-weight: normal;
 		font-style: normal;
 	}
@@ -130,7 +130,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	.toplevel_page_ai1wm_export > div.wp-menu-image:before {
 		line-height: 27px !important;
 		content: '';
-		background: url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/img/logo-20x20.png') no-repeat center center;
+		background: url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/img/logo-20x20.png' ); ?>') no-repeat center center;
 		speak: none !important;
 		font-style: normal !important;
 		font-weight: normal !important;
@@ -147,7 +147,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 		position: relative;
 		display: inline-block;
 		content: '';
-		background: url('<?php echo wp_make_link_relative( AI1WM_URL ); ?>/lib/view/assets/img/logo-20x20.png') no-repeat center center;
+		background: url('<?php echo esc_url( wp_make_link_relative( AI1WM_URL ) . '/lib/view/assets/img/logo-20x20.png' ); ?>') no-repeat center center;
 		speak: none !important;
 		font-style: normal !important;
 		font-weight: normal !important;

@@ -28,78 +28,16 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
+?>
 
-class Ai1wm_File_Webconfig {
-
-	/**
-	 * Create backups web.config file
-	 *
-	 * @param  string  $path Path to file
-	 * @return boolean
-	 */
-	public static function backups( $path ) {
-		return Ai1wm_File::create(
-			$path,
-			implode(
-				PHP_EOL,
-				array(
-					'<?xml version="1.0" encoding="utf-8"?>',
-					'<configuration>',
-					'	<system.webServer>',
-					'		<staticContent>',
-					'			<mimeMap fileExtension=".wpress" mimeType="application/octet-stream" />',
-					'		</staticContent>',
-					'		<defaultDocument>',
-					'			<files>',
-					'				<add value="index.php" />',
-					'			</files>',
-					'		</defaultDocument>',
-					'		<directoryBrowse enabled="false" />',
-					'	</system.webServer>',
-					'</configuration>',
-				)
-			)
+<div class="error">
+	<p>
+		<?php
+		echo wp_kses(
+			'<strong>Database error:</strong> Your site\'s options table is missing its <strong>AUTO_INCREMENT</strong> attribute and your site will not function correctly without it. Please restore it immediately.
+			<a href="https://help.servmask.com/knowledgebase/how-to-add-auto-increment/" target="_blank">Technical details</a>',
+			ai1wm_allowed_html_tags()
 		);
-	}
-
-	/**
-	 * Create storage web.config file
-	 *
-	 * @param  string  $path Path to file
-	 * @return boolean
-	 */
-	public static function storage( $path ) {
-		return Ai1wm_File::create(
-			$path,
-			implode(
-				PHP_EOL,
-				array(
-					'<?xml version="1.0" encoding="utf-8"?>',
-					'<configuration>',
-					'	<system.webServer>',
-					'		<security>',
-					'			<authorization>',
-					'				<deny users="*" />',
-					'			</authorization>',
-					'		</security>',
-					'		<requestFiltering>',
-					'			<fileExtensions allowUnlisted="false">',
-					'				<add fileExtension=".log" allowed="true" />',
-					'			</fileExtensions>',
-					'		</requestFiltering>',
-					'		<staticContent>',
-					'			<mimeMap fileExtension=".log" mimeType="text/plain" />',
-					'		</staticContent>',
-					'		<defaultDocument>',
-					'			<files>',
-					'				<add value="index.php" />',
-					'			</files>',
-					'		</defaultDocument>',
-					'		<directoryBrowse enabled="false" />',
-					'	</system.webServer>',
-					'</configuration>',
-				)
-			)
-		);
-	}
-}
+		?>
+	</p>
+</div>

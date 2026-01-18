@@ -35,7 +35,7 @@ class Ai1wm_Import_Compatibility {
 		do_action( 'ai1wm_status_import_start', $params );
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Checking for compatibility...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Checking for compatibility...', 'all-in-one-wp-migration' ) );
 
 		// Get messages
 		$messages = Ai1wm_Compatibility::get( $params );
@@ -46,6 +46,6 @@ class Ai1wm_Import_Compatibility {
 		}
 
 		// Error message
-		throw new Ai1wm_Compatibility_Exception( implode( $messages ) );
+		throw new Ai1wm_Compatibility_Exception( wp_kses( implode( $messages ), ai1wm_allowed_html_tags() ) );
 	}
 }

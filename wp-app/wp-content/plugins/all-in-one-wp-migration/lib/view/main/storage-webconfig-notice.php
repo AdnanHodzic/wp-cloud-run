@@ -28,78 +28,22 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
+?>
 
-class Ai1wm_File_Webconfig {
-
-	/**
-	 * Create backups web.config file
-	 *
-	 * @param  string  $path Path to file
-	 * @return boolean
-	 */
-	public static function backups( $path ) {
-		return Ai1wm_File::create(
-			$path,
-			implode(
-				PHP_EOL,
-				array(
-					'<?xml version="1.0" encoding="utf-8"?>',
-					'<configuration>',
-					'	<system.webServer>',
-					'		<staticContent>',
-					'			<mimeMap fileExtension=".wpress" mimeType="application/octet-stream" />',
-					'		</staticContent>',
-					'		<defaultDocument>',
-					'			<files>',
-					'				<add value="index.php" />',
-					'			</files>',
-					'		</defaultDocument>',
-					'		<directoryBrowse enabled="false" />',
-					'	</system.webServer>',
-					'</configuration>',
-				)
-			)
+<div class="error">
+	<p>
+		<?php
+		echo wp_kses(
+			sprintf(
+				/* translators: File name. */
+				__(
+					'Could not create <strong>%s</strong> file. Please ensure the parent folder has read/write permissions.',
+					'all-in-one-wp-migration'
+				),
+				AI1WM_STORAGE_WEBCONFIG
+			),
+			ai1wm_allowed_html_tags()
 		);
-	}
-
-	/**
-	 * Create storage web.config file
-	 *
-	 * @param  string  $path Path to file
-	 * @return boolean
-	 */
-	public static function storage( $path ) {
-		return Ai1wm_File::create(
-			$path,
-			implode(
-				PHP_EOL,
-				array(
-					'<?xml version="1.0" encoding="utf-8"?>',
-					'<configuration>',
-					'	<system.webServer>',
-					'		<security>',
-					'			<authorization>',
-					'				<deny users="*" />',
-					'			</authorization>',
-					'		</security>',
-					'		<requestFiltering>',
-					'			<fileExtensions allowUnlisted="false">',
-					'				<add fileExtension=".log" allowed="true" />',
-					'			</fileExtensions>',
-					'		</requestFiltering>',
-					'		<staticContent>',
-					'			<mimeMap fileExtension=".log" mimeType="text/plain" />',
-					'		</staticContent>',
-					'		<defaultDocument>',
-					'			<files>',
-					'				<add value="index.php" />',
-					'			</files>',
-					'		</defaultDocument>',
-					'		<directoryBrowse enabled="false" />',
-					'	</system.webServer>',
-					'</configuration>',
-				)
-			)
-		);
-	}
-}
+		?>
+	</p>
+</div>

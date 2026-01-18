@@ -28,11 +28,19 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	die( 'Kangaroos cannot jump here' );
 }
+
+ai1wm_enqueue_script(
+	'ai1wm-share-buttons-facebook',
+	'https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0&appId=597242117012725'
+);
+
+ai1wm_enqueue_script(
+	'ai1wm-share-buttons-youtube',
+	'https://apis.google.com/js/platform.js'
+);
 ?>
 
 <div id="fb-root"></div>
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v9.0&appId=597242117012725" nonce="xH3McWON"></script>
-<script async defer src="https://apis.google.com/js/platform.js"></script>
 <script>
 window.twttr = (function(d, s, id) {
 	var js, fjs = d.getElementsByTagName(s)[0],
@@ -62,7 +70,7 @@ window.twttr = (function(d, s, id) {
 			data-via="servmask"
 			data-related="servmask"
 			data-hashtags="servmask">
-			<?php _e( 'Tweet', AI1WM_PLUGIN_NAME ); ?>
+			<?php esc_html_e( 'Tweet', 'all-in-one-wp-migration' ); ?>
 		</a>
 	</span>
 	<span class="ai1wm-top-positive-four">

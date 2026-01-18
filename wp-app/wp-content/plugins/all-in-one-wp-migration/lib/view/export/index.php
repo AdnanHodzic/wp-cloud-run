@@ -36,20 +36,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="ai1wm-holder">
 				<h1>
 					<i class="ai1wm-icon-export"></i>
-					<?php _e( 'Export Site', AI1WM_PLUGIN_NAME ); ?>
+					<?php esc_html_e( 'Export Site', 'all-in-one-wp-migration' ); ?>
 				</h1>
 
 				<?php if ( is_readable( AI1WM_STORAGE_PATH ) && is_writable( AI1WM_STORAGE_PATH ) ) : ?>
 
 					<form action="" method="post" id="ai1wm-export-form" class="ai1wm-clear">
 
-						<?php include AI1WM_TEMPLATES_PATH . '/export/find-replace.php'; ?>
+						<?php require_once AI1WM_TEMPLATES_PATH . '/export/find-replace.php'; ?>
 
 						<?php do_action( 'ai1wm_export_left_options' ); ?>
 
-						<?php include AI1WM_TEMPLATES_PATH . '/export/advanced-settings.php'; ?>
+						<?php require_once AI1WM_TEMPLATES_PATH . '/export/advanced-settings.php'; ?>
 
-						<?php include AI1WM_TEMPLATES_PATH . '/export/export-buttons.php'; ?>
+						<?php require_once AI1WM_TEMPLATES_PATH . '/export/export-buttons.php'; ?>
 
 						<input type="hidden" name="ai1wm_manual_export" value="1" />
 
@@ -59,13 +59,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 				<?php else : ?>
 
-					<?php include AI1WM_TEMPLATES_PATH . '/export/export-permissions.php'; ?>
+					<?php require_once AI1WM_TEMPLATES_PATH . '/export/export-permissions.php'; ?>
 
 				<?php endif; ?>
 			</div>
 		</div>
 
-		<?php include AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
+		<?php require_once AI1WM_TEMPLATES_PATH . '/common/sidebar-right.php'; ?>
 
 	</div>
 </div>

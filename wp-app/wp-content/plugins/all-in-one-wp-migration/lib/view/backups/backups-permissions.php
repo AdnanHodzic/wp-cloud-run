@@ -32,14 +32,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 <div class="ai1wm-message ai1wm-red-message ai1wm-clear" style="margin-top: 4em;">
 	<?php
-	printf(
-		__(
-			'<h3>Could not restore site</h3>' .
-			'<p>Please ensure the directory <strong>%s</strong> has read/write permissions.</p>' .
-			'<p><a href="https://help.servmask.com/knowledgebase/invalid-file-permissions/" target="_blank">Technical details</a></p>',
-			AI1WM_PLUGIN_NAME
+	echo wp_kses(
+		sprintf(
+			/* translators: Backups path */
+			__(
+				'<h3>Could not restore site</h3>
+				<p>Please ensure the directory <strong>%s</strong> has read/write permissions.</p>
+				<p><a href="https://help.servmask.com/knowledgebase/invalid-file-permissions/" target="_blank">Technical details</a></p>',
+				'all-in-one-wp-migration'
+			),
+			AI1WM_BACKUPS_PATH
 		),
-		AI1WM_BACKUPS_PATH
+		ai1wm_allowed_html_tags()
 	);
 	?>
 </div>

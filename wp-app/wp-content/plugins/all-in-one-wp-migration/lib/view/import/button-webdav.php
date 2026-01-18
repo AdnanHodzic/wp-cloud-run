@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/webdav-extension" target="_blank">WebDAV</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">WebDAV</a>

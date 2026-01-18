@@ -31,24 +31,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 
 <p>
-	<?php _e( 'Use this screen to export your database, media, themes, and plugins into one .wpress file. Later, import that file to another WordPress site.', AI1WM_PLUGIN_NAME ); ?>
+	<?php esc_html_e( 'Use this screen to export your database, media, themes, and plugins into one .wpress file. Later, import that file to another WordPress site.', 'all-in-one-wp-migration' ); ?>
 </p>
 
 <p>
-	<strong><?php _e( 'Hints', AI1WM_PLUGIN_NAME ); ?></strong>
+	<strong><?php esc_html_e( 'Hints', 'all-in-one-wp-migration' ); ?></strong>
 </p>
 
 <ul>
 	<li>
 		<i class="ai1wm-icon-arrow-right"></i>
-		<?php _e( 'In the advanced settings section you can configure more precisely the way of exporting.', AI1WM_PLUGIN_NAME ); ?>
+		<?php esc_html_e( 'In the advanced settings section you can configure more precisely the way of exporting.', 'all-in-one-wp-migration' ); ?>
 	</li>
 	<li>
 		<i class="ai1wm-icon-arrow-right"></i>
-		<?php _e( 'Press "Export" button and the site archive file will pop up in your browser.', AI1WM_PLUGIN_NAME ); ?>
+		<?php esc_html_e( 'Press "Export" button and the site archive file will pop up in your browser.', 'all-in-one-wp-migration' ); ?>
 	</li>
 	<li>
 		<i class="ai1wm-icon-arrow-right"></i>
-		<?php _e( 'Once the file is successfully downloaded on your computer, you can import it to any of your WordPress sites.', AI1WM_PLUGIN_NAME ); ?>
+		<?php esc_html_e( 'Once the file is successfully downloaded on your computer, you can import it to any of your WordPress sites.', 'all-in-one-wp-migration' ); ?>
 	</li>
 </ul>

@@ -77,7 +77,8 @@ class Ai1wm_Import_Database {
 		$progress = (int) ( ( $query_offset / $total_queries_size ) * 100 );
 
 		// Set progress
-		Ai1wm_Status::info( sprintf( __( 'Restoring database...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $progress ) );
+		/* translators: Progress. */
+		Ai1wm_Status::info( sprintf( __( 'Restoring database...<br />%d%% complete', 'all-in-one-wp-migration' ), $progress ) );
 
 		$old_replace_values = $old_replace_raw_values = array();
 		$new_replace_values = $new_replace_raw_values = array();
@@ -1012,7 +1013,7 @@ class Ai1wm_Import_Database {
 		if ( $db_client->import( ai1wm_database_path( $params ), $query_offset ) ) {
 
 			// Set progress
-			Ai1wm_Status::info( __( 'Database restored.', AI1WM_PLUGIN_NAME ) );
+			Ai1wm_Status::info( __( 'Database restored.', 'all-in-one-wp-migration' ) );
 
 			// Unset query offset
 			unset( $params['query_offset'] );
@@ -1032,7 +1033,8 @@ class Ai1wm_Import_Database {
 			$progress = (int) ( ( $query_offset / $total_queries_size ) * 100 );
 
 			// Set progress
-			Ai1wm_Status::info( sprintf( __( 'Restoring database...<br />%d%% complete', AI1WM_PLUGIN_NAME ), $progress ) );
+			/* translators: Progress. */
+			Ai1wm_Status::info( sprintf( __( 'Restoring database...<br />%d%% complete', 'all-in-one-wp-migration' ), $progress ) );
 
 			// Set query offset
 			$params['query_offset'] = $query_offset;

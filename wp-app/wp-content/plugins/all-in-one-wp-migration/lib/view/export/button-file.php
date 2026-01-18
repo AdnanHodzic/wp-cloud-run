@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="#" id="ai1wm-export-file"><?php _e( 'File', AI1WM_PLUGIN_NAME ); ?></a>
+<a href="#" id="ai1wm-export-file"><?php esc_html_e( 'File', 'all-in-one-wp-migration' ); ?></a>

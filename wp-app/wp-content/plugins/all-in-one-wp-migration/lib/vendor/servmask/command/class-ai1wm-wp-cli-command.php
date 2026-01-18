@@ -101,8 +101,8 @@ if ( defined( 'WP_CLI' ) ) {
 			if ( is_multisite() ) {
 				WP_CLI::error_multi_line(
 					array(
-						__( 'This feature is available in Multisite Extension.', AI1WM_PLUGIN_NAME ),
-						__( 'You can purchase it from this address: https://servmask.com/products/multisite-extension', AI1WM_PLUGIN_NAME ),
+						__( 'This feature is available in Multisite Extension.', 'all-in-one-wp-migration' ),
+						__( 'You can purchase it from this address: https://servmask.com/products/multisite-extension', 'all-in-one-wp-migration' ),
 					)
 				);
 				exit;
@@ -110,8 +110,8 @@ if ( defined( 'WP_CLI' ) ) {
 
 			WP_CLI::error_multi_line(
 				array(
-					__( 'This feature is available in Unlimited Extension.', AI1WM_PLUGIN_NAME ),
-					__( 'You can purchase it from this address: https://servmask.com/products/unlimited-extension', AI1WM_PLUGIN_NAME ),
+					__( 'This feature is available in Unlimited Extension.', 'all-in-one-wp-migration' ),
+					__( 'You can purchase it from this address: https://servmask.com/products/unlimited-extension', 'all-in-one-wp-migration' ),
 				)
 			);
 		}

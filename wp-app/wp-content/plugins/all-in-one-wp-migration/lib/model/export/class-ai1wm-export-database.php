@@ -76,7 +76,8 @@ class Ai1wm_Export_Database {
 		$progress = (int) ( ( $table_index / $total_tables_count ) * 100 );
 
 		// Set progress
-		Ai1wm_Status::info( sprintf( __( 'Exporting database...<br />%d%% complete<br />%s records saved', AI1WM_PLUGIN_NAME ), $progress, number_format_i18n( $table_rows ) ) );
+		/* translators: 1: Progress, 2: Number of records. */
+		Ai1wm_Status::info( sprintf( __( 'Exporting database...<br />%1$d%% complete<br />%2$s records saved', 'all-in-one-wp-migration' ), $progress, number_format_i18n( $table_rows ) ) );
 
 		// Get tables list file
 		$tables_list = ai1wm_open( ai1wm_tables_list_path( $params ), 'r' );
@@ -101,7 +102,8 @@ class Ai1wm_Export_Database {
 
 		// Exclude post revisions
 		if ( isset( $params['options']['no_post_revisions'] ) ) {
-			$db_client->set_table_where_query( ai1wm_table_prefix() . 'posts', "`post_type` != 'revision'" );
+			$db_client->set_table_where_query( ai1wm_table_prefix() . 'posts', "`post_type` != 'revision'" )
+				->set_table_where_query( ai1wm_table_prefix() . 'postmeta', sprintf( "`post_id` IN ( SELECT `ID` FROM `%s` WHERE `post_type` != 'revision' )", ai1wm_table_prefix() . 'posts' ) );
 		}
 
 		$old_table_prefixes = $old_column_prefixes = array();
@@ -158,7 +160,7 @@ class Ai1wm_Export_Database {
 		if ( $db_client->export( ai1wm_database_path( $params ), $query_offset, $table_index, $table_offset, $table_rows ) ) {
 
 			// Set progress
-			Ai1wm_Status::info( __( 'Database exported.', AI1WM_PLUGIN_NAME ) );
+			Ai1wm_Status::info( __( 'Database exported.', 'all-in-one-wp-migration' ) );
 
 			// Unset query offset
 			unset( $params['query_offset'] );
@@ -184,7 +186,8 @@ class Ai1wm_Export_Database {
 			$progress = (int) ( ( $table_index / $total_tables_count ) * 100 );
 
 			// Set progress
-			Ai1wm_Status::info( sprintf( __( 'Exporting database...<br />%d%% complete<br />%s records saved', AI1WM_PLUGIN_NAME ), $progress, number_format_i18n( $table_rows ) ) );
+			/* translators: 1: Progress, 2: Number of records. */
+			Ai1wm_Status::info( sprintf( __( 'Exporting database...<br />%1$d%% complete<br />%2$s records saved', 'all-in-one-wp-migration' ), $progress, number_format_i18n( $table_rows ) ) );
 
 			// Set query offset
 			$params['query_offset'] = $query_offset;

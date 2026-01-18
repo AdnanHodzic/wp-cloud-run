@@ -32,6 +32,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Ai1wm_Database_Mysql extends Ai1wm_Database {
 
 	/**
+	 * Check whether table has auto increment attribute
+	 *
+	 * @param  string  $table_name Table name
+	 * @return boolean
+	 */
+	public function has_auto_increment( $table_name ) {
+		return stripos( $this->get_create_table( $table_name ), 'AUTO_INCREMENT' ) !== false;
+	}
+
+	/**
 	 * Run MySQL query
 	 *
 	 * @param  string $input SQL query
@@ -53,7 +63,7 @@ class Ai1wm_Database_Mysql extends Ai1wm_Database {
 			// MySQL server has gone away, try to reconnect
 			if ( empty( $this->wpdb->dbh ) || 2006 === $mysql_errno ) {
 				if ( ! $this->wpdb->check_connection( false ) ) {
-					throw new Ai1wm_Database_Exception( __( 'Error reconnecting to the database. <a href="https://help.servmask.com/knowledgebase/mysql-error-reconnecting/" target="_blank">Technical details</a>', AI1WM_PLUGIN_NAME ), 503 );
+					throw new Ai1wm_Database_Exception( __( 'Error reconnecting to the database. <a href="https://help.servmask.com/knowledgebase/mysql-error-reconnecting/" target="_blank">Technical details</a>', 'all-in-one-wp-migration' ), 503 );
 				}
 
 				$result = mysql_query( $input, $this->wpdb->dbh );

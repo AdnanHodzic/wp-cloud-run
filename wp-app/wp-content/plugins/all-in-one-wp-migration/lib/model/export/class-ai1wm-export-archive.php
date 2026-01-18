@@ -36,14 +36,14 @@ class Ai1wm_Export_Archive {
 		do_action( 'ai1wm_status_export_start', $params );
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Creating export file...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Creating export file...', 'all-in-one-wp-migration' ) );
 
 		// Create empty archive file
 		$archive = new Ai1wm_Compressor( ai1wm_archive_path( $params ) );
 		$archive->close();
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Export file created.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Export file created.', 'all-in-one-wp-migration' ) );
 
 		return $params;
 	}

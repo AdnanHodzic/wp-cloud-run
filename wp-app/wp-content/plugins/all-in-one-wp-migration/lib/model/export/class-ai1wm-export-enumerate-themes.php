@@ -50,7 +50,7 @@ class Ai1wm_Export_Enumerate_Themes {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Gathering theme files...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Gathering theme files...', 'all-in-one-wp-migration' ) );
 
 		// Exclude inactive themes
 		if ( isset( $params['options']['no_inactive_themes'] ) ) {
@@ -105,7 +105,7 @@ class Ai1wm_Export_Enumerate_Themes {
 		}
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Theme files gathered.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Theme files gathered.', 'all-in-one-wp-migration' ) );
 
 		// Set total themes files count
 		$params['total_themes_files_count'] = $total_themes_files_count;

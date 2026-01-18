@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://translate.wordpress.org/projects/wp-plugins/all-in-one-wp-migration/" target="_blank"><?php _e( 'Translate', AI1WM_PLUGIN_NAME ); ?></a>
+<a href="https://translate.wordpress.org/projects/wp-plugins/all-in-one-wp-migration/" target="_blank"><?php esc_html_e( 'Translate', 'all-in-one-wp-migration' ); ?></a>

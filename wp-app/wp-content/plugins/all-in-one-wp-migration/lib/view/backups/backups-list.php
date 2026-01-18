@@ -35,9 +35,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<table class="ai1wm-backups">
 			<thead>
 				<tr>
-					<th class="ai1wm-column-name"><?php _e( 'Name', AI1WM_PLUGIN_NAME ); ?></th>
-					<th class="ai1wm-column-date"><?php _e( 'Date', AI1WM_PLUGIN_NAME ); ?></th>
-					<th class="ai1wm-column-size"><?php _e( 'Size', AI1WM_PLUGIN_NAME ); ?></th>
+					<th class="ai1wm-column-name"><?php esc_html_e( 'Name', 'all-in-one-wp-migration' ); ?></th>
+					<th class="ai1wm-column-date"><?php esc_html_e( 'Date', 'all-in-one-wp-migration' ); ?></th>
+					<th class="ai1wm-column-size"><?php esc_html_e( 'Size', 'all-in-one-wp-migration' ); ?></th>
 					<th class="ai1wm-column-actions"></th>
 				</tr>
 			</thead>
@@ -45,7 +45,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<tr class="ai1wm-backups-list-spinner-holder ai1wm-hide">
 					<td colspan="4" class="ai1wm-backups-list-spinner">
 						<span class="spinner"></span>
-						<?php _e( 'Refreshing backup list...', AI1WM_PLUGIN_NAME ); ?>
+						<?php esc_html_e( 'Refreshing backup list...', 'all-in-one-wp-migration' ); ?>
 					</td>
 				</tr>
 
@@ -63,7 +63,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</span>
 						<span class="ai1wm-backup-label-description ai1wm-hide <?php echo empty( $labels[ $backup['filename'] ] ) ? null : 'ai1wm-backup-label-selected'; ?>">
 							<br />
-							<?php _e( 'Click to label this backup', AI1WM_PLUGIN_NAME ); ?>
+							<?php esc_html_e( 'Click to label this backup', 'all-in-one-wp-migration' ); ?>
 							<i class="ai1wm-icon-edit-pencil ai1wm-hide"></i>
 						</span>
 						<span class="ai1wm-backup-label-text <?php echo empty( $labels[ $backup['filename'] ] ) ? 'ai1wm-hide' : null; ?>">
@@ -81,61 +81,61 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</span>
 					</td>
 					<td class="ai1wm-column-date">
-						<?php echo esc_html( sprintf( __( '%s ago', AI1WM_PLUGIN_NAME ), human_time_diff( $backup['mtime'] ) ) ); ?>
+						<?php echo esc_html( sprintf( /* translators: Human time diff */ __( '%s ago', 'all-in-one-wp-migration' ), human_time_diff( $backup['mtime'] ) ) ); ?>
 					</td>
 					<td class="ai1wm-column-size">
 						<?php if ( ! is_null( $backup['size'] ) ) : ?>
-							<?php echo ai1wm_size_format( $backup['size'], 2 ); ?>
+							<?php echo esc_html( ai1wm_size_format( $backup['size'], 2 ) ); ?>
 						<?php else : ?>
-							<?php _e( 'Over 2GB', AI1WM_PLUGIN_NAME ); ?>
+							<?php esc_html_e( 'Over 2GB', 'all-in-one-wp-migration' ); ?>
 						<?php endif; ?>
 					</td>
 					<td class="ai1wm-column-actions ai1wm-backup-actions">
 						<div>
-							<a href="#" role="menu" aria-haspopup="true" class="ai1wm-backup-dots" title="<?php _e( 'More' ); ?>" aria-label="<?php _e( 'More' ); ?>">
+							<a href="#" role="menu" aria-haspopup="true" class="ai1wm-backup-dots" title="<?php esc_attr_e( 'More', 'all-in-one-wp-migration' ); ?>" aria-label="<?php esc_attr_e( 'More', 'all-in-one-wp-migration' ); ?>">
 								<i class="ai1wm-icon-dots-horizontal-triple"></i>
 							</a>
 							<div class="ai1wm-backup-dots-menu">
 								<ul role="menu">
 									<li>
-										<a tabindex="-1" href="#" role="menuitem" class="ai1wm-backup-restore" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" data-size="<?php echo esc_attr( $backup['size'] ); ?>" aria-label="<?php _e( 'Restore', AI1WM_PLUGIN_NAME ); ?>">
+										<a tabindex="-1" href="#" role="menuitem" class="ai1wm-backup-restore" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" data-size="<?php echo esc_attr( $backup['size'] ); ?>" aria-label="<?php esc_attr_e( 'Restore', 'all-in-one-wp-migration' ); ?>">
 											<i class="ai1wm-icon-cloud-upload"></i>
-											<span><?php _e( 'Restore', AI1WM_PLUGIN_NAME ); ?></span>
+											<span><?php esc_html_e( 'Restore', 'all-in-one-wp-migration' ); ?></span>
 										</a>
 									</li>
 									<?php if ( $downloadable ) : ?>
 										<li>
 											<?php if ( ai1wm_direct_download_supported() ) : ?>
-												<a tabindex="-1" href="<?php echo esc_url( ai1wm_backup_url( array( 'archive' => $backup['filename'] ) ) ); ?>" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>">
+												<a tabindex="-1" href="<?php echo esc_url( ai1wm_backup_url( array( 'archive' => $backup['filename'] ) ) ); ?>" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php esc_attr_e( 'Download', 'all-in-one-wp-migration' ); ?>">
 													<i class="ai1wm-icon-arrow-down"></i>
-													<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
+													<?php esc_html_e( 'Download', 'all-in-one-wp-migration' ); ?>
 												</a>
 											<?php else : ?>
-												<a tabindex="-1" class="ai1wm-backup-download" href="#" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>">
+												<a tabindex="-1" class="ai1wm-backup-download" href="#" role="menuitem" download="<?php echo esc_attr( $backup['filename'] ); ?>" aria-label="<?php esc_attr_e( 'Download', 'all-in-one-wp-migration' ); ?>">
 													<i class="ai1wm-icon-arrow-down"></i>
-													<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
+													<?php esc_html_e( 'Download', 'all-in-one-wp-migration' ); ?>
 												</a>
 											<?php endif; ?>
 										</li>
 									<?php else : ?>
 										<li class="ai1wm-disabled">
-											<a tabindex="-1" href="#" role="menuitem" aria-label="<?php _e( 'Downloading is not possible because backups directory is not accessible.', AI1WM_PLUGIN_NAME ); ?>" title="<?php _e( 'Downloading is not possible because backups directory is not accessible.', AI1WM_PLUGIN_NAME ); ?>">
+											<a tabindex="-1" href="#" role="menuitem" aria-label="<?php esc_attr_e( 'Downloading is not possible because backups directory is not accessible.', 'all-in-one-wp-migration' ); ?>" title="<?php esc_attr_e( 'Downloading is not possible because backups directory is not accessible.', 'all-in-one-wp-migration' ); ?>">
 												<i class="ai1wm-icon-arrow-down"></i>
-												<?php _e( 'Download', AI1WM_PLUGIN_NAME ); ?>
+												<?php esc_html_e( 'Download', 'all-in-one-wp-migration' ); ?>
 											</a>
 										</li>
 									<?php endif; ?>
 									<li>
-										<a tabindex="-1" href="#" class="ai1wm-backup-list-content" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" role="menuitem" aria-label="<?php _e( 'Show backup content', AI1WM_PLUGIN_NAME ); ?>">
+										<a tabindex="-1" href="#" class="ai1wm-backup-list-content" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" role="menuitem" aria-label="<?php esc_attr_e( 'Show backup content', 'all-in-one-wp-migration' ); ?>">
 											<i class="ai1wm-icon-file-content"></i>
-											<span><?php _e( 'List', AI1WM_PLUGIN_NAME ); ?></span>
+											<span><?php esc_html_e( 'List', 'all-in-one-wp-migration' ); ?></span>
 										</a>
 									</li>
 									<li class="divider"></li>
 									<li>
-										<a tabindex="-1" href="#" class="ai1wm-backup-delete" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" role="menuitem" aria-label="<?php _e( 'Delete', AI1WM_PLUGIN_NAME ); ?>">
+										<a tabindex="-1" href="#" class="ai1wm-backup-delete" data-archive="<?php echo esc_attr( $backup['filename'] ); ?>" role="menuitem" aria-label="<?php esc_attr_e( 'Delete', 'all-in-one-wp-migration' ); ?>">
 											<i class="ai1wm-icon-close"></i>
-											<span><?php _e( 'Delete', AI1WM_PLUGIN_NAME ); ?></span>
+											<span><?php esc_html_e( 'Delete', 'all-in-one-wp-migration' ); ?></span>
 										</a>
 									</li>
 								</ul>

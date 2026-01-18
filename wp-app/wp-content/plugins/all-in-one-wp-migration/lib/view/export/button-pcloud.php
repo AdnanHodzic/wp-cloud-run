@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/pcloud-extension" target="_blank">pCloud</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">pCloud</a>

@@ -30,4 +30,4 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 
-<a href="https://servmask.com/products/digitalocean-spaces-extension" target="_blank">DigitalOcean</a>
+<a href="https://servmask.com/products/all-in-one-wp-migration-pro" target="_blank">DigitalOcean</a>

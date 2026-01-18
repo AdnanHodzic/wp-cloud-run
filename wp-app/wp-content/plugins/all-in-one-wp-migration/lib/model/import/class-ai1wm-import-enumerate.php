@@ -34,7 +34,7 @@ class Ai1wm_Import_Enumerate {
 	public static function execute( $params ) {
 
 		// Set progress
-		Ai1wm_Status::info( __( 'Gathering WordPress files...', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'Gathering WordPress files...', 'all-in-one-wp-migration' ) );
 
 		// Open the archive file for reading
 		$archive = new Ai1wm_Extractor( ai1wm_archive_path( $params ) );
@@ -49,7 +49,7 @@ class Ai1wm_Import_Enumerate {
 		$archive->close();
 
 		// Set progress
-		Ai1wm_Status::info( __( 'WordPress files gathered.', AI1WM_PLUGIN_NAME ) );
+		Ai1wm_Status::info( __( 'WordPress files gathered.', 'all-in-one-wp-migration' ) );
 
 		return $params;
 	}
