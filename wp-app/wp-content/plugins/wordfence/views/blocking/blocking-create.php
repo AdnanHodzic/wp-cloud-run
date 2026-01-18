@@ -146,7 +146,7 @@ $wfBlockRange = filter_input(INPUT_GET, 'wfBlockRange', FILTER_DEFAULT, FILTER_R
 			<tr class="wf-block-add-country" style="display: none;">
 				<th class="wf-right wf-padding-add-right wf-padding-add-top-small"></th>
 				<td class="wf-padding-add-top-small wf-form-field">
-					<em><?php echo wp_kses(sprintf(/* translators: Support URL */ __('If you use Google Ads, blocking countries from accessing the entire site is not recommended. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'), wfSupportController::supportURL(wfSupportController::ITEM_FIREWALL_BLOCKING_FULL_SITE)), array('a'=>array('href'=>array(), 'target'=>array(), 'rel'=>array()), 'span'=>array('class'=>array()))); ?></em>
+					<em><?php echo wp_kses(sprintf(/* translators: Support URL */ __('If you use country blocking to block countries from accessing the entire site, it is important to review the allowed services setting to ensure that search engines and other desired services may continue to see the site regardless of a crawler\'s location. Additionally, ad services like Google Ads may penalize listings when a country is blocked from the entire site. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'), wfSupportController::supportURL(wfSupportController::ITEM_FIREWALL_BLOCKING_FULL_SITE)), array('a'=>array('href'=>array(), 'target'=>array(), 'rel'=>array()), 'span'=>array('class'=>array()))); ?></em>
 				</td>
 			</tr>
 			<tr class="wf-block-add-country" style="display: none;">
@@ -525,7 +525,7 @@ echo wfView::create('blocking/country-modal')->render();
 <?php
 echo wfView::create('common/modal-prompt', array(
 	'title' => __('U.S. Blocked', 'wordfence'),
-	'messageHTML' => esc_html__('For most sites, we recommend allowing access from the United States, where Google and other benign crawlers are located. Some well-known crawlers also have locations in Europe, so be careful when blocking other countries, especially if you have not seen significant attacks from them.', 'wordfence') . ' <a href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_FIREWALL_BLOCKING_FULL_SITE). '" target="_blank" rel="noopener noreferrer">' . esc_html__('Learn More', 'wordfence') . '</a>',
+	'messageHTML' => esc_html__('For most sites, we recommend allowing access from the United States, where Google and other benign crawlers are generally located. Many well-known crawlers also have locations in Europe, so be careful when blocking other countries, especially if you have not seen significant attacks from them.', 'wordfence') . ' <a href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_FIREWALL_BLOCKING_FULL_SITE). '" target="_blank" rel="noopener noreferrer">' . esc_html__('Learn More', 'wordfence') . '</a>',
 	'primaryButton' => array('id' => 'wf-us-blocking-prompt-cancel', 'label' => __('Cancel', 'wordfence'), 'link' => '#'),
 	'secondaryButtons' => array(array('id' => 'wf-us-blocking-prompt-continue', 'label' => __('Continue', 'wordfence'), 'link' => '#')),
 ))->render();

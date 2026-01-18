@@ -27,7 +27,7 @@ class wfBlockAlert extends wfBaseAlert {
 	public function send() {
 		if (wfConfig::get('alertOn_block')) {
 			$message = sprintf(/* translators: IP address. */ __('Wordfence has blocked IP address %s.', 'wordfence'), $this->IP) . "\n";
-			$message .= sprintf(/* translators: Description of firewall action. */ __('The reason is: "%s".', 'wordfence'), $this->reason);
+			$message .= sprintf(/* translators: Description of firewall action. */ __('The reason is: "%s".', 'wordfence'), wfWAFBlockI18n::getTranslatedBlockDescription($this->reason));
 			if ($this->secsToGo > 0) {
 				$message .= "\n" . sprintf(/* translators: Time until. */ __('The duration of the block is %s.', 'wordfence'), wfUtils::makeDuration($this->secsToGo, true));
 			}
@@ -139,7 +139,7 @@ class wfLoginLockoutAlert extends wfBaseAlert {
 		if (wfConfig::get('alertOn_loginLockout')) {
 			$message = sprintf(
 				/* translators: 1. IP address. 2. Description of firewall action. */
-				__('A user with IP address %1$s has been locked out from signing in or using the password recovery form for the following reason: %2$s.', 'wordfence'), $this->IP, $this->reason);
+				__('A user with IP address %1$s has been locked out from signing in or using the password recovery form for the following reason: %2$s.', 'wordfence'), $this->IP, wfWAFBlockI18n::getTranslatedBlockDescription($this->reason));
 			if (wfBlock::lockoutDuration() > 0) {
 				$message .= "\n" . sprintf(/* translators: Time until. */ __('The duration of the lockout is %s.', 'wordfence'), wfUtils::makeDuration(wfBlock::lockoutDuration(), true));
 			}
@@ -171,12 +171,23 @@ class wfAdminLoginAlert extends wfBaseAlert {
 	public function send() {
 		if (wfConfig::get('alertOn_adminLogin')) {
 			$shouldAlert = true;
-			if (wfConfig::get('alertOn_firstAdminLoginOnly') && isset($_COOKIE[$this->cookieName])) {
-				$shouldAlert = !hash_equals($this->cookieValue, $_COOKIE[$this->cookieName]);
+			$firstLogin = false;
+			if (wfConfig::get('alertOn_firstAdminLoginOnly')) {
+				if (isset($_COOKIE[$this->cookieName])) {
+					$shouldAlert = !hash_equals($this->cookieValue, $_COOKIE[$this->cookieName]);
+				}
+				else {
+					$firstLogin = true;
+				}
 			}
 
 			if ($shouldAlert) {
-				wordfence::alert(__("Admin Login", 'wordfence'), sprintf(/* translators: WP username. */ __("A user with username \"%s\" who has administrator access signed in to your WordPress site.", 'wordfence'), $this->username), $this->IP);
+				if ($firstLogin) {
+					wordfence::alert(__("Admin Login", 'wordfence'), sprintf(/* translators: WP username. */ __("A user with username \"%s\" who has administrator access signed in to your WordPress site from a new device.", 'wordfence'), $this->username), $this->IP);
+				}
+				else {
+					wordfence::alert(__("Admin Login", 'wordfence'), sprintf(/* translators: WP username. */ __("A user with username \"%s\" who has administrator access signed in to your WordPress site.", 'wordfence'), $this->username), $this->IP);
+				}
 			}
 		}
 	}
@@ -205,12 +216,23 @@ class wfNonAdminLoginAlert extends wfBaseAlert {
 	public function send() {
 		if (wfConfig::get('alertOn_nonAdminLogin')) {
 			$shouldAlert = true;
-			if (wfConfig::get('alertOn_firstNonAdminLoginOnly') && isset($_COOKIE[$this->cookieName])) {
-				$shouldAlert = !hash_equals($this->cookieValue, $_COOKIE[$this->cookieName]);
+			$firstLogin = false;
+			if (wfConfig::get('alertOn_firstNonAdminLoginOnly')) {
+				if (isset($_COOKIE[$this->cookieName])) {
+					$shouldAlert = !hash_equals($this->cookieValue, $_COOKIE[$this->cookieName]);
+				}
+				else {
+					$firstLogin = true;
+				}
 			}
 
 			if ($shouldAlert) {
-				wordfence::alert(__("User login", 'wordfence'), sprintf(/* translators: WP username. */ __("A non-admin user with username \"%s\" signed in to your WordPress site.", 'wordfence'), $this->username), $this->IP);
+				if ($firstLogin) {
+					wordfence::alert(__("User login", 'wordfence'), sprintf(/* translators: WP username. */ __("A non-admin user with username \"%s\" signed in to your WordPress site from a new device.", 'wordfence'), $this->username), $this->IP);
+				}
+				else {
+					wordfence::alert(__("User login", 'wordfence'), sprintf(/* translators: WP username. */ __("A non-admin user with username \"%s\" signed in to your WordPress site.", 'wordfence'), $this->username), $this->IP);
+				}
 			}
 		}
 	}

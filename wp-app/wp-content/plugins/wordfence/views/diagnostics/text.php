@@ -364,55 +364,45 @@ echo wfHelperString::plainTextTable($table) . "\n\n";
 global $wpdb;
 $wfdb = new wfDB();
 //This must be done this way because MySQL with InnoDB tables does a full regeneration of all metadata if we don't. That takes a long time with a large table count.
-$tables = $wfdb->querySelect('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() ORDER BY TABLE_NAME ASC LIMIT 250');
-$total = $wfdb->querySingle('SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() LIMIT 250');
-foreach ($tables as &$t) {
-	$t = "'" . esc_sql($t['TABLE_NAME']) . "'";
+$total = $wfdb->querySingle('SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE()');
+
+$wordfenceTableNames = wfSchema::tableList();
+$optionalWordfenceTableNames = wfSchema::optionalTableList();
+
+if (WFWAF_IS_WINDOWS) {
+	$wordfenceTableNames = wfUtils::array_strtolower($wordfenceTableNames);
+	$optionalWordfenceTableNames = wfUtils::array_strtolower($optionalWordfenceTableNames);
 }
-unset($t);
-$q = $wfdb->querySelect("SHOW TABLE STATUS WHERE Name IN (" . implode(',', $tables) . ')');
+
+$wordfenceTableNamesQuerySegment = array_map(function($t) { return "'" . esc_sql($t) . "'"; }, array_merge(array_values($wordfenceTableNames), array_values($optionalWordfenceTableNames)));
+$existingWordfenceTables = wfUtils::array_column($wfdb->querySelect('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME IN (' . implode(',', $wordfenceTableNamesQuerySegment) . ') ORDER BY TABLE_NAME ASC'), 'TABLE_NAME');
+if (WFWAF_IS_WINDOWS) {
+	$existingWordfenceTables = wfUtils::array_strtolower($existingWordfenceTables);
+}
+
+$otherTables = wfUtils::array_column($wfdb->querySelect('SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME NOT IN (' . implode(',', $wordfenceTableNamesQuerySegment) . ') ORDER BY TABLE_NAME ASC LIMIT 250'), 'TABLE_NAME');
+$otherTableNamesQuerySegment = array_map(function($t) { return "'" . esc_sql($t) . "'"; }, $otherTables);
+
+$q = $wfdb->querySelect("SHOW TABLE STATUS WHERE Name IN (" . implode(',', array_merge($wordfenceTableNamesQuerySegment, $otherTableNamesQuerySegment)) . ')');
 
 if ($q) {
 	$databaseCols = count($q[0]);
+	
+	$hasAll = true;
+	$existingTables = wfUtils::array_column($q, 'Name');
+	if (WFWAF_IS_WINDOWS) { $existingTables = wfUtils::array_strtolower($existingTables); } //Windows MySQL installations are case-insensitive
+	$missingTables = array();
+	foreach ($wordfenceTableNames as $t => $table) {
+		if (!in_array($table, $existingTables)) {
+			$hasAll = false;
+			$missingTables[] = $t;
+		}
+	}
 
-	if ($total > 250) {
-		_e('Unable to verify - table count too high', 'wordfence');
+	if ($hasAll) {
+		_e('All Tables Exist', 'wordfence');
 	} else {
-		$hasAll = true;
-		$schemaTables = wfSchema::tableList();
-		$existingTables = wfUtils::array_column($q, 'Name');
-		if (WFWAF_IS_WINDOWS) {
-			$existingTables = wfUtils::array_strtolower($existingTables);
-		} //Windows MySQL installations are case-insensitive
-		$missingTables = array();
-		foreach ($schemaTables as $t) {
-			$table = wfDB::networkTable($t);
-			if (WFWAF_IS_WINDOWS) {
-				$table = strtolower($table);
-			}
-			if (!in_array($table, $existingTables)) {
-				$hasAll = false;
-				$missingTables[] = $t;
-			}
-		}
-
-		foreach (
-			array(
-				\WordfenceLS\Controller_DB::TABLE_2FA_SECRETS,
-				\WordfenceLS\Controller_DB::TABLE_SETTINGS,
-			) as $t) {
-			$table = \WordfenceLS\Controller_DB::network_table($t);
-			if (!in_array($table, $existingTables)) {
-				$hasAll = false;
-				$missingTables[] = $t;
-			}
-		}
-
-		if ($hasAll) {
-			_e('All Tables Exist', 'wordfence');
-		} else {
-			printf(/* translators: 1. WordPress table prefix. 2. Wordfence table case. 3. List of database tables. */ __('Tables missing (prefix %1$s, %2$s): %3$s', 'wordfence'), wfDB::networkPrefix(), wfSchema::usingLowercase() ? __('lowercase', 'wordfence') : __('regular case', 'wordfence'), implode(', ', $missingTables));
-		}
+		printf(/* translators: 1. WordPress table prefix. 2. Wordfence table case. 3. List of database tables. */ __('Tables missing (prefix %1$s, %2$s): %3$s', 'wordfence'), wfDB::networkPrefix(), wfSchema::usingLowercase() ? __('lowercase', 'wordfence') : __('regular case', 'wordfence'), implode(', ', $missingTables));
 	}
 	
 	echo "\n";
@@ -436,6 +426,22 @@ if ($q) {
 	$table = array(
 		$displayKeyOrder,
 	);
+	
+	usort($q, function($t1, $t2) use ($existingWordfenceTables) {
+		$name1 = $t1['Name'];
+		$name2 = $t2['Name'];
+		if (WFWAF_IS_WINDOWS) {
+			$name1 = strtolower($name1);
+			$name2 = strtolower($name2);
+		}
+		
+		$ours1 = in_array($name1, $existingWordfenceTables);
+		$ours2 = in_array($name2, $existingWordfenceTables);
+		if ($ours1 && !$ours2) { return -1; }
+		if (!$ours1 && $ours2) { return 1; }
+		
+		return strcasecmp($name1, $name2);
+	});
 
 	$count = 0;
 	foreach ($q as $val) {
@@ -446,12 +452,12 @@ if ($q) {
 		$table[] = $tableRow;
 
 		$count++;
-		if ($count >= 250 && $total > $count) {
-			$tableRow = array_fill(0, $databaseCols, '');
-			$tableRow[0] = sprintf(__('and %d more', 'wordfence'), $total - $count);
-			$table[] = $tableRow;
-			break;
-		}
+	}
+	
+	if ($total > $count) {
+		$tableRow = array_fill(0, $databaseCols, '');
+		$tableRow[0] = sprintf(__('and %d more', 'wordfence'), $total - $count);
+		$table[] = $tableRow;
 	}
 }
 

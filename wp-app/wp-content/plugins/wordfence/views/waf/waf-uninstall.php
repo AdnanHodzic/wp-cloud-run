@@ -41,7 +41,8 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
 					array("apache-suphp", __('Apache + suPHP', 'wordfence'), $serverInfo->isApacheSuPHP(), wfWAFAutoPrependHelper::helper('apache-suphp')->getFilesNeededForBackup()),
 					array("cgi", __('Apache + CGI/FastCGI', 'wordfence'), $serverInfo->isApache() && !$serverInfo->isApacheSuPHP() && ($serverInfo->isCGI() || $serverInfo->isFastCGI()), wfWAFAutoPrependHelper::helper('cgi')->getFilesNeededForBackup()),
 					array("litespeed", __('LiteSpeed/lsapi', 'wordfence'), $serverInfo->isLiteSpeed(), wfWAFAutoPrependHelper::helper('litespeed')->getFilesNeededForBackup()),
-					array("nginx", __('NGINX', 'wordfence'), $serverInfo->isNGINX(), wfWAFAutoPrependHelper::helper('nginx')->getFilesNeededForBackup()),
+					array("nginx-unit", __('NGINX Unit', 'wordfence'), $serverInfo->isNginxUnit(), wfWAFAutoPrependHelper::helper('nginx')->getFilesNeededForBackup()),
+					array("nginx", __('NGINX', 'wordfence'), $serverInfo->isNginxUnit(), wfWAFAutoPrependHelper::helper('nginx')->getFilesNeededForBackup()),
 					array("iis", __('Windows (IIS)', 'wordfence'), $serverInfo->isIIS(), wfWAFAutoPrependHelper::helper('iis')->getFilesNeededForBackup()),
 				);
 				

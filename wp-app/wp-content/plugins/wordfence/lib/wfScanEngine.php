@@ -12,6 +12,7 @@ require_once(__DIR__ . '/wfScanFile.php');
 require_once(__DIR__ . '/wfScanFileListItem.php');
 require_once(__DIR__ . '/wfScanEntrypoint.php');
 require_once(__DIR__ . '/wfCurlInterceptor.php');
+require_once(__DIR__ . '/wfCommonPasswords.php');
 
 class wfScanEngine {
 	const SCAN_MANUALLY_KILLED = -999;
@@ -20,7 +21,6 @@ class wfScanEngine {
 	private static $scanIsRunning = false; //Indicates that the scan is running in this specific process
 
 	public $api = false;
-	private $dictWords = array();
 	private $forkRequested = false;
 	private $lastCheck = 0;
 
@@ -172,8 +172,6 @@ class wfScanEngine {
 		$this->api = new wfAPI($this->apiKey, $this->wp_version);
 		$this->malwarePrefixesHash = $malwarePrefixesHash;
 		$this->coreHashesHash = $coreHashesHash;
-		include(dirname(__FILE__) . '/wfDict.php'); //$dictWords
-		$this->dictWords = $dictWords;
 		$this->scanMode = $scanMode;
 
 		$this->scanController = new wfScanner($scanMode);
@@ -205,8 +203,6 @@ class wfScanEngine {
 	public function __wakeup() {
 		$this->cycleStartTime = time();
 		$this->api = new wfAPI($this->apiKey, $this->wp_version);
-		include(dirname(__FILE__) . '/wfDict.php'); //$dictWords
-		$this->dictWords = $dictWords;
 		$this->scanController = new wfScanner($this->scanMode);
 	}
 
@@ -577,7 +573,7 @@ class wfScanEngine {
 		if ($this->scanController->isPremiumScan()) {
 			if (is_multisite()) {
 				global $wpdb;
-				$h = new wordfenceURLHoover($this->apiKey, $this->wp_version, false, true);
+				$h = new wordfenceURLHoover($this->apiKey, $this->wp_version, true);
 				$blogIDs = $wpdb->get_col($wpdb->prepare("SELECT blog_id FROM {$wpdb->blogs} WHERE blog_id > %d ORDER BY blog_id ASC", $this->gsbMultisiteBlogOffset)); //Can't use wp_get_sites or get_sites because they return empty at 10k sites
 				foreach ($blogIDs as $id) {
 					$homeURL = get_home_url($id);
@@ -601,7 +597,7 @@ class wfScanEngine {
 	private function scan_checkGSB_finish() {
 		if ($this->scanController->isPremiumScan()) {
 			if (is_multisite()) {
-				$h = new wordfenceURLHoover($this->apiKey, $this->wp_version, false, true);
+				$h = new wordfenceURLHoover($this->apiKey, $this->wp_version, true);
 				$badURLs = $h->getBaddies();
 				if ($h->errorMsg) {
 					$this->status(4, 'info', sprintf(/* translators: Error message. */ __("Error checking domain blocklists: %s", 'wordfence'), $h->errorMsg));
@@ -636,31 +632,7 @@ class wfScanEngine {
 						$badList = $badSite['badList'];
 						$data = array('badURL' => $url);
 
-						if ($badList == 'goog-malware-shavar') {
-							if (is_multisite()) {
-								$shortMsg = sprintf(/* translators: WordPress site ID. */ __('The multisite blog with ID %d is listed on Google\'s Safe Browsing malware list.', 'wordfence'), intval($id));
-								$data['multisite'] = intval($id);
-							} else {
-								$shortMsg = __('Your site is listed on Google\'s Safe Browsing malware list.', 'wordfence');
-							}
-							$longMsg = sprintf(
-							/* translators: 1. URL. 2. URL. */
-								__('The URL %1$s is on the malware list. More info available at <a href="http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=%2$s&client=googlechrome&hl=en-US" target="_blank" rel="noopener noreferrer">Google Safe Browsing diagnostic page<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>.', 'wordfence'), esc_html($url), urlencode($url));
-							$data['gsb'] = $badList;
-						} else if ($badList == 'googpub-phish-shavar') {
-							if (is_multisite()) {
-								$shortMsg = sprintf(
-								/* translators: WordPress site ID. */
-									__('The multisite blog with ID %d is listed on Google\'s Safe Browsing phishing list.', 'wordfence'), intval($id));
-								$data['multisite'] = intval($id);
-							} else {
-								$shortMsg = __('Your site is listed on Google\'s Safe Browsing phishing list.', 'wordfence');
-							}
-							$longMsg = sprintf(
-							/* translators: 1. URL. 2. URL. */
-								__('The URL %1$s is on the phishing list. More info available at <a href="http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=%2$s&client=googlechrome&hl=en-US" target="_blank" rel="noopener noreferrer">Google Safe Browsing diagnostic page<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>.', 'wordfence'), esc_html($url), urlencode($url));
-							$data['gsb'] = $badList;
-						} else if ($badList == 'wordfence-dbl') {
+						if ($badList == 'wordfence-dbl') {
 							if (is_multisite()) {
 								$shortMsg = sprintf(
 								/* translators: WordPress site ID. */
@@ -673,7 +645,8 @@ class wfScanEngine {
 							/* translators: URL. */
 								__("The URL %s is on the blocklist.", 'wordfence'), esc_html($url));
 							$data['gsb'] = $badList;
-						} else {
+						}
+						else {
 							if (is_multisite()) {
 								$shortMsg = sprintf(
 								/* translators: WordPress site ID. */
@@ -1311,7 +1284,7 @@ class wfScanEngine {
 			$blog = null;
 			$post = null;
 			foreach ($hresults as $result) {
-				if ($result['badList'] != 'goog-malware-shavar' && $result['badList'] != 'googpub-phish-shavar' && $result['badList'] != 'wordfence-dbl') {
+				if ($result['badList'] != 'wordfence-dbl') {
 					continue; //A list type that may be new and the plugin has not been upgraded yet.
 				}
 
@@ -1329,29 +1302,7 @@ class wfScanEngine {
 					$contentMD5 = md5(wfUtils::ifnull($post['post_content']));
 				}
 
-				if ($result['badList'] == 'goog-malware-shavar') {
-					$shortMsg = sprintf(
-					/* translators: 1. WordPress Post type. 2. URL. */
-						__('%1$s contains a suspected malware URL: %2$s', 'wordfence'),
-						$uctype,
-						esc_html($title)
-					);
-					$longMsg = sprintf(
-					/* translators: 1. WordPress Post type. 2. URL. 3. URL. */
-						__('This %1$s contains a suspected malware URL listed on Google\'s list of malware sites. The URL is: %2$s - More info available at <a href="http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=%3$s&client=googlechrome&hl=en-US" target="_blank" rel="noopener noreferrer">Google Safe Browsing diagnostic page<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>.', 'wordfence'),
-						esc_html($type),
-						esc_html($result['URL']),
-						urlencode($result['URL'])
-					);
-				} else if ($result['badList'] == 'googpub-phish-shavar') {
-					$shortMsg = sprintf(/* translators: 1. WordPress Post type. 2. URL. */ __('%1$s contains a suspected phishing site URL: %2$s', 'wordfence'), $uctype, esc_html($title));
-					$longMsg = sprintf(
-					/* translators: 1. WordPress Post type. 2. URL. */
-						__('This %1$s contains a URL that is a suspected phishing site that is currently listed on Google\'s list of known phishing sites. The URL is: %2$s', 'wordfence'),
-						esc_html($type),
-						esc_html($result['URL'])
-					);
-				} else if ($result['badList'] == 'wordfence-dbl') {
+				if ($result['badList'] == 'wordfence-dbl') {
 					$shortMsg = sprintf(/* translators: 1. WordPress Post type. 2. URL. */ __('%1$s contains a suspected malware URL: %2$s', 'wordfence'), $uctype, esc_html($title));
 					$longMsg = sprintf(
 					/* translators: 1. WordPress Post type. 2. URL. */
@@ -1457,7 +1408,7 @@ class wfScanEngine {
 			$blog = null;
 			$comment = null;
 			foreach ($hresults as $result) {
-				if ($result['badList'] != 'goog-malware-shavar' && $result['badList'] != 'googpub-phish-shavar' && $result['badList'] != 'wordfence-dbl') {
+				if ($result['badList'] != 'wordfence-dbl') {
 					continue; //A list type that may be new and the plugin has not been upgraded yet.
 				}
 
@@ -1475,26 +1426,7 @@ class wfScanEngine {
 					$contentMD5 = md5(wfUtils::ifnull($comment['comment_content'] . $comment['comment_author'] . $comment['comment_author_url']));
 				}
 
-				if ($result['badList'] == 'goog-malware-shavar') {
-					$shortMsg = sprintf(
-					/* translators: 1. WordPress post type. 2. WordPress author username. */
-						__('%1$s with author %2$s contains a suspected malware URL.', 'wordfence'), $uctype, esc_html($author));
-					$longMsg = sprintf(
-					/* translators: 1. WordPress post type. 2. URL. 3. URL. */
-						__('This %1$s contains a suspected malware URL listed on Google\'s list of malware sites. The URL is: %2$s - More info available at <a href="http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=%3$s&client=googlechrome&hl=en-US" target="_blank" rel="noopener noreferrer">Google Safe Browsing diagnostic page<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>.', 'wordfence'),
-						esc_html($type),
-						esc_html($result['URL']),
-						urlencode($result['URL'])
-					);
-				} else if ($result['badList'] == 'googpub-phish-shavar') {
-					$shortMsg = sprintf(/* translators: WordPress post type. */ __("%s contains a suspected phishing site URL.", 'wordfence'), $uctype);
-					$longMsg = sprintf(
-					/* translators: 1. WordPress post type. 2. URL. */
-						__('This %1$s contains a URL that is a suspected phishing site that is currently listed on Google\'s list of known phishing sites. The URL is: %2$s', 'wordfence'),
-						esc_html($type),
-						esc_html($result['URL'])
-					);
-				} else if ($result['badList'] == 'wordfence-dbl') {
+				if ($result['badList'] == 'wordfence-dbl') {
 					$shortMsg = sprintf(/* translators: URL. */ __("%s contains a suspected malware URL.", 'wordfence'), $uctype);
 					$longMsg = sprintf(
 					/* translators: 1. WordPress post type. 2. URL. */
@@ -1628,6 +1560,7 @@ class wfScanEngine {
 	private function scan_passwds_init() {
 		$this->statusIDX['passwds'] = wfIssues::statusStart(__('Scanning for weak passwords', 'wordfence'));
 		$this->scanController->startStage(wfScanner::STAGE_PASSWORD_STRENGTH);
+		
 		global $wpdb;
 		$counter = 0;
 		$query = "select ID from " . $wpdb->users;
@@ -1691,10 +1624,9 @@ class wfScanEngine {
 	}
 
 	public function scanUserPassword($userID) {
+		$haveIssues = wfIssues::STATUS_SECURE;
 		$suspended = wp_suspend_cache_addition();
 		wp_suspend_cache_addition(true);
-		require_once(ABSPATH . 'wp-includes/class-phpass.php');
-		$passwdHasher = new PasswordHash(8, TRUE);
 		$userDat = get_userdata($userID);
 		if ($userDat === false) {
 			wordfence::status(2, 'error', sprintf(/* translators: WordPress user ID. */ __("Could not get username for user with ID %d when checking password strength.", 'wordfence'), $userID));
@@ -1707,8 +1639,24 @@ class wfScanEngine {
 				$userDat->user_login,
 				$userID
 			) . (function_exists('memory_get_usage') ? " (Mem:" . sprintf('%.1f', memory_get_usage(true) / (1024 * 1024)) . "M)" : ""));
-		$highCap = $this->highestCap($userDat->wp_capabilities);
-		if ($this->isEditor($userDat->wp_capabilities)) {
+		$capabilities = $userDat->get_role_caps();
+		$highCap = $this->highestCap($capabilities);
+		$isAdmin = $highCap === "administrator";
+		// bcrypt takes significantly longer than md5 to check so it's impractical to check the extended list
+		$usesBcrypt = strpos($userDat->user_pass, '$wp') === 0;
+		$emailLocalPart = explode("@", $userDat->user_email, 2)[0];
+		$words = [
+			$userDat->user_login => true,
+			$userDat->user_email => true,
+			$emailLocalPart => true
+		];
+		if ($usesBcrypt && !$isAdmin) {
+			$this->status(10, 'info', sprintf(/* translators: WordPress username. */ __('Skipping password scan for non-admin user %s with bcrypt password', 'wordfence'), $userDat->user_login));
+			// When using bcrypt, only admins are checked
+			return $haveIssues;
+		}
+		if ($isAdmin || $this->isEditor($capabilities)) {
+			wfCommonPasswords::addToKeyedList($words, !$usesBcrypt);
 			$shortMsg = sprintf(
 			/* translators: 1. WordPress username. 2. WordPress capability. */
 				__('User "%1$s" with "%2$s" access has an easy password.', 'wordfence'),
@@ -1721,18 +1669,16 @@ class wfScanEngine {
 				esc_html($highCap)
 			);
 			$level = wfIssues::SEVERITY_CRITICAL;
-			$words = $this->dictWords;
-		} else {
+		}
+		else {
 			$shortMsg = sprintf(
 			/* translators: WordPress username. */
 				__("User \"%s\" with 'subscriber' access has a very easy password.", 'wordfence'), esc_html($userDat->user_login));
 			$longMsg = __("A user with 'subscriber' access has a password that is very easy to guess. Please either change it or ask the user to change their password.", 'wordfence');
 			$level = wfIssues::SEVERITY_HIGH;
-			$words = array($userDat->user_login);
 		}
-		$haveIssues = wfIssues::STATUS_SECURE;
-		for ($i = 0; $i < sizeof($words); $i++) {
-			if ($passwdHasher->CheckPassword($words[$i], $userDat->user_pass)) {
+		foreach (array_keys($words) as $word) {
+			if (wp_check_password($word, $userDat->user_pass, $userDat->ID)) {
 				$this->status(2, 'info', sprintf(/* translators: Scan result description. */ __('Adding issue %s', 'wordfence'), $shortMsg));
 				$added = $this->addIssue('easyPassword', $level, $userDat->ID, $userDat->ID . '-' . $userDat->user_pass, $shortMsg, $longMsg, array(
 					'ID'           => $userDat->ID,
@@ -1944,6 +1890,31 @@ class wfScanEngine {
 		}
 	}
 
+	private static function get_cvss_metrics($record) {
+		$vector = $record["cvssVector"];
+		$metrics = [];
+		if (!is_string($vector))
+			return $metrics;
+		$components = explode("/", $vector);
+		foreach ($components as $component) {
+			$pair = explode(":", $component, 2);
+			if (count($pair) == 2) {
+				$metrics[$pair[0]] = $pair[1];
+			}
+		}
+		return $metrics;
+	}
+
+	private static function get_record_severity($record) {
+		if (isset($record["vulnerable"]) && !$record["vulnerable"])
+			return wfIssues::SEVERITY_MEDIUM;
+		$metrics = self::get_cvss_metrics($record);
+		// Vulnerabilities with high attack complexity or privileges required can be downgraded
+		if ($metrics["AC"] == "H" || $metrics["PR"] == "H")
+			return wfIssues::SEVERITY_HIGH;
+		return wfIssues::SEVERITY_CRITICAL;
+	}
+
 	private function scan_oldVersions_finish() {
 		$haveIssues = wfIssues::STATUS_SECURE;
 
@@ -2047,15 +2018,23 @@ class wfScanEngine {
 
 		$allPlugins = $this->updateCheck->getAllPlugins();
 
+		if (wordfence::hasWordfenceAssistant($allPlugins)) {
+			$key = "wfAssistantPresent";
+			$added = $this->addIssue(
+				$key,
+				wfIssues::SEVERITY_LOW,
+				$key,
+				$key,
+				__("Wordfence Assistant is currently installed and is not needed unless instructed by Wordfence support", "wordfence"),
+				__("The Wordfence Assistant plugin is currently installed. It should only be retained during use and should be removed once it's no longer needed.", "wordfence"),
+				[]
+			);
+		}
+
 		// Plugin updates needed
 		if (count($this->updateCheck->getPluginUpdates()) > 0) {
 			foreach ($this->updateCheck->getPluginUpdates() as $plugin) {
-				$severity = wfIssues::SEVERITY_CRITICAL;
-				if (isset($plugin['vulnerable'])) {
-					if (!$plugin['vulnerable']) {
-						$severity = wfIssues::SEVERITY_MEDIUM;
-					}
-				}
+				$severity = self::get_record_severity($plugin);
 				$key = 'wfPluginUpgrade' . ' ' . $plugin['pluginFile'] . ' ' . $plugin['newVersion'] . ' ' . $plugin['Version'];
 				$shortMsg = sprintf(
 				/* translators: 1. Plugin name. 2. Software version. 3. Software version. */
@@ -2084,12 +2063,7 @@ class wfScanEngine {
 		// Theme updates needed
 		if (count($this->updateCheck->getThemeUpdates()) > 0) {
 			foreach ($this->updateCheck->getThemeUpdates() as $theme) {
-				$severity = wfIssues::SEVERITY_CRITICAL;
-				if (isset($theme['vulnerable'])) {
-					if (!$theme['vulnerable']) {
-						$severity = wfIssues::SEVERITY_MEDIUM;
-					}
-				}
+				$severity = self::get_record_severity($theme);
 				$key = 'wfThemeUpgrade' . ' ' . $theme['Name'] . ' ' . $theme['version'] . ' ' . $theme['newVersion'];
 				$shortMsg = sprintf(
 				/* translators: 1. Theme name. 2. Software version. 3. Software version. */
@@ -2416,13 +2390,7 @@ class wfScanEngine {
 					$blog = array_shift($blogs);
 				}
 
-				if ($result['badList'] == 'goog-malware-shavar') {
-					$shortMsg = sprintf(/* translators: URL. */ __("Option contains a suspected malware URL: %s", 'wordfence'), esc_html($optionKey));
-					$longMsg = sprintf(/* translators: URL. */ __("This option contains a suspected malware URL listed on Google's list of malware sites. It may indicate your site is infected with malware. The URL is: %s", 'wordfence'), esc_html($result['URL']));
-				} else if ($result['badList'] == 'googpub-phish-shavar') {
-					$shortMsg = sprintf(/* translators: URL. */ __("Option contains a suspected phishing site URL: %s", 'wordfence'), esc_html($optionKey));
-					$longMsg = sprintf(/* translators: URL. */ __("This option contains a URL that is a suspected phishing site that is currently listed on Google's list of known phishing sites. It may indicate your site is infected with malware. The URL is: %s", 'wordfence'), esc_html($result['URL']));
-				} else if ($result['badList'] == 'wordfence-dbl') {
+				if ($result['badList'] == 'wordfence-dbl') {
 					$shortMsg = sprintf(/* translators: URL. */ __("Option contains a suspected malware URL: %s", 'wordfence'), esc_html($optionKey));
 					$longMsg = sprintf(/* translators: URL. */ __("This option contains a URL that is currently listed on Wordfence's domain blocklist. It may indicate your site is infected with malware. The URL is: %s", 'wordfence'), esc_html($result['URL']));
 				} else {

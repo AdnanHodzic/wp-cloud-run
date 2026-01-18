@@ -289,8 +289,40 @@ class wfSchema {
 		}
 	}
 	
+	/**
+	 * Returns an array of all required table names. The key is the table name before applying the configured 
+	 * WordPress/network prefixing, and its corresponding value is with that applied.
+	 * 
+	 * @return array
+	 */
 	public static function tableList() {
-		return array_keys(self::$tables);
+		$rawTables = array_keys(self::$tables);
+		if (WFWAF_IS_WINDOWS || wfSchema::usingLowercase()) {
+			$rawTables = wfUtils::array_strtolower($rawTables);
+		}
+		$tableList = array_map(function($t) { return wfDB::networkTable($t); }, array_combine($rawTables, $rawTables));
+		
+		foreach (
+			array(
+				\WordfenceLS\Controller_DB::TABLE_2FA_SECRETS,
+				\WordfenceLS\Controller_DB::TABLE_SETTINGS,
+				\WordfenceLS\Controller_DB::TABLE_ROLE_COUNTS,
+			) as $t) {
+			$table = \WordfenceLS\Controller_DB::network_table($t);
+			$tableList[$t] = $table;
+		}
+		
+		return $tableList;
+	}
+	
+	/**
+	 * Like `tableList()` but returns only optional tables that may or may not exist depending on the site's 
+	 * configuration.
+	 * 
+	 * @return array
+	 */
+	public static function optionalTableList() {
+		return array('wfwafconfig' => wfDB::networkTable('wfwafconfig'));
 	}
 	
 	public static function updateTableCase() {

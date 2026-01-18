@@ -509,49 +509,7 @@ class wordfenceScanner {
 						continue; 
 					}
 					
-					if ($result['badList'] == 'goog-malware-shavar') {
-						$this->addResult(array(
-							'type' => 'file',
-							'severity' => wfIssues::SEVERITY_CRITICAL,
-							'ignoreP' => $record->realPath,
-							'ignoreC' => md5_file($record->realPath),
-							'shortMsg' => __('File contains suspected malware URL: ', 'wordfence') . esc_html($record->getDisplayPath()),
-							'longMsg' => wp_kses(sprintf(
-								/* translators: 1. Malware signature matched text. 2. Malicious URL. 3. Malicious URL. */
-								__('This file contains a suspected malware URL listed on Google\'s list of malware sites. Wordfence decodes %1$s when scanning files so the URL may not be visible if you view this file. The URL is: %2$s - More info available at <a href="http://safebrowsing.clients.google.com/safebrowsing/diagnostic?site=%3$s&client=googlechrome&hl=en-US" target="_blank" rel="noopener noreferrer">Google Safe Browsing diagnostic page<span class="screen-reader-text"> (opens in new tab)</span></a>.', 'wordfence'),
-								esc_html($this->patterns['word3']),
-								esc_html($result['URL']),
-								urlencode($result['URL'])
-							), array('a'=>array('href'=>array(), 'target'=>array(), 'rel'=>array()), 'span'=>array('class'))),
-							'data' => array_merge(array(
-								'file' => $file,
-								'realFile' => $record->realPath,
-								'shac' => $record->SHAC,
-								'badURL' => $result['URL'],
-								'gsb' => 'goog-malware-shavar',
-								'highSense' => $options['scansEnabled_highSense']
-							), $dataForFile),
-						));
-					}
-					else if ($result['badList'] == 'googpub-phish-shavar') {
-						$this->addResult(array(
-							'type' => 'file',
-							'severity' => wfIssues::SEVERITY_CRITICAL,
-							'ignoreP' => $record->realPath,
-							'ignoreC' => md5_file($record->realPath),
-							'shortMsg' => __('File contains suspected phishing URL: ', 'wordfence') . esc_html($record->getDisplayPath()),
-							'longMsg' => __('This file contains a URL that is a suspected phishing site that is currently listed on Google\'s list of known phishing sites. The URL is: ', 'wordfence') . esc_html($result['URL']),
-							'data' => array_merge(array(
-								'file' => $file,
-								'realFile' => $record->realPath,
-								'shac' => $record->SHAC,
-								'badURL' => $result['URL'],
-								'gsb' => 'googpub-phish-shavar',
-								'highSense' => $options['scansEnabled_highSense']
-							), $dataForFile),
-						));
-					}
-					else if ($result['badList'] == 'wordfence-dbl') {
+					if ($result['badList'] == 'wordfence-dbl') {
 						$this->addResult(array(
 							'type' => 'file',
 							'severity' => wfIssues::SEVERITY_CRITICAL,

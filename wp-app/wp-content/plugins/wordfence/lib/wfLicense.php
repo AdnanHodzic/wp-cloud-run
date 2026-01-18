@@ -246,6 +246,10 @@ class wfLicense {
 		return $includePrefix ? __('Wordfence Free', 'wordfence') : __('Free', 'wordfence');
 	}
 
+	public function getBaseTypeLabel($requireCurrent = true) {
+		return $this->getTypeLabel($requireCurrent, false);
+	}
+
 	public function getPrefixedTypeLabel($requireCurrent = true) {
 		return $this->getTypeLabel($requireCurrent, true);
 	}
@@ -329,16 +333,35 @@ class wfLicense {
 	}
 
 	private static function fromConfig() {
-		$remainingDays = wfConfig::get(self::CONFIG_REMAINING_DAYS, null);
-		if ($remainingDays !== null)
-			$remainingDays = (int) $remainingDays;
-		$keyType = wfConfig::get(self::CONFIG_KEY_TYPE, null);
+		$values = wfConfig::getMultiple(array(
+			self::CONFIG_API_KEY => null,
+			self::CONFIG_PAID => false,
+			self::CONFIG_KEY_TYPE => null,
+			self::CONFIG_TYPE => self::TYPE_FREE,
+		));
+		
+		$keyType = $values[self::CONFIG_KEY_TYPE];
+		$remainingDays = null;
+		$conflicting = false;
+		if ($keyType != self::KEY_TYPE_FREE) {
+			$premiumValues = wfConfig::getMultiple(array(
+				self::CONFIG_REMAINING_DAYS => null,
+				self::CONFIG_HAS_KEY_CONFLICT => false,
+			));
+			
+			if ($premiumValues[self::CONFIG_REMAINING_DAYS] !== null) {
+				$remainingDays = (int) $premiumValues[self::CONFIG_REMAINING_DAYS];
+			}
+			
+			$conflicting = (bool) $premiumValues[self::CONFIG_HAS_KEY_CONFLICT];
+		}
+		
 		return new self(
-			(string) wfConfig::get(self::CONFIG_API_KEY),
-			(bool) wfConfig::get(self::CONFIG_PAID),
-			(string) wfConfig::get(self::CONFIG_TYPE, self::TYPE_FREE),
+			(string) $values[self::CONFIG_API_KEY],
+			(bool) $values[self::CONFIG_PAID],
+			(string) $values[self::CONFIG_TYPE],
 			$remainingDays,
-			(bool) wfConfig::get(self::CONFIG_HAS_KEY_CONFLICT, false),
+			$conflicting,
 			$keyType === self::KEY_TYPE_PAID_DELETED,
 			$keyType
 		);

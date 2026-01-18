@@ -1,6 +1,7 @@
 <?php
 
 class wfIpLocation {
+	const DATABASE_FILE_NAME = 'geoip.mmdb'; //Also defined in bootstrap.php
 
 	const LANGUAGE_DEFAULT = 'en';
 	const LANGUAGE_SEPARATOR = '_';

@@ -1,6 +1,6 @@
 <?php
 require_once(dirname(__FILE__) . '/wfAPI.php');
-require_once(dirname(__FILE__) . '/wfArray.php');
+require_once(dirname(__FILE__) . '/wfBinaryList.php');
 class wordfenceURLHoover {
 	private $debug = false;
 	public $errorMsg = false;
@@ -59,31 +59,27 @@ class wordfenceURLHoover {
 	
 	public function __sleep() {
 		$this->writeHosts();	
-		return array('debug', 'errorMsg', 'table', 'apiKey', 'wordpressVersion');
+		return array('debug', 'errorMsg', 'apiKey', 'wordpressVersion');
 	}
 	
 	public function __wakeup() {
-		$this->hostsToAdd = new wfArray(array('owner', 'host', 'path', 'hostKey'));
+		$this->hostsToAdd = array();
 		$this->api = new wfAPI($this->apiKey, $this->wordpressVersion);
 		$this->db = new wfDB();
+		
+		global $wpdb;
+		$this->table = isset($wpdb) ? wfDB::networkTable('wfHoover') : 'wp_wfHoover';
 	}
 	
-	public function __construct($apiKey, $wordpressVersion, $db = false, $continuation = false) {
-		$this->hostsToAdd = new wfArray(array('owner', 'host', 'path', 'hostKey'));
+	public function __construct($apiKey, $wordpressVersion, $continuation = false) {
+		$this->hostsToAdd = array();
 		$this->apiKey = $apiKey;
 		$this->wordpressVersion = $wordpressVersion;
 		$this->api = new wfAPI($apiKey, $wordpressVersion);
-		if($db){
-			$this->db = $db;
-		} else {
-			$this->db = new wfDB();
-		}
+		$this->db = new wfDB();
+		
 		global $wpdb;
-		if(isset($wpdb)){
-			$this->table = wfDB::networkTable('wfHoover');
-		} else {
-			$this->table = 'wp_wfHoover';
-		}
+		$this->table = isset($wpdb) ? wfDB::networkTable('wfHoover') : 'wp_wfHoover';
 		
 		if (!$continuation) {
 			$this->cleanup();
@@ -134,34 +130,49 @@ class wordfenceURLHoover {
 		$this->_foundSome++;
 		
 		$host = (isset($components['host']) ? $components['host'] : '');
-		$path = (isset($components['path']) && !empty($components['path']) ? $components['path'] : '/');
 		$hashes = $this->_generateHashes($url);
 		foreach ($hashes as $h) {
-			$this->hostsToAdd->push(array('owner' => $id, 'host' => $host, 'path' => $path, 'hostKey' => wfUtils::substr($h, 0, 4)));
+			$this->_queueHost($id, $host, wfUtils::substr($h, 0, 4));
 		}
 		
-		if($this->hostsToAdd->size() > 1000){ $this->writeHosts(); }
+		if (count($this->hostsToAdd) > 1000){ $this->writeHosts(); }
+	}
+	
+	/**
+	 * Queues the host for writing to the DB. Deduplication is performed here to minimize the row count on sites with 
+	 * large numbers of found URLs, and the exclusions lists have already been processed by the time it reaches this 
+	 * point.
+	 * 
+	 * @param string $owner
+	 * @param string $host
+	 * @param string $key
+	 */
+	private function _queueHost($owner, $host, $key) {
+		$indexKey = md5($owner . '|' . $host, true);
+		if (array_key_exists($indexKey, $this->hostsToAdd)) {
+			return;
+		}
+		
+		$this->hostsToAdd[$indexKey] = array('owner' => $owner, 'host' => $host, 'hostKey' => $key);
 	}
 	
 	private function writeHosts() {
-		if ($this->hostsToAdd->size() < 1) { return; }
+		if (count($this->hostsToAdd) < 1) { return; }
 		if ($this->useDB) {
 			$sql = "INSERT INTO " . $this->table . " (owner, host, path, hostKey) VALUES ";
-			while ($elem = $this->hostsToAdd->shift()) {
+			while ($elem = array_shift($this->hostsToAdd)) {
 				//This may be an issue for hyperDB or other abstraction layers, but leaving it for now.
-				$sql .= sprintf("('%s', '%s', '%s', '%s'),", 
+				$sql .= sprintf("('%s', '%s', '', '%s'),", 
 						$this->db->realEscape($elem['owner']),
 						$this->db->realEscape($elem['host']),
-						$this->db->realEscape($elem['path']),
 						$this->db->realEscape($elem['hostKey'])
 								);
 			}
 			$sql = rtrim($sql, ',');
 			$this->db->queryWrite($sql);
-			$this->hostsToAdd->collectGarbage();
 		}
 		else {
-			while ($elem = $this->hostsToAdd->shift()) {
+			while ($elem = array_shift($this->hostsToAdd)) {
 				$keys = str_split($elem['hostKey'], 4);
 				foreach ($keys as $k) {
 					$this->hostKeys[] = $k;
@@ -169,11 +180,9 @@ class wordfenceURLHoover {
 				$this->hostList[] = array(
 					'owner' => $elem['owner'],
 					'host' => $elem['host'],
-					'path' => $elem['path'],
 					'hostKey' => $elem['hostKey']
 					);
 			}
-			$this->hostsToAdd->collectGarbage();
 		}
 	}
 	public function getBaddies() {
@@ -275,9 +284,9 @@ class wordfenceURLHoover {
 						 * will fix the malicious URLs and on subsequent scans the items (owners) that are above the 
 						 * 10000 limit will appear.
 						 */
-						$q1 = $this->db->querySelect("SELECT DISTINCT owner, host, path FROM {$this->table} WHERE hostKey = %s LIMIT 10000", $prefix);
+						$q1 = $this->db->querySelect("SELECT DISTINCT owner, host FROM {$this->table} WHERE hostKey = %s LIMIT 10000", $prefix);
 						foreach ($q1 as $rec) {
-							$url = 'http://' . $rec['host'] . $rec['path'];
+							$url = 'http://' . $rec['host'];
 							if (!isset($urlsToCheck[$rec['owner']])) {
 								$urlsToCheck[$rec['owner']] = array();
 							}
@@ -291,7 +300,7 @@ class wordfenceURLHoover {
 						foreach ($this->hostList as $rec) {
 							$pos = wfUtils::strpos($rec['hostKey'], $prefix);
 							if ($pos !== false && $pos % 4 == 0) {
-								$url = 'http://' . $rec['host'] . $rec['path'];
+								$url = 'http://' . $rec['host'];
 								if (!isset($urlsToCheck[$rec['owner']])) {
 									$urlsToCheck[$rec['owner']] = array();
 								}
@@ -338,9 +347,13 @@ class wordfenceURLHoover {
 		return array();
 	}
 	
+	/**
+	 * Computes the canonical URL for $url and generates the hash variants that we'll check the safe browsing list for.
+	 * 
+	 * @param string $url
+	 * @return string[]
+	 */
 	protected function _generateHashes($url) {
-		//The GSB specification requires generating and sending hash prefixes for a number of additional similar URLs. See: https://developers.google.com/safe-browsing/v4/urls-hashing#suffixprefix-expressions
-		
 		$canonicalURL = $this->_canonicalizeURL($url);
 		
 		//Extract the scheme
@@ -387,31 +400,14 @@ class wordfenceURLHoover {
 			}
 		}
 		
-		//Generate paths list
-		$paths = array('/');
-		$pathComponents = array_filter(explode('/', $path));
-		
-		$numComponents = min(count($pathComponents), 4);
-		for ($i = 1; $i < $numComponents; $i++) {
-			$paths[] = '/' . implode('/', array_slice($pathComponents, 0, $i)) . '/';
-		}
-		if ($path != '/') {
-			$paths[] = $path;
-		}
-		if (strlen($query) > 0) {
-			$paths[] = $path . '?' . $query;
-		}
-		$paths = array_reverse($paths); //So we start at the most specific and move to most generic
-		
 		//Generate hashes
 		$hashes = array();
 		foreach ($hosts as $h) {
-			$hashes[$h] = hash('sha256', $h, true); //WFSB compatibility -- it uses hashes without the path
-			foreach ($paths as $p) {
-				$key = $h . $p;
-				$hashes[$key] = hash('sha256', $key, true);
-				break; //We no longer have any use for the extra path variants, so just include the primary one and exit the loop after
+			if (($hash = $this->_shouldCheckHost($h)) !== false) {
+				$hashes[$h] = $hash; //WFSB preferred hash -- it uses hashes without any path
 			}
+			
+			//Future hash needs may be added here
 		}
 		
 		return $hashes;
@@ -593,6 +589,22 @@ class wordfenceURLHoover {
 			$part = $part >> 8;
 		}
 		return implode('.', $strings);
+	}
+	
+	/**
+	 * Checks whether the host should be included or not by querying the skip list. If yes, returns the binary sha256 
+	 * hash of it.
+	 * 
+	 * @param string $host
+	 * @return false|string
+	 */
+	protected function _shouldCheckHost($host) {
+		static $skipList = null;
+		if ($skipList == null) {
+			$skipList = new wfBinaryList(base64_decode(wfConfig::get('wfsbskip', '')));
+		}
+		$hash = hash('sha256', $host, true);
+		return $skipList->contains($hash) === false ? $hash : false;
 	}
 	
 	protected function _array_first($array) {

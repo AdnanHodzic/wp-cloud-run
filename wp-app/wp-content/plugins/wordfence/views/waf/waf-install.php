@@ -35,7 +35,8 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
 				array("apache-suphp", __('Apache + suPHP', 'wordfence'), $serverInfo->isApacheSuPHP(), wfWAFAutoPrependHelper::helper('apache-suphp')->getFilesNeededForBackup()),
 				array("cgi", __('Apache + CGI/FastCGI', 'wordfence'), $serverInfo->isApache() && !$serverInfo->isApacheSuPHP() && ($serverInfo->isCGI() || $serverInfo->isFastCGI()), wfWAFAutoPrependHelper::helper('cgi')->getFilesNeededForBackup()),
 				array("litespeed", __('LiteSpeed/lsapi', 'wordfence'), $serverInfo->isLiteSpeed(), wfWAFAutoPrependHelper::helper('litespeed')->getFilesNeededForBackup()),
-				array("nginx", __('NGINX', 'wordfence'), $serverInfo->isNGINX(), wfWAFAutoPrependHelper::helper('nginx')->getFilesNeededForBackup()),
+				array("nginx-unit", __('NGINX Unit', 'wordfence'), $serverInfo->isNginxUnit(), wfWAFAutoPrependHelper::helper('nginx')->getFilesNeededForBackup()),
+				array("nginx", __('NGINX', 'wordfence'), $serverInfo->isNginxStandard(), wfWAFAutoPrependHelper::helper('nginx')->getFilesNeededForBackup()),
 				array("iis", __('Windows (IIS)', 'wordfence'), $serverInfo->isIIS(), wfWAFAutoPrependHelper::helper('iis')->getFilesNeededForBackup()),
 				array("manual", __('Manual Configuration', 'wordfence'), false, array()),
 			);
@@ -64,6 +65,7 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
 			<div class="wf-manual-waf-config" style="display: none;">
 				<p><?php esc_html_e('If you are using a web server not listed in the dropdown or if file permissions prevent the installer from completing successfully, you will need to perform the change manually. Click Continue below to create the required file and view manual installation instructions.', 'wordfence'); ?></p>
 			</div>
+			<div class="wf-notice wf-nginx-unit-waf-config wf-waf-install-blocked" style="display: none;"><?php esc_html_e("Firewall optimization is not currently supported on NGINX Unit", "wordfence"); ?></div>
 			<?php
 			$adminURL = network_admin_url('admin.php?page=WordfenceWAF&subpage=waf_options&action=configureAutoPrepend');
 			$wfnonce = wp_create_nonce('wfWAFAutoPrepend');

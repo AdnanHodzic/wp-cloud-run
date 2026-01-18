@@ -213,19 +213,19 @@ class wfLog {
 		wfRateLimit::countHit($type, wfUtils::getIP());
 		
 		if (wfRateLimit::globalRateLimit()->shouldEnforce($type)) {
-			$this->takeBlockingAction('maxGlobalRequests', __("Exceeded the maximum global requests per minute for crawlers or humans.", 'wordfence'));
+			$this->takeBlockingAction('maxGlobalRequests', wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_THROTTLEGLOBAL));
 		}
 		else if (wfRateLimit::crawlerViewsRateLimit()->shouldEnforce($type)) {
-			$this->takeBlockingAction('maxRequestsCrawlers', __("Exceeded the maximum number of requests per minute for crawlers.", 'wordfence')); //may not exit
+			$this->takeBlockingAction('maxRequestsCrawlers', wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_THROTTLECRAWLER)); //may not exit
 		}
 		else if (wfRateLimit::crawler404sRateLimit()->shouldEnforce($type)) {
-			$this->takeBlockingAction('max404Crawlers', __("Exceeded the maximum number of page not found errors per minute for a crawler.", 'wordfence'));
+			$this->takeBlockingAction('max404Crawlers', wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_THROTTLECRAWLERNOTFOUND));
 		}
 		else if (wfRateLimit::humanViewsRateLimit()->shouldEnforce($type)) {
-			$this->takeBlockingAction('maxRequestsHumans', __("Exceeded the maximum number of page requests per minute for humans.", 'wordfence'));
+			$this->takeBlockingAction('maxRequestsHumans', wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_THROTTLEHUMAN));
 		}
 		else if (wfRateLimit::human404sRateLimit()->shouldEnforce($type)) {
-			$this->takeBlockingAction('max404Humans', __("Exceeded the maximum number of page not found errors per minute for humans.", 'wordfence'));
+			$this->takeBlockingAction('max404Humans', wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_THROTTLEHUMANNOTFOUND));
 		}
 	}
 	
@@ -349,7 +349,7 @@ class wfLog {
 
 	private function processActionDescription($description) {
 		switch ($description) {
-		case wfWAFIPBlocksController::WFWAF_BLOCK_UAREFIPRANGE:
+		case wfWAFBlockI18n::WFWAF_BLOCK_UAREFIPRANGE:
 			return __('UA/Hostname/Referrer/IP Range not allowed', 'wordfence');
 		default:
 			return $description;
@@ -475,6 +475,10 @@ class wfLog {
 			} else {
 				$res['user'] = false;
 			}
+			
+			if (array_key_exists('actionDescription', $res)) {
+				$res['actionDescription'] = wfWAFBlockI18n::getTranslatedBlockDescription($res['actionDescription']);
+			}
 		}
 	}
 
@@ -563,8 +567,8 @@ class wfLog {
 			if ($b->matchRequest($IP, $userAgent, $referrer) !== wfBlock::MATCH_NONE) {
 				$b->recordBlock();
 				wfActivityReport::logBlockedIP($IP, null, 'advanced');
-				$this->currentRequest->actionDescription = __('UA/Referrer/IP Range not allowed', 'wordfence');
-				$this->do503(3600, __("Advanced blocking in effect.", 'wordfence')); //exits
+				$this->currentRequest->actionDescription = wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_UAREFIPRANGE);
+				$this->do503(3600, wfI18n::__("Advanced blocking in effect.", 'wordfence')); //exits
 			}
 		}
 
@@ -576,7 +580,7 @@ class wfLog {
 				$bypassRedirDest = wfConfig::get('cbl_bypassRedirDest', '');
 				
 				$this->initLogRequest();
-				$this->getCurrentRequest()->actionDescription = __('redirected to bypass URL', 'wordfence');
+				$this->getCurrentRequest()->actionDescription = wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR);
 				$this->getCurrentRequest()->statusCode = 302;
 				$this->currentRequest->action = 'cbl:redirect';
 				$this->logHit();
@@ -590,7 +594,7 @@ class wfLog {
 				wfConfig::inc('totalCountryBlocked');
 				
 				$this->initLogRequest();
-				$this->getCurrentRequest()->actionDescription = sprintf(/* translators: URL */ __('blocked access via country blocking and redirected to URL (%s)', 'wordfence'), wfConfig::get('cbl_redirURL'));
+				$this->getCurrentRequest()->actionDescription = wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY_REDIR, wfConfig::get('cbl_redirURL'));
 				$this->getCurrentRequest()->statusCode = 503;
 				if (!$this->getCurrentRequest()->action) {
 					$this->currentRequest->action = 'blocked:wordfence';
@@ -605,10 +609,10 @@ class wfLog {
 			}
 			else if ($match !== wfBlock::MATCH_NONE) {
 				$b->recordBlock();
-				$this->currentRequest->actionDescription = __('blocked access via country blocking', 'wordfence');
+				$this->currentRequest->actionDescription = wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY);
 				wfConfig::inc('totalCountryBlocked');
 				wfActivityReport::logBlockedIP($IP, null, 'country');
-				$this->do503(3600, __('Access from your area has been temporarily limited for security reasons', 'wordfence'));
+				$this->do503(3600, wfI18n::__('Access from your area has been temporarily limited for security reasons', 'wordfence'));
 			}
 		}
 
@@ -623,7 +627,7 @@ class wfLog {
 			}
 			$reason = $ipBlock->reason;
 			if ($ipBlock->type == wfBlock::TYPE_IP_MANUAL || $ipBlock->type == wfBlock::TYPE_IP_AUTOMATIC_PERMANENT) {
-				$reason = __('Manual block by administrator', 'wordfence');
+				$reason = wfWAFBlockI18n::getBlockDescription(wfWAFBlockI18n::WFWAF_BLOCK_MANUAL);
 			}
 			$this->do503($secsToGo, $reason); //exits
 		}
@@ -713,6 +717,7 @@ class wfLog {
 			header('Retry-After: ' . $secsToGo);
 		}
 		$customText = wpautop(wp_strip_all_tags(wfConfig::get('blockCustomText', '')));
+		$reason = wfWAFBlockI18n::getTranslatedBlockDescription($reason);
 		require_once(dirname(__FILE__) . '/wf503.php');
 		exit();
 	}

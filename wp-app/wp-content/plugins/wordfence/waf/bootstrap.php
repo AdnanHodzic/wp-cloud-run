@@ -397,17 +397,17 @@ class wfWAFWordPress extends wfWAF {
 				if (is_array($finalAction)) {
 					$isLockedOut = isset($finalAction['lockout']) && $finalAction['lockout'];
 					$finalAction = $finalAction['action'];
-					if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_REDIR) {
+					if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY_REDIR)) {
 						$redirect = wfWAFIPBlocksController::currentController()->countryRedirURL();
 					}
-					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR) {
+					else if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR)) {
 						$redirect = wfWAFIPBlocksController::currentController()->countryBypassRedirURL();
 					}
-					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_UAREFIPRANGE) {
+					else if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_UAREFIPRANGE)) {
 						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Advanced blocking in effect.', '503Time' => 3600)));
 						$httpCode = 503;
 					}
-					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY) {
+					else if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY)) {
 						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Access from your area has been temporarily limited for security reasons.', '503Time' => 3600)));
 						$httpCode = 503;
 					}
@@ -446,17 +446,17 @@ class wfWAFWordPress extends wfWAF {
 				$finalAction = $e->getRequest()->getMetadata('finalAction');
 				if (is_array($finalAction)) {
 					$finalAction = $finalAction['action'];
-					if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_REDIR) {
+					if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY_REDIR)) {
 						$redirect = wfWAFIPBlocksController::currentController()->countryRedirURL();
 					}
-					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR) {
+					else if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR)) {
 						$redirect = wfWAFIPBlocksController::currentController()->countryBypassRedirURL();
 					}
-					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_UAREFIPRANGE) {
+					else if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_UAREFIPRANGE)) {
 						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Advanced blocking in effect.', '503Time' => 3600)));
 						$httpCode = 503;
 					}
-					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY) {
+					else if (wfWAFBlockI18n::matchesBlockKey($finalAction, wfWAFBlockI18n::WFWAF_BLOCK_COUNTRY)) {
 						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Access from your area has been temporarily limited for security reasons.', '503Time' => 3600)));
 						$httpCode = 503;
 					}
@@ -583,7 +583,7 @@ class wfWAFWordPress extends wfWAF {
 		parent::uninstall();
 		@unlink(rtrim(WFWAF_LOG_PATH, '/') . '/.htaccess');
 		@unlink(rtrim(WFWAF_LOG_PATH, '/') . '/template.php');
-		@unlink(rtrim(WFWAF_LOG_PATH, '/') . '/GeoLite2-Country.mmdb');
+		@unlink(rtrim(WFWAF_LOG_PATH, '/') . '/geoip.mmdb');
 		
 		self::_recursivelyRemoveWflogs(''); //Removes any remaining files and the directory itself
 	}
@@ -652,7 +652,7 @@ class wfWAFWordPress extends wfWAF {
 		$fileList = parent::fileList();
 		$fileList[] = rtrim(WFWAF_LOG_PATH, '/') . '/.htaccess';
 		$fileList[] = rtrim(WFWAF_LOG_PATH, '/') . '/template.php';
-		$fileList[] = rtrim(WFWAF_LOG_PATH, '/') . '/GeoLite2-Country.mmdb';
+		$fileList[] = rtrim(WFWAF_LOG_PATH, '/') . '/geoip.mmdb';
 		return $fileList;
 	}
 
@@ -791,20 +791,29 @@ class wfWAFWordPressI18n implements wfWAFI18nEngine {
 		return $text;
 	}
 
+	private function getPotentialDirectories() {
+		return array(
+			dirname(__FILE__) . "/../languages/",
+			dirname(WFWAF_LOG_PATH) . "/languages/plugins/"
+		);
+	}
+
 	protected function loadTranslations() {
 		require_once dirname(__FILE__) . '/pomo/mo.php';
 
 		$currentLocale = $this->storageEngine->getConfig('WPLANG', '', 'synced');
+		if (!preg_match("/^[a-zA-Z_]+$/", $currentLocale))
+			return false;
+		$filename = "wordfence-{$currentLocale}.mo";
 
-		// Find translation file for the current language.
-		$mofile = dirname(__FILE__) . '/../languages/wordfence-' . $currentLocale . '.mo';
-		if (!file_exists($mofile)) {
-			// No translation, use the default
-			$mofile = dirname(__FILE__) . '/../languages/wordfence.mo';
+		foreach ($this->getPotentialDirectories() as $directory) {
+			$path = "{$directory}/{$filename}";
+			if (file_exists($path)) {
+				$this->mo = new wfMO();
+				return $this->mo->import_from_file($path);
+			}
 		}
-
-		$this->mo = new wfMO();
-		return $this->mo->import_from_file( $mofile );
+		return false;
 	}
 }
 

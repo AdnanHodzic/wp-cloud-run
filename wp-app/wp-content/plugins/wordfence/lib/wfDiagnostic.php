@@ -131,7 +131,7 @@ class wfDiagnostic
 				'tests' => array(
 					'connectToServer2' => __('Connecting to Wordfence servers (https)', 'wordfence'),
 					'connectToSelf' => __('Connecting back to this site', 'wordfence'),
-					'connectToSelfIpv6' => array('raw' => true, 'value' => wp_kses(sprintf(__('Connecting back to this site via IPv6 (not required; failure to connect may not be an issue on some sites) <a href="%s" target="_blank" rel="noopener noreferrer" class="wfhelp"><span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'), wfSupportController::esc_supportURL(wfSupportController::ITEM_DIAGNOSTICS_IPV6)), array('a'=>array('href'=>array(), 'target'=>array(), 'rel'=>array(), 'class'=>array()), 'span'=>array('class'=>array())))),
+					'connectToSelfIpv6' => array('raw' => true, 'value' => wp_kses(sprintf(__('Connecting back to this site via IPv6 (Not required; this may not be an issue on some sites. <a href="%s" target="_blank" rel="noopener noreferrer" class="wfhelp"><span class="wfhelpextra">Click here to learn whether this is an issue</span></a>)', 'wordfence'), wfSupportController::esc_supportURL(wfSupportController::ITEM_DIAGNOSTICS_IPV6)), array('a'=>array('href'=>array(), 'target'=>array(), 'rel'=>array(), 'class'=>array()), 'span'=>array('class'=>array())))),
 					'serverIP' => __('IP(s) used by this server', 'wordfence'),
 				)
 			),
@@ -570,12 +570,14 @@ class wfDiagnostic
 			);
 		}
 
-		$currentUser = get_current_user();
-		if (!empty($currentUser)) { //php.net comments indicate on Windows this returns the process owner rather than the file owner
-			return array(
-				'test' => true,
-				'message' => $currentUser,
-			);
+		if (wfUtils::funcEnabled('get_current_user')) {
+			$currentUser = get_current_user();
+			if (!empty($currentUser)) { //php.net comments indicate on Windows this returns the process owner rather than the file owner
+				return array(
+					'test' => true,
+					'message' => $currentUser,
+				);
+			}
 		}
 
 		if (!empty($_SERVER['LOGON_USER'])) { //Last resort for IIS since POSIX functions are unavailable, Source: https://msdn.microsoft.com/en-us/library/ms524602(v=vs.90).aspx
@@ -773,6 +775,7 @@ class wfDiagnostic
 		
 		return array(
 			'test' => false,
+			'warn' => $ipVersion == 6,
 			'message' => array('escaped' => $message, 'textonly' => $messageTextOnly),
 			'detail' => $detail,
 		);
@@ -797,6 +800,7 @@ class wfDiagnostic
 						
 						return array(
 							'test' => false,
+							'warn' => true,
 							'infoOnly' => true,
 							'message' => __('IPv6 DNS resolution failed', 'wordfence'),
 							'detail' => array('escaped' => $detail, 'textonly' => $detailTextOnly),
@@ -808,12 +812,14 @@ class wfDiagnostic
 			catch (wfCurlInterceptionFailedException $e) {
 				return array(
 					'test' => false,
+					'warn' => true,
 					'message' => __('This diagnostic is unavailable as cURL appears to be supported, but was not used by WordPress for this request', 'wordfence')
 				);
 			}
 		}
 		return array(
 			'test' => false,
+			'warn' => true,
 			'message' => __('This diagnostic requires cURL', 'wordfence')
 		);
 	}

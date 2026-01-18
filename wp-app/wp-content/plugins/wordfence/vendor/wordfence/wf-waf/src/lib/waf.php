@@ -821,11 +821,13 @@ if (!defined('WFWAF_VERSION') || defined('WFWAF_RULES_LOADED')) {
 %s?>
 PHP
 				, $this->buildRuleSet($rules)), 'rules');
-			if (!empty($ruleString) && WFWAF_DEBUG && !file_exists($this->getStorageEngine()->getRulesDSLCacheFile())) {
-				wfWAFStorageFile::atomicFilePutContents($this->getStorageEngine()->getRulesDSLCacheFile(), $ruleString, 'rules');
-			}
+				
+				if (!empty($ruleString) && WFWAF_DEBUG && !file_exists($this->getStorageEngine()->getRulesDSLCacheFile())) {
+					wfWAFStorageFile::atomicFilePutContents($this->getStorageEngine()->getRulesDSLCacheFile(), $ruleString, 'rules');
+				}
 
 			} else {
+				$rules = $this->_preprocessRulesArray($rules);
 				$this->getStorageEngine()->setRules($rules);
 			}
 
@@ -854,6 +856,8 @@ PHP
 			throw new wfWAFBuildRulesException('Invalid rule format passed to buildRuleSet.');
 		}
 		$exportedCode = '';
+		
+		$rules = $this->_preprocessRulesArray($rules);
 
 		if (isset($rules['scores']) && is_array($rules['scores'])) {
 			foreach ($rules['scores'] as $category => $score) {
@@ -872,27 +876,29 @@ PHP
 
 		foreach (array('blacklistedParams', 'whitelistedParams') as $key) {
 			if (isset($rules[$key]) && is_array($rules[$key])) {
-				/** @var wfWAFRuleParserURLParam $urlParam */
-				foreach ($rules[$key] as $urlParam) {
-					if ($urlParam->getConditional()) {
-						
-						$exportedCode .= sprintf("\$this->{$key}[%s][] = array(\n%s => %s,\n%s => %s,\n%s => %s\n);\n", var_export($urlParam->getParam(), true), 
-							var_export('url', true), var_export($urlParam->getUrl(), true),
-							var_export('rules', true), var_export($urlParam->getRules(), true),
-							var_export('conditional', true), $urlParam->getConditional()->render());
-					}
-					else {
-						if ($urlParam->getRules()) {
-							$url = array(
-								'url'   => $urlParam->getUrl(),
-								'rules' => $urlParam->getRules(),
+				foreach ($rules[$key] as $paramKey => $payloads) {
+					foreach ($payloads as $payload) { /** @var array|string $payload */
+						if (is_string($payload)) {
+							$exportedCode .= sprintf("\$this->{$key}[%s][] = %s;\n", 
+								var_export($paramKey, true),
+								var_export($payload, true)
 							);
-						} else {
-							$url = $urlParam->getUrl();
 						}
-						
-						$exportedCode .= sprintf("\$this->{$key}[%s][] = %s;\n", var_export($urlParam->getParam(), true), 
-							var_export($url, true));
+						else if (array_key_exists('conditional', $payload)) {
+							$exportedCode .= sprintf("\$this->{$key}[%s][] = array(\n%s => %s,\n%s => %s,\n%s => %s\n);\n", 
+								var_export($paramKey, true),
+								var_export('url', true), var_export($payload['url'], true),
+								var_export('rules', true), var_export($payload['rules'], true),
+								var_export('conditional', true), $payload['conditional']->render()
+							);
+						}
+						else {
+							$exportedCode .= sprintf("\$this->{$key}[%s][] = array(\n%s => %s,\n%s => %s,\n);\n", 
+								var_export($paramKey, true),
+								var_export('url', true), var_export($payload['url'], true),
+								var_export('rules', true), var_export($payload['rules'], true)
+							);
+						}
 					}
 				}
 				$exportedCode .= "\n";
@@ -913,6 +919,47 @@ HTML
 		}
 
 		return $exportedCode;
+	}
+	
+	/**
+	 * Preprocesses the parsed rules array so it's suitable for use both by the file-based storage engine and the mysqli
+	 * engine.
+	 * 
+	 * @param array $rules
+	 * @return array
+	 */
+	protected function _preprocessRulesArray($rules) {
+		$cleaned = $rules;
+		foreach (array('blacklistedParams', 'whitelistedParams') as $key) {
+			if (isset($rules[$key]) && is_array($rules[$key])) {
+				/** @var wfWAFRuleParserURLParam $urlParam */
+				foreach ($rules[$key] as $index => $urlParam) {
+					unset($cleaned[$key][$index]);
+					$paramKey = $urlParam->getParam();
+					if (!array_key_exists($paramKey, $cleaned[$key])) {
+						$cleaned[$key][$paramKey] = array();
+					}
+					
+					if ($urlParam->getConditional()) {
+						$cleaned[$key][$paramKey][] = array(
+							'url' => $urlParam->getUrl(),
+							'rules' => $urlParam->getRules(),
+							'conditional' => $urlParam->getConditional(),
+						);
+					}
+					else if ($urlParam->getRules()) {
+						$cleaned[$key][$paramKey][] = array(
+							'url' => $urlParam->getUrl(),
+							'rules' => $urlParam->getRules(),
+						);
+					}
+					else {
+						$cleaned[$key][$paramKey][] = $urlParam->getUrl();
+					}
+				}
+			}
+		}
+		return $cleaned;
 	}
 
 	/**
@@ -1324,10 +1371,14 @@ HTML
 			return;
 		}
 
-		$whitelist = (array) $this->getStorageEngine()->getConfig('whitelistedURLParams', null, 'livewaf');
-		if (!is_array($whitelist)) {
+		$whitelist = $this->getStorageEngine()->getConfig('whitelistedURLParams', null, 'livewaf');
+		if (is_object($whitelist)) {
+			$whitelist = (array) $whitelist;
+		}
+		else if (!is_array($whitelist)) {
 			$whitelist = array();
 		}
+		
 		if (is_array($ruleID)) {
 			foreach ($ruleID as $id) {
 				$whitelist[base64_encode($path) . "|" . base64_encode($paramKey)][$id] = $data;
@@ -1356,24 +1407,32 @@ HTML
 			&& is_array($this->whitelistedParams[$paramKey]))
 		) {
 			foreach ($this->whitelistedParams[$paramKey] as $urlRegex) {
-				if (is_array($urlRegex)) {
-					if (isset($urlRegex['rules']) && is_array($urlRegex['rules']) && !in_array($ruleID, $urlRegex['rules'])) {
+				if (is_array($urlRegex) || $urlRegex instanceof wfWAFRuleParserURLParam) {
+					$rules = is_array($urlRegex) ? $urlRegex['rules'] : $urlRegex->getRules();
+					if ($rules && !in_array($ruleID, $rules)) {
 						continue;
 					}
-					if (isset($urlRegex['conditional']) && !$urlRegex['conditional']->evaluate()) {
+					
+					$conditional = is_array($urlRegex) ? (isset($urlRegex['conditional']) ? $urlRegex['conditional'] : null) : $urlRegex->getConditional();
+					if ($conditional && !$conditional->evaluate()) {
 						continue;
 					}
-					$urlRegex = $urlRegex['url'];
+					
+					$urlRegex = is_array($urlRegex) ? $urlRegex['url'] : $urlRegex->getUrl();
 				}
-				if (preg_match($urlRegex, $urlPath)) {
+				
+				if (is_string($urlRegex) && preg_match($urlRegex, $urlPath)) {
 					return true;
 				}
 			}
 		}
 
 		$whitelistKey = base64_encode($urlPath) . "|" . base64_encode($paramKey);
-		$whitelist = (array) $this->getStorageEngine()->getConfig('whitelistedURLParams', array(), 'livewaf');
-		if (!is_array($whitelist)) {
+		$whitelist = $this->getStorageEngine()->getConfig('whitelistedURLParams', array(), 'livewaf');
+		if (is_object($whitelist)) {
+			$whitelist = (array) $whitelist;
+		}
+		else if (!is_array($whitelist)) {
 			$whitelist = array();
 		}
 
@@ -1501,16 +1560,21 @@ HTML
 			&& is_array($this->blacklistedParams[$paramKey])
 		) {
 			foreach ($this->blacklistedParams[$paramKey] as $urlRegex) {
-				if (is_array($urlRegex)) {
-					if (!in_array($ruleID, $urlRegex['rules'])) {
+				if (is_array($urlRegex) || $urlRegex instanceof wfWAFRuleParserURLParam) {
+					$rules = is_array($urlRegex) ? $urlRegex['rules'] : $urlRegex->getRules();
+					if ($rules && !in_array($ruleID, $rules)) {
 						continue;
 					}
-					if (isset($urlRegex['conditional']) && !$urlRegex['conditional']->evaluate()) {
+					
+					$conditional = is_array($urlRegex) ? (isset($urlRegex['conditional']) ? $urlRegex['conditional'] : null) : $urlRegex->getConditional();
+					if ($conditional && !$conditional->evaluate()) {
 						continue;
 					}
-					$urlRegex = $urlRegex['url'];
+					
+					$urlRegex = is_array($urlRegex) ? $urlRegex['url'] : $urlRegex->getUrl();
 				}
-				if (preg_match($urlRegex, $urlPath)) {
+				
+				if (is_string($urlRegex) && preg_match($urlRegex, $urlPath)) {
 					return true;
 				}
 			}

@@ -577,6 +577,7 @@ SQL
 		if ($results) {
 			foreach ($results as &$row) {
 				$actionData = json_decode($row->actionData, true);
+				$row->actionDescription = wfWAFBlockI18n::getTranslatedBlockDescription($row->actionDescription);
 				if (!is_array($actionData) || !isset($actionData['paramKey']) || !isset($actionData['paramValue'])) {
 					continue;
 				}

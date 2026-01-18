@@ -264,6 +264,7 @@ echo wfView::create('scanner/issue-checkGSB')->render();
 echo wfView::create('scanner/issue-checkHowGetIPs')->render();
 echo wfView::create('scanner/issue-suspiciousAdminUsers')->render();
 echo wfView::create('scanner/issue-timelimit')->render();
+echo wfView::create('scanner/issue-wfAssistantPresent')->render();
 
 //Currently unused
 echo wfView::create('scanner/issue-wpscan_fullPathDiscl')->render();

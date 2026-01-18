@@ -161,7 +161,7 @@ if (!wfOnboardingController::shouldShowAttempt3() && wfConfig::get('touppPromptN
 														<?php
 														echo wfView::create('common/status-critical', array(
 															'id' => 'wf-premium-alert',
-															'title' => __('Premium License Expiring', 'wordfence'),
+															'title' => sprintf(/* translators: %s: License type */__('%s License Expiring', 'wordfence'), wfLicense::current()->getBaseTypeLabel()),
 															'subtitle' => __('Auto-renew is disabled', 'wordfence'),
 															'link' => 'https://www.wordfence.com/gnl1renewExpiring/manage-wordfence-api-keys/',
 															'linkLabel' => __('Renew License', 'wordfence'),
@@ -218,7 +218,7 @@ if (!wfOnboardingController::shouldShowAttempt3() && wfConfig::get('touppPromptN
 															
 															echo wfView::create('dashboard/status-renewing', array(
 																'id' => 'wf-premium-alert',
-																'title' => __('Premium License Expiring', 'wordfence'),
+																'title' => sprintf(/* translators: %s: License type */__('%s License Expiring', 'wordfence'), wfLicense::current()->getBaseTypeLabel()),
 																'subtitle' => sprintf(__('License renews %s', 'wordfence'), $days),
 																'link' => 'https://www.wordfence.com/gnl1reviewExpiring/manage-wordfence-api-keys/',
 																'linkLabel' => __('Review Payment Method', 'wordfence'),

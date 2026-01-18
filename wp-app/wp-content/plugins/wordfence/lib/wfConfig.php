@@ -23,6 +23,10 @@ class wfConfig {
 	const OPTIONS_TYPE_AUDIT_LOG = 'auditlog';
 	const OPTIONS_TYPE_DIAGNOSTICS = 'diagnostics';
 	const OPTIONS_TYPE_ALL = 'all';
+
+	const DEFAULT_ALERT_MAX_HOURLY = 5;
+	
+	const DEFAULT_LOCK_TIMEOUT = 3600;
 	
 	private static $tableExists = true;
 	private static $cache = array();
@@ -145,7 +149,7 @@ class wfConfig {
 			'maxExecutionTime' => array('value' => 0, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)), 
 			'howGetIPs' => array('value' => '', 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)), 
 			'actUpdateInterval' => array('value' => 2, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)), 
-			'alert_maxHourly' => array('value' => 0, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)), 
+			'alert_maxHourly' => array('value' => self::DEFAULT_ALERT_MAX_HOURLY, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)),
 			'loginSec_userBlacklist' => array('value' => '', 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'liveTraf_maxRows' => array('value' => 2000, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)),
 			'liveTraf_maxAge' => array('value' => 30, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)),
@@ -194,6 +198,7 @@ class wfConfig {
 		'defaultsOnly' => array(
 			"apiKey" => array('value' => "", 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'keyType' => array('value' => wfLicense::KEY_TYPE_FREE, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
+			'licenseType' => array('value' => wfLicense::TYPE_FREE, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_STRING)),
 			'isPaid' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'hasKeyConflict' => array('value' => false, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 			'timeoffset_wf_updated' => array('value' => 0, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_INT)),
@@ -235,7 +240,7 @@ class wfConfig {
 			'satisfactionPromptOverride' => array('value' => true, 'autoload' => self::AUTOLOAD, 'validation' => array('type' => self::TYPE_BOOL)),
 		),
 	);
-	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_core', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData', 'malwarePrefixes', 'coreHashes', 'noc1ScanSchedule', 'allScansScheduled', 'disclosureStates', 'scanStageStatuses', 'adminNoticeQueue', 'suspiciousAdminUsernames', 'wordpressPluginVersions', 'wordpressThemeVersions', 'lastAuditEvents');
+	public static $serializedOptions = array('lastAdminLogin', 'scanSched', 'emailedIssuesList', 'wf_summaryItems', 'adminUserList', 'twoFactorUsers', 'alertFreqTrack', 'wfStatusStartMsgs', 'vulnerabilities_core', 'vulnerabilities_plugin', 'vulnerabilities_theme', 'dashboardData', 'malwarePrefixes', 'coreHashes', 'noc1ScanSchedule', 'allScansScheduled', 'disclosureStates', 'scanStageStatuses', 'adminNoticeQueue', 'suspiciousAdminUsernames', 'wordpressPluginVersions', 'wordpressThemeVersions', 'lastAuditEvents', 'recentServerAddr');
 	// Configuration keypairs that can be set from Central.
 	private static $wfCentralInternalConfig = array(
 		'wordfenceCentralUserSiteAuthGrant',
@@ -590,6 +595,56 @@ class wfConfig {
 	}
 	
 	/**
+	 * Returns multiple config values at once in an optimized way. Any that are uncached (or if $allowCached is false)
+	 * will all be queried in a single statement rather than multiple.
+	 * 
+	 * @param array $keysDefaults An associative array mapping 'key' => <default>
+	 * @param bool $allowCached
+	 * @return array
+	 */
+	public static function getMultiple($keysDefaults, $allowCached = true) {
+		global $wpdb;
+		
+		$result = array();
+		$remaining = array();
+		foreach ($keysDefaults as $key => $default) {
+			if ($allowCached && self::hasCachedOption($key)) {
+				$result[$key] = self::getCachedOption($key);
+			}
+			else {
+				$remaining[$key] = $default;
+			}
+		}
+		
+		if (!empty($remaining)) {
+			if (!self::$tableExists) {
+				return array_merge($remaining, $result);
+			}
+			
+			$sanitizedKeys = esc_sql(array_keys($remaining));
+			$keysINClause = "'" . implode("','", $sanitizedKeys) . "'";
+			
+			$table = self::table();
+			$rows = $wpdb->get_results("SELECT name, val, autoload FROM {$table} WHERE name IN ({$keysINClause})", ARRAY_A);
+			foreach ($rows as $r) {
+				$name = $r['name'];
+				$val = $r['val'];
+				if (in_array($name, self::$serializedOptions)) {
+					$val = maybe_unserialize($val);
+				}
+				
+				$result[$name] = $val;
+				unset($remaining[$name]);
+				if ($r['autoload'] != self::DONT_AUTOLOAD) {
+					self::updateCachedOption($name, $val);
+				}
+			}
+		}
+		
+		return array_merge($remaining, $result);
+	}
+	
+	/**
 	 * Runs a test against the database to verify set_ser is working via MySQLi.
 	 * 
 	 * @return bool
@@ -642,8 +697,8 @@ class wfConfig {
 		return 'wordfence_chunked_' . $key . '_';
 	}
 	
-	public static function get_ser($key, $default = false, $cache = true) {
-		if (self::hasCachedOption($key)) {
+	public static function get_ser($key, $default = false, $cache = true, $allowCacheRead = true) {
+		if ($allowCacheRead && self::hasCachedOption($key)) {
 			return self::getCachedOption($key);
 		}
 		
@@ -965,11 +1020,21 @@ class wfConfig {
 		wfConfig::set('autoUpdate', '0');	
 		wp_clear_scheduled_hook('wordfence_daily_autoUpdate');
 	}
+	
+	/**
+	 * Implements a database-based lock using our wfconfig table for storage. The option name is `$name` . '.lock', and
+	 * by default it auto-expires after `DEFAULT_LOCK_TIMEOUT` and does not autoload.
+	 * 
+	 * @param string $name
+	 * @param int|null $timeout Defaults to `DEFAULT_LOCK_TIMEOUT` if null
+	 * @param bool $autoload Whether the lock option should be saved as an autoloading option
+	 * @return bool Whether the lock was acquired
+	 */
 	public static function createLock($name, $timeout = null) { //Our own version of WP_Upgrader::create_lock that uses our table instead
 		global $wpdb;
 		
 		if (!$timeout) {
-			$timeout = 3600;
+			$timeout = self::DEFAULT_LOCK_TIMEOUT;
 		}
 		
 		$table = self::table();
@@ -993,6 +1058,7 @@ class wfConfig {
 		
 		return true;
 	}
+	
 	public static function releaseLock($name) {
 		self::remove($name . '.lock');
 	}

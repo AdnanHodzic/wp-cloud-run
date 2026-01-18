@@ -22,7 +22,7 @@ class wfCrawl {
 		$table = wfDB::networkTable('wfCrawlers');
 		$db = new wfDB();
 		$IPn = wfUtils::inet_pton($IP);
-		$ipHex = wfDB::binaryValueToSQLHex(wfUtils::inet_pton($IPn));
+		$ipHex = wfDB::binaryValueToSQLHex($IPn);
 		$status = $db->querySingle("select status from $table where IP={$ipHex} and patternSig=UNHEX(MD5('%s')) and lastUpdate > unix_timestamp() - %d", $hostPattern, WORDFENCE_CRAWLER_VERIFY_CACHE_TIME);
 		if($status){
 			if($status == 'verified'){
@@ -125,10 +125,22 @@ class wfCrawl {
 			return $verified[$ip];
 		}
 		if (self::isGoogleCrawler($ua)) {
+			$services = wfUtils::whitelistPresets();
+			if (array_key_exists('google', $services)) {
+				$ranges = $services['google']['r'];
+				foreach ($ranges as $r) {
+					if (wfUtils::subnetContainsIP($r, $ip)) {
+						$verified[$ip] = true;
+						return $verified[$ip];
+					}
+				}
+			}
+			
 			if (self::verifyCrawlerPTR(wordfence::getLog()->getGooglePattern(), $ip)) {
 				$verified[$ip] = true;
 				return $verified[$ip];
 			}
+			
 			$noc1Status = self::verifyGooglebotViaNOC1($ip);
 			if ($noc1Status == self::GOOGLE_BOT_VERIFIED) {
 				$verified[$ip] = true;
@@ -139,7 +151,9 @@ class wfCrawl {
 				return $verified[$ip];
 			}
 			
-			return true; //We were unable to successfully validate Googlebot status so default to being permissive
+			if (!array_key_exists('google', $services)) {
+				return true; //We were unable to successfully validate Googlebot status so default to being permissive if the service IP list is missing
+			}
 		}
 		$verified[$ip] = false;
 		return $verified[$ip];
