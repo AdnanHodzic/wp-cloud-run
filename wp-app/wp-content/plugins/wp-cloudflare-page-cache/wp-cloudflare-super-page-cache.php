@@ -3,7 +3,7 @@
  * Plugin Name:  Super Page Cache
  * Plugin URI:   https://wordpress.org/plugins/wp-cloudflare-page-cache/
  * Description:  A WordPress performance plugin that lets you get Edge Caching enabled on a Cloudflare free plan.
- * Version:      5.0.9
+ * Version:      5.2.2
  * Author:       Themeisle
  * Author URI:   https://themeisle.com
  * License:      GPLv2 or later

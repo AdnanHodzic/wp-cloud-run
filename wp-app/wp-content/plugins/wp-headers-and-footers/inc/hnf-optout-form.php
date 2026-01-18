@@ -3,15 +3,16 @@
  * HeaderandFooter optout Content.
  * @package HeaderandFooter
  * @since 2.2.3
+ * @version 3.1.3
  */
 
-$pluginSlug = "wp-headers-and-footers";
+$plugin_slug = "wp-headers-and-footers";
 $pluginName = "WP Headers And Footers";
 
 $headerandfooter_optout_nonce = wp_create_nonce("headerandfooter-optout-nonce");
 
 // Fetch the wpb_sdk_  option and decode it into an array
-$sdk_data = json_decode(get_option('wpb_sdk_' . $pluginSlug), true);
+$sdk_data = json_decode(get_option('wpb_sdk_' . $plugin_slug), true);
 
 // Handle cases where option doesn't exist
 $sdk_communication = isset($sdk_data['communication']) ? $sdk_data['communication'] : '0';
@@ -20,16 +21,16 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
 
 ?>
 
-<input type="hidden" id="<?php echo $pluginSlug . '_communication' ?>" value="<?php echo $sdk_communication; ?>"/>
-<input type="hidden" id="<?php echo $pluginSlug . '_diagnostic_info' ?>" value="<?php echo $sdk_diagnostic_info; ?>"/>
-<input type="hidden" id="<?php echo $pluginSlug . '_extensions' ?>" value="<?php echo $sdk_extensions; ?>"/>
+<input type="hidden" id="<?php echo esc_attr($plugin_slug . '_communication'); ?>" value="<?php echo esc_attr($sdk_communication); ?>"/>
+<input type="hidden" id="<?php echo esc_attr($plugin_slug . '_diagnostic_info'); ?>" value="<?php echo esc_attr($sdk_diagnostic_info); ?>"/>
+<input type="hidden" id="<?php echo esc_attr($plugin_slug . '_extensions'); ?>" value="<?php echo esc_attr($sdk_extensions); ?>"/>
 
 <style media="screen">
-    .<?php echo $pluginSlug; ?>-modal.active {
+    .<?php echo esc_attr($plugin_slug); ?>-modal.active {
         display: block;
     }
 
-    .<?php echo $pluginSlug; ?>-modal {
+    .<?php echo esc_attr($plugin_slug); ?>-modal {
         position: fixed;
         overflow: auto;
         height: 100%;
@@ -40,11 +41,11 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         background: rgba(0, 0, 0, 0.6);
     }
 
-    .<?php echo $pluginSlug; ?>-modal.active .<?php echo $pluginSlug; ?>-modal-dialog {
+    .<?php echo esc_attr($plugin_slug); ?>-modal.active .<?php echo esc_attr($plugin_slug); ?>-modal-dialog {
         top: 10%;
     }
 
-    .<?php echo $pluginSlug; ?>-modal .<?php echo $pluginSlug; ?>-modal-dialog {
+    .<?php echo esc_attr($plugin_slug); ?>-modal .<?php echo esc_attr($plugin_slug); ?>-modal-dialog {
         background: #fff;
         position: absolute;
         left: 50%;
@@ -57,7 +58,7 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .<?php echo $pluginSlug; ?>-modal .<?php echo $pluginSlug; ?>-modal-header {
+    .<?php echo esc_attr($plugin_slug); ?>-modal .<?php echo esc_attr($plugin_slug); ?>-modal-header {
         background: #fbfbfb;
         border-bottom: 1px solid #eee;
         margin-bottom: -3px;
@@ -65,12 +66,12 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         position: relative;
     }
 
-    .<?php echo $pluginSlug; ?>-modal .<?php echo $pluginSlug; ?>-modal-body {
+    .<?php echo esc_attr($plugin_slug); ?>-modal .<?php echo esc_attr($plugin_slug); ?>-modal-body {
         border-bottom: 0;
         padding: 20px;
     }
 
-    .<?php echo $pluginSlug; ?>-modal .<?php echo $pluginSlug; ?>-modal-footer {
+    .<?php echo esc_attr($plugin_slug); ?>-modal .<?php echo esc_attr($plugin_slug); ?>-modal-footer {
         background: #fefefe;
         border: 0;
         padding: 20px;
@@ -78,7 +79,7 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         text-align: right;
     }
 
-    .<?php echo $pluginSlug; ?>-modal h4 {
+    .<?php echo esc_attr($plugin_slug); ?>-modal h4 {
         color: #cacaca;
         font-size: 1.2em;
         font-weight: 700;
@@ -90,13 +91,13 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         -webkit-font-smoothing: antialiased;
     }
 
-    .<?php echo $pluginSlug; ?>-modal h2 {
+    .<?php echo esc_attr($plugin_slug); ?>-modal h2 {
         font-weight: bold;
         font-size: 20px;
         margin-top: 0;
     }
 
-    .<?php echo $pluginSlug; ?>-modal p {
+    .<?php echo esc_attr($plugin_slug); ?>-modal p {
         font-size: 14px;
         color: #333;
     }
@@ -117,14 +118,14 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         margin: 0;
     }
 
-    .<?php echo $pluginSlug; ?>-opt-out-link {
+    .<?php echo esc_attr($plugin_slug); ?>-opt-out-link {
         color: #2271b1;
         font-size: 13px;
         text-decoration: underline;
         line-height: 20px;
     }
 
-    .<?php echo $pluginSlug; ?>-opt-out-link:hover {
+    .<?php echo esc_attr($plugin_slug); ?>-opt-out-link:hover {
         text-decoration: none;
     }
 
@@ -240,17 +241,17 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         padding-left: 19px;
     }
 
-    .<?php echo $pluginSlug; ?>-opt-out-button {
+    .<?php echo esc_attr($plugin_slug); ?>-opt-out-button {
         display: inline-block;
         vertical-align: middle;
         margin-right: 10px;
     }
 
-    .<?php echo $pluginSlug; ?>-modal-footer .wp-core-ui .button-primary {
+    .<?php echo esc_attr($plugin_slug); ?>-modal-footer .wp-core-ui .button-primary {
         vertical-align: middle;
     }
 
-    .<?php echo $pluginSlug; ?>-modal-close {
+    .<?php echo esc_attr($plugin_slug); ?>-modal-close {
         border-radius: 20px;
         color: #bbb;
         cursor: pointer;
@@ -261,18 +262,18 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
         transition: all .2s ease-in-out;
     }
 
-    .<?php echo $pluginSlug; ?>-modal-close:hover {
+    .<?php echo esc_attr($plugin_slug); ?>-modal-close:hover {
         background: #aaa;
         color: #fff;
     }
 
-    .<?php echo $pluginSlug; ?>-modal-opt-out-overlay {
+    .<?php echo esc_attr($plugin_slug); ?>-modal-opt-out-overlay {
         position: fixed;
         inset: 0;
         content: '';
     }
 
-    .<?php echo $pluginSlug; ?>-modal-body hr {
+    .<?php echo esc_attr($plugin_slug); ?>-modal-body hr {
         border: 0;
         border-top: 1px solid #eee;
         margin: 25px 0 20px;
@@ -341,7 +342,7 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
     }
 
     .wpb-loading .wpb-switch-feedback,
-    .wpb-loading .<?php echo $pluginSlug; ?>-opt-out-link,
+    .wpb-loading .<?php echo esc_attr($plugin_slug); ?>-opt-out-link,
     .wpb-loading .communication-content {
         cursor: wait;
     }
@@ -351,23 +352,23 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
     }
 
 </style>
-<div class="<?php echo $pluginSlug; ?>-modal <?php echo $pluginSlug; ?>-modal-opt-out" >
-    <div class="<?php echo $pluginSlug; ?>-modal-opt-out-overlay"></div>
-    <div class="<?php echo $pluginSlug; ?>-modal-dialog">
-        <div class="<?php echo $pluginSlug; ?>-modal-header">
-            <div class="<?php echo $pluginSlug; ?>-modal-close <?php echo $pluginSlug; ?>-continue-button"><span
+<div class="<?php echo esc_attr($plugin_slug); ?>-modal <?php echo esc_attr($plugin_slug); ?>-modal-opt-out" >
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-opt-out-overlay"></div>
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-dialog">
+        <div class="<?php echo esc_attr($plugin_slug); ?>-modal-header">
+            <div class="<?php echo esc_attr($plugin_slug); ?>-modal-close <?php echo esc_attr($plugin_slug); ?>-continue-button"><span
                         class="dashicons dashicons-no"></span></div>
             <h4>Opt Out</h4>
         </div>
-        <div class="<?php echo $pluginSlug; ?>-modal-body" data-optin="extensions">
+        <div class="<?php echo esc_attr($plugin_slug); ?>-modal-body" data-optin="extensions">
             <!-- Communication Section -->
-            <div class="communication-container <?= $sdk_communication === '1' ? '' : 'wpb-deactivated' ?>">
+            <div class="communication-container <?php echo $sdk_communication === '1' ? '' : 'wpb-deactivated'; ?>">
                 <div class="communication-header">
                     <h2>COMMUNICATION</h2>
                     <span class="wpb-communication-switch-feedback wpb-switch-feedback"><i
                                 class="dashicons dashicons-yes"></i></span>
-                    <a href="#" class="<?php echo $pluginSlug; ?>-opt-out-link"
-                       option-name="communication"><?= $sdk_communication === '1' ? "Opt Out" : "Opt In" ?></a>
+                    <a href="#" class="<?php echo esc_attr($plugin_slug); ?>-opt-out-link"
+                       option-name="communication"><?php echo $sdk_communication === '1' ? "Opt Out" : "Opt In"; ?></a>
                 </div>
                 <div class="communication-content">
                     <div class="info-box">
@@ -386,13 +387,13 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
             </div>
             <hr>
             <!-- Diagnostic Info Section -->
-            <div class="communication-container <?= $sdk_diagnostic_info === '1' ? "" : "wpb-deactivated" ?>">
+            <div class="communication-container <?php echo $sdk_diagnostic_info === '1' ? "" : "wpb-deactivated"; ?>">
                 <div class="communication-header">
                     <h2>Diagnostic Info</h2>
                     <span class="wpb-diagnostic_info-switch-feedback wpb-switch-feedback"><i
                                 class="dashicons dashicons-yes"></i></span>
-                    <a href="#" class="<?php echo $pluginSlug; ?>-opt-out-link"
-                       option-name="diagnostic_info"><?= $sdk_diagnostic_info === '1' ? "Opt Out" : "Opt In" ?></a>
+                    <a href="#" class="<?php echo esc_attr($plugin_slug); ?>-opt-out-link"
+                       option-name="diagnostic_info"><?php echo $sdk_diagnostic_info === '1' ? "Opt Out" : "Opt In"; ?></a>
                 </div>
                 <div class="communication-content">
                     <div class="info-box">
@@ -420,13 +421,12 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
             </div>
             <hr>
             <!-- Extensions Section -->
-            <div class="communication-container <?= $sdk_extensions === '1' ? "" : "wpb-deactivated" ?>"
-            ">
+            <div class="communication-container <?php echo esc_attr($sdk_extensions === '1' ? "" : "wpb-deactivated"); ?>">
             <div class="communication-header">
                 <h2>Extensions</h2>
                 <span class="wpb-extensions-switch-feedback wpb-switch-feedback"><i class="dashicons dashicons-yes"></i></span>
-                <a href="#" class="<?php echo $pluginSlug; ?>-opt-out-link"
-                   option-name="extensions"><?= $sdk_extensions === '1' ? "Opt Out" : "Opt In" ?></a>
+                <a href="#" class="<?php echo esc_attr($plugin_slug); ?>-opt-out-link"
+                   option-name="extensions"><?php $sdk_extensions === '1' ? "Opt Out" : "Opt In"; ?></a>
             </div>
             <div class="communication-content">
                 <div class="info-box">
@@ -439,35 +439,34 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
                             Names, slugs, versions, and if active or not
                         </div>
                     </div>
-                    <label class="wpb-optin-switch"><input data-checkbox="extensions"
-                                                           type="checkbox" <?= $sdk_extensions === '1' ? "Checked" : "" ?>></label>
+                    <label class="wpb-optin-switch"><input data-checkbox="extensions" type="checkbox" <?php $sdk_extensions === '1' ? "Checked" : ""; ?>></label>
                 </div>
             </div>
         </div>
     </div>
-    <div class="<?php echo $pluginSlug; ?>-modal-body" style="display: none;" data-optin="communication">
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-body" style="display: none;" data-optin="communication">
         <p>Sharing your name and email allows us to keep you in the loop about new features and important updates, warn
             you about security issues before they become public knowledge, and send you special offers.</p>
-        <p>By clicking "Opt Out", <strong><?php echo $pluginName; ?></strong> will no longer be able to view your name
+        <p>By clicking "Opt Out", <strong><?php echo esc_html($pluginName); ?></strong> will no longer be able to view your name
             and email.</p>
     </div>
-    <div class="<?php echo $pluginSlug; ?>-modal-body" style="display: none;" data-optin="diagnostic_info">
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-body" style="display: none;" data-optin="diagnostic_info">
         <p>Sharing diagnostic data helps to provide additional functionality that's relevant to your website, avoid
             WordPress or PHP version incompatibilities that can break the website, and recognize which languages &
             regions the plugin should be translated and tailored to.</p>
-        <p>By clicking "Opt Out", diagnostic data will no longer be sent to <strong><?php echo $pluginName; ?></strong>.
+        <p>By clicking "Opt Out", diagnostic data will no longer be sent to <strong><?php echo esc_html($pluginName); ?></strong>.
         </p>
     </div>
-    <div class="<?php echo $pluginSlug; ?>-modal-footer" data-optin-footer="extensions">
-        <button class="button button-primary <?php echo $pluginSlug; ?>-continue-button">Done</button>
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-footer" data-optin-footer="extensions">
+        <button class="button button-primary <?php echo esc_attr($plugin_slug); ?>-continue-button"><?php esc_html_e('Done', 'wp-headers-and-footers'); ?></button>
     </div>
-    <div class="<?php echo $pluginSlug; ?>-modal-footer" style="display: none;" data-optin-footer="communication">
-        <a class="<?php echo $pluginSlug; ?>-opt-out-button" data-optin="" href="#">Opt Out</a>
-        <button class="button button-primary" id="stay-connected">Stay Connected</button>
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-footer" style="display: none;" data-optin-footer="communication">
+        <a class="<?php echo esc_attr($plugin_slug); ?>-opt-out-button" data-optin="" href="#"><?php esc_html_e('Opt Out', 'wp-headers-and-footers'); ?></a>
+        <button class="button button-primary" id="stay-connected"><?php esc_html_e('Stay Connected', 'wp-headers-and-footers'); ?></button>
     </div>
-    <div class="<?php echo $pluginSlug; ?>-modal-footer" style="display: none;" data-optin-footer="diagnostic_info">
-        <a class="<?php echo $pluginSlug; ?>-opt-out-button" data-optin="" href="#">Opt Out</a>
-        <button class="button button-primary" id="stay-connected">Keep Sharing</button>
+    <div class="<?php echo esc_attr($plugin_slug); ?>-modal-footer" style="display: none;" data-optin-footer="diagnostic_info">
+        <a class="<?php echo esc_attr($plugin_slug); ?>-opt-out-button" data-optin="" href="#"><?php esc_html_e('Opt Out', 'wp-headers-and-footers'); ?></a>
+        <button class="button button-primary" id="stay-connected"><?php esc_html_e('Keep Sharing', 'wp-headers-and-footers'); ?></button>
     </div>
 </div>
 </div>
@@ -476,7 +475,7 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
     (function ($) {
         $(function () {
 
-            var pluginSlug = '<?php echo $pluginSlug; ?>';  // Define the plugin slug
+            var pluginSlug = '<?php echo esc_attr($plugin_slug); ?>';  // Define the plugin slug
 
             // Open modal when the "Opt Out" button is clicked for a specific plugin row
             $(document).on('click', 'tr[data-slug="' + pluginSlug + '"] .opt-out', function (e) {
@@ -553,7 +552,7 @@ $sdk_extensions = isset($sdk_data['extensions']) ? $sdk_data['extensions'] : '0'
                         action: 'wpheadersandfooters_optout_yes',  // The action to trigger
                         setting_name: setting_name,  // The setting name (option)
                         setting_value: setting_option_value,  // The value (opt-in or opt-out)
-                        optout_nonce: '<?php echo isset($headerandfooter_optout_nonce) ? $headerandfooter_optout_nonce : ''; ?>',  // Security nonce
+                        optout_nonce: '<?php echo isset($headerandfooter_optout_nonce) ? esc_js($headerandfooter_optout_nonce) : ''; ?>',  // Security nonce
                     },
                     beforeSend: function () {
                         if (setting_option_value == '0') {

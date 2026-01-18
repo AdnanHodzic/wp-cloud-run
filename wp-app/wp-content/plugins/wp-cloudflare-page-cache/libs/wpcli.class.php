@@ -156,14 +156,18 @@ class SWCFPC_WP_CLI extends WP_CLI_Command {
 
 				$error .= __( 'Page caching seems not working for both dynamic and static pages.', 'wp-cloudflare-page-cache' );
 				$error .= '<br/><br/>';
+				// translators: %1$s is the dynamic resource URL, %2$s is the error message.
 				$error .= sprintf( __( 'Error on dynamic page (%1$s): %2$s', 'wp-cloudflare-page-cache' ), $url_dynamic_resource, $error_dynamic );
 				$error .= '<br/><br/>';
+				// translators: %1$s is the static resource URL, %2$s is the error message.
 				$error .= sprintf( __( 'Error on static resource (%1$s): %2$s', 'wp-cloudflare-page-cache' ), $url_static_resource, $error_static );
 
 			} else {
 				// Error on dynamic test only
+				// translators: %s is the static resource URL.
 				$error .= sprintf( __( 'Page caching is working for static page (%s) but seems not working for dynamic pages.', 'wp-cloudflare-page-cache' ), $url_static_resource );
 				$error .= '<br/><br/>';
+				// translators: %1$s is the dynamic resource URL, %2$s is the error message.
 				$error .= sprintf( __( 'Error on dynamic page (%1$s): %2$s', 'wp-cloudflare-page-cache' ), $url_dynamic_resource, $error_dynamic );
 
 			}
@@ -243,33 +247,26 @@ class SWCFPC_WP_CLI extends WP_CLI_Command {
 			return false;
 		}
 
-		if ( $this->main_instance->get_cloudflare_worker_mode() && ! isset( $headers['x-wp-cf-super-cache-worker-status'] ) ) {
-			$error = __( 'Unable to find the X-WP-CF-Super-Cache-Worker-Status response header. Worker mode seems not working correctly.', 'wp-cloudflare-page-cache' );
-
-			return false;
-		}
-
-		if ( $this->main_instance->get_cloudflare_worker_mode() && ( strcasecmp( $headers['x-wp-cf-super-cache-worker-status'], 'hit' ) == 0 || strcasecmp( $headers['x-wp-cf-super-cache-worker-status'], 'miss' ) == 0 ) ) {
-			return true;
-		}
-
 		if ( strcasecmp( $headers['CF-Cache-Status'], 'HIT' ) == 0 || strcasecmp( $headers['CF-Cache-Status'], 'MISS' ) == 0 || strcasecmp( $headers['CF-Cache-Status'], 'EXPIRED' ) == 0 ) {
 			return true;
 		}
 
 		if ( strcasecmp( $headers['CF-Cache-Status'], 'REVALIDATED' ) == 0 ) {
+			// translators: %s is the CF-Cache-Status header value.
 			$error = sprintf( __( 'Cache status: %s - The resource is served from cache but is stale. The resource was revalidated by either an If-Modified-Since header or an If-None-Match header.', 'wp-cloudflare-page-cache' ), $headers['CF-Cache-Status'] );
 
 			return false;
 		}
 
 		if ( strcasecmp( $headers['CF-Cache-Status'], 'UPDATING' ) == 0 ) {
+			// translators: %s is the CF-Cache-Status header value.
 			$error = sprintf( __( 'Cache status: %s - The resource was served from cache but is expired. The resource is currently being updated by the origin web server. UPDATING is typically seen only for very popular cached resources.', 'wp-cloudflare-page-cache' ), $headers['CF-Cache-Status'] );
 
 			return false;
 		}
 
 		if ( strcasecmp( $headers['CF-Cache-Status'], 'BYPASS' ) == 0 ) {
+			// translators: %s is the CF-Cache-Status header value.
 			$error = sprintf( __( 'Cache status: %s - Cloudflare has been instructed to not cache this asset. It has been served directly from the origin.', 'wp-cloudflare-page-cache' ), $headers['CF-Cache-Status'] );
 
 			return false;
@@ -280,8 +277,10 @@ class SWCFPC_WP_CLI extends WP_CLI_Command {
 			$cookies = wp_remote_retrieve_cookies( $response );
 
 			if ( ! empty( $cookies ) && count( $cookies ) > 1 ) {
+				// translators: %s is the CF-Cache-Status header value.
 				$error = sprintf( __( 'Cache status: %s - The resource was not cached by default and your current Cloudflare caching configuration doesn\'t instruct Cloudflare to cache the resource. Try to enable the <strong>Strip response cookies on pages that should be cached</strong> option and retry.', 'wp-cloudflare-page-cache' ), $headers['CF-Cache-Status'] );
 			} else {
+				// translators: %s is the CF-Cache-Status header value.
 				$error = sprintf( __( 'Cache status: %s - The resource was not cached by default and your current Cloudflare caching configuration doesn\'t instruct Cloudflare to cache the resource.  Instead, the resource was requested from the origin web server.', 'wp-cloudflare-page-cache' ), $headers['CF-Cache-Status'] );
 			}
 

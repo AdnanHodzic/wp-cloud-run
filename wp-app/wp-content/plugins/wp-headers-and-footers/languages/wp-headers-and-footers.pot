@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Headers and Footers\n"
-"POT-Creation-Date: 2022-09-17 14:42+0500\n"
+"POT-Creation-Date: 2025-04-03 13:09+0500\n"
 "PO-Revision-Date: 2021-06-01 10:54+0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -10,246 +10,357 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
-"X-Generator: Poedit 3.1.1\n"
+"X-Generator: Poedit 3.6\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: wp-headers-and-footers.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-KeywordsList: "
+"__;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.min.js\n"
 
-#: classes/class-notifications.php:128
+#: classes/class-diagnostics-log.php:131
+msgid "Download Log File"
+msgstr ""
+
+#: classes/class-diagnostics-log.php:134
+msgid "WP Headers and Footers Log File Downloaded Successfully!"
+msgstr ""
+
+#: classes/class-notifications.php:134
 msgid "Leave A Review?"
 msgstr ""
 
-#: classes/class-notifications.php:129
+#: classes/class-notifications.php:135
 msgid ""
 "We hope you've enjoyed using Inline Headers And Footers! Would you consider "
 "leaving us a review on WordPress.org?"
 msgstr ""
 
-#: classes/class-notifications.php:131
+#: classes/class-notifications.php:137
 msgid "Sure! I'd love to!"
 msgstr ""
 
-#: classes/class-notifications.php:132
+#: classes/class-notifications.php:138
 msgid "I've already left a review"
 msgstr ""
 
-#: classes/class-notifications.php:133
+#: classes/class-notifications.php:139
 msgid "Maybe Later"
 msgstr ""
 
-#: classes/class-notifications.php:134
+#: classes/class-notifications.php:140
 msgid "Never show again"
 msgstr ""
 
-#: classes/class-settings-api.php:375
+#: classes/class-settings-api.php:373
 msgid "Choose File"
 msgstr ""
 
-#: classes/class-settings-api.php:541
+#: classes/class-settings-api.php:539
 msgid "Spread the Word"
 msgstr ""
 
-#: classes/class-settings-api.php:544
+#: classes/class-settings-api.php:542
 msgid "Post to Twitter Now"
 msgstr ""
 
-#: classes/class-settings-api.php:545
-msgid "Share on Twitter"
+#: classes/class-settings-api.php:543
+msgid "Share on X/Twitter"
 msgstr ""
 
-#: classes/class-settings-api.php:550
+#: classes/class-settings-api.php:548
 msgid "Share with your facebook friends about this awesome plugin"
 msgstr ""
 
-#: classes/class-settings-api.php:551
+#: classes/class-settings-api.php:549
 msgid "Share on Facebook"
 msgstr ""
 
-#: classes/class-settings-api.php:557
+#: classes/class-settings-api.php:555
 msgid "Rate on WordPress.org"
 msgstr ""
 
-#: classes/class-settings-api.php:564
+#: classes/class-settings-api.php:562
 msgid "Recommended Plugins"
 msgstr ""
 
-#: classes/class-settings-api.php:568
+#: classes/class-settings-api.php:566
 msgid "Customize your login screen"
 msgstr ""
 
-#: classes/class-settings-api.php:569
-msgid "LoginPress - Login Customizer"
+#: classes/class-settings-api.php:567
+msgid "LoginPress: Login Page Customizer"
 msgstr ""
 
-#: classes/class-settings-api.php:574
+#: classes/class-settings-api.php:572
 msgid "Share with your facebook friends about this awesome plugin."
 msgstr ""
 
-#: classes/class-settings-api.php:575
-msgid "Google Analytics by Analytify"
+#: classes/class-settings-api.php:573
+msgid "Analytify: Google Analytics for WordPress "
 msgstr ""
 
-#: classes/class-settings-api.php:580 classes/class-settings-api.php:585
+#: classes/class-settings-api.php:578 classes/class-settings-api.php:583
 msgid "Socialize your Website"
 msgstr ""
 
-#: classes/class-settings-api.php:581
+#: classes/class-settings-api.php:579
 msgid "Simple Social Buttons"
 msgstr ""
 
-#: classes/class-settings-api.php:586
+#: classes/class-settings-api.php:584
 msgid "Under Construction & Maintenance mode"
 msgstr ""
 
-#: classes/class-setup.php:53
+#: classes/class-setup.php:84
 msgid "WP Headers and Footers"
 msgstr ""
 
-#: classes/class-setup.php:66
+#: classes/class-setup.php:134
 msgid "Scripts"
 msgstr ""
 
-#: classes/class-setup.php:70
+#: classes/class-setup.php:138
 msgid "Settings"
 msgstr ""
 
-#: classes/class-setup.php:71
+#: classes/class-setup.php:139
 msgid "Set your priorities for each script tag."
 msgstr ""
 
-#: classes/class-setup.php:90
+#: classes/class-setup.php:143
+msgid "Help & Troubleshooting"
+msgstr ""
+
+#: classes/class-setup.php:163
 msgid "Scripts in Header"
 msgstr ""
 
-#: classes/class-setup.php:92
+#: classes/class-setup.php:165
 #, php-format
 msgid "These scripts will be printed in the %1$s section."
 msgstr ""
 
-#: classes/class-setup.php:97
+#: classes/class-setup.php:170
 msgid "Scripts in Body"
 msgstr ""
 
-#: classes/class-setup.php:99 classes/class-setup.php:106
+#: classes/class-setup.php:172 classes/class-setup.php:179
 #, php-format
 msgid "These scripts will be printed below the %1$s tag."
 msgstr ""
 
-#: classes/class-setup.php:104
+#: classes/class-setup.php:177
 msgid "Scripts in Footer"
 msgstr ""
 
-#: classes/class-setup.php:113
+#: classes/class-setup.php:186
 msgid "Header's Priority:"
 msgstr ""
 
-#: classes/class-setup.php:115
+#: classes/class-setup.php:188
 #, php-format
 msgid "The priority for %1$s section. %2$sDefault is 10%3$s"
 msgstr ""
 
-#: classes/class-setup.php:121
+#: classes/class-setup.php:196
 msgid "Body's Priority:"
 msgstr ""
 
-#: classes/class-setup.php:123 classes/class-setup.php:131
+#: classes/class-setup.php:198 classes/class-setup.php:208
 #, php-format
 msgid "The priority for %1$s tag. %2$sDefault is 10%3$s"
 msgstr ""
 
-#: classes/class-setup.php:129
+#: classes/class-setup.php:206
 msgid "Footer's Priority:"
 msgstr ""
 
-#: classes/class-setup.php:191
+#: classes/class-setup.php:216
+msgid "Factory Reset:"
+msgstr ""
+
+#: classes/class-setup.php:218
+msgid ""
+"Enable to remove all scripts and reset all settings made by Insert Headers "
+"and Footers upon saving."
+msgstr ""
+
+#: classes/class-setup.php:223
+msgid "Remove Settings on Uninstall:"
+msgstr ""
+
+#: classes/class-setup.php:225
+msgid ""
+"Enable to remove all custom settings and scripts added by Insert Headers "
+"and Footers upon uninstall."
+msgstr ""
+
+#: classes/class-setup.php:244
+msgid "Insert Headers And Footers"
+msgstr ""
+
+#: classes/class-setup.php:283
+#, php-format
+msgid "Diagnostic %1$sLog%2$s"
+msgstr ""
+
+#: classes/class-setup.php:287
 msgid "Support"
 msgstr ""
 
-#: classes/plugin-meta.php:53
+#: classes/plugin-meta.php:57
 msgid "Vote!"
 msgstr ""
 
-#: classes/plugin-meta.php:56
+#: classes/plugin-meta.php:60
 msgid "Rate"
 msgstr ""
 
-#: classes/plugin-meta.php:79
+#: classes/plugin-meta.php:84
 #, php-format
 msgid "%1$s Settings %2$s"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:109
+#: classes/plugin-meta.php:94
+#, php-format
+msgid "|  %1$s Opt Out %2$s "
+msgstr ""
+
+#: classes/plugin-meta.php:99
+#, php-format
+msgid "|  %1$s Opt In %2$s "
+msgstr ""
+
+#: inc/hnf-optin-form.php:444
+msgid "Welcome to Headers and Footers"
+msgstr ""
+
+#: inc/hnf-optin-form.php:449
+#, php-format
+msgid ""
+"%1$s Hey %2$s,  %4$s If you opt-in some data about your installation of WP "
+"Headers And Footers will be sent to WPBrigade.com (This doesn't include "
+"stats)%4$s and You will receive new feature updates, security notifications "
+"etc %5$sNo Spam, I promise.%6$s %4$s%4$s Help us %7$sImprove Headers and "
+"Footers%8$s %4$s %4$s "
+msgstr ""
+
+#: inc/hnf-optin-form.php:450
+msgid "Allow and Continue  "
+msgstr ""
+
+#: inc/hnf-optin-form.php:451
+msgid "Skip This Step"
+msgstr ""
+
+#: inc/hnf-optin-form.php:454
+msgid "Your Website Overview"
+msgstr ""
+
+#: inc/hnf-optin-form.php:455
+msgid ""
+"Your Site URL, WordPress & PHP version, plugins & themes. This data lets us "
+"make sure this plugin always stays compatible with the most popular plugins "
+"and themes."
+msgstr ""
+
+#: inc/hnf-optin-form.php:457
+msgid "Your Profile Overview"
+msgstr ""
+
+#: inc/hnf-optin-form.php:458
+msgid "Your name and email address."
+msgstr ""
+
+#: inc/hnf-optin-form.php:460
+msgid "Admin Notices"
+msgstr ""
+
+#: inc/hnf-optin-form.php:461
+msgid "Updates, Announcement, Marketing. No Spam, I promise."
+msgstr ""
+
+#: inc/hnf-optin-form.php:463
+msgid "Plugin Actions"
+msgstr ""
+
+#: inc/hnf-optin-form.php:464
+msgid ""
+"Active, Deactive, Uninstallation and How you use this plugin's features and "
+"settings. This is limited to usage data. It does not include any of your "
+"sensitive headerandfooter data, such as traffic. This data helps us learn "
+"which features are most popular, so we can improve the plugin further."
+msgstr ""
+
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:108
 msgid "Quick feedback about "
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:114
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:111
 msgid "If you have a moment, please let us know why you are deactivating:"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:121
-msgid "I upgraded to "
-msgstr ""
-
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:124
-msgid "No need to deactivate this "
-msgstr ""
-
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:131
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:116
 msgid "I only needed the plugin for a short period"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:138
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:123
 msgid "I found a better plugin"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:142
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:127
 msgid "Kindly tell us the name of plugin"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:143
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:128
 msgid "What's the plugin's name?"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:149
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:134
 msgid "The plugin broke my site"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:156
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:141
 msgid "The plugin suddenly stopped working"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:163
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:148
 msgid "I no longer need the plugin"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:170
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:155
 msgid "It's a temporary deactivation. I'm just debugging an issue."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:177
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:162
 msgid "Other"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:180
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:166
 msgid "Kindly tell us the reason so we can improve."
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:181
-msgid "Would you like to share what's other reason ?"
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:167
+msgid "Would you like to share what's other reason?"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:190
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:175
 msgid "Anonymous feedback"
 msgstr ""
 
-#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:197
+#: lib/wpb-sdk/views/wpb-sdk-deactivate-form.php:182
 msgid "Cancel"
+msgstr ""
+
+#: wp-headers-and-footers.php:170
+msgid "Activate"
+msgstr ""
+
+#: wp-headers-and-footers.php:205
+msgid "Sorry, you are not allowed to edit this item."
 msgstr ""
 
 #. Plugin Name of the plugin/theme
@@ -257,7 +368,9 @@ msgid "WP Headers And Footers"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://www.WPBrigade.com/wordpress/plugins/wp-headers-and-footers/"
+msgid ""
+"https://www.WPBrigade.com/wordpress/plugins/wp-headers-and-footers/?"
+"utm_source=?utm_source=wp-headers-and-footers&utm_medium=author-uri-link"
 msgstr ""
 
 #. Description of the plugin/theme
@@ -272,5 +385,6 @@ msgstr ""
 
 #. Author URI of the plugin/theme
 msgid ""
-"https://wpbrigade.com/?utm_source=plugin-meta&utm_medium=author-uri-link"
+"https://wpbrigade.com/?utm_source=wp-headers-and-footers&utm_medium=author-"
+"uri-link"
 msgstr ""

@@ -61,14 +61,14 @@ class Cache_Rule {
 			[
 				'/wp-admin',
 				'/wp-login',
-			] 
+			]
 		);
 
 		$sanitized = array_map(
 			function ( $path ) {
 				return str_replace( [ '/*', '*' ], '', $path );
 			},
-			$excluded 
+			$excluded
 		);
 
 		foreach ( $sanitized as $path ) {
@@ -116,5 +116,4 @@ class Cache_Rule {
 	private function get_host_wildcard() {
 		return sprintf( 'http.host wildcard "%s*"', preg_replace( '#^(https?://)?#', '', $this->plugin->home_url() ) );
 	}
-
 }

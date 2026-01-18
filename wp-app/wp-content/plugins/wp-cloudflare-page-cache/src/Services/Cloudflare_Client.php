@@ -3,8 +3,33 @@
 namespace SPC\Services;
 
 use SPC\Builders\Cache_Rule;
+use SPC\Constants;
+use SPC\Utils\Helpers;
 
 class Cloudflare_Client extends Cloudflare_Rule {
+	private const TOKEN_PERMISSIONS = [
+		// Transform Rules:
+		'#waf:read',
+		'#waf:edit',
+		// DNS:
+		'#dns_records:read',
+		'#dns_records:edit',
+		'#page_shield:read',
+		'#ssl:read',
+		'#page_shield:edit',
+		'#zone:edit',
+		'#zone:read',
+		'#zone_settings:read',
+		'#zone_settings:edit',
+		'#cache_purge:edit',
+		// Analytics:
+		'#analytics:read',
+	];
+
+	// 5 minutes
+	private const ANALYTICS_CACHE_TIME = 300;
+	private const ANALYTICS_CACHE_KEY  = 'spc_cf_analytics';
+
 	/**
 	 * Account IDs list.
 	 *
@@ -18,7 +43,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 	 * @return string
 	 */
 	public function get_ruleset_id_setting_slug(): string {
-		return 'cf_cache_settings_ruleset_id';
+		return Constants::RULESET_ID_CACHE;
 	}
 
 	/**
@@ -27,7 +52,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 	 * @return string
 	 */
 	public function get_rule_id_setting_slug(): string {
-		return 'cf_cache_settings_ruleset_rule_id';
+		return Constants::RULE_ID_CACHE;
 	}
 
 	/**
@@ -35,7 +60,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 	 *
 	 * @return array
 	 */
-	protected function get_rule_args() : array {
+	protected function get_rule_args(): array {
 		return [
 			'action'            => 'set_cache_settings',
 			'action_parameters' => [
@@ -59,9 +84,9 @@ class Cloudflare_Client extends Cloudflare_Rule {
 		$builder = new Cache_Rule( $this->plugin );
 
 		return $builder->exclude_cookies()
-					   ->exclude_paths()
-					   ->exclude_static_content()
-					   ->build();
+						->exclude_paths()
+						->exclude_static_content()
+						->build();
 	}
 
 	/**
@@ -116,7 +141,6 @@ class Cloudflare_Client extends Cloudflare_Rule {
 	/**
 	 * Delete a page rule.
 	 *
-	 * @param string $id The page rule ID.
 	 * @param string $error The error message.
 	 *
 	 * @return bool
@@ -136,7 +160,6 @@ class Cloudflare_Client extends Cloudflare_Rule {
 		$args['method'] = 'DELETE';
 
 		$response = wp_remote_request( $url, $args );
-
 
 		$this->log( 'delete_cache_rule', sprintf( 'Request URL: %s', esc_url_raw( $url ) ) );
 
@@ -160,7 +183,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 
 	/**
 	 * Delete the Page Rule.
-	 * 
+	 *
 	 * @deprecated - The page rule is not used anymore.
 	 */
 	public function delete_page_rule( $id, &$error = '' ) {
@@ -243,7 +266,6 @@ class Cloudflare_Client extends Cloudflare_Rule {
 			return '';
 		}
 
-
 		if ( count( $this->account_ids ) > 1 ) {
 			foreach ( $this->account_ids as $account_data ) {
 				if ( strstr( strtolower( $account_data['name'] ), strtolower( $this->plugin->get_cloudflare_api_email() ) ) !== false ) {
@@ -272,22 +294,15 @@ class Cloudflare_Client extends Cloudflare_Rule {
 	 *
 	 * @return array | false
 	 */
-	public function get_zone_id_list( &$error = '', $forced_api_domain = '' ) {
+	public function get_zone_id_list( &$error = '' ) {
 		$list         = [];
 		$per_page     = 50;
 		$current_page = 1;
 		$pagination   = false;
 		$args         = $this->get_api_auth_args();
 
-		$api_token_domain = ! empty( $forced_api_domain ) ? $forced_api_domain : $this->plugin->get_second_level_domain();
-
 		do {
-
-			if ( $this->is_token_auth() && ! empty( $api_token_domain ) ) {
-				$url = sprintf( 'https://api.cloudflare.com/client/v4/zones?name=%s', $api_token_domain );
-			} else {
-				$url = sprintf( 'https://api.cloudflare.com/client/v4/zones?page=%s&per_page=%s', $current_page, $per_page );
-			}
+			$url = sprintf( 'https://api.cloudflare.com/client/v4/zones?page=%s&per_page=%s', $current_page, $per_page );
 
 			$this->log( 'get_zone_id_list', sprintf( 'Request for page %s - URL: %s', $current_page, $url ) );
 
@@ -313,7 +328,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 
 				if ( isset( $json['result_info']['total_pages'] ) && (int) $json['result_info']['total_pages'] > $current_page ) {
 					$pagination = true;
-					$current_page ++;
+					$current_page++;
 				} else {
 					$pagination = false;
 				}
@@ -340,7 +355,6 @@ class Cloudflare_Client extends Cloudflare_Rule {
 			}
 		} while ( $pagination );
 
-
 		if ( empty( $list ) ) {
 			$error = __( 'Unable to find domains configured on Cloudflare', 'wp-cloudflare-page-cache' );
 
@@ -348,7 +362,6 @@ class Cloudflare_Client extends Cloudflare_Rule {
 		}
 
 		return $list;
-
 	}
 
 	/**
@@ -410,7 +423,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 
 			curl_multi_add_handle( $multi_curl, $curl_array[ $curl_index ] );
 
-			$curl_index ++;
+			$curl_index++;
 		}
 
 		// execute the multi handle
@@ -426,7 +439,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 		} while ( $active && $status == CURLM_OK );
 
 		// close the handles
-		for ( $i = 0; $i < $curl_index; $i ++ ) {
+		for ( $i = 0; $i < $curl_index; $i++ ) {
 			// Get the content of cURL request $curl_array[$i]
 			$this->log( 'purge_cache_urls_async', "Response for request {$i}: " . curl_multi_getcontent( $curl_array[ $i ] ) );
 
@@ -436,7 +449,7 @@ class Cloudflare_Client extends Cloudflare_Rule {
 		curl_multi_close( $multi_curl );
 
 		// free up additional memory resources
-		for ( $i = 0; $i < $curl_index; $i ++ ) {
+		for ( $i = 0; $i < $curl_index; $i++ ) {
 			curl_close( $curl_array[ $i ] );
 		}
 
@@ -478,190 +491,133 @@ class Cloudflare_Client extends Cloudflare_Rule {
 	}
 
 	/**
-	 * Get the workers IDs list.
+	 * Verify token permissions.
 	 *
-	 * @param $error
+	 * @param string $zone_id The zone ID.
 	 *
-	 * @return array|false
+	 * @return array|\WP_Error
 	 */
-	public function get_worker_list( &$error = '' ) {
-		$account_id = $this->get_account_id( $error );
-		$url        = sprintf( 'https://api.cloudflare.com/client/v4/accounts/%s/workers/scripts', $account_id );
+	public function verify_token_permissions( string $zone_id ) {
+		$url  = sprintf( 'https://api.cloudflare.com/client/v4/zones/%s', $zone_id );
+		$args = $this->get_api_auth_args();
 
-		$this->log( 'get_worker_list', sprintf( 'I\'m using the account ID: %s', $account_id ), false );
-		$this->log( 'get_worker_list', sprintf( 'Request URL: %s', $url ), false );
+		$response = wp_remote_get( $url, $args );
 
-		$response = wp_remote_get( esc_url_raw( $url ), $this->get_api_auth_args() );
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error( 'cloudflare_error', $response->get_error_message() );
+		}
 
-		if ( ! $this->is_success_api_response( $response, 'get_worker_list', $error ) ) {
+		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+
+		if ( ! is_array( $response_body ) || ! isset( $response_body['result'], $response_body['result']['permissions'] ) || ! is_array( $response_body['result']['permissions'] ) ) {
+			return new \WP_Error( 'cloudflare_error', __( 'Could not check token permissions.Invalid response from Cloudflare', 'wp-cloudflare-page-cache' ) );
+		}
+		$permissions         = $response_body['result']['permissions'];
+		$missing_permissions = array_diff( self::TOKEN_PERMISSIONS, $permissions );
+
+		if ( empty( $missing_permissions ) ) {
 			return [];
 		}
 
-		$response_body   = json_decode( wp_remote_retrieve_body( $response ), true );
-		$workers_id_list = [];
+		return $missing_permissions;
+	}
 
-		if ( isset( $response_body['result'] ) && is_array( $response_body['result'] ) ) {
-			foreach ( $response_body['result'] as $worker_data ) {
-				if ( isset( $worker_data['id'] ) ) {
-					$workers_id_list[] = $worker_data['id'];
-				}
-			}
+	/**
+	 * Get the analytics.
+	 *
+	 * @return array|\WP_Error
+	 */
+	public function get_analytics() {
+
+		$cache = get_transient( self::ANALYTICS_CACHE_KEY );
+
+		if ( $cache ) {
+			return $cache;
 		}
 
-		return $workers_id_list;
-	}
+		// This dates correspond exactly to what cloudflare shows in their dashboard for the last 24 hours.
+		$start_date = gmdate( 'Y-m-d\TH:00:00\Z', strtotime( '-24 hours' ) );
+		$end_date   = gmdate( 'Y-m-d\TH:00:00\Z', strtotime( 'now' ) );
 
-	/**
-	 * Upload the worker to Cloudflare.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return bool
-	 */
-	public function upload_worker( &$error = '' ) {
-		$account_id = $this->get_account_id( $error );
+		$query = '
+        query($zoneTag: String!, $dateStart: Time!) {
+					viewer {
+						zones(filter: {zoneTag: $zoneTag}) {
+							httpRequests1hGroups(
+								filter: { 
+									datetime_geq: $dateStart
+									datetime_lt: $dateEnd
+								}
+								limit: 10000
+								orderBy: [datetime_ASC]
+							) {
+								dimensions{
+									datetime
+								}
+								sum {
+									requests
+									cachedBytes
+									bytes
+								}
+							}
+						}
+					}
+        }
+    ';
 
-		$this->log( 'upload_worker', sprintf( 'I\'m using the account ID: %s', $account_id ), false );
-
-		$args                            = $this->get_api_auth_args();
-		$args['body']                    = $this->plugin->get_cloudflare_worker_content();
-		$args['method']                  = 'PUT';
-		$args['headers']['Content-Type'] = 'application/javascript';
-
-		$worker_id = $this->plugin->get_cloudflare_worker_id();
-		$url       = sprintf( 'https://api.cloudflare.com/client/v4/accounts/%s/workers/scripts/%s', $account_id, $worker_id );
-
-		$this->log( 'upload_worker', sprintf( 'Request URL: %s', $url ) );
-
-		$response = wp_remote_post( $url, $args );
-
-		if ( ! $this->is_success_api_response( $response, 'upload_worker', $error ) ) {
-			return false;
-		}
-
-		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
-
-		return ( isset( $response_body['result']['id'] ) && $response_body['result']['id'] === $worker_id );
-	}
-
-	/**
-	 * Delete Cloudflare worker.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return bool
-	 */
-	public function delete_worker( &$error = '' ) {
-		$account_id = $this->get_account_id( $error );
-
-		$this->log( 'delete_worker', sprintf( 'I\'m using the account ID: %s', $account_id ), false );
-
-		$args           = $this->get_api_auth_args();
-		$args['method'] = 'DELETE';
-		$url            = sprintf( 'https://api.cloudflare.com/client/v4/accounts/%s/workers/scripts/%s', $account_id, $this->plugin->get_cloudflare_worker_id() );
-
-		$response = wp_remote_post( esc_url_raw( $url ), $args );
-
-		return $this->is_success_api_response( $response, 'delete_worker', $error );
-	}
-
-	/**
-	 * Create the worker route.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return false|string
-	 */
-	public function create_worker_route( &$error = '' ) {
-		$account_id = $this->get_account_id( $error );
-
-		$this->log( 'create_worker_route', sprintf( 'I\'m using the account ID: %s', $account_id ), false );
-
-		$home_url = preg_replace( '#^(https?://)?#', '', $this->plugin->home_url() );
-
-		$args           = $this->get_api_auth_args();
-		$args['method'] = 'POST';
-		$args['body']   = json_encode(
-			[
-				//You can manually override the pattern for testing locally with a remote domain.
-				//'pattern' => 'test-domain.com/*',
-				'pattern' => $home_url . '/*',
-				'script'  => $this->plugin->get_cloudflare_worker_id(),
-			]
+		$variables = array(
+			'zoneTag'   => $this->plugin->get_cloudflare_api_zone_id(),
+			'dateStart' => $start_date,
+			'dateEnd'   => $end_date,
 		);
 
-		$url      = sprintf( 'https://api.cloudflare.com/client/v4/zones/%s/workers/routes', $this->plugin->get_cloudflare_api_zone_id() );
-		$response = wp_remote_post( esc_url_raw( $url ), $args );
+		$response = wp_remote_post(
+			'https://api.cloudflare.com/client/v4/graphql',
+			array_merge(
+				$this->get_api_auth_args(),
+				[
+					'body'    => json_encode(
+						[
+							'query'     => $query,
+							'variables' => $variables,
+						]
+					),
+					'timeout' => 30,
+				]
+			)
+		);
 
-		if ( ! $this->is_success_api_response( $response, 'create_worker_route', $error ) ) {
-			return false;
+		if ( is_wp_error( $response ) ) {
+			return new \WP_Error( 'api_error', 'Failed to connect to Cloudflare API: ' . $response->get_error_message(), array( 'status' => 500 ) );
 		}
 
-		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
+		$body = wp_remote_retrieve_body( $response );
+		$data = json_decode( $body, true );
 
-		return is_array( $response_body ) && isset( $response_body['result']['id'] ) ? $response_body['result']['id'] : false;
-	}
-
-	/**
-	 * Get the worker routes list.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return array|false
-	 */
-	public function get_worker_routes_list( &$error = '' ) {
-		$args = $this->get_api_auth_args();
-		$url  = sprintf( 'https://api.cloudflare.com/client/v4/zones/%s/workers/routes', $this->plugin->get_cloudflare_api_zone_id() );
-
-		$response = wp_remote_get( esc_url_raw( $url ), $args );
-
-		if ( ! $this->is_success_api_response( $response, 'get_worker_routes_list', $error ) ) {
-			return false;
+		if ( isset( $data['errors'] ) ) {
+			return new \WP_Error( 'graphql_error', 'GraphQL Error: ' . json_encode( $data['errors'] ), array( 'status' => 400 ) );
 		}
 
-		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
-		$routes_list   = [];
+		$analytics_data = $data['data']['viewer']['zones'][0]['httpRequests1hGroups'] ?? [];
 
-		if ( ! is_array( $response_body ) || ! isset( $response_body['result'] ) || ! is_array( $response_body['result'] ) ) {
-			return false;
+		$total_requests     = 0;
+		$total_bytes        = 0;
+		$total_cached_bytes = 0;
+
+		foreach ( $analytics_data as $point ) {
+			$total_requests     += $point['sum']['requests'] ?? 0;
+			$total_bytes        += $point['sum']['bytes'] ?? 0;
+			$total_cached_bytes += $point['sum']['cachedBytes'] ?? 0;
 		}
 
-		foreach ( $response_body['result'] as $route_data ) {
-			if ( ! isset( $route_data['id'], $route_data['pattern'], $route_data['script'] ) ) {
-				continue;
-			}
-			$routes_list[ $route_data['id'] ] = [
-				'pattern' => $route_data['pattern'],
-				'script'  => $route_data['script'],
-			];
-		}
+		$data = array(
+			'requests'    => $total_requests,
+			'bytes'       => $total_bytes,
+			'cachedBytes' => $total_cached_bytes,
+		);
 
-		return $routes_list;
-	}
+		set_transient( self::ANALYTICS_CACHE_KEY, $data, self::ANALYTICS_CACHE_TIME );
 
-	/**
-	 * Delete worker route.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return bool
-	 */
-	public function delete_worker_route( &$error = '' ) {
-		$route_id = $this->plugin->get_cloudflare_worker_route_id();
-
-		if ( empty( $route_id ) ) {
-			$this->log( 'delete_worker_route', 'No route to delete', false );
-
-			return false;
-		}
-
-		$args           = $this->get_api_auth_args();
-		$args['method'] = 'DELETE';
-
-		$url = sprintf( 'https://api.cloudflare.com/client/v4/zones/%s/workers/routes/%s', $this->plugin->get_cloudflare_api_zone_id(), $route_id );
-
-		$response = wp_remote_post( esc_url_raw( $url ), $args );
-
-		return $this->is_success_api_response( $response, 'delete_worker_route', $error );
+		return $data;
 	}
 }

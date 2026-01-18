@@ -4,12 +4,13 @@
  * Plugin Name: WP Headers And Footers
  * Plugin URI: https://www.WPBrigade.com/wordpress/plugins/wp-headers-and-footers/?utm_source=?utm_source=wp-headers-and-footers&utm_medium=author-uri-link
  * Description: Allows you to insert code or text in the header or footer of your WordPress site.
- * Version: 3.1.1
+ * Version: 3.1.3
  * Author: WPBrigade
  * Author URI: https://wpbrigade.com/?utm_source=wp-headers-and-footers&utm_medium=author-uri-link
  * License: GPLv3
  * Text Domain: wp-headers-and-footers
  * Domain Path: /languages
+ * GitHub Plugin URI: https://github.com/WPBrigade/wp-headers-and-footers
  *
  * @package wp-headers-and-footers
  * @category Core
@@ -69,7 +70,7 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 		 *
 		 * @var string $version
 		 */
-		public $version = '3.1.1';
+		public $version = '3.1.3';
 
 		/**
 		 * The single instance of the class.
@@ -91,13 +92,14 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 		/**
 		 * Include required core files used in admin and on the frontend.
 		 *
-		 * @version 1.3.1
+		 * @version 3.1.3
 		 */
 		public function includes() {
 
 			include_once WPHEADERANDFOOTER_DIR_PATH . 'classes/class-setup.php';
 			include_once WPHEADERANDFOOTER_DIR_PATH . 'classes/plugin-meta.php';
 			include_once WPHEADERANDFOOTER_DIR_PATH . 'classes/class-notifications.php';
+			include_once WPHEADERANDFOOTER_DIR_PATH . 'classes/class-diagnostics-log.php';
 
 			// set the logger settings option if was not set before.
 			if ( ! get_option( 'wpheaderandfooter_basics_logger' ) ) {
@@ -153,7 +155,6 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 			}
 
 			add_action( 'wp_ajax_wpheadersandfooters_log_download', array( $this, 'wp_headers_and_footers_log_download' ) );
-			add_action( 'wp_ajax_nopriv_wpheadersandfooters_log_download', array( $this, 'wp_headers_and_footers_log_download' ) );
 			add_action( 'wp_wpb_sdk_after_uninstall', array( $this, 'plugin_uninstallation' ) );
 			add_action( 'admin_footer', array( $this, 'add_deactivate_modal' ) );
 			add_action( 'admin_menu', array( $this, 'register_wpheaders_optin_page' ) );
@@ -198,11 +199,15 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 		 * Opt-out
 		 *
 		 * @since 2.2.3
+		 * @version 3.1.3
 		 */
 		function optout_yes() {
 
 			if( ! current_user_can( 'manage_options' ) || ! check_ajax_referer( 'headerandfooter-optout-nonce', 'optout_nonce' ) ){
-				wp_die( '<p>' . __( 'Sorry, you are not allowed to edit this item.' ) . '</p>', 403 );
+				wp_die(
+					'<p>' . esc_html__( 'Sorry, you are not allowed to edit this item.', 'wp-headers-and-footers' ) . '</p>',
+					403
+				);
 			}
 
 			// Get the current option and decode it as an associative array
@@ -213,8 +218,8 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 				$sdk_data = array();
 			}
 
-			$setting_name  = $_POST['setting_name'];  // e.g., communication, diagnostic_info, extensions
-			$setting_value = $_POST['setting_value'];  // The new value to be updated
+			$setting_name  = isset( $_POST['setting_name'] ) ? sanitize_text_field( wp_unslash( $_POST['setting_name'] ) ) : '';  // e.g., communication, diagnostic_info, extensions
+			$setting_value = isset( $_POST['setting_value'] ) ? sanitize_text_field( wp_unslash( $_POST['setting_value'] ) ) : '';  // The new value to be updated
 
 			// Update the specific setting in the array
 			$sdk_data[ $setting_name ] = $setting_value;
@@ -236,10 +241,11 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 			 * Fix the Broken Access Control (BAC) security fix.
 			 *
 			 * @since 1.6.3
+			 * @version 3.1.3
 			 */
 			if ( current_user_can( 'manage_options' ) ) {
 				if ( isset( $_POST['headerandfooter-submit-optout'] ) ) {
-					if ( ! wp_verify_nonce( sanitize_text_field( $_POST['headerandfooter_submit_optin_nonce'] ), 'headerandfooter_submit_optin_nonce' ) ) {
+					if ( ! isset( $_POST['headerandfooter_submit_optin_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['headerandfooter_submit_optin_nonce'] ) ), 'headerandfooter_submit_optin_nonce' ) ) {
 						return;
 					}
 					update_option( '_wpheaderandfooter_optin', 'no' );
@@ -249,7 +255,7 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 					$sdk_data_json         = json_encode( $sdk_data );
 					update_option( 'wpb_sdk_wp-headers-and-footers', $sdk_data_json );
 				} elseif ( isset( $_POST['headerandfooter-submit-optin'] ) ) {
-					if ( ! wp_verify_nonce( sanitize_text_field( $_POST['headerandfooter_submit_optin_nonce'] ), 'headerandfooter_submit_optin_nonce' ) ) {
+					if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['headerandfooter_submit_optin_nonce'] ) ), 'headerandfooter_submit_optin_nonce' ) ) {
 						return;
 					}
 					update_option( '_wpheaderandfooter_optin', 'yes' );
@@ -488,6 +494,7 @@ if ( ! class_exists( 'WPHeaderAndFooter' ) ) :
 		 * The Ajax function callback to download the diagnostics.
 		 *
 		 * @since 2.1.0
+		 * @version 3.1.3
 		 * @return void
 		 */
 		function wp_headers_and_footers_log_download() {

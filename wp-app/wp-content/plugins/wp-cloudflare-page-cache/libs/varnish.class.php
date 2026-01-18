@@ -31,17 +31,6 @@ class SWCFPC_Varnish {
 		if ( $this->main_instance->get_single_config( 'cf_varnish_cw', 0 ) > 0 ) {
 			$this->provider = 'cloudways';
 		}
-
-		$this->actions();
-
-	}
-
-
-	function actions() {
-
-		// Ajax clear whole fallback cache
-		add_action( 'wp_ajax_swcfpc_purge_varnish_cache', [ $this, 'ajax_purge_whole_varnish_cache' ] );
-
 	}
 
 
@@ -192,26 +181,21 @@ class SWCFPC_Varnish {
 
 	}
 
-
-	function ajax_purge_whole_varnish_cache() {
-
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
+	public function purge_varnish_cache() {
 		$return_array = [ 'status' => 'ok' ];
 		$error        = '';
 
 		if ( ! $this->purge_whole_cache( $error ) ) {
 			$return_array['status'] = 'error';
 			$return_array['error']  = $error;
-			die( json_encode( $return_array ) );
+			return $return_array;
 		}
 
 		$this->objects['logs']->add_log( 'varnish::ajax_purge_whole_varnish_cache', 'Purge whole Varnish cache' );
 
 		$return_array['success_msg'] = __( 'Varnish cache purged successfully!', 'wp-cloudflare-page-cache' );
 
-		die( json_encode( $return_array ) );
-
+		return $return_array;
 	}
 
 }

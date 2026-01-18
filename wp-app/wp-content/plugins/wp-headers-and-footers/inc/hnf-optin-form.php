@@ -3,6 +3,7 @@
 * Structure for Optin Form.
 *
 * @since  2.2.3
+* @version 3.1.3
 * @access public
 */
 ?>
@@ -436,32 +437,43 @@ $default_header_and_footer_redirect = 'wp-headers-and-footers';
  * @since 2.2.3
  */
 
-echo '<form method="post" action="' . admin_url( 'admin.php?page=' . $default_header_and_footer_redirect ) . '">';
-echo "<input type='hidden' name='email' value='$email'>";
-echo "<input type='hidden' name='headerandfooter_submit_optin_nonce' value='" . sanitize_text_field( $nonce ) . "'>";
+echo '<form method="post" action="' . esc_url( admin_url( 'admin.php?page=' . $default_header_and_footer_redirect ) ) . '">';
+echo "<input type='hidden' name='email' value='" . esc_attr( $email ) . "'>";
+echo "<input type='hidden' name='headerandfooter_submit_optin_nonce' value='" . esc_attr( $nonce ) . "'>";
 echo '<div id="headerandfooter-splash">';
-echo'<img id="headerandfooter-logo-text" src="' . plugins_url( 'asset/img/icon-128x128.png', dirname( __FILE__ ) )  . '">';
+echo '<img id="headerandfooter-logo-text" src="' . esc_url( plugins_url( 'asset/img/icon-128x128.png', dirname( __FILE__ ) ) ) . '">';
 echo '<h1>  ' . esc_html__( 'Welcome to Headers and Footers', 'wp-headers-and-footers' ) . '</h1>';
 echo '<div id="headerandfooter-splash-main" class="headerandfooter-splash-box">';
 echo '<div class="step-wrapper">';
 
     echo "<div class='first-step step'>";
-    echo sprintf ( __( '%1$s Hey %2$s,  %4$s If you opt-in some data about your installation of WP Headers And Footers will be sent to WPBrigade.com (This doesn\'t include stats)%4$s and You will receive new feature updates, security notifications etc %5$sNo Spam, I promise.%6$s %4$s%4$s Help us %7$sImprove Headers and Footers%8$s %4$s %4$s ', 'wp-headers-and-footers' ), '<p id="headerandfooter-splash-main-text">', '<strong>' . $name . '</strong>', '<strong>' . $website . '</strong>', '<br>', '<i>', '</i>', '<strong>', '</strong>' ) . '</p>';
-    echo "<button type='submit' id='headerandfooter-ga-submit-btn' class='headerandfooter-ga-button button button-primary' name='headerandfooter-submit-optin' >" . __( 'Allow and Continue  ', 'wp-headers-and-footers') . "</button><br>";
-    echo "<button type='submit' id='headerandfooter-ga-optout-btn' name='headerandfooter-submit-optout' >" . __( 'Skip This Step', 'wp-headers-and-footers') . "</button>";
+	echo sprintf( 
+		/* Translators: Welcome text */
+		esc_html__( '%1$s Hey %2$s,  %4$s If you opt-in some data about your installation of WP Headers And Footers will be sent to WPBrigade.com (This doesn\'t include stats)%4$s and You will receive new feature updates, security notifications etc %5$sNo Spam, I promise.%6$s %4$s%4$s Help us %7$sImprove Headers and Footers%8$s %4$s %4$s ', 'wp-headers-and-footers' ), 
+		'<p id="headerandfooter-splash-main-text">', 
+		'<strong>' . esc_html( $name ) . '</strong>', 
+		'<strong>' . esc_url( $website ) . '</strong>', 
+		'<br>', 
+		'<i>', 
+		'</i>', 
+		'<strong>', 
+		'</strong>' 
+	) . '</p>';
+	echo "<button type='submit' id='headerandfooter-ga-submit-btn' class='headerandfooter-ga-button button button-primary' name='headerandfooter-submit-optin' >" . esc_html__( 'Allow and Continue  ', 'wp-headers-and-footers') . "</button><br>";
+	echo "<button type='submit' id='headerandfooter-ga-optout-btn' name='headerandfooter-submit-optout' >" . esc_html__( 'Skip This Step', 'wp-headers-and-footers') . "</button>";
     echo '<div id="headerandfooter-splash-permissions" class="headerandfooter-splash-box">';
     echo '<div id="headerandfooter-splash-permissions-dropdown" style="display: none;">';
-    echo '<h3>' . __( 'Your Website Overview', 'wp-headers-and-footers' ) . '</h3>';
-    echo '<p>' . __( 'Your Site URL, WordPress & PHP version, plugins & themes. This data lets us make sure this plugin always stays compatible with the most popular plugins and themes.', 'wp-headers-and-footers' ) . '</p>';
+	echo '<h3>' . esc_html__( 'Your Website Overview', 'wp-headers-and-footers' ) . '</h3>';
+    echo '<p>' . esc_html__( 'Your Site URL, WordPress & PHP version, plugins & themes. This data lets us make sure this plugin always stays compatible with the most popular plugins and themes.', 'wp-headers-and-footers' ) . '</p>';
 
-    echo '<h3>' . __( 'Your Profile Overview', 'wp-headers-and-footers' ) . '</h3>';
-    echo '<p>' . __( 'Your name and email address.', 'wp-headers-and-footers' ) . '</p>';
+    echo '<h3>' . esc_html__( 'Your Profile Overview', 'wp-headers-and-footers' ) . '</h3>';
+    echo '<p>' . esc_html__( 'Your name and email address.', 'wp-headers-and-footers' ) . '</p>';
 
-    echo '<h3>' . __( 'Admin Notices', 'wp-headers-and-footers' ) . '</h3>';
-    echo '<p>' . __( "Updates, Announcement, Marketing. No Spam, I promise.", 'wp-headers-and-footers' ) . '</p>';
+    echo '<h3>' . esc_html__( 'Admin Notices', 'wp-headers-and-footers' ) . '</h3>';
+    echo '<p>' . esc_html__( "Updates, Announcement, Marketing. No Spam, I promise.", 'wp-headers-and-footers' ) . '</p>';
 
-    echo '<h3>' . __( 'Plugin Actions', 'wp-headers-and-footers' ) . '</h3>';
-    echo '<p>' . __( "Active, Deactive, Uninstallation and How you use this plugin's features and settings. This is limited to usage data. It does not include any of your sensitive headerandfooter data, such as traffic. This data helps us learn which features are most popular, so we can improve the plugin further.", 'wp-headers-and-footers' ) . '</p>';
+    echo '<h3>' . esc_html__( 'Plugin Actions', 'wp-headers-and-footers' ) . '</h3>';
+    echo '<p>' . esc_html__( "Active, Deactive, Uninstallation and How you use this plugin's features and settings. This is limited to usage data. It does not include any of your sensitive headerandfooter data, such as traffic. This data helps us learn which features are most popular, so we can improve the plugin further.", 'wp-headers-and-footers' ) . '</p>';
     echo '</div>';
     echo '</div>';
     echo '</div>';

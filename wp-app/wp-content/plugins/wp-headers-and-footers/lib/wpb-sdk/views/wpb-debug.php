@@ -60,17 +60,20 @@ if (isset($_POST['background_sync']) && $_POST['background_sync'] === 'true') {
 }
 
 // Function to set an option value in the database
-function custom_plugin_set_option($option_name, $option_value)
+function wp_headers_and_footers_set_option($option_name, $option_value)
 {
     update_option($option_name, $option_value);
 }
 
 // Handle form submission to set option value
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['set_option_name']) && isset($_POST['option_value'])) {
+    if (!isset($_POST['_wpnonce']) || !wp_verify_nonce($_POST['_wpnonce'], 'wp_headers_and_footers_set_option')) {
+        wp_die(__('Nonce verification failed', 'related-post-thumbnails'));
+    }
     $option_name = $_POST['set_option_name'];
     $option_value = $_POST['option_value'];
 
-    custom_plugin_set_option($option_name, $option_value);
+    wp_headers_and_footers_set_option($option_name, $option_value);
 
     echo '<div id="success_message">Successfully set the option</div>';
 }
@@ -147,6 +150,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['load_option_name'])) 
                 <form id="set_option_form" method="post" style="display: none; margin-right: 10px;">
                     <div class="option-input-wrapper" style="display: inline-block;">
                         <label for="option_name">Option Name:</label>
+                        <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('wp_headers_and_footers_set_option'); ?>">
                         <input type="text" name="set_option_name" id="option_name">
                     </div>
                     <div class="option-input-wrapper">

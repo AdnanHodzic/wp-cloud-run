@@ -1,6 +1,7 @@
 <?php
 
 // if uninstall.php is not called by WordPress, die
+
 if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	die;
 }
@@ -24,6 +25,9 @@ if ( defined( 'SWCFPC_ADVANCED_CACHE' ) ) {
 }
 
 $config_file_path = ABSPATH . 'wp-config.php';
+if ( is_file( dirname( ABSPATH ) . '/wp-config.php' ) ) {
+    $config_file_path = dirname( ABSPATH ) . '/wp-config.php';
+}
 
 $parts                    = parse_url( home_url() );
 $plugin_storage_main_path = WP_CONTENT_DIR . '/wp-cloudflare-super-page-cache/';
@@ -31,44 +35,50 @@ $plugin_storage_path      = $plugin_storage_main_path . $parts['host'];
 
 if ( file_exists( $config_file_path ) && is_writable( $config_file_path ) ) {
 
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	WP_Filesystem();
+	global $wp_filesystem;
+
 	// Get content of the config file.
-	$config_file       = explode( "\n", file_get_contents( $config_file_path ) );
-	$config_file_count = count( $config_file );
-	$last_line         = '';
+	$config_contents = $wp_filesystem->get_contents( $config_file_path );
+	if( $config_contents === false ) {
+		error_log( 'WP Cloudflare Super Page Cache Uninstall: Unable to read wp-config.php' );
+	} else if( empty( $config_contents ) ) {
+		error_log( 'WP Cloudflare Super Page Cache Uninstall: wp-config.php is empty' );
+	} else {
+		$config_file       = preg_split( '/\R/u', $config_contents );
+		$config_file_count = count( $config_file );
 
-	for ( $i = 0; $i < $config_file_count; ++$i ) {
+		// Get WP_CACHE constant define to remove
+		$constant = "define('WP_CACHE', false); // Added by WP Cloudflare Super Page Cache";
 
-		// Remove double empty line
-		if ( $i > 0 && trim( $config_file[ $i ] ) == '' && $last_line == '' ) {
-			unset( $config_file[ $i ] );
-			continue;
+		// Lets find out if the constant WP_CACHE is defined by our plugin
+		$is_wp_cache_exist = false;
+
+		for ( $i = 0; $i < $config_file_count; ++$i ) {
+
+			if ( ! preg_match( '/^define\(\s*\'([A-Z_]+)\',(.*)\)/', $config_file[ $i ], $match ) ) {
+				continue;
+			}
+
+			if ( 'WP_CACHE' === $match[1] && strpos( $config_file[ $i ], 'Added by WP Cloudflare Super Page Cache' ) !== false ) {
+				$is_wp_cache_exist = true;
+				break;
+			}
 		}
 
-		$last_line = trim( $config_file[ $i ] );
+		// Only modify if our WP_CACHE define exists
+		if ( $is_wp_cache_exist ) {
+			$new_config_contents = preg_replace( '/^\s*define\(\s*\'WP_CACHE\'\s*,\s*([^\s\)]*)\s*\).+Added by WP Cloudflare Super Page Cache.*/m', '', $config_contents );
 
-		if ( ! preg_match( '/^define\(\s*\'([A-Z_]+)\',(.*)\)/', $config_file[ $i ], $match ) ) {
-			continue;
+			// Check if preg_replace succeeded
+			if ( $new_config_contents === null ) {
+				error_log( 'WP Cloudflare Super Page Cache Uninstall: preg_replace failed with error: ' . preg_last_error() );
+			} else {
+				$wp_filesystem->put_contents( $config_file_path, $new_config_contents, FS_CHMOD_FILE );
+			}
 		}
-
-		if ( 'WP_CACHE' === $match[1] && strpos( $config_file[ $i ], 'Added by WP Cloudflare Super Page Cache' ) !== false ) {
-			unset( $config_file[ $i ] );
-			$last_line = '';
-			continue;
-		}   
 	}
-
-	if ( trim( $config_file[ $config_file_count - 1 ] ) == '' ) {
-		unset( $config_file[ $config_file_count - 1 ] );
-	}
-
-	// Insert the constant in wp-config.php file.
-	$handle = @fopen( $config_file_path, 'w' );
-
-	foreach ( $config_file as $line ) {
-		@fwrite( $handle, $line . "\n" );
-	}
-
-	@fclose( $handle );
 
 }
 
@@ -122,3 +132,5 @@ function is_directory_empty( $dir ) {
 	return true;
 
 }
+global $wpdb;
+$wpdb->query( 'DROP TABLE IF EXISTS `' . $wpdb->prefix . 'spc_assets_rules`' );

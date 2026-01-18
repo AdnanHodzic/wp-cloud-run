@@ -4,14 +4,14 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit4c660e83afb5996a27e483c3fa4c0111
+class ComposerStaticInit55d84125555e8ebd3eb5481b5ac90b2e
 {
     public static $files = array (
         'f3e742daca6ecc1d4ff0a2b5cf792c05' => __DIR__ . '/..' . '/codeinwp/themeisle-sdk/load.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-        'S' => 
+        'S' =>
         array (
             'SPC_Pro\\' => 8,
             'SPC\\' => 4,
@@ -19,11 +19,11 @@ class ComposerStaticInit4c660e83afb5996a27e483c3fa4c0111
     );
 
     public static $prefixDirsPsr4 = array (
-        'SPC_Pro\\' => 
+        'SPC_Pro\\' =>
         array (
             0 => __DIR__ . '/../..' . '/pro',
         ),
-        'SPC\\' => 
+        'SPC\\' =>
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -33,36 +33,57 @@ class ComposerStaticInit4c660e83afb5996a27e483c3fa4c0111
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'SPC\\Builders\\Cache_Rule' => __DIR__ . '/../..' . '/src/Builders/Cache_Rule.php',
         'SPC\\Constants' => __DIR__ . '/../..' . '/src/Constants.php',
+        'SPC\\Entities\\Google_Font' => __DIR__ . '/../..' . '/src/Entities/Google_Font.php',
         'SPC\\Loader' => __DIR__ . '/../..' . '/src/Loader.php',
         'SPC\\Migrator' => __DIR__ . '/../..' . '/src/Migrator.php',
+        'SPC\\Models\\Asset_Rules' => __DIR__ . '/../..' . '/src/Models/Asset_Rules.php',
         'SPC\\Modules\\Admin' => __DIR__ . '/../..' . '/src/Modules/Admin.php',
+        'SPC\\Modules\\Assets_Manager' => __DIR__ . '/../..' . '/src/Modules/Assets_Manager.php',
+        'SPC\\Modules\\Dashboard' => __DIR__ . '/../..' . '/src/Modules/Dashboard.php',
+        'SPC\\Modules\\Database_Optimization' => __DIR__ . '/../..' . '/src/Modules/Database_Optimization.php',
+        'SPC\\Modules\\Font_Optimizer' => __DIR__ . '/../..' . '/src/Modules/Font_Optimizer.php',
         'SPC\\Modules\\Frontend' => __DIR__ . '/../..' . '/src/Modules/Frontend.php',
         'SPC\\Modules\\HTML_Modifier' => __DIR__ . '/../..' . '/src/Modules/HTML_Modifier.php',
+        'SPC\\Modules\\Metrics_Cleanup' => __DIR__ . '/../..' . '/src/Modules/Metrics_Cleanup.php',
         'SPC\\Modules\\Module_Interface' => __DIR__ . '/../..' . '/src/Modules/Module_Interface.php',
+        'SPC\\Modules\\Rest_Server' => __DIR__ . '/../..' . '/src/Modules/Rest_Server.php',
         'SPC\\Modules\\Settings_Manager' => __DIR__ . '/../..' . '/src/Modules/Settings_Manager.php',
+        'SPC\\Modules\\Third_Party' => __DIR__ . '/../..' . '/src/Modules/Third_Party.php',
+        'SPC\\Services\\Asset_Exclusion_Handler' => __DIR__ . '/../..' . '/src/Services/Asset_Exclusion_Handler.php',
         'SPC\\Services\\Cloudflare_Client' => __DIR__ . '/../..' . '/src/Services/Cloudflare_Client.php',
         'SPC\\Services\\Cloudflare_Rule' => __DIR__ . '/../..' . '/src/Services/Cloudflare_Rule.php',
+        'SPC\\Services\\Log_Parser' => __DIR__ . '/../..' . '/src/Services/Log_Parser.php',
+        'SPC\\Services\\Metrics' => __DIR__ . '/../..' . '/src/Services/Metrics.php',
+        'SPC\\Services\\Notices_Handler' => __DIR__ . '/../..' . '/src/Services/Notices_Handler.php',
+        'SPC\\Services\\SDK_Integrations' => __DIR__ . '/../..' . '/src/Services/SDK_Integrations.php',
+        'SPC\\Services\\Settings_Store' => __DIR__ . '/../..' . '/src/Services/Settings_Store.php',
+        'SPC\\Utils\\Assets_Handler' => __DIR__ . '/../..' . '/src/Utils/Assets_Handler.php',
+        'SPC\\Utils\\Cache_Tester' => __DIR__ . '/../..' . '/src/Utils/Cache_Tester.php',
         'SPC\\Utils\\Helpers' => __DIR__ . '/../..' . '/src/Utils/Helpers.php',
+        'SPC\\Utils\\I18n' => __DIR__ . '/../..' . '/src/Utils/I18n.php',
         'SPC\\Utils\\Sanitization' => __DIR__ . '/../..' . '/src/Utils/Sanitization.php',
         'SPC_Pro\\Builders\\Transform_Rule' => __DIR__ . '/../..' . '/pro/Builders/Transform_Rule.php',
         'SPC_Pro\\Constants' => __DIR__ . '/../..' . '/pro/Constants.php',
         'SPC_Pro\\Loader' => __DIR__ . '/../..' . '/pro/Loader.php',
-        'SPC_Pro\\Modules\\Admin' => __DIR__ . '/../..' . '/pro/Modules/Admin.php',
+        'SPC_Pro\\Modules\\BgOptimizer\\Lazyload' => __DIR__ . '/../..' . '/pro/Modules/BgOptimizer/Lazyload.php',
         'SPC_Pro\\Modules\\Fallback_Cache' => __DIR__ . '/../..' . '/pro/Modules/Fallback_Cache.php',
         'SPC_Pro\\Modules\\Frontend' => __DIR__ . '/../..' . '/pro/Modules/Frontend.php',
         'SPC_Pro\\Modules\\HTML_Modifier' => __DIR__ . '/../..' . '/pro/Modules/HTML_Modifier.php',
+        'SPC_Pro\\Modules\\PageProfiler\\Profile' => __DIR__ . '/../..' . '/pro/Modules/PageProfiler/Profile.php',
+        'SPC_Pro\\Modules\\PageProfiler\\Storage\\Base' => __DIR__ . '/../..' . '/pro/Modules/PageProfiler/Storage/Base.php',
+        'SPC_Pro\\Modules\\PageProfiler\\Storage\\ObjectCache' => __DIR__ . '/../..' . '/pro/Modules/PageProfiler/Storage/ObjectCache.php',
+        'SPC_Pro\\Modules\\PageProfiler\\Storage\\Transients' => __DIR__ . '/../..' . '/pro/Modules/PageProfiler/Storage/Transients.php',
+        'SPC_Pro\\Modules\\Preload\\Links' => __DIR__ . '/../..' . '/pro/Modules/Preload/Links.php',
         'SPC_Pro\\Modules\\Settings_Manager' => __DIR__ . '/../..' . '/pro/Modules/Settings_Manager.php',
         'SPC_Pro\\Services\\Cloudflare_Transform_Rule' => __DIR__ . '/../..' . '/pro/Services/Cloudflare_Transform_Rule.php',
-        'WP_Async_Request' => __DIR__ . '/..' . '/deliciousbrains/wp-background-processing/classes/wp-async-request.php',
-        'WP_Background_Process' => __DIR__ . '/..' . '/deliciousbrains/wp-background-processing/classes/wp-background-process.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit4c660e83afb5996a27e483c3fa4c0111::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit4c660e83afb5996a27e483c3fa4c0111::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInit4c660e83afb5996a27e483c3fa4c0111::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit55d84125555e8ebd3eb5481b5ac90b2e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit55d84125555e8ebd3eb5481b5ac90b2e::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit55d84125555e8ebd3eb5481b5ac90b2e::$classMap;
 
         }, null, ClassLoader::class);
     }

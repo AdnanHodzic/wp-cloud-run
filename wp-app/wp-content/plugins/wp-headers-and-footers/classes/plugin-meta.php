@@ -68,6 +68,7 @@ if (! class_exists('WPHeaderAndFooter_Plugin_Meta')) :
 		 * @param URL    $links the action link.
 		 * @param string $file the file name.
 		 * @since  1.2.1
+		 * @version 3.1.3
 		 */
 		public function action_links($links, $file)
 		{
@@ -91,11 +92,13 @@ if (! class_exists('WPHeaderAndFooter_Plugin_Meta')) :
 
 				// Check if any option is set to '1' and build the settings link
 				if ('1' == $communication || '1' == $diagnostic_info || '1' == $extensions) {
+					/* Translators: Opt Out */
 					$settings_link .= sprintf(esc_html__('|  %1$s Opt Out %2$s ', 'wp-headers-and-footers'), '<a class="opt-out" href="' . admin_url('options-general.php?page=wp-headers-and-footers') . '">', '</a>');
 				} else {
                     if('yes' == get_option( '_wpheaderandfooter_optin' )) {
                         update_option('_wpheaderandfooter_optin', 'no');
                     }
+					/* Translators: Opt In */
 					$settings_link .= sprintf(esc_html__('|  %1$s Opt In %2$s ', 'wp-headers-and-footers'),'<a href="' . admin_url('admin.php?page=wpheadersandfooters-optin') . '">','</a>');
 				}
 				array_unshift($links, $settings_link);

@@ -35,11 +35,9 @@ class SWCFPC_Test_Cache {
 	/**
 	 * Check if the response headers indicate that the page was served from Cloudflare.
 	 *
-	 * @param bool $check_worker_mode - Check if the page was served by the Worker.
-	 *
 	 * @return bool - True if the cache is active, false otherwise. On false, check if errors are present.
 	 */
-	public function check_cloudflare_cache( $check_worker_mode = false ) {
+	public function check_cloudflare_cache() {
 		$this->errors = [];
 
 		$retrieved_headers = $this->fetch_headers();
@@ -56,18 +54,21 @@ class SWCFPC_Test_Cache {
 		}
 
 		if ( 0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'REVALIDATED' ) ) {
+			// translators: %s is the CF-Cache-Status header value.
 			$this->errors[] = sprintf( __( 'Cache status: %s - The resource is served from cache but is stale. The resource was revalidated by either an If-Modified-Since header or an If-None-Match header.', 'wp-cloudflare-page-cache' ), $retrieved_headers['CF-Cache-Status'] );
 
 			return false;
 		}
 
 		if ( 0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'UPDATING' ) ) {
+			// translators: %s is the CF-Cache-Status header value.
 			$this->errors[] = sprintf( __( 'Cache status: %s - The resource was served from cache but is expired. The resource is currently being updated by the origin web server. UPDATING is typically seen only for very popular cached resources.', 'wp-cloudflare-page-cache' ), $retrieved_headers['CF-Cache-Status'] );
 
 			return false;
 		}
 
 		if ( 0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'BYPASS' ) ) {
+			// translators: %s is the CF-Cache-Status header value.
 			$this->errors[] = sprintf( __( 'Cache status: %s - Cloudflare has been instructed to not cache this asset. It has been served directly from the origin.', 'wp-cloudflare-page-cache' ), $retrieved_headers['CF-Cache-Status'] );
 
 			return false;
@@ -76,7 +77,8 @@ class SWCFPC_Test_Cache {
 		if ( 0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'DYNAMIC' ) ) {
 
 			$cookies = wp_remote_retrieve_cookies( $this->saved_response );
-			$error   = sprintf( __( 'Cache status: %s - The resource was not cached by default and your current Cloudflare caching configuration doesn\'t instruct Cloudflare to cache the resource.', 'wp-cloudflare-page-cache' ), $retrieved_headers['CF-Cache-Status'] );
+			// translators: %s is the CF-Cache-Status header value.
+			$error = sprintf( __( 'Cache status: %s - The resource was not cached by default and your current Cloudflare caching configuration doesn\'t instruct Cloudflare to cache the resource.', 'wp-cloudflare-page-cache' ), $retrieved_headers['CF-Cache-Status'] );
 
 			if ( ! empty( $cookies ) && count( $cookies ) > 1 ) {
 				$error .= ' ' . __( 'Try to enable the <strong>Strip response cookies on pages that should be cached</strong> option and retry.', 'wp-cloudflare-page-cache' );
@@ -89,39 +91,17 @@ class SWCFPC_Test_Cache {
 		}
 
 		// +-------- Cache Control --------+
-		if ( 0 === strcasecmp( $retrieved_headers['Cache-Control'], '{resp:x-wp-cf-super-cache-cache-control}' ) ) {
+		if (isset($retrieved_headers['Cache-Control']) && 0 === strcasecmp($retrieved_headers['Cache-Control'], '{resp:x-wp-cf-super-cache-cache-control}')) {
 			$this->errors[] = __( 'Invalid Cache-Control response header. If you are using Litespeed Server, please disable the option <strong>Overwrite the cache-control header for WordPress\'s pages using web server rules</strong>, purge the cache and retry.', 'wp-cloudflare-page-cache' );
 
 			return false;
-		}
-
-		// +-------- Cloudflare Worker --------+
-		if ( $check_worker_mode ) {
-			if ( ! isset( $retrieved_headers['x-wp-cf-super-cache-worker-status'] ) ) {
-				$this->errors[] = __( 'Unable to find the X-WP-CF-Super-Cache-Worker-Status response header. Worker mode seems not working correctly.', 'wp-cloudflare-page-cache' );
-
-				return false;
-			}
-
-			if ( ! isset( $retrieved_headers['x-wp-cf-super-cache-worker-status'] ) ) {
-				$this->errors[] = __( 'Unable to find the X-WP-CF-Super-Cache-Worker-Status response header. Worker mode seems not working correctly.', 'wp-cloudflare-page-cache' );
-
-				return false;
-			}
 		}
 
 		// +-------- Valid Cache Status --------+
 		if (
 			0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'HIT' ) ||
 			0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'MISS' ) ||
-			0 === strcasecmp( $retrieved_headers['CF-Cache-Status'], 'EXPIRED' ) ||
-			(
-				$check_worker_mode &&
-				(
-					0 === strcasecmp( $retrieved_headers['x-wp-cf-super-cache-worker-status'], 'hit' ) ||
-					0 === strcasecmp( $retrieved_headers['x-wp-cf-super-cache-worker-status'], 'miss' )
-				)
-			)
+			0 === strcasecmp($retrieved_headers['CF-Cache-Status'], 'EXPIRED')
 		) {
 			return true;
 		}

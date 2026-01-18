@@ -10,8 +10,11 @@ class Constants {
 	public const SETTING_LAZY_EXCLUDED               = 'cf_lazy_load_excluded';
 	public const SETTING_LAZY_LOAD_BG                = 'cf_lazy_load_bg';
 	public const SETTING_LAZY_LOAD_BG_SELECTORS      = 'cf_lazy_load_bg_selectors';
+	public const SETTING_OPTIMIZE_GOOGLE_FONTS       = 'optimize_google_fonts';
+	public const SETTING_LOCAL_GOOGLE_FONTS          = 'local_google_fonts';
+	public const SETTING_LAZY_LOAD_BEHAVIOUR         = 'cf_lazy_load_behaviour';
 	public const SETTING_EXCLUDED_COOKIES            = 'cf_fallback_cache_excluded_cookies';
-	public const SETTING_EXCLUDED_URLS               = 'cf_excluded_urls';
+	public const SETTING_EXCLUDED_URLS               = 'cf_fallback_cache_excluded_urls';
 	public const SETTING_AUTO_PURGE                  = 'cf_auto_purge';
 	public const SETTING_AUTO_PURGE_WHOLE            = 'cf_auto_purge_all';
 	public const SETTING_PURGE_ON_COMMENT            = 'cf_auto_purge_on_comments';
@@ -19,21 +22,116 @@ class Constants {
 	public const SETTING_PREFETCH_ON_HOVER           = 'cf_prefetch_urls_on_hover';
 	public const SETTING_REMOVE_CACHE_BUSTER         = 'cf_remove_cache_buster';
 	public const SETTING_SHOW_ADVANCED               = 'show_advanced';
+	public const SETTING_KEEP_ON_DEACTIVATION        = 'keep_settings_on_deactivation';
 	public const SETTING_BROWSER_CACHE_STATIC_ASSETS = 'cf_browser_caching_htaccess';
-	public const DEFAULT_PRELOADED_SITEMAPS_URLS     = [
+	public const SETTING_ENABLE_FALLBACK_CACHE       = 'cf_fallback_cache';
+
+	public const SETTING_VARNISH_SUPPORT          = 'cf_varnish_support';
+	public const SETTING_VARNISH_AUTO_PURGE       = 'cf_varnish_auto_purge';
+	public const SETTING_VARNISH_HOSTNAME         = 'cf_varnish_hostname';
+	public const SETTING_VARNISH_PORT             = 'cf_varnish_port';
+	public const SETTING_VARNISH_ON_CLOWDWAYS     = 'cf_varnish_cw';
+	public const SETTING_VARNISH_PURGE_METHOD     = 'cf_varnish_purge_method';
+	public const SETTING_VARNISH_PURGE_ALL_METHOD = 'cf_varnish_purge_all_method';
+
+	public const SETTING_ENABLE_PRELOADER         = 'cf_preloader';
+	public const SETTING_PRELOADER_START_ON_PURGE = 'cf_preloader_start_on_purge';
+	public const SETTING_PRELOADER_NAV_MENUS      = 'cf_preloader_nav_menus';
+	public const SETTING_PRELOAD_LAST_URLS        = 'cf_preload_last_urls';
+	public const SETTING_PRELOAD_CRONJOB_SECRET   = 'cf_preloader_url_secret_key';
+
+	public const SETTING_FALLBACK_CACHE_CURL                       = 'cf_fallback_cache_curl';
+	public const SETTING_FALLBACK_CACHE_LIFESPAN                   = 'cf_fallback_cache_ttl';
+	public const SETTING_FALLBACK_CACHE_SAVE_HEADERS               = 'cf_fallback_cache_save_headers';
+	public const SETTING_FALLBACK_CACHE_PREVENT_TRAILING_SLASH     = 'cf_fallback_cache_prevent_cache_urls_without_trailing_slash';
+	public const SETTING_FALLBACK_CACHE_PURGE_ON_UPGRADER_COMPLETE = 'cf_auto_purge_on_upgrader_process_complete';
+	public const SETTING_STRIP_RESPONSE_COOKIES                    = 'cf_strip_cookies';
+	public const SETTING_OVERWRITE_WITH_HTACCESS                   = 'cf_cache_control_htaccess';
+	public const SETTING_PURGE_ONLY_HTML                           = 'cf_purge_only_html';
+	public const SETTING_DISABLE_PURGING_QUEUE                     = 'cf_disable_cache_purging_queue';
+
+	// Bypass Settings.
+	public const SETTING_BYPASS_404          = 'cf_bypass_404';
+	public const SETTING_BYPASS_SINGLE_POST  = 'cf_bypass_single_post';
+	public const SETTING_BYPASS_PAGES        = 'cf_bypass_pages';
+	public const SETTING_BYPASS_FRONT_PAGE   = 'cf_bypass_front_page';
+	public const SETTING_BYPASS_HOME         = 'cf_bypass_home';
+	public const SETTING_BYPASS_ARCHIVES     = 'cf_bypass_archives';
+	public const SETTING_BYPASS_TAGS         = 'cf_bypass_tags';
+	public const SETTING_BYPASS_CATEGORY     = 'cf_bypass_category';
+	public const SETTING_BYPASS_FEEDS        = 'cf_bypass_feeds';
+	public const SETTING_BYPASS_SEARCH_PAGES = 'cf_bypass_search_pages';
+	public const SETTING_BYPASS_AUTHOR_PAGES = 'cf_bypass_author_pages';
+	public const SETTING_BYPASS_AMP          = 'cf_bypass_amp';
+	public const SETTING_BYPASS_AJAX         = 'cf_bypass_ajax';
+	public const SETTING_BYPASS_QUERY_VAR    = 'cf_bypass_query_var';
+	public const SETTING_BYPASS_WP_JSON_REST = 'cf_bypass_wp_json_rest';
+
+	public const SETTING_BYPASS_SITEMAP    = 'cf_bypass_sitemap';
+	public const SETTING_BYPASS_ROBOTS_TXT = 'cf_bypass_file_robots';
+
+	public const SETTING_POSTS_PER_PAGE            = 'cf_post_per_page';
+	public const SETTING_CACHE_MAX_AGE             = 'cf_maxage';
+	public const SETTING_BROWSER_CACHE_MAX_AGE     = 'cf_browser_maxage';
+	public const SETTING_FALLBACK_CACHE_AUTO_PURGE = 'cf_fallback_cache_auto_purge';
+
+	public const SETTING_BYPASS_BACKEND_WITH_RULE = 'cf_bypass_backend_page_rule';
+
+	public const SETTING_LOG_ENABLED      = 'log_enabled';
+	public const SETTING_LOG_MAX_FILESIZE = 'log_max_file_size';
+	public const SETTING_LOG_VERBOSITY    = 'log_verbosity';
+
+	public const SETTING_UNUSED_CSS                  = 'unused_css';
+	public const SETTING_UNUSED_CSS_EXCLUDED_PATHS   = 'unused_css_excluded_paths';
+	public const SETTING_UNUSED_CSS_EXCLUDED_CSS     = 'unused_css_excluded_css';
+	public const SETTING_OBJECT_CACHE_PURGE_ON_FLUSH = 'cf_object_cache_purge_on_flush';
+	public const SETTING_OPCACHE_PURGE_ON_FLUSH      = 'cf_opcache_purge_on_flush';
+	public const SETTING_PURGE_URL_SECRET_KEY        = 'cf_purge_url_secret_key';
+	public const SETTING_REMOVE_PURGE_OPTION_TOOLBAR = 'cf_remove_purge_option_toolbar';
+	public const SETTING_DISABLE_SINGLE_METABOX      = 'cf_disable_single_metabox';
+	public const SETTING_SEO_REDIRECT                = 'cf_seo_redirect';
+	public const SETTING_PURGE_ROLES                 = 'cf_purge_roles';
+	public const SETTING_PREFETCH_URLS_VIEWPORT      = 'cf_prefetch_urls_viewport';
+	public const SETTING_PREFETCH_URLS_TIMESTAMP     = 'cf_prefetch_urls_viewport_timestamp';
+
+	public const SETTING_AUTH_MODE      = 'cf_auth_mode';
+	public const SETTING_CF_EMAIL       = 'cf_email';
+	public const SETTING_CF_API_KEY     = 'cf_apikey';
+	public const SETTING_CF_API_TOKEN   = 'cf_apitoken';
+	public const SETTING_CF_DOMAIN_NAME = 'cf_apitoken_domain';
+
+	public const SETTING_CF_ZONE_ID = 'cf_zoneid';
+	public const ZONE_ID_LIST       = 'cf_zoneid_list';
+
+	public const RULE_ID_BYPASS_BACKEND = 'cf_bypass_backend_page_rule_id';
+	public const RULE_ID_PAGE           = 'cf_page_rule_id';
+
+	public const RULE_ID_CACHE    = 'cf_cache_settings_ruleset_rule_id';
+	public const RULESET_ID_CACHE = 'cf_cache_settings_ruleset_id';
+
+
+	public const SETTING_CF_CACHE_ENABLED = 'cf_cache_enabled';
+
+	public const SETTING_OLD_BC_TTL = 'cf_old_bc_ttl';
+	public const ENABLE_CACHE_RULE  = 'enable_cache_rule';
+
+	public const SETTING_ENABLE_ASSETS_MANAGER = 'enable_assets_manager';
+
+	// Defaults
+	public const DEFAULT_PRELOADED_SITEMAPS_URLS = [
 		'/wp-sitemap.xml',
 	];
-	public const DEFAULT_LAZY_LOAD_EXCLUSIONS        = [
+	public const DEFAULT_LAZY_LOAD_EXCLUSIONS    = [
 		'skip-lazy',
 	];
-	public const DEFAULT_BG_LAZYLOAD_SELECTORS       = [
+	public const DEFAULT_BG_LAZYLOAD_SELECTORS   = [
 		'[style*="background-image:"]',
 		'[class*="elementor"][data-settings*="background_background"]',
 		'.elementor-section > .elementor-background-overlay',
 		'[class*="wp-block-cover"][style*="background-image"]',
 		'[class*="wp-block-group"][style*="background-image"]',
 	];
-	public const COMPAT_BG_LAZYLOAD_SELECTORS        = [
+	public const COMPAT_BG_LAZYLOAD_SELECTORS    = [
 		'otter-blocks/otter-blocks.php'                 => [
 			'.o-flip-front',
 			'.o-flip-back',
@@ -86,7 +184,7 @@ class Constants {
 			'.thrv_text_element',
 		],
 	];
-	public const DEFAULT_EXCLUDED_COOKIES            = [
+	public const DEFAULT_EXCLUDED_COOKIES        = [
 		'comment_',
 		'woocommerce_',
 		'wordpress',
@@ -100,7 +198,7 @@ class Constants {
 		'ec_',
 		'bookly',
 	];
-	
+
 	public const DEFAULT_EXCLUDED_URLS = [
 		'/*ao_noptirocket*',
 		'/*jetpack=comms*',
@@ -572,4 +670,48 @@ class Constants {
 	];
 
 	public const KEY_RULE_UPDATE_FAILED = 'cf_rule_update_failed';
+
+	public const PRELOAD_EXCLUDED_POST_TYPES = [
+		'attachment',
+		'jet-menu',
+		'elementor_library',
+		'jet-theme-core',
+	];
+
+	public const SETTING_ENABLE_DATABASE_OPTIMIZATION = 'database_optimization';
+
+	public const SETTING_POST_REVISION_INTERVAL = 'post_revision_interval';
+
+	public const SETTING_AUTO_DRAFT_POST_INTERVAL = 'auto_draft_post_interval';
+
+	public const SETTING_TRASHED_POST_INTERVAL = 'trashed_post_interval';
+
+	public const SETTING_SPAM_COMMENT_INTERVAL = 'spam_comment_interval';
+
+	public const SETTING_TRASHED_COMMENT_INTERVAL = 'trashed_comment_interval';
+
+	public const SETTING_ALL_TRANSIENT_INTERVAL = 'all_transients_interval';
+
+	public const SETTING_OPTIMIZE_TABLE_INTERVAL = 'optimize_tables_interval';
+
+	public const ACTION_SCHEDULER_GROUP = 'spc';
+
+	/**
+	 * @deprecated 5.1.0 - Worker mode is not supported anymore after
+	 *
+	 * @var string
+	 */
+	public const WORKER_ID = 'cf_woker_id';
+	/**
+	 * @deprecated 5.1.0 - Worker mode is not supported anymore after
+	 *
+	 * @var string
+	 */
+	public const SETTING_WORKER_ENABLED = 'cf_woker_enabled';
+	/**
+	 * @deprecated 5.1.0 - Worker mode is not supported anymore after
+	 *
+	 * @var string
+	 */
+	public const SETTING_WORKER_EXCLUDED_COOKIES = 'cf_worker_bypass_cookies';
 }

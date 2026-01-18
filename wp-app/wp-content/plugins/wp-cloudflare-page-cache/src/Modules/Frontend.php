@@ -4,12 +4,16 @@ namespace SPC\Modules;
 
 use SPC\Constants;
 use SPC\Loader;
+use SPC\Services\Settings_Store;
 
 /**
  * Frontend module.
  */
 class Frontend implements Module_Interface {
 	private const BG_LAZYLOADED_CLASS = 'spc-bg-lazyloaded';
+
+	const LAZY_LOAD_BEHAVIOUR_ALL   = 'all';
+	const LAZY_LOAD_BEHAVIOUR_FIXED = 'fixed';
 
 	/**
 	 * Initialize the module.
@@ -42,36 +46,36 @@ class Frontend implements Module_Interface {
 		?>
 
 		<script type="text/javascript" id="spc-lazy-bg">
-		  (function () {
+			(function () {
 			const loadedClass = '<?php echo esc_js( self::BG_LAZYLOADED_CLASS ); ?>';
 			const bgSelectors = '<?php echo wp_strip_all_tags( join( ', ', $this->get_lazyload_background_selectors() ) ); ?>';
 
 			function observerCallback(entries, observer) {
-			  entries.forEach(function (entry) {
+				entries.forEach(function (entry) {
 				if (!entry.isIntersecting) return;
 
 				if (entry.target.classList.contains(loadedClass)) return;
 
 				entry.target.classList.add(loadedClass);
 				observer.unobserve(entry.target);
-			  });
+				});
 			}
 
 			const intersectionObserver = new IntersectionObserver(observerCallback, {
-			  root: null,
-			  rootMargin: "150px 0px 500px",
-			  threshold: [0.1, 0.3, 0.5, 0.6, 0.8, 1],
+				root: null,
+				rootMargin: "150px 0px 500px",
+				threshold: [0.1, 0.3, 0.5, 0.6, 0.8, 1],
 			});
 
 			function start() {
-			  document.querySelectorAll(bgSelectors).forEach(function (el) {
+				document.querySelectorAll(bgSelectors).forEach(function (el) {
 					intersectionObserver.observe(el);
-				  }
-			  )
+					}
+				)
 			}
 
 			document.addEventListener('DOMContentLoaded', start);
-		  }());
+			}());
 		</script>
 		<?php
 	}
@@ -96,7 +100,11 @@ class Frontend implements Module_Interface {
 
 		wp_register_style( 'spc_bg_lazy', false );
 		wp_enqueue_style( 'spc_bg_lazy' );
-		wp_add_inline_style( 'spc_bg_lazy', $this->get_background_lazy_css() );
+		$lazyload_css = $this->get_background_lazy_css();
+		if ( empty( $lazyload_css ) ) {
+			remove_action( 'wp_print_scripts', [ $this, 'add_bg_lazyload_script' ] );
+		}
+		wp_add_inline_style( 'spc_bg_lazy', $lazyload_css );
 	}
 
 	/**
@@ -105,17 +113,18 @@ class Frontend implements Module_Interface {
 	 * @return void
 	 */
 	public function enqueue_uncached() {
-		global $sw_cloudflare_pagecache;
-
 		if ( $this->is_amp_or_customizer() ) {
 			return;
 		}
 
-		if ( (int) $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_PREFETCH_ON_HOVER, 0 ) > 0 ) {
+		if ( Settings_Store::get_instance()->get( Constants::SETTING_PREFETCH_ON_HOVER ) ) {
 			wp_enqueue_script( 'swcfpc_instantpage', SWCFPC_PLUGIN_URL . 'assets/js/instantpage.min.js', [], '5.2.0', true );
 		}
 
-		if ( (int) $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_PREFETCH_ON_HOVER, 0 ) > 0 || (int) $sw_cloudflare_pagecache->get_single_config( 'cf_prefetch_urls_viewport', 0 ) > 0 ) {
+		if (
+			Settings_Store::get_instance()->get( Constants::SETTING_PREFETCH_ON_HOVER ) ||
+			Settings_Store::get_instance()->get( Constants::SETTING_PREFETCH_URLS_VIEWPORT )
+		) {
 			$this->enqueue_auto_prefetch_viewport();
 		}
 	}
@@ -125,7 +134,7 @@ class Frontend implements Module_Interface {
 	 *
 	 * @return void
 	 */
-	function enqueue_auto_prefetch_viewport() {
+	private function enqueue_auto_prefetch_viewport() {
 		global $sw_cloudflare_pagecache;
 
 		wp_register_script( 'swcfpc_auto_prefetch_url', '', [], '', true );
@@ -210,14 +219,14 @@ class Frontend implements Module_Interface {
 			return '';
 		}
 
-		$selectors = array_map(
+		$formatted_selectors = array_map(
 			function ( $selector ) {
 				return sprintf( 'html %s:not(.%s)', $selector, self::BG_LAZYLOADED_CLASS );
 			},
 			$selectors
 		);
 
-		return strip_tags( implode( ",\n", $selectors ) . ' { background-image: none !important; }' );
+		return apply_filters( 'spc_lazyload_bg_lazyload_css', strip_tags( implode( ",\n", $formatted_selectors ) . ' { background-image: none !important; }' ), $selectors );
 	}
 
 	/**
@@ -225,7 +234,7 @@ class Frontend implements Module_Interface {
 	 *
 	 * @return string[]
 	 */
-	private function get_lazyload_background_selectors() {
+	public function get_lazyload_background_selectors() {
 		global $sw_cloudflare_pagecache;
 
 		return array_merge(
@@ -240,12 +249,21 @@ class Frontend implements Module_Interface {
 	 *
 	 * @return bool
 	 */
-	private function is_background_lazyload_enabled() {
+	public function is_background_lazyload_enabled() {
 		global $sw_cloudflare_pagecache;
 
 		return (int) $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_LAZY_LOAD_BG ) === 1;
 	}
 
+	public static function get_lazyload_behaviours() {
+		return apply_filters(
+			'spc_lazyload_behaviours',
+			[
+				self::LAZY_LOAD_BEHAVIOUR_ALL   => true,
+				self::LAZY_LOAD_BEHAVIOUR_FIXED => true,
+			]
+		);
+	}
 	/**
 	 * Get compatibility selectors for other plugins.
 	 *
@@ -257,7 +275,12 @@ class Frontend implements Module_Interface {
 		// Keep only the selectors for active plugins.
 		$active_compatibilities = array_filter( Constants::COMPAT_BG_LAZYLOAD_SELECTORS, 'is_plugin_active', ARRAY_FILTER_USE_KEY );
 
+		if ( empty( $active_compatibilities ) ) {
+			return [];
+		}
+
 		// Merge all selectors into a single array & ensure unique selectors.
+		// @phpstan-ignore-next-line - false positive, as array is checked above
 		return array_unique( array_merge( ...array_values( $active_compatibilities ) ) );
 	}
 

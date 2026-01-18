@@ -2,6 +2,7 @@
 
 use SPC\Constants;
 use SPC\Modules\Settings_Manager;
+use SPC\Services\Settings_Store;
 use SPC\Utils\Helpers;
 
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
@@ -51,12 +52,6 @@ class SWCFPC_Cache_Controller {
 		// Auto prefetch URLs
 		add_action( 'wp_footer', [ $this, 'prefetch_urls' ], PHP_INT_MAX );
 
-		// Ajax preloader start
-		add_action( 'wp_ajax_swcfpc_preloader_start', [ $this, 'ajax_preloader_start' ] );
-
-		// Ajax unlock preloader
-		add_action( 'wp_ajax_swcfpc_preloader_unlock', [ $this, 'ajax_preloader_unlock' ] );
-
 		// Ajax clear whole cache
 		add_action( 'wp_ajax_swcfpc_purge_whole_cache', [ $this, 'ajax_purge_whole_cache' ] );
 
@@ -65,15 +60,6 @@ class SWCFPC_Cache_Controller {
 
 		// Ajax clear single post cache
 		add_action( 'wp_ajax_swcfpc_purge_single_post_cache', [ $this, 'ajax_purge_single_post_cache' ] );
-
-		// Ajax reset all
-		add_action( 'wp_ajax_swcfpc_reset_all', [ $this, 'ajax_reset_all' ] );
-
-		// Ajax disconnect cloudflare
-		add_action( 'wp_ajax_swcfpc_disconnect_cloudflare', [ $this, 'ajax_disconnect_cloudflare' ] );
-
-
-		// add_action( 'init', array( $this, 'force_bypass_for_logged_in_users' ), PHP_INT_MAX );
 
 		// This sets response headers for backend
 		add_action( 'init', [ $this, 'setup_response_headers_backend' ], 0 );
@@ -300,9 +286,6 @@ class SWCFPC_Cache_Controller {
 			add_action( 'save_post', [ $this, 'swcfpc_cache_mbox_save_values' ], PHP_INT_MAX );
 		}
 
-		// Ajax enable page cache
-		add_action( 'wp_ajax_swcfpc_enable_page_cache', [ $this, 'ajax_enable_page_cache' ] );
-
 		// Add wp_redirect filter to adding cache buster for logged in users
 		add_filter( 'wp_redirect', [ $this, 'wp_redirect_filter' ], PHP_INT_MAX, 2 );
 	}
@@ -470,8 +453,7 @@ class SWCFPC_Cache_Controller {
 
 				$headers['Cache-Control']                      = $this->get_cache_control_value(); // Used by Cloudflare
 				$headers['X-WP-CF-Super-Cache-Cache-Control']  = $this->get_cache_control_value(); // Used by all
-				$headers['X-WP-CF-Super-Cache-Cookies-Bypass'] = $this->get_cookies_to_bypass_in_worker_mode(); // Used by CF worker
-				$headers['X-WP-CF-Super-Cache-Active']         = '1'; // Used by CF worker
+				$headers['X-WP-CF-Super-Cache-Active']         = '1';
 				$headers['X-WP-CF-Super-Cache']                = 'cache';
 			}
 		}
@@ -566,8 +548,7 @@ class SWCFPC_Cache_Controller {
 					return [
 						'Cache-Control'              => $this->get_cache_control_value(), // Used by Cloudflare
 						'X-WP-CF-Super-Cache-Cache-Control' => $this->get_cache_control_value(), // Used by all
-						'X-WP-CF-Super-Cache-Cookies-Bypass' => $this->get_cookies_to_bypass_in_worker_mode(), // Used by CF worker
-						'X-WP-CF-Super-Cache-Active' => '1', // Used by CF Worker
+						'X-WP-CF-Super-Cache-Active' => '1',
 						'X-WP-CF-Super-Cache'        => 'cache',
 					];
 				},
@@ -663,8 +644,7 @@ class SWCFPC_Cache_Controller {
 
 		header( 'X-WP-SPC-Disk-Cache: ' . $status );
 		header( 'X-WP-CF-Super-Cache-Active: 1' );
-		header( 'X-WP-CF-Super-Cache-Cache-Control: ' . $this->get_cache_control_value() );
-		header( 'X-WP-CF-Super-Cache-Cookies-Bypass: ' . $this->get_cookies_to_bypass_in_worker_mode() );
+		header('X-WP-CF-Super-Cache-Cache-Control: ' . $this->get_cache_control_value());
 
 		if ( $this->is_cache_enabled() ) {
 			$this->main_instance->get_fallback_cache_handler()->fallback_cache_enable();
@@ -752,13 +732,17 @@ class SWCFPC_Cache_Controller {
 			}
 
 			if ( $this->main_instance->get_single_config( 'cf_purge_only_html', 0 ) == 0 || $force_purge_everything == true ) {
-				$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', 'Purged whole Cloudflare cache' );
+				$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', 'Purged whole cache' );
 			} else {
 
 				if ( ! is_array( $cached_html_pages ) || ! $cached_html_pages_count ) {
 					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', 'There are no HTML pages to purge' );
 				} else {
-					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', "Purged only {$cached_html_pages_count} HTML pages from Cloudflare" );
+					if ( Settings_Store::get_instance()->is_cloudflare_connected() ) {
+						$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', "Purged only {$cached_html_pages_count} HTML pages from Cloudflare" );
+					} else {
+						$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', "Purged only {$cached_html_pages_count} HTML pages" );
+					}
 					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_all', 'Pages purged ' . print_r( $cached_html_pages, true ), true );
 				}
 			}
@@ -859,9 +843,19 @@ class SWCFPC_Cache_Controller {
 				$this->start_cache_preloader_for_specific_urls( $urls );
 			}
 
-			// $this->unlock_cache_purge();
+		// $this->unlock_cache_purge();
 
-			$this->main_instance->get_logger()->add_log( 'cache_controller::purge_urls', 'Purged specific URLs from Cloudflare cache' );
+		// Build friendly log message with up to 3 URLs
+			$log_message = 'Purged cache for ';
+			$urls_to_show = array_slice( $urls, 0, 3 );
+			$log_message .= implode( ', ', $urls_to_show );
+			
+			if ( $count_urls > 3 ) {
+				$remaining = $count_urls - 3;
+				$log_message .= sprintf( ' + %d other%s', $remaining, $remaining > 1 ? 's' : '' );
+			}
+			
+			$this->main_instance->get_logger()->add_log( 'cache_controller::purge_urls', $log_message );
 
 			do_action( 'swcfpc_purge_urls', $urls );
 
@@ -977,13 +971,13 @@ class SWCFPC_Cache_Controller {
 				if ( Settings_Manager::is_on( Constants::SETTING_AUTO_PURGE_WHOLE ) ) {
 
 					$this->purge_all();
-					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_when_post_is_published', "Purge whole Cloudflare cache (fired action: {$current_action}" );
+					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_when_post_is_published', "Purge whole cache (fired action: {$current_action}" );
 				} else {
 
 					$urls = $this->get_post_related_links( $post->ID );
 
 					$this->purge_urls( $urls );
-					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_when_post_is_published', "Purge Cloudflare cache for only post id {$post->ID} and related contents - Fired action: {$current_action}" );
+					$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_when_post_is_published', "Purge cache for only post id {$post->ID} and related contents - Fired action: {$current_action}" );
 				}
 			}
 		}
@@ -1049,7 +1043,7 @@ class SWCFPC_Cache_Controller {
 			$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 			$this->purge_all();
-			$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_on_theme_edit', "Purge whole Cloudflare cache - Fired action: {$current_action}" );
+			$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_on_theme_edit', "Purge whole cache - Fired action: {$current_action}" );
 		}
 	}
 
@@ -1158,72 +1152,6 @@ class SWCFPC_Cache_Controller {
 		return $listofurls;
 	}
 
-
-	function reset_all( $keep_settings = false ) {
-		$error = '';
-
-		// Purge all caches and prevent preloader to start
-		$this->purge_all( true, false, true );
-
-		// Reset old browser cache TTL
-		$this->main_instance->get_cloudflare_handler()->change_browser_cache_ttl( $this->main_instance->get_single_config( 'cf_old_bc_ttl', 0 ), $error );
-
-		// Delete worker and route
-		if ( $this->main_instance->get_single_config( 'cf_woker_enabled', 0 ) > 0 ) {
-
-			$this->main_instance->get_cloudflare_handler()->worker_delete( $error );
-
-			if ( $this->main_instance->get_single_config( 'cf_woker_route_id', '' ) != '' ) {
-				$this->main_instance->get_cloudflare_handler()->worker_route_delete( $error );
-			}
-		}
-
-		// Delete the page rule
-		if ( $this->main_instance->get_single_config( 'cf_page_rule_id', '' ) != '' ) {
-			$this->main_instance->get_cloudflare_handler()->delete_page_rule( $this->main_instance->get_single_config( 'cf_page_rule_id', '' ), $error );
-		}
-
-		// Delete additional page rule if exists
-		if ( $this->main_instance->get_single_config( 'cf_bypass_backend_page_rule_id', '' ) != '' ) {
-			$this->main_instance->get_cloudflare_handler()->delete_page_rule( $this->main_instance->get_single_config( 'cf_bypass_backend_page_rule_id', '' ), $error );
-		}
-
-		// Delete Cache Rule
-		$this->main_instance->get_cloudflare_handler()->delete_cache_rule();
-		$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_id', '' );
-		$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_rule_id', '' );
-
-		// Disable fallback cache
-		if ( defined( 'SWCFPC_ADVANCED_CACHE' ) ) {
-			$this->main_instance->get_fallback_cache_handler()->fallback_cache_advanced_cache_disable();
-		}
-
-		// Delete all cached HTML pages temp files
-		$this->main_instance->get_html_cache_handler()->delete_all_cached_urls();
-
-		// Restore default plugin config
-		if ( $keep_settings == false ) {
-			$this->main_instance->set_config( $this->main_instance->get_default_config() );
-		}
-		$this->main_instance->update_config();
-
-		// Delete all htaccess rules
-		$this->reset_htaccess();
-
-		// Unschedule purge cache cron
-		$timestamp = wp_next_scheduled( 'swcfpc_cache_purge_cron' );
-
-		if ( $timestamp !== false ) {
-			wp_unschedule_event( $timestamp, 'swcfpc_cache_purge_cron' );
-			wp_clear_scheduled_hook( 'swcfpc_cache_purge_cron' );
-		}
-
-		// Reset log
-		$this->main_instance->get_logger()->reset_log();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::reset_all', 'Reset complete' );
-	}
-
-
 	function wp_redirect_filter( $location, $status ) {
 
 		if ( $this->remove_cache_buster() ) {
@@ -1279,12 +1207,7 @@ class SWCFPC_Cache_Controller {
 			return;
 		}
 
-		// Cache buster is disabled in worker mode
-		if ( $this->main_instance->get_single_config( 'cf_woker_enabled', 0 ) > 0 ) {
-			return;
-		}
-
-		$selectors = 'a';
+			$selectors = 'a';
 
 		if ( is_admin() ) {
 			$selectors = '#wp-admin-bar-my-sites-list a, #wp-admin-bar-site-name a, #wp-admin-bar-view-site a, #wp-admin-bar-view a, .row-actions a, .preview, #sample-permalink a, #message a, #editor .is-link, #editor .editor-post-preview, #editor .editor-post-permalink__link, .edit-post-post-link__preview-link-container .edit-post-post-link__link';
@@ -1527,10 +1450,14 @@ class SWCFPC_Cache_Controller {
 			return true;
 		}
 
-		if ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
-			Helpers::bypass_reason_header( 'AJAX Request' );
+		// Bypass AJAX requests
+		if ( ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] == 'POST' ) || $this->main_instance->get_single_config( 'cf_bypass_ajax' ) > 0 ) {
 
-			return true;
+			if ( isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest' || ( defined( 'DOING_AJAX' ) && DOING_AJAX ) ) {
+				Helpers::bypass_reason_header( 'AJAX Request' );
+
+				return true;
+			}
 		}
 
 		if ( defined( 'DOING_CRON' ) && DOING_CRON ) {
@@ -1585,15 +1512,8 @@ class SWCFPC_Cache_Controller {
 			return true;
 		}
 
-		// Bypass POST requests
-		if ( $this->main_instance->get_single_config( 'cf_bypass_post', 0 ) > 0 && isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] == 'POST' ) {
-			Helpers::bypass_reason_header( 'POST Request' );
-
-			return true;
-		}
-
 		// Bypass AJAX requests
-		if ( $this->main_instance->get_single_config( 'cf_bypass_ajax', 0 ) > 0 ) {
+		if ( ( isset( $_SERVER['REQUEST_METHOD'] ) && $_SERVER['REQUEST_METHOD'] == 'POST' ) || $this->main_instance->get_single_config( 'cf_bypass_ajax', 0 ) > 0 ) {
 
 			if ( function_exists( 'wp_doing_ajax' ) && wp_doing_ajax() ) {
 				Helpers::bypass_reason_header( 'AJAX Request' );
@@ -1785,12 +1705,6 @@ class SWCFPC_Cache_Controller {
 		}
 
 
-		/*
-		if( $this->main_instance->get_single_config('cf_bypass_logged_in', 0) > 0 && is_user_logged_in() ) {
-			return true;
-		}
-		*/
-
 		if ( is_user_logged_in() ) {
 			Helpers::bypass_reason_header( 'Logged In' );
 
@@ -1814,18 +1728,6 @@ class SWCFPC_Cache_Controller {
 		return false;
 	}
 
-
-	function get_cookies_to_bypass_in_worker_mode() {
-		$cookies_list = $this->main_instance->get_single_config( 'cf_worker_bypass_cookies', [] );
-
-		if ( ! count( $cookies_list ) ) {
-			return 'swfpc-feature-not-enabled';
-		}
-
-		return trim( implode( '|', $cookies_list ) );
-	}
-
-
 	function get_cache_control_value() {
 		$value = 's-maxage=' . $this->main_instance->get_single_config( 'cf_maxage', 604800 ) . ', max-age=' . $this->main_instance->get_single_config( 'cf_browser_maxage', 60 );
 
@@ -1833,16 +1735,22 @@ class SWCFPC_Cache_Controller {
 	}
 
 
-	function is_cache_enabled() {
-		if ( $this->main_instance->get_single_config( 'cf_cache_enabled', 0 ) > 0 ) {
-			return true;
-		}
-
-		return false;
+	/**
+	 * Check if the cache is enabled.
+	 * 
+	 * @return bool
+	 */
+	public function is_cache_enabled() {
+		return (bool) Settings_Store::get_instance()->get(Constants::SETTING_CF_CACHE_ENABLED, 0);
 	}
 
-	function remove_cache_buster() {
-		return $this->main_instance->get_single_config( Constants::SETTING_REMOVE_CACHE_BUSTER, 1 ) > 0;
+	/**
+	 * Check if the cache buster should be removed.
+	 * 
+	 * @return bool
+	 */
+	public function remove_cache_buster() {
+		return (bool) Settings_Store::get_instance()->get(Constants::SETTING_REMOVE_CACHE_BUSTER, 1);
 	}
 
 
@@ -1855,7 +1763,7 @@ class SWCFPC_Cache_Controller {
 			$this->purge_all();
 		}
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::w3tc_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::w3tc_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -1865,7 +1773,7 @@ class SWCFPC_Cache_Controller {
 			$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 			$this->purge_all();
-			$this->main_instance->get_logger()->add_log( 'cache_controller::wpo_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+			$this->main_instance->get_logger()->add_log( 'cache_controller::wpo_hooks', "Purge whole cache (fired action: {$current_action})" );
 		}
 	}
 
@@ -1874,7 +1782,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::wp_performance_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::wp_performance_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -1893,7 +1801,7 @@ class SWCFPC_Cache_Controller {
 			$this->purge_all();
 		}
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 	function wp_rocket_after_rocket_clean_post_hook( $post ) {
@@ -1910,9 +1818,9 @@ class SWCFPC_Cache_Controller {
 
 			$this->purge_urls( [ $purged_post_url ] );
 
-			$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_after_rocket_clean_post_hook', "Purge Cloudflare cache for only URL {$purged_post_url} - Fired action: {$current_action}" );
+			$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_after_rocket_clean_post_hook', "Purge cache for only URL {$purged_post_url} - Fired action: {$current_action}" );
 		} else {
-			$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_after_rocket_clean_post_hook', "Unable to Purge Cloudflare cache. Valid post object not received  - Fired action: {$current_action}" );
+			$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_after_rocket_clean_post_hook', "Unable to Purge cache. Valid post object not received  - Fired action: {$current_action}" );
 		}
 
 		$done[ $post->ID ] = true;
@@ -1928,7 +1836,7 @@ class SWCFPC_Cache_Controller {
 
 		$urls_purged = json_encode( $url_to_purge );
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_selective_url_purge_hooks', "Purge Cloudflare cache for only URL {$urls_purged} - Fired action: {$current_action}" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::wp_rocket_selective_url_purge_hooks', "Purge cache for only URL {$urls_purged} - Fired action: {$current_action}" );
 	}
 
 
@@ -1941,7 +1849,7 @@ class SWCFPC_Cache_Controller {
 			$this->purge_all();
 		}
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::litespeed_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::litespeed_hooks', "Purge Cloudflare cache (fired action: {$current_action})" );
 	}
 
 
@@ -1959,7 +1867,7 @@ class SWCFPC_Cache_Controller {
 
 		$this->purge_urls( $urls );
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::litespeed_single_post_hooks', "Purge Cloudflare cache for only post {$post_id} - Fired action: {$current_action}" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::litespeed_single_post_hooks', "Purge cache for only post {$post_id} - Fired action: {$current_action}" );
 
 		$done[ $post_id ] = true;
 	}
@@ -1969,7 +1877,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::hummingbird_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::hummingbird_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -1977,7 +1885,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::nginx_helper_purge_all_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::nginx_helper_purge_all_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -1988,7 +1896,7 @@ class SWCFPC_Cache_Controller {
 
 			$this->purge_urls( [ $url_to_purge ] );
 
-			$this->main_instance->get_logger()->add_log( 'cache_controller::nginx_helper_purge_single_url_hooks', "Purge Cloudflare cache for only URL {$url_to_purge} - Fired action: {$current_action}" );
+			$this->main_instance->get_logger()->add_log( 'cache_controller::nginx_helper_purge_single_url_hooks', "Purge cache for only URL {$url_to_purge} - Fired action: {$current_action}" );
 		}
 	}
 
@@ -2010,7 +1918,7 @@ class SWCFPC_Cache_Controller {
 
 		$this->purge_urls( $urls );
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::yasr_hooks', "Purge Cloudflare cache for only post {$post_id} - Fired action: {$current_action}" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::yasr_hooks', "Purge cache for only post {$post_id} - Fired action: {$current_action}" );
 
 		$done[ $post_id ] = true;
 	}
@@ -2026,7 +1934,7 @@ class SWCFPC_Cache_Controller {
 		}
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::spl_purge_all', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::spl_purge_all', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -2046,7 +1954,7 @@ class SWCFPC_Cache_Controller {
 
 			$this->purge_urls( $urls );
 
-			$this->main_instance->get_logger()->add_log( 'cache_controller::spl_purge_single_post', "Purge Cloudflare cache for only post {$post_id} - Fired action: {$current_action}" );
+			$this->main_instance->get_logger()->add_log( 'cache_controller::spl_purge_single_post', "Purge cache for only post {$post_id} - Fired action: {$current_action}" );
 
 			$done[ $post_id ] = true;
 		}
@@ -2057,7 +1965,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::wpacu_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::wpacu_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -2065,7 +1973,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all( false, true, true );
-		$this->main_instance->get_logger()->add_log( 'cache_controller::flying_press_hook', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::flying_press_hook', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -2073,7 +1981,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::autoptimize_hooks', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::autoptimize_hooks', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -2081,7 +1989,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all( false, true, true );
-		$this->main_instance->get_logger()->add_log( 'cache_controller::purge_on_plugin_update', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::purge_on_plugin_update', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 
@@ -2089,7 +1997,7 @@ class SWCFPC_Cache_Controller {
 		$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
 		$this->purge_all();
-		$this->main_instance->get_logger()->add_log( 'cache_controller::edd_purge_cache_on_payment_add', "Purge whole Cloudflare cache (fired action: {$current_action})" );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::edd_purge_cache_on_payment_add', "Purge whole cache (fired action: {$current_action})" );
 	}
 
 	function woocommerce_purge_product_page_on_stock_change( $product_id ) {
@@ -2245,7 +2153,12 @@ class SWCFPC_Cache_Controller {
 			file_put_contents( $this->main_instance->get_plugin_wp_content_directory() . '/nginx.conf', '' );
 		}
 
+		if ( ! function_exists( 'insert_with_markers' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/misc.php';
+		}
+
 		if ( function_exists( 'insert_with_markers' ) && ! insert_with_markers( $this->htaccess_path, 'WP Cloudflare Super Page Cache', $htaccess_lines ) ) {
+			// translators: %s is the path to the .htaccess file
 			$error_msg = sprintf( __( 'The .htaccess file (%s) could not be edited. Check if the file has write permissions.', 'wp-cloudflare-page-cache' ), $this->htaccess_path );
 			return false;
 		}
@@ -2290,7 +2203,7 @@ class SWCFPC_Cache_Controller {
 
 
 	function ajax_purge_everything() {
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
+		check_ajax_referer('spc-ajax-nonce', 'security');
 
 		$return_array = [ 'status' => 'ok' ];
 
@@ -2300,7 +2213,7 @@ class SWCFPC_Cache_Controller {
 			die( json_encode( $return_array ) );
 		}
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::ajax_purge_whole_cache', 'Purge whole Cloudflare cache' );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::ajax_purge_whole_cache', 'Purge whole cache' );
 		$this->purge_all( false, false, true );
 
 		$return_array['success_msg'] = __( 'Cache purged successfully! It may take up to 30 seconds for the cache to be permanently cleaned.', 'wp-cloudflare-page-cache' );
@@ -2310,7 +2223,7 @@ class SWCFPC_Cache_Controller {
 
 
 	function ajax_purge_whole_cache() {
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
+		check_ajax_referer('spc-ajax-nonce', 'security');
 
 		$return_array = [ 'status' => 'ok' ];
 
@@ -2320,7 +2233,7 @@ class SWCFPC_Cache_Controller {
 			die( json_encode( $return_array ) );
 		}
 
-		$this->main_instance->get_logger()->add_log( 'cache_controller::ajax_purge_whole_cache', 'Purge whole Cloudflare cache' );
+		$this->main_instance->get_logger()->add_log( 'cache_controller::ajax_purge_whole_cache', 'Purge whole cache' );
 		$this->purge_all( false, false );
 
 		$return_array['success_msg'] = __( 'Cache purged successfully! It may take up to 30 seconds for the cache to be permanently cleaned.', 'wp-cloudflare-page-cache' );
@@ -2330,7 +2243,7 @@ class SWCFPC_Cache_Controller {
 
 
 	function ajax_purge_single_post_cache() {
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
+		check_ajax_referer('spc-ajax-nonce', 'security');
 
 		$return_array = [ 'status' => 'ok' ];
 
@@ -2359,53 +2272,6 @@ class SWCFPC_Cache_Controller {
 
 		die( json_encode( $return_array ) );
 	}
-
-
-	function ajax_reset_all() {
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
-		$return_array = [ 'status' => 'ok' ];
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Permission denied', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		$this->reset_all();
-
-		$return_array['success_msg'] = __( 'Cloudflare and all configurations have been reset to the initial settings.', 'wp-cloudflare-page-cache' );
-
-		die( json_encode( $return_array ) );
-	}
-
-	function ajax_disconnect_cloudflare() {
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
-		$return_array = [ 'status' => 'ok' ];
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Permission denied', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		$error = '';
-
-		$this->main_instance->get_cloudflare_handler()->disconnect( $error );
-
-		if ( $error ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = $error;
-			die( json_encode( $return_array ) );
-		}
-
-		$return_array['success_msg'] = __( 'Disconnected from Cloudflare.', 'wp-cloudflare-page-cache' );
-
-		die( json_encode( $return_array ) );
-	}
-
-
 	function can_i_start_preloader() {
 
 		$preloader_lock = get_option( 'swcfpc_preloader_lock', 0 );
@@ -2577,8 +2443,6 @@ class SWCFPC_Cache_Controller {
 
 
 	function purge_cache_queue_job() {
-		$this->main_instance->get_logger()->add_log( 'cache_controller::purge_cache_queue_job', 'I\'m the purge cache cronjob' );
-
 		$cache_queue_path = $this->purge_cache_queue_init_directory() . 'cache_queue.json';
 
 		if ( ! file_exists( $cache_queue_path ) ) {
@@ -2637,13 +2501,13 @@ class SWCFPC_Cache_Controller {
 			// Add URLs to preloader
 			for ( $i = 0; $i < $num_url && $i < $max_post_to_preload; $i ++ ) {
 
-				if ( $this->is_external_link( $urls[ $i ] ) === false ) {
+				if (isset($urls[$i]) && $this->is_external_link($urls[$i]) === false) {
 					$preloader->push_to_queue( [ 'url' => $urls[ $i ] ] );
 				}
 			}
 
 			// Start background preloader
-			$preloader->save()->dispatch();
+			$preloader->save();
 		} else {
 
 			$this->main_instance->get_logger()->add_log( 'cache_controller::start_cache_preloader_for_specific_urls', 'Unable to start the preloader. Another preloading process is currently running.' );
@@ -2716,12 +2580,17 @@ class SWCFPC_Cache_Controller {
 					);
 
 					if ( is_wp_error( $response ) ) {
+						// translators: %1$s is the name of the sitemap, %2$s is the error message
 						$error = sprintf( __( 'Connection error while retriving the sitemap %1$s: %2$s', 'wp-cloudflare-page-cache' ), $single_sitemap_url, $response->get_error_message() );
 						$this->main_instance->get_logger()->add_log( 'cloudflare::start_preloader_for_all_urls', "Error wp_remote_post: {$error}" );
 						continue;
 					}
 
 					if ( wp_remote_retrieve_response_code( $response ) != 200 ) {
+						if( (bool)get_option( 'blog_public' ) === false ) {
+							$this->main_instance->get_logger()->add_log( 'cloudflare::start_preloader_for_all_urls', "The sitemap at {$single_sitemap_url} is not available, as WordPress only generates sitemaps for public blogs. Sitemap preloading has been skipped." );
+							continue;
+						}
 						$this->main_instance->get_logger()->add_log( 'cloudflare::start_preloader_for_all_urls', "Response code for {$single_sitemap_url} is not 200. Response code: " . wp_remote_retrieve_response_code( $response ) );
 						continue;
 					}
@@ -2789,7 +2658,7 @@ class SWCFPC_Cache_Controller {
 				$post_types[] = $single_post_type;
 			}
 
-			$post_types = array_diff( $post_types, $this->main_instance->get_single_config( 'cf_preload_excluded_post_types', [] ) );
+			$post_types = array_diff($post_types, Constants::PRELOAD_EXCLUDED_POST_TYPES);
 
 			$this->main_instance->get_logger()->add_log( 'cloudflare::start_preloader_for_all_urls', 'Getting last published posts for post types: ' . print_r( $post_types, true ) );
 
@@ -3023,7 +2892,7 @@ class SWCFPC_Cache_Controller {
 
 	function purge_opcache() {
 
-		if ( ! extension_loaded( 'Zend OPcache' ) ) {
+		if ( ! extension_loaded( 'opcache' ) || ! function_exists( 'opcache_get_status' ) ) {
 			return false;
 		}
 
@@ -3087,117 +2956,4 @@ class SWCFPC_Cache_Controller {
 		}
 
 	}*/
-
-
-	function ajax_preloader_unlock() {
-
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
-		$return_array = [ 'status' => 'ok' ];
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Permission denied', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( $this->main_instance->get_single_config( 'cf_preloader', 1 ) == 0 ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Preloader is not enabled', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( $this->can_i_start_preloader() ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Preloader is already unlocked', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		$this->unlock_preloader();
-
-		$return_array['success_msg'] = __( 'Preloader unlocked successfully', 'wp-cloudflare-page-cache' );
-
-		die( json_encode( $return_array ) );
-	}
-
-
-	function ajax_preloader_start() {
-
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
-		$return_array = [ 'status' => 'ok' ];
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Permission denied', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( $this->main_instance->get_single_config( 'cf_preloader', 1 ) == 0 ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Preloader is not enabled', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( ! $this->can_i_start_preloader() ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Unable to start the preloader. Another preloading process is currently running.', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( ! class_exists( 'WP_Background_Process' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Unable to start background processes: WP_Background_Process does not exists.', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( ! class_exists( 'SWCFPC_Preloader_Process' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Unable to start background processes: SWCFPC_Preloader_Process does not exists.', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		if ( ! $this->is_cache_enabled() ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'You cannot start the preloader while the page cache is disabled.', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		$this->start_preloader_for_all_urls();
-
-		$return_array['success_msg'] = __( 'Preloader started successfully', 'wp-cloudflare-page-cache' );
-
-		die( json_encode( $return_array ) );
-	}
-
-
-	function ajax_enable_page_cache() {
-
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
-		$return_array = [ 'status' => 'ok' ];
-		$error        = '';
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			$return_array['status'] = 'error';
-			$return_array['error']  = __( 'Permission denied', 'wp-cloudflare-page-cache' );
-			die( json_encode( $return_array ) );
-		}
-
-		$this->main_instance->set_single_config( 'cf_cache_enabled', 1 );
-		$this->main_instance->set_single_config( 'cf_fallback_cache', 1 );
-		$this->main_instance->update_config();
-
-		if (
-		$this->main_instance->get_single_config( 'cf_fallback_cache', 0 ) > 0 &&
-		$this->main_instance->get_single_config( 'cf_fallback_cache_curl', 0 ) === 0 &&
-		! defined( 'SWCFPC_ADVANCED_CACHE' )
-		) {
-			$this->main_instance->get_fallback_cache_handler()->fallback_cache_advanced_cache_enable();
-		}
-
-		$return_array['success_msg'] = __( 'Page cache enabled successfully', 'wp-cloudflare-page-cache' );
-
-		die( json_encode( $return_array ) );
-	}
 }

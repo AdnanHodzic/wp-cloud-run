@@ -3,6 +3,7 @@
 use SPC\Constants;
 use SPC\Modules\Settings_Manager;
 use SPC\Services\Cloudflare_Client;
+use SPC\Services\Settings_Store;
 
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
@@ -19,9 +20,6 @@ class SWCFPC_Cloudflare {
 	private $api_token             = '';
 	private $auth_mode             = 0;
 	private $api_token_domain      = '';
-	private $worker_mode           = false;
-	private $worker_id             = '';
-	private $worker_route_id       = '';
 	private $cache_ruleset_id      = ''; // Ruleset related to `http_request_cache_settings` phase.
 	private $cache_ruleset_rule_id = '';
 
@@ -41,8 +39,6 @@ class SWCFPC_Cloudflare {
 		$this->api_key               = $this->main_instance->get_cloudflare_api_key();
 		$this->email                 = $this->main_instance->get_cloudflare_api_email();
 		$this->api_token             = $this->main_instance->get_cloudflare_api_token();
-		$this->worker_mode           = $this->main_instance->get_cloudflare_worker_mode();
-		$this->worker_route_id       = $this->main_instance->get_cloudflare_worker_route_id();
 		$this->cache_ruleset_id      = $this->main_instance->get_single_config( 'cf_cache_settings_ruleset_id', '' );
 		$this->cache_ruleset_rule_id = $this->main_instance->get_single_config( 'cf_cache_settings_ruleset_rule_id', '' );
 		$this->client                = new Cloudflare_Client( $this->main_instance );
@@ -127,19 +123,6 @@ class SWCFPC_Cloudflare {
 		$this->api_token_domain = $api_token_domain;
 	}
 
-	public function get_api_token_domain() {
-		return $this->api_token_domain;
-	}
-
-	/**
-	 * Enable the worker mode locally in this class.
-	 *
-	 * @return void
-	 */
-	public function enable_worker_mode() {
-		$this->worker_mode = true;
-	}
-
 	/**
 	 * Get the zone ID list.
 	 *
@@ -148,7 +131,7 @@ class SWCFPC_Cloudflare {
 	 * @return array|false
 	 */
 	public function get_zone_id_list( &$error ) {
-		return $this->client->get_zone_id_list( $error, $this->get_api_token_domain() );
+		return $this->client->get_zone_id_list($error);
 	}
 
 	/**
@@ -185,7 +168,6 @@ class SWCFPC_Cloudflare {
 	public function purge_cache( &$error ) {
 		$purge = $this->client->purge_cache( $error );
 
-
 		if ( $purge ) {
 			$this->main_instance->get_logger()->add_log( 'cloudflare::purge_cache', 'Cache purged successfully.' );
 
@@ -221,62 +203,6 @@ class SWCFPC_Cloudflare {
 	}
 
 	/**
-	 * Upload the worker script.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return bool
-	 */
-	public function worker_upload( &$error ) {
-		return $this->client->upload_worker( $error );
-	}
-
-	/**
-	 * Delete the worker script.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return bool
-	 */
-	public function worker_delete( &$error ) {
-		return $this->client->delete_worker( $error );
-	}
-
-	/**
-	 * Create a worker route.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return false|string
-	 */
-	public function worker_route_create( &$error ) {
-		return $this->client->create_worker_route( $error );
-	}
-
-	/**
-	 * Get the worker routes list.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return array|false
-	 */
-	public function worker_route_get_list( &$error ) {
-		return $this->client->get_worker_routes_list( $error );
-	}
-
-	/**
-	 * Delete worker route.
-	 *
-	 * @param string $error The error message.
-	 *
-	 * @return bool
-	 */
-	public function worker_route_delete( &$error ) {
-		return $this->client->delete_worker_route( $error );
-	}
-
-
-	/**
 	 * Disable page cache.
 	 *
 	 * @param string $error The error message.
@@ -292,45 +218,14 @@ class SWCFPC_Cloudflare {
 			$this->change_browser_cache_ttl( $this->main_instance->get_single_config( 'cf_old_bc_ttl', 0 ), $error );
 		}
 
-		if ( $this->worker_mode ) {
-
-			$worker_route_ids = $this->worker_route_get_list( $error );
-
-			if ( $worker_route_ids === false || ! is_array( $worker_route_ids ) ) {
-				$logger->add_log( 'cloudflare::disable_page_cache', 'Unable to retrieve the worker routes list' );
-
-				return false;
-			}
-
-			if ( isset( $worker_route_ids[ $this->worker_route_id ] ) ) {
-				// Delete worker route
-				if ( ! $this->worker_route_delete( $error ) ) {
-					return false;
-				}
-			} else {
-				$logger->add_log( 'cloudflare::disable_page_cache', "Unable to find the route ID {$this->worker_route_id} in Cloudflare routes list, so I don't delete it: " . print_r( $worker_route_ids, true ) );
-			}
-
-			$worker_ids = $this->client->get_worker_list( $error );
-
-			if ( in_array( $this->worker_id, $worker_ids ) ) {
-				// Delete worker script
-				if ( ! $this->worker_delete( $error ) ) {
-					return false;
-				}
-			} else {
-				$logger->add_log( 'cloudflare::disable_page_cache', "Unable to find the worker ID {$this->worker_id} in Cloudflare workers list, so I don't delete it: " . print_r( $worker_ids, true ) );
-			}
-		}
-
 		// Delete page rules
-		if ( $this->worker_mode == false && $this->main_instance->get_single_config( 'cf_page_rule_id', '' ) != '' && ! $this->delete_page_rule( $this->main_instance->get_single_config( 'cf_page_rule_id', '' ), $error ) ) {
+		if ($this->main_instance->get_single_config('cf_page_rule_id', '') != '' && ! $this->delete_page_rule($this->main_instance->get_single_config('cf_page_rule_id', ''), $error)) {
 			return false;
 		} else {
 			$this->main_instance->set_single_config( 'cf_page_rule_id', '' );
 		}
 
-		if ( $this->worker_mode == false && $this->main_instance->get_single_config( 'cf_bypass_backend_page_rule_id', '' ) != '' && ! $this->delete_page_rule( $this->main_instance->get_single_config( 'cf_bypass_backend_page_rule_id', '' ), $error ) ) {
+		if ($this->main_instance->get_single_config('cf_bypass_backend_page_rule_id', '') != '' && ! $this->delete_page_rule($this->main_instance->get_single_config('cf_bypass_backend_page_rule_id', ''), $error)) {
 			return false;
 		} else {
 			$this->main_instance->set_single_config( 'cf_bypass_backend_page_rule_id', '' );
@@ -404,87 +299,24 @@ class SWCFPC_Cloudflare {
 			$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_id', $this->cache_ruleset_id );
 		}
 
-		$logger = $this->main_instance->get_logger();
+		// Step 3a - create a new cache ruleset if it does not exist.
+		if (empty($this->cache_ruleset_id)) {
+			$this->cache_ruleset_id = $this->client->create_ruleset($error);
+			$this->main_instance->set_single_config('cf_cache_settings_ruleset_id', $this->cache_ruleset_id);
+		}
 
-		if ( $this->worker_mode == true ) {
-			$worker_route_ids = $this->worker_route_get_list( $error );
+		// If we still haven't got the cache ruleset id, then we can't proceed.
+		if (empty($this->cache_ruleset_id)) {
+			return false;
+		}
 
-			if ( $worker_route_ids === false || ! is_array( $worker_route_ids ) ) {
-				$logger->add_log( 'cloudflare::enable_page_cache', 'Unable to retrieve the worker routes list' );
+		// Setp 3b - create a standard rule for the cache ruleset.
+		$this->cache_ruleset_rule_id = $this->create_cache_rule($error);
+		$this->main_instance->set_single_config('cf_cache_settings_ruleset_rule_id', $this->cache_ruleset_rule_id);
 
-				return false;
-			}
-
-			$worker_ids = $this->client->get_worker_list( $error );
-
-			// Delete existing route
-			if ( isset( $worker_route_ids[ $this->worker_route_id ] ) ) {
-
-				$logger->add_log( 'cloudflare::enable_page_cache', "I'm deleting existing route ID {$this->worker_route_id}" );
-
-				if ( ! $this->worker_route_delete( $error ) ) {
-					return false;
-				}
-			}
-
-			// Delete existing worker
-			if ( $worker_ids && is_array( $worker_ids ) && in_array( $this->worker_id, $worker_ids ) ) {
-
-				$logger->add_log( 'cloudflare::enable_page_cache', "I'm deleting existing worker ID {$this->worker_id}" );
-
-				// Delete worker script
-				if ( ! $this->worker_delete( $error ) ) {
-					return false;
-				}
-			}
-
-
-			// Step 3a - upload worker
-			if ( ! $this->worker_upload( $error ) ) {
-
-				$this->main_instance->set_single_config( 'cf_cache_enabled', 0 );
-
-				$return_array['status'] = 'error';
-				$return_array['error']  = $error;
-				die( json_encode( $return_array ) );
-
-			}
-
-			// Step 3b - create route
-			$this->worker_route_id = $this->worker_route_create( $error );
-
-			if ( ! $this->worker_route_id ) {
-				$this->worker_delete( $error );
-				$this->main_instance->set_single_config( 'cf_cache_enabled', 0 );
-				$this->main_instance->update_config();
-
-				return false;
-			}
-
-			$this->main_instance->set_single_config( 'cf_woker_id', $this->worker_id );
-			$this->main_instance->set_single_config( 'cf_woker_route_id', $this->worker_route_id );
-
-		} else {
-
-			// Step 3a - create a new cache ruleset if it does not exist.
-			if ( empty( $this->cache_ruleset_id ) ) {
-				$this->cache_ruleset_id = $this->client->create_ruleset( $error );
-				$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_id', $this->cache_ruleset_id );
-			}
-
-			// If we still haven't got the cache ruleset id, then we can't proceed.
-			if ( empty( $this->cache_ruleset_id ) ) {
-				return false;
-			}
-
-			// Setp 3b - create a standard rule for the cache ruleset.
-			$this->cache_ruleset_rule_id = $this->create_cache_rule( $error );
-			$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_rule_id', $this->cache_ruleset_rule_id );
-
-			// If we still haven't got the cache ruleset rule id, then we can't proceed.
-			if ( empty( $this->cache_ruleset_rule_id ) ) {
-				return false;
-			}
+		// If we still haven't got the cache ruleset rule id, then we can't proceed.
+		if (empty($this->cache_ruleset_rule_id)) {
+			return false;
 		}
 
 		// Update config data
@@ -498,7 +330,6 @@ class SWCFPC_Cloudflare {
 		$this->main_instance->get_cache_controller()->write_htaccess( $error );
 
 		return true;
-
 	}
 
 	/**
@@ -585,8 +416,10 @@ class SWCFPC_Cloudflare {
 			return;
 		}
 
+		$settings = Settings_Store::get_instance();
+
 		if ( $auto_save ) {
-			$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_id', $this->cache_ruleset_id );
+			$settings->set(Constants::RULESET_ID_CACHE, $this->cache_ruleset_id);
 		}
 
 		$this->cache_ruleset_rule_id = $this->client->get_rule_id();
@@ -596,7 +429,9 @@ class SWCFPC_Cloudflare {
 		}
 
 		if ( $auto_save ) {
-			$this->main_instance->set_single_config( 'cf_cache_settings_ruleset_rule_id', $this->cache_ruleset_rule_id );
+			$settings->set(Constants::RULE_ID_CACHE, $this->cache_ruleset_rule_id);
+
+			$settings->save();
 		}
 	}
 
@@ -663,13 +498,6 @@ class SWCFPC_Cloudflare {
 
 		$logger->add_log( 'cloudflare::disconnect', 'Disconnecting from Cloudflare.' );
 		$this->disable_page_cache( $error, false );
-
-		$to_reset = [ 'cf_zoneid', 'cf_zoneid_list', 'cf_email', 'cf_apitoken', 'cf_apikey', 'cf_token' ];
-
-		foreach ( $to_reset as $key ) {
-			$logger->add_log( 'cloudflare::disconnect', "Resetting $key to default value." );
-			$this->main_instance->set_single_config( $key, Settings_Manager::get_default_for_field( $key, $key === 'cf_zoneid_list' ? [] : '' ) );
-		}
 
 		$this->main_instance->update_config();
 		$logger->add_log( 'cloudflare::disconnect', 'Disconnected from Cloudflare.' );

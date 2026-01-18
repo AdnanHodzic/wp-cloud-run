@@ -139,10 +139,36 @@ class Product {
 		$install = get_option( $this->get_key() . '_install', 0 );
 		if ( 0 === $install ) {
 			$install = time();
+			/**
+			 * Action to be triggered when the product is first activated.
+			 *
+			 * @param string $basefile The basefile of the product.
+			 */
+			do_action( 'themeisle_sdk_first_activation', $basefile );
+
 			update_option( $this->get_key() . '_install', time() );
 		}
 		$this->install                               = $install;
 		self::$cached_products[ crc32( $basefile ) ] = $this;
+		$current_version                             = get_option( $this->slug . '_version', '' );
+
+		if ( $current_version !== $this->version && wp_cache_get( "{$this->slug}_version_upgrade" ) === false ) {
+			// Set the cache lock to avoid multiple calls.
+			wp_cache_set( "{$this->slug}_version_upgrade", true, HOUR_IN_SECONDS );
+			/**
+			 * Action to be triggered when the product is updated.
+			 *
+			 * @param string $current_version The current version of the product.
+			 * @param string $new_version The new version of the product.
+			 * @param string $basefile The basefile of the product.
+			 */
+			do_action( "themeisle_sdk_update_{$this->slug}", $current_version, $this->version, $basefile );
+
+			// Update the version of the product.
+			update_option( "{$this->slug}_version", $this->version );
+			// Delete the cache lock.
+			wp_cache_delete( "{$this->slug}_version_upgrade" );
+		}
 	}
 
 	/**
@@ -346,7 +372,17 @@ class Product {
 	 * @return string Friendly name.
 	 */
 	public function get_friendly_name() {
-		$name = apply_filters( $this->get_key() . '_friendly_name', trim( str_replace( 'Lite', '', $this->get_name() ) ) );
+		$name = trim( str_replace( 'Lite', '', $this->get_name() ) );
+		if ( defined( 'OTTER_BLOCKS_BASEFILE' ) && OTTER_BLOCKS_BASEFILE === $this->basefile ) {
+			$name = 'Otter Blocks';
+		}
+		if ( defined( 'OPTML_BASEFILE' ) && OPTML_BASEFILE === $this->basefile ) {
+			$name = 'Optimole';
+		}
+		if ( defined( 'WPMM_FILE' ) && WPMM_FILE === $this->basefile ) {
+			$name = 'LightStart';
+		}
+		$name = apply_filters( $this->get_key() . '_friendly_name', $name );
 		$name = rtrim( $name, '- ()' );
 
 		return $name;

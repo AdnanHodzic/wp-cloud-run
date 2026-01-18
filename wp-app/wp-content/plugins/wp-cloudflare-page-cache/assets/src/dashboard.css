@@ -1,0 +1,273 @@
+#wpwrap {
+  height: 100%;
+}
+
+#wpcontent {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 !important;
+}
+
+#wpbody {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#wpbody-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+#spc-dashboard {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#wpbody-content > .notice,
+#wpfooter {
+  display: none;
+}
+
+#spc-dashboard-menu {
+  top: var(--wp-admin--admin-bar--height);
+  height: calc(100% - var(--wp-admin--admin-bar--height));
+}
+
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+}
+
+@import "tw-animate-css";
+@import "tailwindcss" source("./") important;
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --background: hsl(0 0% 100%);
+  --foreground: hsl(224 71.4% 4.1%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(224 71.4% 4.1%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(224 71.4% 4.1%);
+  --primary: hsl(220.9 39.3% 11%);
+  --primary-foreground: hsl(210 20% 98%);
+  --secondary: hsl(220 14.3% 95.9%);
+  --secondary-foreground: hsl(220.9 39.3% 11%);
+  --muted: hsl(3442 18.99% 98.19%);
+  --muted-foreground: hsl(220 8.9% 46.1%);
+  --accent: hsl(220 14.3% 95.9%);
+  --accent-foreground: hsl(220.9 39.3% 11%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 20% 98%);
+  --border: hsl(220 13% 91%);
+  --input: hsl(215.88 13.18% 84.01%);
+  --ring: hsl(224 71.4% 4.1%);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+
+  --sidebar-background: hsl(0 0% 98%);
+  --sidebar-foreground: hsl(240 5.3% 26.1%);
+  --sidebar-primary: hsl(240 5.9% 10%);
+  --sidebar-primary-foreground: hsl(0 0% 98%);
+  --sidebar-accent: hsl(240 4.8% 95.9%);
+  --sidebar-accent-foreground: hsl(240 5.9% 10%);
+  --sidebar-border: hsl(220 13% 91%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+.dark {
+  --background: hsl(224 71.4% 4.1%);
+  --foreground: hsl(210 20% 98%);
+  --card: hsl(224 71.4% 4.1%);
+  --card: hsl(220 39.29% 10.98%);
+  --card-foreground: hsl(210 20% 98%);
+  --popover: hsl(224, 96%, 11%);
+  --popover-foreground: hsl(210 20% 98%);
+  --primary: hsl(210 20% 98%);
+  --primary-foreground: hsl(220.9 39.3% 11%);
+  --secondary: hsl(215 27.9% 16.9%);
+  --secondary-foreground: hsl(210 20% 98%);
+  --muted: hsl(224, 66%, 6%);
+  --muted-foreground: hsl(217.9 10.6% 64.9%);
+  --accent: hsl(215 27.9% 16.9%);
+  --accent-foreground: hsl(210 20% 98%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 20% 98%);
+  --border: hsl(215 27.9% 16.9%);
+  --input: hsl(215 27.9% 16.9%);
+  --ring: hsl(216 12.2% 83.9%);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  --sidebar: oklch(0.205 0 0);
+
+  --sidebar-background: hsl(240 5.9% 10%);
+  --sidebar-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-primary: hsl(224.3 76.3% 48%);
+  --sidebar-primary-foreground: hsl(0 0% 100%);
+  --sidebar-accent: hsl(240 3.7% 15.9%);
+  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
+  --sidebar-border: hsl(240 3.7% 15.9%);
+  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+#wpwrap:not:has(.dark) ul#adminmenu a.wp-has-current-submenu:after {
+  border-right-color: #fcfcfc !important;
+}
+
+#wpwrap:has(.dark) ul#adminmenu a.wp-has-current-submenu:after {
+  border-right-color: #121212 !important;
+}
+
+@layer reset {
+  p,
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply m-0 text-foreground;
+  }
+
+  .spc-dash {
+    @apply bg-background text-foreground text-base;
+  }
+
+  a,
+  button {
+    @apply cursor-pointer;
+  }
+  p {
+    @apply text-base;
+  }
+
+  #spc-dashboard * {
+    @apply border-border;
+    @apply outline-ring/50 focus:outline-orange-500/50 focus:outline-2 outline-offset-2 focus:shadow-none;
+  }
+}
+
+@media (max-width: 782px) {
+  .auto-fold .margin-dashboard-menu,
+  .auto-fold .spc-drawer,
+  .auto-fold #spc-dashboard-menu {
+    left: 0;
+  }
+}
+
+@media (min-width: 782px) {
+  .folded .margin-dashboard-menu,
+  .folded .spc-drawer,
+  .folded #spc-dashboard-menu {
+    left: 36px;
+  }
+  .margin-dashboard-menu,
+  .spc-drawer,
+  #spc-dashboard-menu {
+    left: 160px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .auto-fold .margin-dashboard-menu,
+  .auto-fold:not(.folded) .spc-drawer,
+  .auto-fold:not(.folded) #spc-dashboard-menu {
+    left: 160px;
+  }
+}
+
+@media (min-width: 783px) and (max-width: 960px) {
+  .auto-fold .margin-dashboard-menu,
+  .auto-fold .spc-drawer,
+  .auto-fold #spc-dashboard-menu {
+    left: 36px;
+  }
+}
+
+@media (max-width: 782px) {
+  .wp-responsive-open #wpbody {
+    right: -190px;
+  }
+}
+@layer reset {
+  .themeisle-sale-container {
+    @apply flex flex-col lg:flex-row justify-center gap-4 p-0 text-center lg:text-left;
+  }
+
+  .themeisle-sale-title {
+    @apply text-foreground text-lg mb-2 lg:mb-0;
+    @apply flex flex-col-reverse lg:flex-row items-center gap-2 justify-center lg:justify-start;
+  }
+
+  .themeisle-sale-time-left {
+    @apply text-secondary-foreground/75 bg-secondary text-xs border;
+  }
+
+  .themeisle-sale-content p {
+    @apply text-muted-foreground text-sm max-w-md mx-auto;
+    @apply xl:max-w-none;
+  }
+
+  .themeisle-sale-container .button {
+    @apply flex items-center px-4 py-2 rounded font-semibold text-sm;
+    @apply transition-all duration-300;
+    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-lg hover:shadow-xl shadow-orange-200 dark:shadow-orange-900 dark:hover:shadow-orange-800 bg-size-[100%] hover:bg-size-[150%] duration-300 ease-in-out;
+  }
+
+  .themeisle-sale-container img {
+    @apply shrink-0 size-14;
+  }
+}

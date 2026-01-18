@@ -1,3 +1,101 @@
+#####   Version 5.2.2 (2026-01-12)
+
+- Fixed translation updates no longer reappear after being successfully updated when using Super Page Cache.
+- Fixed Database Optimization now respects the configured schedule and no longer deletes trashed posts immediately when the feature is enabled.
+- Update dependencies
+
+#####   Version 5.2.1 (2025-12-16)
+
+- Removed duplicate Font Optimization cards from the Assets settings
+
+####   Version 5.2.0 (2025-11-28)
+
+- Introduced a [CSS Optimization](https://docs.themeisle.com/article/2367-css-optimizations) feature that leverages a browser-based script to observe which CSS is used in the page, extract critical CSS, and defer the rest — greatly improving load speed and Core Web Vitals (PRO).
+- Updated the Activity Log UI to conditionally render content only when logging is enabled
+- Improved log messages for cache purges
+- Fixed dashboard display issues in RTL mode
+- Added a dedicated log message when sitemap preloading is skipped due to the site being private
+
+#####   Version 5.1.6 (2025-11-07)
+
+- The Manage Assets button now enables the assets manager via API before redirecting.
+- Reorganized the Assets and JavaScript Optimization sections in the settings for clarity.
+- Updated dependencies to the latest versions.
+
+#####   Version 5.1.5 (2025-08-27)
+
+- Fixed the error preventing plugin from uninstallation
+- Fixed issue related to problems updating htaccess file
+
+#####   Version 5.1.4 (2025-08-07)
+
+### Fixes
+- **Fixed viewport prefetch using incorrect setting slug** to ensure the prefetch feature properly reads and applies user preferences.
+- **Resolved fatal error when Keep settings on deactivation was disabled** by adding proper checks to prevent errors during plugin deactivation.
+- **Fixed advanced cache functionality when wp-config.php is located above WordPress root** to support non-standard WordPress installations where the configuration file is placed one directory level up.
+- **Updated internal dependencies** to latest versions for improved security and performance.
+
+#####   Version 5.1.3 (2025-07-21)
+
+### Fixes
+- **Edge case where Cloudflare tab inputs were disabled** when zone id list is already saved to the website, but the user didn't connect the plugin
+
+#####   Version 5.1.2 (2025-07-16)
+
+### New Features
+- **Use Cloudflare data in metrics box if available** to provide more accurate performance insights when Cloudflare integration is active.
+
+### Fixes
+- **Fixed log lines overflowing activity log card** to ensure proper display within the dashboard interface.
+- **Prevent edge case fatal error where header might be array** by adding proper type checking.
+- **Fixed migration of Enable Cloudflare CDN & Caching toggle** to ensure proper preservation of cache rule status during plugin updates.
+- **Cached pages drawer loading state not adapted to dark mode** to maintain consistent visual appearance across light and dark themes.
+- **Fixed terminology in Cloudflare connection flow** by referring to zone as domain for better user understanding during the connection setup process.
+- **Updated description for auto-purge on plugin updates** to provide clearer information that the automatic cache clearing behavior happens when the plugin is updated.
+
+#####   Version 5.1.1 (2025-07-15)
+
+### New Features
+
+- **Adds cached pages listing** when user has the `Purge HTML pages only` option enabled.
+
+####   Version 5.1.0 (2025-07-14)
+
+### New Features
+
+- **Complete dashboard redesign** with improved user experience and intuitive navigation for easier plugin management.
+- **Reorganized settings structure** that groups related options together, making configuration more straightforward.
+- **Integrated documentation** directly within the dashboard, providing helpful tips and guidance without leaving your WordPress admin.
+- **Basic metrics system** to track cache performance and give you insights into your site's caching effectiveness.
+- **Font optimization features** including Google Fonts combining and local hosting options to improve loading speeds and reduce external dependencies.
+- **New Assets Manager** with frontend modal interface for selectively disabling CSS/JS files based on different contexts, helping you eliminate unused scripts and optimize page performance. [Learn More](https://docs.themeisle.com/article/2277-how-to-use-the-asset-manager)
+- **Database optimization tools** to clean up post revisions, auto-drafts, trashed content, spam comments, and transients with both manual and scheduled cleanup options.
+- **Intelligent viewport-based lazy loading** that automatically detects above-the-fold images and loads them immediately while lazy loading below-the-fold content, optimizing for both mobile and desktop viewports. [Learn More](https://docs.themeisle.com/article/2278-seting-up-lazy-loading)
+- **Improved background processing system** by migrating to Action Scheduler for more reliable background task handling.
+- **Enhanced Defer JS functionality** with new `spc_defer_script` filter hook allowing developers to exclude specific scripts from being deferred, providing more granular control over JavaScript optimization.
+
+### Fixes
+
+- **Fixed AJAX cache bypass logic** to properly respect the bypass AJAX requests setting when enabled or disabled.
+- **Improved POST request handling** to ensure dynamic AJAX operations using POST methods are never cached while allowing GET-based AJAX requests to be cached when appropriate.
+- **Fixed PHP warning during wp-cron execution** that was generating Cannot modify header information warnings in error logs every time WordPress cron jobs ran.
+- **Resolved undefined variable errors** in advanced-cache.php when cache configuration files become corrupted, preventing PHP warnings and ensuring more reliable cache operation.
+- **Fixed undefined array key warning** for Cloudflare Worker settings that was generating PHP notices in the backend interface.
+- **Improve wp-config.php file handling** to prevent accidental corruption of the WordPress configuration file in some edge cases that was causing 500 errors on some sites.
+- **Fixed fatal error when updating settings** on hosting environments without OPcache enabled by adding proper function existence checks before calling OPcache functions.
+
+#####   Version 5.0.12 (2025-05-23)
+
+- Updated dependencies
+
+#####   Version 5.0.11 (2025-04-09)
+
+- Fix fatal error breaking plugin admin settings page
+
+#####   Version 5.0.10 (2025-04-09)
+
+- Fix for Keep Settings on the Deactivation setting to stay selected on Save
+
 #####   Version 5.0.9 (2024-11-20)
 
 - Fixes issue where auto-purge was not working when posts were updated

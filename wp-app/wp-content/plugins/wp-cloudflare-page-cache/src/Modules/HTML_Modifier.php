@@ -3,6 +3,7 @@
 namespace SPC\Modules;
 
 use SPC\Constants;
+use SPC\Utils\Helpers;
 
 class HTML_Modifier implements Module_Interface {
 	private const DEFAULT_CONFIG = [
@@ -24,8 +25,8 @@ class HTML_Modifier implements Module_Interface {
 			return;
 		}
 
-		add_filter( 'swcfpc_normal_fallback_cache_html', [ $this, 'alter_cached_html' ] );
-		add_filter( 'swcfpc_curl_fallback_cache_html', [ $this, 'alter_cached_html' ] );
+		add_filter( 'swcfpc_normal_fallback_cache_html', [ $this, 'alter_cached_html' ], 10 );
+		add_filter( 'swcfpc_curl_fallback_cache_html', [ $this, 'alter_cached_html' ], 10 );
 	}
 
 	/**
@@ -48,8 +49,8 @@ class HTML_Modifier implements Module_Interface {
 					'lazy_load'               => $lazy_load,
 					'disable_native_lazyload' => ! $native_lazyload,
 				],
-				self::DEFAULT_CONFIG 
-			) 
+				self::DEFAULT_CONFIG
+			)
 		);
 	}
 
@@ -71,7 +72,7 @@ class HTML_Modifier implements Module_Interface {
 				continue;
 			}
 
-			if ( $config['lazy_load'] && in_array( $current_tag, $this->get_lazyloadable_tags() ) ) {
+			if ( $config['lazy_load'] && in_array( $current_tag, $this->get_lazyloadable_tags(), true ) ) {
 				$this->handle_lazy_load( $parser );
 			}
 
@@ -80,7 +81,8 @@ class HTML_Modifier implements Module_Interface {
 				[
 					'IMG',
 					'IFRAME',
-				] 
+				],
+				true
 			) ) {
 				$parser->remove_attribute( 'loading' );
 			}
@@ -99,10 +101,10 @@ class HTML_Modifier implements Module_Interface {
 	public function handle_lazy_load( $parser ) {
 		global $sw_cloudflare_pagecache;
 
-		$tag     = $parser->get_tag();
-		$to_skip = (int) $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_LAZY_LOAD_SKIP_IMAGES, 2 );
-
-		if ( $tag === 'IMG' && $to_skip > self::$skipped_images_lazyload ) {
+		$tag       = $parser->get_tag();
+		$to_skip   = max( (int) $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_LAZY_LOAD_SKIP_IMAGES, 2 ), 0 );
+		$behaviour = $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_LAZY_LOAD_BEHAVIOUR, Frontend::LAZY_LOAD_BEHAVIOUR_ALL );
+		if ( $tag === 'IMG' && $behaviour === Frontend::LAZY_LOAD_BEHAVIOUR_FIXED && $to_skip > self::$skipped_images_lazyload ) {
 			self::$skipped_images_lazyload++;
 
 			return;
@@ -112,7 +114,12 @@ class HTML_Modifier implements Module_Interface {
 			$sw_cloudflare_pagecache->get_single_config( Constants::SETTING_LAZY_EXCLUDED, [] ),
 			Constants::DEFAULT_LAZY_LOAD_EXCLUSIONS
 		);
-
+		if ( $tag === 'IMG' && ! $parser->get_attribute( 'data-spc-id' ) ) {
+			$id = Helpers::get_url_id( $parser->get_attribute( 'src' ) );
+			$parser->set_attribute( 'data-spc-id', (string) $id );
+		} else {
+			$id = $parser->get_attribute( 'data-spc-id' );
+		}
 		$data_attributes = $parser->get_attribute_names_with_prefix( 'data-' );
 
 		$attribute_values_to_check = array_filter(
@@ -126,10 +133,10 @@ class HTML_Modifier implements Module_Interface {
 						'src',
 						'srcset',
 						'class',
-					] 
-				) 
+					]
+				)
 			),
-			'is_string' 
+			'is_string'
 		);
 
 		foreach ( $attribute_values_to_check as $attribute_value ) {
@@ -137,13 +144,16 @@ class HTML_Modifier implements Module_Interface {
 				$exclusions,
 				function ( $exclusion ) use ( $attribute_value ) {
 					return strpos( $attribute_value, $exclusion ) !== false;
-				} 
+				}
 			) ) {
 				return;
 			}
 		}
+		if ( $tag === 'IMG' ) {
+			$parser = apply_filters( 'spc_html_modifier_parser_img', $parser, $id );
+		}
 
-		if ( $tag === 'IMG' && $parser->get_attribute( 'fetchpriority' ) === 'high' ) {
+		if ( $tag === 'IMG' && ( $parser->get_attribute( 'fetchpriority' ) === 'high' || $parser->get_attribute( 'data-spc-skip-lazyload' ) ) ) {
 			return;
 		}
 
@@ -153,7 +163,7 @@ class HTML_Modifier implements Module_Interface {
 			[ 'src', 'srcset' ],
 			function ( $attribute ) use ( $parser ) {
 				return is_string( $parser->get_attribute( $attribute ) );
-			} 
+			}
 		);
 
 		foreach ( $attributes_to_replace as $attribute ) {

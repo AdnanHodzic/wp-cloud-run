@@ -72,10 +72,10 @@ final class Loader {
 	 */
 	public static $labels = [
 		'announcements'    => [
-			'hurry_up'    => 'Hurry up! Only %s left.',
-			'sale_live'   => 'Themeisle Black Friday Sale is Live!',
-			'learn_more'  => 'Learn more',
-			'max_savings' => 'Enjoy Maximum Savings on %s',
+			'notice_link_label' => 'See the Offer',
+			'max_savings'       => 'Our biggest sale of the year: <strong>%s OFF everything!</strong>  Don\'t miss this limited-time offer.',
+			'black_friday'      => 'Black Friday Sale',
+			'time_left'         => '%s left',
 		],
 		'compatibilities'  => [
 			'notice'        => '%s requires a newer version of %s. Please %supdate%s %s %s to the latest version.',
@@ -138,6 +138,13 @@ final class Loader {
 				'spark_desc2'  => 'Add a top notification bar on your website to highlight the latest products, offers, or upcoming events.',
 				'spark_desc3'  => 'Enable an advanced review section, enlarging the basic review options with lots of capabilities.',
 			],
+
+			'feedzy'          => [
+				'import_desc'       => 'Schedule automatic content imports from any RSS feed directly to your site. %sBuilt by %s%s',
+				'install_now'       => 'Install Now',
+				'by'                => 'by %s',
+				'editor_recommends' => '%s recommends %sFeedzy%s to display entries from any RSS feed with more advanced styling and filtering options.',
+			],
 			'optimole'        => [
 				'installOptimole' => 'Install Optimole',
 				'gotodash'        => 'Go to Optimole dashboard',
@@ -164,6 +171,12 @@ final class Loader {
 				'install'    => 'Install WP Full Pay',
 				'dismisscta' => 'Dismiss this notice.',
 				'message'    => 'Enhance your donation page with WP Full Pay—create custom Stripe forms for one-time and recurring donations, manage transactions easily, and boost support with a seamless setup.',
+			],
+			'masteriyo'       => [
+				'gotodash'   => 'Go to Masteriyo Dashboard',
+				'install'    => 'Install Masteriyo',
+				'dismisscta' => 'Dismiss this notice.',
+				'message'    => 'Transform your site into a learning hub with Masteriyo LMS. Build engaging courses with intuitive tools, track student progress effortlessly, and grow your education business with powerful marketing features and seamless payment integration.',
 			],
 		],
 		'welcome'          => [
@@ -318,10 +331,7 @@ final class Loader {
 	 * Initialize the sdk logic.
 	 */
 	public static function init() {
-		/**
-		 * This filter can be used to localize the labels inside each product.
-		 */
-		self::$labels = apply_filters( 'themeisle_sdk_labels', self::$labels );
+		self::localize_labels();
 		if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Loader ) ) {
 			self::$instance = new Loader();
 			$modules        = array_merge( self::$available_modules, apply_filters( 'themeisle_sdk_modules', [] ) );
@@ -331,7 +341,91 @@ final class Loader {
 				}
 			}
 			self::$available_modules = $modules;
+
+			add_action( 'themeisle_sdk_first_activation', array( __CLASS__, 'activate' ) );
+		
 		}
+	}
+	
+	/**
+	 * Localize the labels.
+	 */
+	public static function localize_labels() {
+		$originals        = self::$labels;
+		$all_translations = [];
+
+		global $wp_filter;
+		if ( isset( $wp_filter['themeisle_sdk_labels'] ) ) {
+			foreach ( $wp_filter['themeisle_sdk_labels']->callbacks as $priority => $hooks ) {
+				foreach ( $hooks as $hook ) {
+					// Each callback gets fresh originals, not previous callback's output
+					$result             = call_user_func( $hook['function'], $originals );
+					$all_translations[] = $result;
+				}
+			}
+			
+			// Remove the filter so it doesn't run again via apply_filters
+			remove_all_filters( 'themeisle_sdk_labels' );
+		}
+
+		// Merge all results, first real translation wins
+		self::$labels = self::merge_all_translations( $originals, $all_translations );
+	}
+	/**
+	 * Merge all translations.
+	 *
+	 * @param array $originals The original labels.
+	 * @param array $all_translations The all translations.
+	 *
+	 * @return array The merged labels.
+	 */
+	private static function merge_all_translations( $originals, $all_translations ) {
+		$result = $originals;
+		
+		foreach ( $all_translations as $translations ) {
+			$result = self::merge_if_translated( $result, $translations, $originals );
+		}
+		
+		return $result;
+	}
+	/**
+	 * Merge if translated.
+	 *
+	 * @param array $current The current labels.
+	 * @param array $new The new labels.
+	 * @param array $originals The original labels.
+	 * @return array The merged labels.
+	 */
+	private static function merge_if_translated( $current, $new, $originals ) {
+		foreach ( $new as $key => $value ) {
+			if ( ! isset( $originals[ $key ] ) ) {
+				// New key, accept it
+				if ( ! isset( $current[ $key ] ) ) {
+					$current[ $key ] = $value;
+				}
+				continue;
+			}
+			
+			if ( is_array( $value ) && is_array( $originals[ $key ] ) ) {
+				$current[ $key ] = self::merge_if_translated( 
+					$current[ $key ], 
+					$value, 
+					$originals[ $key ] 
+				);
+			} else {
+				// Only accept if:
+				// 1. New value is actually translated (differs from original)
+				// 2. Current value is NOT already translated
+				$is_new_translated       = ( $value !== $originals[ $key ] );
+				$is_current_untranslated = ( $current[ $key ] === $originals[ $key ] );
+				
+				if ( $is_new_translated && $is_current_untranslated ) {
+					$current[ $key ] = $value;
+				}
+			}
+		}
+		
+		return $current;
 	}
 
 	/**
@@ -377,6 +471,28 @@ final class Loader {
 		return self::$instance;
 	}
 
+	/**
+	 * Activate the product routine.
+	 *
+	 * @param string $file The base file of the product.
+	 *
+	 * @return void
+	 */
+	public static function activate( $file ) {
+
+		$dirname = trailingslashit( dirname( ( $file ) ) );
+		if ( ! file_exists( $dirname . '_reference.php' ) ) {
+			return;
+		}
+		$reference_data = require_once $dirname . '_reference.php';
+		if ( ! is_array( $reference_data ) || 
+		! isset( $reference_data['key'] ) || 
+		! isset( $reference_data['value'] ) ||
+		! preg_match( '/^[a-zA-Z0-9_]+_reference_key$/', $reference_data['key'] ) ) {
+			return;
+		} 
+		add_option( $reference_data['key'], sanitize_key( $reference_data['value'] ) );
+	}
 	/**
 	 * Get all registered modules by the SDK.
 	 *

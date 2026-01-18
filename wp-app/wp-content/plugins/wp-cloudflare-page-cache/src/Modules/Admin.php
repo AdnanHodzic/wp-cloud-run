@@ -3,18 +3,40 @@
 namespace SPC\Modules;
 
 use SPC\Constants;
+use SPC\Services\SDK_Integrations;
+use SPC\Utils\Assets_Handler;
+use SPC\Utils\I18n;
 
 class Admin implements Module_Interface {
 
-	private const RESET_RULE_ACTION_KEY = 'spc_reset_rule';
+	public const CONFLICTS_QUERY_ARG = 'spc_conflicts';
+
+	/**
+	 * SDK service.
+	 *
+	 * @var SDK_Integrations $sdk_service
+	 */
+	private $sdk_service;
+
+	/**
+	 * Constructor.
+	 */
+	public function __construct() {
+		$this->sdk_service = new SDK_Integrations();
+	}
 
 	public function init() {
 		add_filter( 'plugin_row_meta', [ $this, 'add_plugin_meta_links' ], 10, 2 );
 		add_filter( 'plugin_action_links_' . plugin_basename( SPC_PATH ), [ $this, 'add_plugin_action_links' ] );
 		add_action( 'admin_init', [ $this, 'redirect_to_settings' ] );
-		add_action( 'wp_ajax_swcfpc_test_page_cache', [ $this, 'ajax_test_page_cache' ] );
 		add_action( 'admin_notices', [ $this, 'failed_rule_update_notice' ] );
-		add_action( 'admin_init', [ $this, 'reset_cf_rule' ] );
+		add_filter( 'all_plugins', [ $this, 'filter_conflicting_plugins' ] );
+
+		add_filter( $this->sdk_service->get_product_key() . '_logger_data', [ $this->sdk_service, 'get_logger_data' ] );
+		add_filter(
+			$this->sdk_service->get_product_key() . '_about_us_metadata',
+			[ $this->sdk_service, 'get_about_us_metadata' ]
+		);
 	}
 
 	/**
@@ -26,7 +48,7 @@ class Admin implements Module_Interface {
 		}
 
 		delete_option( \SW_CLOUDFLARE_PAGECACHE::REDIRECT_KEY );
-		wp_safe_redirect( admin_url( 'options-general.php?page=wp-cloudflare-super-page-cache-index' ) );
+		wp_safe_redirect( admin_url( 'admin.php?page=' . Dashboard::PAGE_SLUG ) );
 
 		exit;
 	}
@@ -42,7 +64,13 @@ class Admin implements Module_Interface {
 		if ( is_array( $links ) ) {
 			$links[] = sprintf(
 				'<a href="%s">%s</a>',
-				esc_url( admin_url( 'options-general.php?page=wp-cloudflare-super-page-cache-index' ) ),
+				esc_url(
+					add_query_arg(
+						'page',
+						Dashboard::PAGE_SLUG . '-settings',
+						admin_url( 'admin.php' )
+					)
+				),
 				__( 'Settings', 'wp-cloudflare-page-cache' )
 			);
 		}
@@ -73,141 +101,18 @@ class Admin implements Module_Interface {
 		return $meta_fields;
 	}
 
-	public function ajax_test_page_cache() {
-		/**
-		 * @var \SW_CLOUDFLARE_PAGECACHE
-		 */
-		global $sw_cloudflare_pagecache;
-
-		check_ajax_referer( 'ajax-nonce-string', 'security' );
-
-		$return_array = [ 'status' => 'ok' ];
-
-		$test_file_url = SWCFPC_PLUGIN_URL . 'assets/testcache.html';
-		$tester        = new \SWCFPC_Test_Cache( $test_file_url );
-
-		$disk_cache_error = false;
-		$cloudflare_error = false;
-		$status_messages  = [];
-		$cache_issues     = [];
-
-		$is_disk_cache_enabled = $sw_cloudflare_pagecache->get_single_config( 'cf_fallback_cache' );
-		$is_cloudflare_enabled = (
-			! empty( $sw_cloudflare_pagecache->get_single_config( 'cf_page_rule_id' ) ) ||
-			! empty( $sw_cloudflare_pagecache->get_single_config( 'cf_cache_settings_ruleset_rule_id' ) ) ||
-			! empty( $sw_cloudflare_pagecache->get_single_config( 'cf_woker_route_id' ) )
-		);
-
-		if ( ! $is_cloudflare_enabled ) {
-			$status_messages[] = [
-				'status'  => 'info',
-				'message' => __( 'Cloudflare (Cache Rule or Worker) is not enabled.', 'wp-cloudflare-page-cache' ),
-			];
-		}
-
-		// Check Cloudflare if it is possible.
-		if ( $is_cloudflare_enabled ) {
-			if ( ! $tester->check_cloudflare_cache() ) {
-				$cloudflare_error  = true;
-				$cache_issues      = $tester->get_errors();
-				$status_messages[] = [
-					'status'  => 'error',
-					'message' => __( 'Cloudflare integration has an issue.', 'wp-cloudflare-page-cache' ),
-				];
-			} else {
-				$status_messages[] = [
-					'status'  => 'success',
-					'message' => __( 'Cloudflare Page Caching is working properly.', 'wp-cloudflare-page-cache' ),
-				];
-			}
-		}
-
-		// Check Fallback cache.
-		if ( ! $is_disk_cache_enabled ) {
-			$status_messages[] = [
-				'status'  => 'info',
-				'message' => __( 'Disk Page Cache is not enabled.', 'wp-cloudflare-page-cache' ),
-			];
-		}
-
-		if ( $is_disk_cache_enabled ) {
-
-			/**
-			 * @var \SWCFPC_Fallback_Cache $fallback_cache
-			 */
-			$fallback_cache = $sw_cloudflare_pagecache->get_modules()['fallback_cache'];
-
-			$fallback_cache->fallback_cache_add_current_url_to_cache( $test_file_url, true );
-			$disk_cache_error = ! $fallback_cache->fallback_cache_check_cached_page( $test_file_url );
-
-			if ( $disk_cache_error ) {
-				$cache_issues[]    = __( 'Could not cache the page on the disk. [Page Disk Cache]', 'wp-cloudflare-page-cache' );
-				$status_messages[] = [
-					'status'  => 'error',
-					'message' => __( 'Disk Page Caching has an issue.', 'wp-cloudflare-page-cache' ),
-				];
-			} else {
-				$status_messages[] = [
-					'status'  => 'success',
-					'message' => __( 'Disk Page Caching is functional.', 'wp-cloudflare-page-cache' ),
-				];
-			}
-		}
-
-		$html_response = '<div class="swcfpc-test-response">';
-
-		if ( ! empty( $status_messages ) ) {
-			$html_response .= '<div class="test-container">';
-			$html_response .= '<h3>' . __( 'Status', 'wp-cloudflare-page-cache' ) . '</h3>';
-			$html_response .= '<ul>';
-
-			foreach ( $status_messages as $status ) {
-				$html_response .= '<li class="is-' . $status['status'] . '">' . $status['message'] . '</li>';
-			}
-
-			$html_response .= '</ul>';
-			$html_response .= '</div>';
-		}
-
-		if ( ! empty( $cache_issues ) ) {
-			$html_response .= '<div class="test-container">';
-			$html_response .= '<h3>' . __( 'Issues', 'wp-cloudflare-page-cache' ) . '</h3>';
-			$html_response .= '<ul>';
-			foreach ( $cache_issues as $issue ) {
-				$html_response .= '<li class="is-error">' . $issue . '</li>';
-			}
-			$html_response .= '</ul>';
-
-			if ( $cloudflare_error ) {
-				$html_response .= '<p>' . __( 'Please check if the page caching is working by yourself by surfing the website in incognito mode \'cause sometimes Cloudflare bypass the cache for cURL requests. Reload a page two or three times. If you see the response header <strong>cf-cache-status: HIT</strong>, the page caching is working well.', 'wp-cloudflare-page-cache' ) . '</p>';
-			}
-
-			if ( $is_cloudflare_enabled ) {
-				$html_response .= '<p><a href="' . esc_url( $test_file_url ) . '" target="_blank">' . __( 'Cloudflare Test Page', 'wp-cloudflare-page-cache' ) . '</a></p>';
-			}
-			$html_response .= '</div>';
-		}
-
-		$html_response .= '</div>';
-
-		$return_array['html'] = $html_response;
-
-		if (
-			! empty( $cache_issues ) ||
-			( ! $is_cloudflare_enabled && ! $is_disk_cache_enabled )
-		) {
-			$return_array['status'] = 'error';
-		}
-
-		die( json_encode( $return_array ) );
-	}
-
 	/**
 	 * Failed rule update notice.
 	 *
 	 * @return void
 	 */
 	public function failed_rule_update_notice() {
+		$screen = get_current_screen();
+
+		if ( ! $screen || strpos( $screen->id, 'super-page-cache' ) !== false ) {
+			return;
+		}
+
 		if (
 			! get_option( Constants::KEY_RULE_UPDATE_FAILED, false ) ||
 			! current_user_can( 'manage_options' )
@@ -215,129 +120,54 @@ class Admin implements Module_Interface {
 			return;
 		}
 
-		$args = [
-			'page'       => 'wp-cloudflare-super-page-cache-index',
-			'active_tab' => 'general',
-		];
+		$admin_page_url = add_query_arg(
+			[
+				'page' => 'super-page-cache-settings',
+			],
+			admin_url( 'admin.php#cloudflare' )
+		);
 
-		$nonce          = wp_create_nonce( self::RESET_RULE_ACTION_KEY );
-		$admin_page_url = add_query_arg( $args, admin_url( 'options-general.php' ) );
-
+		$logo_url = Assets_Handler::get_image_url( 'logo.svg' );
 
 		?>
 		<style>
-			.spc-rule {
+			.notice.spc-rule {
 				display: flex;
-				flex-direction: column;
-				justify-content: space-between;
 				padding: 20px;
+				border-left-color: #ca6308;
+				gap: 20px;
 			}
 
-			.spc-rule .actions {
-				display: flex;
-				gap: 20px;
-				margin-top: 10px;
-				align-items: center;
+			.spc-rule p {
+				margin-bottom: 10px;
+			}
+
+			.spc-rule h3 {
+				margin: 0 0 10px;
+			}
+
+			.spc-rule .spc-logo {
+				width: 40px;
+				height: 40px;
 			}
 		</style>
-		<script>
-		  document.addEventListener('DOMContentLoaded', function () {
-			const ruleFixForm = document.querySelector('.spc-rule .actions form')
 
-			if (ruleFixForm && window.swcfpc_lock_screen) {
-			  ruleFixForm.addEventListener('submit', function () {
-				window.swcfpc_lock_screen();
-			  });
-			}
-		  });
-		</script>
 		<div class="notice notice-warning spc-rule">
+			<img src="<?php echo esc_url( $logo_url ); ?>" alt="Super Page Cache" class="spc-logo">
 			<div>
-				<h3><?php esc_html_e( 'It seems that Super Page Cache failed to update the Cloudflare cache rule.', 'wp-cloudflare-page-cache' ); ?></h3>
-
+				<h3><?php echo esc_html( I18n::get( 'ruleFixTitle' ) ); ?></h3>
 				<p>
 					<?php
-					// translators: %s: Enable Cloudflare CDN & Caching
-					echo sprintf( __( 'We can attempt to reset the rule automatically for you, or you could toggle the %s setting on and off to fix this.', 'wp-cloudflare-page-cache' ), sprintf( '<code>%s</code>', __( 'Enable Cloudflare CDN & Caching', 'wp-cloudflare-page-cache' ) ) );
+					echo wp_kses_post( I18n::get( 'ruleFixDescription' ) );
 					?>
 				</p>
-			</div>
-
-			<div class="actions">
-				<?php if ( ! isset( $_GET['page'] ) || 'wp-cloudflare-super-page-cache-index' !== sanitize_text_field( $_GET['page'] ) ) { ?>
-					<a href="<?php echo esc_url( $admin_page_url ); ?>"
-					   class="button button-secondary"><?php _e( 'Settings page', 'wp-cloudflare-page-cache' ); ?></a>
-				<?php } else { ?>
-					<form action="<?php echo esc_url( $admin_page_url ); ?>" method="post">
-						<input type="hidden" name="nonce" value="<?php echo esc_attr( $nonce ); ?>">
-						<input type="hidden" name="action" value="<?php echo esc_attr( 'swcfpc_reset_cf_rule' ); ?>">
-						<button type="submit" class="button button-primary">
-							<?php esc_attr_e( 'Fix Rule', 'wp-cloudflare-page-cache' ); ?>
-						</button>
-					</form>
-				<?php } ?>
+				<a href="<?php echo esc_url( $admin_page_url ); ?>" class="button button-secondary">
+					<?php _e( 'Settings page', 'wp-cloudflare-page-cache' ); ?>
+				</a>
 			</div>
 		</div>
 		<?php
 	}
-
-	/**
-	 * Reset the Cloudflare cache rule.
-	 *
-	 * @return void
-	 */
-	public function reset_cf_rule() {
-		if (
-			! current_user_can( 'manage_options' ) ||
-			! get_option( Constants::KEY_RULE_UPDATE_FAILED, false ) ||
-			! current_user_can( 'manage_options' ) ||
-			! isset( $_POST['action'] ) ||
-			'swcfpc_reset_cf_rule' !== sanitize_text_field( $_POST['action'] ) ||
-			! isset( $_POST['nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), self::RESET_RULE_ACTION_KEY )
-		) {
-			return;
-		}
-
-		/**
-		 * @type \SW_CLOUDFLARE_PAGECACHE $sw_cloudflare_pagecache
-		 */
-		global $sw_cloudflare_pagecache;
-
-		$error = '';
-
-		$status = $sw_cloudflare_pagecache->get_cloudflare_handler()->reset_cf_rule( $error );
-
-		if ( ! empty( $error ) ) {
-			add_action(
-				'admin_notices',
-				function () use ( $error ) {
-					?>
-					<div class="notice notice-error">
-						<p><?php echo esc_html( $error ); ?></p>
-					</div>
-					<?php
-				}
-			);
-		}
-
-
-		if ( $status ) {
-			delete_option( Constants::KEY_RULE_UPDATE_FAILED );
-
-			add_action(
-				'admin_notices',
-				function () {
-					?>
-					<div class="notice notice-success">
-						<p><?php esc_html_e( 'The Cloudflare cache rule has been reset successfully.', 'wp-cloudflare-page-cache' ); ?></p>
-					</div>
-					<?php
-				}
-			);
-		}
-	}
-
 
 	/**
 	 * Get third party compatibilities.
@@ -346,7 +176,7 @@ class Admin implements Module_Interface {
 	 */
 	public static function get_third_party_view_map() {
 		/**
-		 * @var $sw_cloudflare_pagecache \SW_CLOUDFLARE_PAGECACHE
+		 * @var \SW_CLOUDFLARE_PAGECACHE $sw_cloudflare_pagecache
 		 */
 		global $sw_cloudflare_pagecache;
 
@@ -391,118 +221,62 @@ class Admin implements Module_Interface {
 	}
 
 	/**
-	 * Get the zone id list for display.
+	 * Filter plugins to show only conflicting ones when self::CONFLICTS_QUERY_ARG is present.
+	 *
+	 * @param array $plugins All plugins.
 	 *
 	 * @return array
 	 */
-	public static function get_zone_id_list_for_display() {
-		/**
-		 * @var $sw_cloudflare_pagecache \SW_CLOUDFLARE_PAGECACHE
-		 */
-		global $sw_cloudflare_pagecache;
-
-		$zone_id_list = $sw_cloudflare_pagecache->get_single_config( 'cf_zoneid_list', [] );
-
-		if ( ! is_array( $zone_id_list ) || empty( $zone_id_list ) ) {
-			return [];
+	public function filter_conflicting_plugins( $plugins ) {
+		if ( ! is_admin() || ! isset( $_GET[ self::CONFLICTS_QUERY_ARG ] ) || $_GET[ self::CONFLICTS_QUERY_ARG ] !== '1' ) {
+			return $plugins;
 		}
 
-		return $zone_id_list;
+		$screen = get_current_screen();
+		if ( ! $screen || $screen->id !== 'plugins' ) {
+			return $plugins;
+		}
+
+		$conflicting_plugins = array_keys( self::get_conflicts() );
+
+		// Filter plugins to only show conflicting ones
+		return array_intersect_key( $plugins, array_flip( $conflicting_plugins ) );
 	}
 
 	/**
-	 * Get the cronjob URL.
+	 * Get active conflicting plugins.
 	 *
-	 * @param string $type The type of link purge|preloader
+	 * @param bool $names_only Whether to return only the plugin names.
 	 *
-	 * @return string
+	 * @return array<string, string> | string[]
 	 */
-	public static function get_cronjob_url( $type = 'purge' ) {
-		/**
-		 * @var $sw_cloudflare_pagecache \SW_CLOUDFLARE_PAGECACHE
-		 */
-		global $sw_cloudflare_pagecache;
-
-		$args = $type === 'purge' ? [
-			'swcfpc-purge-all' => '1',
-			'swcfpc-sec-key'   => $sw_cloudflare_pagecache->get_single_config( 'cf_purge_url_secret_key', wp_generate_password( 20, false, false ) ),
-		] : [
-			'swcfpc-preloader' => '1',
-			'swcfpc-sec-key'   => $sw_cloudflare_pagecache->get_single_config( 'cf_preloader_url_secret_key', wp_generate_password( 20, false, false ) ),
+	public static function get_conflicts( $names_only = false ) {
+		$plugins = [
+			'wp-rocket/wp-rocket.php'                    => 'WP Rocket',
+			'wp-optimize/wp-optimize.php'                => 'WP Optimize',
+			'autoptimize/autoptimize.php'                => 'Autoptimize',
+			'wp-super-cache/wp-cache.php'                => 'WP Super Cache',
+			'w3-total-cache/w3-total-cache.php'          => 'W3 Total Cache',
+			'litespeed-cache/litespeed-cache.php'        => 'LiteSpeed Cache',
+			'wp-fastest-cache/wpFastestCache.php'        => 'WP Fastest Cache',
+			'sg-cachepress/sg-cachepress.php'            => 'SiteGround Optimizer',
+			'swift-performance/performance.php'          => 'Swift Performance Pro',
+			'swift-performance-lite/performance.php'     => 'Swift Performance',
+			'hummingbird-performance/wp-hummingbird.php' => 'Hummingbird Performance',
 		];
 
-		if ( (int) $sw_cloudflare_pagecache->get_single_config( Constants::SETTING_REMOVE_CACHE_BUSTER, 1 ) !== 1 ) {
-			$args[ $sw_cloudflare_pagecache->get_cache_controller()->get_cache_buster() ] = '1';
-		}
-
-		return add_query_arg( $args, site_url() );
-	}
-
-	/**
-	 * Get the third party tabs.
-	 *
-	 * @return array
-	 */
-	public static function get_admin_tabs() {
-		/**
-		 * @var $sw_cloudflare_pagecache \SW_CLOUDFLARE_PAGECACHE
-		 */
-		global $sw_cloudflare_pagecache;
-		$tabs = [
-			[
-				'id'       => 'cache',
-				'template' => 'admin_cache_tab',
-				'label'    => __( 'Cache', 'wp-cloudflare-page-cache' ),
-			],
-			[
-				'id'          => 'general',
-				'template'    => 'admin_cloudflare_tab',
-				'label'       => __( 'Cloudflare (CDN & Edge Caching)', 'wp-cloudflare-page-cache' ),
-				'tab_classes' => $sw_cloudflare_pagecache->has_cloudflare_api_zone_id() ? 'swcfpc_hide' : '',
-			],
-			[
-				'id'          => 'advanced',
-				'template'    => 'admin_advanced_tab',
-				'label'       => __( 'Advanced', 'wp-cloudflare-page-cache' ),
-				'tab_classes' => 'show_advanced',
-			],
-			[
-				'id'       => 'javascript',
-				'template' => 'admin_js_tab',
-				'label'    => __( 'Javascript', 'wp-cloudflare-page-cache' ),
-				'locked'   => ! defined( 'SPC_PRO_PATH' ),
-			],
-			[
-				'id'       => 'media',
-				'template' => 'admin_media_tab',
-				'label'    => __( 'Media', 'wp-cloudflare-page-cache' ),
-			],
-			[
-				'id'       => 'thirdparty',
-				'template' => 'admin_third_party_tab',
-				'label'    => __( 'Third Party', 'wp-cloudflare-page-cache' ),
-				'enabled'  => self::should_load_third_party_tab(),
-			],
-			[
-				'id'       => 'faq',
-				'template' => 'admin_faq_tab',
-				'label'    => __( 'FAQ', 'wp-cloudflare-page-cache' ),
-			],
-			[
-				'id'       => 'image_optimization',
-				'template' => 'optimole',
-				'label'    => __( 'Image Optimization', 'wp-cloudflare-page-cache' ),
-				'enabled'  => ! defined( 'OPTML_VERSION' ),
-			],
-		];
-
-		$tabs = apply_filters( 'swcfpc_admin_tabs', $tabs );
-
-		return array_filter(
-			$tabs,
-			function( $tab ) {
-				return ! isset( $tab['enabled'] ) || $tab['enabled'] === true;
-			} 
+		$enabled = array_filter(
+			$plugins,
+			function ( $plugin_path ) {
+				return is_plugin_active( $plugin_path );
+			},
+			ARRAY_FILTER_USE_KEY
 		);
+
+		if ( $names_only ) {
+			return array_values( $enabled );
+		}
+
+		return $enabled;
 	}
 }

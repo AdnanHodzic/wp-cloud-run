@@ -2,6 +2,7 @@
 
 namespace SPC\Services;
 
+use SPC\Constants;
 use SW_CLOUDFLARE_PAGECACHE;
 
 /**
@@ -90,7 +91,7 @@ abstract class Cloudflare_Rule {
 	 *
 	 * @return array
 	 */
-	abstract protected function get_rule_args() : array;
+	abstract protected function get_rule_args(): array;
 
 	/**
 	 * Create a new ruleset ID for the current zone.
@@ -281,7 +282,6 @@ abstract class Cloudflare_Rule {
 			return '';
 		}
 
-		$description            = empty( $description ) ? $this->build_rule_description() : $description;
 		$url                    = sprintf( 'https://api.cloudflare.com/client/v4/zones/%s/rulesets/%s/rules/%s', $this->plugin->get_cloudflare_api_zone_id(), $this->get_ruleset_id(), $this->get_rule_id() );
 		$request_args           = $this->get_api_auth_args();
 		$request_args['method'] = 'PATCH';
@@ -335,8 +335,8 @@ abstract class Cloudflare_Rule {
 		$response_body = json_decode( wp_remote_retrieve_body( $response ), true );
 
 		if ( ! is_array( $response_body )
-			 || ! isset( $response_body['result']['rules'] )
-			 || ! is_array( $response_body['result']['rules'] )
+			|| ! isset( $response_body['result']['rules'] )
+			|| ! is_array( $response_body['result']['rules'] )
 		) {
 			return '';
 		}
@@ -368,6 +368,10 @@ abstract class Cloudflare_Rule {
 	 * @see https://developers.cloudflare.com/api/operations/deleteZoneRulesetRule
 	 */
 	public function delete_rule( &$error = '' ) {
+		if ( ! Settings_Store::get_instance()->is_cloudflare_connected() ) {
+			return false;
+		}
+
 		$rule    = $this->get_rule_id();
 		$ruleset = $this->get_ruleset_id();
 
@@ -426,6 +430,8 @@ abstract class Cloudflare_Rule {
 	 * @return array
 	 */
 	protected function get_api_auth_args( $use_curl = false ) {
+		$settings = Settings_Store::get_instance();
+
 		$req_args = [
 			'timeout' => defined( 'SWCFPC_CURL_TIMEOUT' ) ? SWCFPC_CURL_TIMEOUT : 10,
 			'headers' => [],
@@ -436,10 +442,10 @@ abstract class Cloudflare_Rule {
 		];
 
 		if ( $this->is_token_auth() ) {
-			$headers['Authorization'] = "Bearer {$this->plugin->get_cloudflare_api_token()}";
+			$headers['Authorization'] = "Bearer {$settings->get(Constants::SETTING_CF_API_TOKEN)}";
 		} else {
-			$headers['X-Auth-Email'] = $this->plugin->get_cloudflare_api_email();
-			$headers['X-Auth-Key']   = $this->plugin->get_cloudflare_api_key();
+			$headers['X-Auth-Email'] = $settings->get( Constants::SETTING_CF_EMAIL );
+			$headers['X-Auth-Key']   = $settings->get( Constants::SETTING_CF_API_KEY );
 		}
 
 		if ( $use_curl ) {
@@ -526,7 +532,7 @@ abstract class Cloudflare_Rule {
 	 * @return bool
 	 */
 	protected function is_token_auth() {
-		return SWCFPC_AUTH_MODE_API_TOKEN === (int) $this->plugin->get_single_config( 'cf_auth_mode' );
+		return SWCFPC_AUTH_MODE_API_TOKEN === (int) Settings_Store::get_instance()->get( Constants::SETTING_AUTH_MODE );
 	}
 
 	/**

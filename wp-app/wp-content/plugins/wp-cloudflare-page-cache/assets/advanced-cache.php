@@ -20,6 +20,10 @@ if ( ! file_exists( "{$swcfpc_fallback_cache_config_path}main_config.php" ) ) {
 
 require "{$swcfpc_fallback_cache_config_path}main_config.php";
 
+if ( ! isset( $swcfpc_config ) || ! is_string( $swcfpc_config ) ) {
+	return;
+}
+
 $swcfpc_config = json_decode( stripslashes( $swcfpc_config ), true );
 
 if ( ! is_array( $swcfpc_config ) ) {
@@ -32,6 +36,38 @@ if ( file_exists( $swcfpc_addon_path ) ) {
 	require $swcfpc_addon_path;
 }
 
+/**
+ *  Super-Page-Cache rolling HIT / MISS sampler
+ *  Drop into advanced-cache.php (runs on every request).
+ *
+ *  wp-config.php can override behaviour with one constant:
+ *
+ *      define( 'SPC_METRICS_CONFIG', [
+ *          'enabled'  => true,   // collect stats?   (default: true)
+ *          'window'   => 24,     // hours to retain  (default: 24)
+ *          'sampling' => 10,     // % requests used  (default: 10)
+ *      ] );
+ *
+ */
+$__spc_cfg = array_merge(
+	['enabled' => true, 'window' => 24, 'sampling' => 10],
+	defined('SPC_METRICS_CONFIG') && is_array(SPC_METRICS_CONFIG) ? SPC_METRICS_CONFIG : []
+);
+
+$__spc_cfg['window']   = max(1, (int) $__spc_cfg['window']);
+$__spc_cfg['sampling'] = min(100, max(1, (int) $__spc_cfg['sampling']));
+$__spc_ttl = $__spc_cfg['window'] * HOUR_IN_SECONDS;
+
+$__spc_backend = (function_exists('apcu_inc') ? 'apcu' : 'file');
+
+if ($__spc_backend === 'file') {
+	define(
+		'SPC_METRICS_DIR',
+		WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$_SERVER['HTTP_HOST']}/metrics"
+	);
+	if (! is_dir(SPC_METRICS_DIR)) @mkdir(SPC_METRICS_DIR, 0755, true);
+}
+
 $swcfpc_fallback_cache_key = swcfpc_fallback_cache_get_current_page_cache_key();
 
 if ( swcfpc_fallback_cache_is_url_to_exclude() ) {
@@ -39,10 +75,6 @@ if ( swcfpc_fallback_cache_is_url_to_exclude() ) {
 }
 
 if ( swcfpc_fallback_cache_is_cookie_to_exclude() ) {
-	return;
-}
-
-if ( swcfpc_fallback_cache_is_cookie_to_exclude_cf_worker() ) {
 	return;
 }
 
@@ -63,18 +95,15 @@ if ( file_exists( $swcfpc_fallback_cache_path . $swcfpc_fallback_cache_key ) && 
 	header( 'X-WP-CF-Super-Cache-Active: 1' );
 	header( "X-WP-CF-Super-Cache-Cache-Control: {$cache_controller}" );
 
-	if ( isset( $swcfpc_config['cf_woker_enabled'] ) && $swcfpc_config['cf_woker_enabled'] > 0 && isset( $swcfpc_config['cf_worker_bypass_cookies'] ) && is_array( $swcfpc_config['cf_worker_bypass_cookies'] ) && count( $swcfpc_config['cf_worker_bypass_cookies'] ) > 0 ) {
-		header( 'X-WP-CF-Super-Cache-Cookies-Bypass: ' . trim( implode( '|', $swcfpc_config['cf_worker_bypass_cookies'] ) ) );
-	}
-
-	if ( $stored_headers ) {
-
+	if ($stored_headers) {
 		foreach ( $stored_headers as $single_header ) {
 			header( $single_header, false );
 		}
 	}
 
 	$is_debug = defined( 'WP_DEBUG' ) && WP_DEBUG;
+
+	spc_store_cache_hit();
 
 	die( file_get_contents( $swcfpc_fallback_cache_path . $swcfpc_fallback_cache_key ) . ( $is_debug ? '<!-- ADVANCED CACHE -->' : '' ) );
 
@@ -171,7 +200,7 @@ function swcfpc_fallback_cache_end( $html ) {
 			}
 
 			// Provide a filter to modify the HTML before it is cached
-			$html = apply_filters( 'swcfpc_normal_fallback_cache_html', $html );
+			$html = apply_filters( 'swcfpc_normal_fallback_cache_html', $html, $cache_key );
 
 			file_put_contents( $cache_path . $cache_key, $html );
 
@@ -183,6 +212,8 @@ function swcfpc_fallback_cache_end( $html ) {
 			if ( $sw_cloudflare_pagecache->get_single_config( 'cf_fallback_cache_save_headers', 0 ) > 0 ) {
 				swcfpc_fallback_cache_save_headers( $cache_path, $cache_key );
 			}
+
+			spc_store_cache_miss();
 		}
 	}
 
@@ -190,9 +221,7 @@ function swcfpc_fallback_cache_end( $html ) {
 
 }
 
-
-function swcfpc_fallback_cache_get_current_page_cache_key( $url = null ) {
-	$replacements = [ '://', '/', '?', '#', '&', '.', ',', '@', '-', '\'', '"', '%', ' ', '\\', '=' ];
+function swcfpc_normalize_url( $url = null ) {
 
 	if ( ! is_null( $url ) ) {
 
@@ -227,7 +256,12 @@ function swcfpc_fallback_cache_get_current_page_cache_key( $url = null ) {
 
 	$current_uri = apply_filters( 'swcfpc_fc_modify_current_url', $current_uri );
 
-	$cache_key = str_replace( $replacements, '_', swcfpc_fallback_cache_remove_url_parameters( $current_uri ) );
+	return swcfpc_fallback_cache_remove_url_parameters( $current_uri );
+}
+function swcfpc_fallback_cache_get_current_page_cache_key( $url = null ) {
+	
+	$replacements = [ '://', '/', '?', '#', '&', '.', ',', '@', '-', '\'', '"', '%', ' ', '\\', '=' ];
+	$cache_key = str_replace( $replacements, '_', swcfpc_normalize_url( $url ) );
 	$cache_key = trim( $cache_key, '_' );
 	$cache_key = sha1( $cache_key );
 
@@ -813,48 +847,6 @@ function swcfpc_fallback_cache_is_cookie_to_exclude() {
 
 }
 
-
-function swcfpc_fallback_cache_is_cookie_to_exclude_cf_worker() {
-	global $swcfpc_config;
-
-	if ( count( $_COOKIE ) == 0 ) {
-		return false;
-	}
-
-	if ( ! is_array( $swcfpc_config ) ) {
-		return false;
-	}
-
-	if ( ! isset( $swcfpc_config['cf_worker_bypass_cookies'] ) || ! isset( $swcfpc_config['cf_woker_enabled'] ) ) {
-		return false;
-	}
-
-	if ( (int) $swcfpc_config['cf_woker_enabled'] == 0 ) {
-		return false;
-	}
-
-	$excluded_cookies = $swcfpc_config['cf_worker_bypass_cookies'];
-
-	if ( count( $excluded_cookies ) == 0 ) {
-		return false;
-	}
-
-	$cookies = array_keys( $_COOKIE );
-
-	foreach ( $excluded_cookies as $single_cookie ) {
-
-		if ( count( preg_grep( "#{$single_cookie}#", $cookies ) ) > 0 ) {
-			swcfpc_bypass_reason_header( sprintf( 'Cookie - %s', $single_cookie ) );
-
-			return true;
-		}
-	}
-
-	return false;
-
-}
-
-
 function swcfpc_fallback_cache_is_url_to_exclude( $url = false ) {
 	global $swcfpc_config;
 
@@ -987,4 +979,45 @@ function swcfpc_bypass_reason_header( $reason = '' ) {
 	}
 
 	header( sprintf( 'X-WP-CF-Super-Cache-Disabled-Reason: %s', $reason ) );
+}
+
+/**
+ * Record one cache verdict in the current UTC-hour bucket.
+ *
+ * @param string $status  'hit' | 'miss'   (case-insensitive)
+ */
+function spc_store_cache_status(string $status): void {
+
+	global $__spc_cfg, $__spc_backend, $__spc_ttl;
+
+	/* early outs for disabled / unsampled requests */
+	if (! $__spc_cfg['enabled']) return;
+	if (
+		$__spc_cfg['sampling'] < 100 &&
+		mt_rand(1, 100) > $__spc_cfg['sampling']
+	) return;
+
+	$status = strtolower($status);
+	if ($status !== 'hit' && $status !== 'miss') return;
+
+	$bucket = gmdate('YmdH');             // e.g. 2025061213 (UTC hour)
+	$key    = "spc_{$status}_{$bucket}";          // for cache back-ends
+	$file   = "{$status}_{$bucket}.txt";          // for file back-end (fixed .txt)
+
+	if ($__spc_backend === 'apcu') {
+		if (false === \apcu_inc($key)) {
+			\apcu_add($key, 1, $__spc_ttl);
+		}
+
+		return;
+	}
+
+	file_put_contents(SPC_METRICS_DIR . "/{$file}", '+', FILE_APPEND);
+}
+
+function spc_store_cache_hit(): void {
+	spc_store_cache_status('hit');
+}
+function spc_store_cache_miss(): void {
+	spc_store_cache_status('miss');
 }

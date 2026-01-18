@@ -29,13 +29,12 @@ if ( ! class_exists( 'WPHeaderAndFooter_Setting' ) ) :
 		 * The constructor of WPHeaderAndFooter Settings class
 		 *
 		 * @since 1.0.0
-		 * @version 2.1.2
+		 * @version 3.1.3
 		 */
 		public function __construct() {
 
 			if ( $this->wphnf_setting_optimization() ) {
 				include_once WPHEADERANDFOOTER_DIR_PATH . 'classes/class-settings-api.php';
-				include_once WPHEADERANDFOOTER_DIR_PATH . 'classes/class-diagnostics-log.php';
 
 				$this->settings_api = new WPHeaderAndFooter_Settings_API();
 				$this->diagnostics  = new WPHeadersAndFooters_Diagnostics_Log();
@@ -235,13 +234,13 @@ if ( ! class_exists( 'WPHeaderAndFooter_Setting' ) ) :
 		 * The header and footer settings section and forms callback
 		 *
 		 * @since 1.1.0
-		 * @version 2.0.0
+		 * @version 3.1.3
 		 */
 		public function wp_header_and_footer_callback() {
 			echo $this::wp_hnf_admin_page_header();
 
 			echo '<div class="wrap wp-headers-and-footers">';
-			echo '<h1 style="display:none;">' . __( 'Insert Headers And Footers', 'wp-headers-and-footers' ) . '</h1>';
+			echo '<h1 style="display:none;">' . esc_html__( 'Insert Headers And Footers', 'wp-headers-and-footers' ) . '</h1>';
 			$this->settings_api->show_navigation();
 			$this->settings_api->show_forms();
 
@@ -270,6 +269,7 @@ if ( ! class_exists( 'WPHeaderAndFooter_Setting' ) ) :
 		 * Call on Header and Footer page at dashboard.
 		 *
 		 * @since 2.1.0
+		 * @version 3.1.3
 		 */
 		public static function wp_hnf_admin_page_header() {
 			?>
@@ -280,7 +280,9 @@ if ( ! class_exists( 'WPHeaderAndFooter_Setting' ) ) :
 					</div>
 					<div class="wp_hnf-header-cta">
 					<a href="#" id="wpheaderandfooter_diagnostic_log-header">
-						<?php printf( esc_html__( 'Diagnostic %1$sLog%2$s', 'wp-headers-and-footers' ), '<span>', '</span>' ); ?>
+						<?php
+						/* Translators: Diagnostic */
+						printf( esc_html__( 'Diagnostic %1$sLog%2$s', 'wp-headers-and-footers' ), '<span>', '</span>' ); ?>
 					</a>
 
 					<a href="<?php echo esc_url( 'https://wordpress.org/support/plugin/wp-headers-and-footers/' ); ?>" class="wp_hnf-pro-cta" target="_blank">

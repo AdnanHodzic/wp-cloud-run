@@ -1,10 +1,12 @@
 <?php
 
+use SPC\Constants;
+use SPC\Services\Settings_Store;
+use SPC\Utils\Helpers;
+
 defined( 'ABSPATH' ) || die( 'Cheatin&#8217; uh?' );
 
 class SWCFPC_Html_Cache {
-
-
 	/**
 	 * The main plugin class.
 	 *
@@ -13,53 +15,28 @@ class SWCFPC_Html_Cache {
 	private $main_instance              = null;
 	private $current_page_can_be_cached = false;
 
-	function __construct( $main_instance ) {
-
+	public function __construct( $main_instance ) {
 		$this->main_instance = $main_instance;
-
 		$this->actions();
-
 	}
 
-
-	function actions() {
-
-		if ( $this->main_instance->get_single_config( 'cf_purge_only_html', 0 ) > 0 && ! is_admin() && ! $this->main_instance->is_login_page() ) {
-			add_action( 'shutdown', [ $this, 'add_current_url_to_cache' ], PHP_INT_MAX );
+	private function actions() {
+		if ( ! Settings_Store::get_instance()->get( Constants::SETTING_PURGE_ONLY_HTML ) ) {
+			return;
 		}
 
-		add_action( 'admin_menu', [ $this, 'add_admin_menu_pages' ] );
-
-
+		add_action( 'shutdown', [ $this, 'add_current_url_to_cache' ], PHP_INT_MAX );
 	}
 
-
-	function add_admin_menu_pages() {
-
-		add_submenu_page(
-			'',
-			__( 'Super Page Cache cached HTML pages', 'wp-cloudflare-page-cache' ),
-			__( 'Super Page Cache cached HTML pages', 'wp-cloudflare-page-cache' ),
-			'manage_options',
-			'wp-cloudflare-super-page-cache-cached-html-pages',
-			[ $this, 'admin_menu_page_cached_html_pages' ]
-		);
-
-	}
-
-
-	function cache_current_page() {
+	public function cache_current_page() {
 		$this->current_page_can_be_cached = true;
 	}
 
-
-	function do_not_cache_current_page() {
+	public function do_not_cache_current_page() {
 		$this->current_page_can_be_cached = false;
 	}
 
-
 	private function add_url_to_cache( $url ) {
-
 		$cache_path = $this->init_directory();
 		$cache_key  = $this->get_cache_key( $url );
 
@@ -69,12 +46,9 @@ class SWCFPC_Html_Cache {
 		file_put_contents( $cache_path . $cache_key, $file_content );
 
 		return $filename;
-
 	}
 
-
-	function add_current_url_to_cache() {
-
+	public function add_current_url_to_cache() {
 		global $wp_query;
 
 		// First check for WP CLI as $_SERVER is not available for WP_CLI
@@ -91,7 +65,6 @@ class SWCFPC_Html_Cache {
 			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because it returns 404.", true );
 
 			return;
-
 		}
 
 		if ( $this->current_page_can_be_cached == false ) {
@@ -100,7 +73,7 @@ class SWCFPC_Html_Cache {
 			return;
 		}
 
-		if ( strcasecmp( $_SERVER['HTTP_HOST'], $parts['host'] ) != 0 ) {
+		if ( strcasecmp( $_SERVER['HTTP_HOST'], $parts['host'] ) !== 0 ) {
 			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because the host does not match with the one of home_url() function ({$parts['host']}).", true );
 
 			return;
@@ -120,7 +93,6 @@ class SWCFPC_Html_Cache {
 				$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "This URL {$current_url} cannot be cached because the URL has no query param but has the question mark at the end of the URL without actually having any query params. It makes no sense to cache this page as the proper version of the URL will be considered for caching.", true );
 
 				return;
-
 			} else {
 
 				// First parse the query params to an array to manage it better
@@ -145,7 +117,6 @@ class SWCFPC_Html_Cache {
 
 					$new_current_url_query_params = http_build_query( $current_url_query_params );
 					$current_url_parsed['query']  = $new_current_url_query_params;
-
 				} else {
 					// Remove the query section from parsed URL
 					unset( $current_url_parsed['query'] );
@@ -162,20 +133,15 @@ class SWCFPC_Html_Cache {
 		$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "Created the file {$filename} for the URL {$current_url}", true );
 	}
 
-
-	function get_cache_key( $url ) {
-
+	private function get_cache_key( $url ) {
 		$cache_key  = sha1( $url );
 		$cache_key .= '.tmp';
 
 		return $cache_key;
-
 	}
 
-
-	function init_directory() {
-
-		$cache_path = $this->main_instance->get_plugin_wp_content_directory() . '/cached_html_pages/';
+	private function init_directory() {
+		$cache_path = Helpers::get_plugin_content_dir() . '/cached_html_pages/';
 
 		if ( ! file_exists( $cache_path ) ) {
 			wp_mkdir_p( $cache_path );
@@ -186,11 +152,9 @@ class SWCFPC_Html_Cache {
 		}
 
 		return $cache_path;
-
 	}
 
-
-	function delete_all_cached_urls() {
+	public function delete_all_cached_urls() {
 
 		$cache_path = $this->init_directory();
 
@@ -203,48 +167,50 @@ class SWCFPC_Html_Cache {
 				@unlink( $single_file );
 			}
 		}
-
 	}
 
-
-	function get_cached_urls() {
-
+	public function get_cached_urls() {
 		$cache_path = $this->init_directory();
 		$urls       = [];
 
 		// Get a list of all of the file names in the folder.
 		$files = glob( $cache_path . '/*.tmp' );
 
+		// keep only 1000 files
+		$files = array_slice( $files, 0, 1000 );
+
+		if ( ! is_array( $files ) ) {
+			return [];
+		}
+
 		foreach ( $files as $single_file ) {
+			if ( ! is_file( $single_file ) ) {
+				continue;
+			}
 
-			if ( is_file( $single_file ) ) {
+			list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
 
-				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
-
-				if ( strlen( $single_url ) > 1 ) {
-					$urls[] = $single_url;
-				}
+			if ( strlen( $single_url ) > 1 ) {
+				$urls[] = [
+					'url'       => $single_url,
+					'timestamp' => $single_timestamp,
+				];
 			}
 		}
 
 		return $urls;
-
 	}
 
-
-	function get_cached_urls_by_timestamp( $timestamp ) {
-
+	public function get_cached_urls_by_timestamp( $timestamp ) {
 		$cache_path = $this->init_directory();
 		$urls       = [];
 
 		// Get a list of all of the file names in the folder.
 		$files = glob( $cache_path . '/*.tmp' );
-
 		foreach ( $files as $single_file ) {
-
 			if ( is_file( $single_file ) ) {
 
-				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
+				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
 
 				if ( $single_timestamp <= $timestamp && strlen( $single_url ) > 1 ) {
 					$urls[] = $single_url;
@@ -253,12 +219,9 @@ class SWCFPC_Html_Cache {
 		}
 
 		return $urls;
-
 	}
 
-
-	function delete_cached_urls_by_timestamp( $timestamp ) {
-
+	public function delete_cached_urls_by_timestamp( $timestamp ) {
 		$cache_path = $this->init_directory();
 
 		// Get a list of all of the file names in the folder.
@@ -268,53 +231,33 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 
-				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
+				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
 
 				if ( $single_timestamp <= $timestamp ) {
 					unlink( $single_file );
 				}
 			}
 		}
-
 	}
 
-
-	function delete_cached_urls_by_urls_list( $urls ) {
-
+	public function delete_cached_urls_by_urls_list( $urls ) {
 		if ( ! is_array( $urls ) ) {
 			return false;
 		}
 
 		$cache_path = $this->init_directory();
-
 		// Get a list of all of the file names in the folder.
 		$files = glob( $cache_path . '/*.tmp' );
 
 		foreach ( $files as $single_file ) {
-
 			if ( is_file( $single_file ) ) {
 
-				list( $single_url, $single_timestamp ) = explode( '|', file_get_contents( $single_file ) );
+				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
 
-				if ( in_array( $single_url, $urls ) ) {
+				if ( in_array( $single_url, $urls, true ) ) {
 					unlink( $single_file );
 				}
 			}
 		}
-
 	}
-
-
-	function admin_menu_page_cached_html_pages() {
-
-		if ( ! current_user_can( 'manage_options' ) ) {
-			die( __( 'Permission denied', 'wp-cloudflare-page-cache' ) );
-		}
-
-		$cached_html_pages_list = $this->get_cached_urls();
-
-		require_once SWCFPC_PLUGIN_PATH . 'libs/views/cached_html_pages.php';
-
-	}
-
 }
