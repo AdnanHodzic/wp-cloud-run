@@ -413,8 +413,11 @@
 				$('#playPause').empty();
 			}				
 			if(opts.showDownload || opts.downloads[downloadIndex]){
-				var url = opts.downloads[downloadIndex] ? opts.downloads[downloadIndex] : images[i][0]; 				
-				$('#downloadLink').css('opacity', '100%').html($('<a>').attr('href', url).attr('target', '_blank').attr('download', '').text(txt.download));
+				var url = opts.downloads[downloadIndex] ? opts.downloads[downloadIndex] : images[i][0];
+				url = DOMPurify.sanitize(url);
+				if (url.startsWith('http://') || url.startsWith('https://')){
+					$('#downloadLink').css('opacity', '100%').html($('<a>').attr('href', url).attr('target', '_blank').attr('download', '').text(txt.download));
+				}
 			}else{
 				$('#downloadLink').empty();
 			}

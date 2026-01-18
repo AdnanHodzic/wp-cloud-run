@@ -3,7 +3,7 @@
  * Plugin Name: LightPress Lightbox
  * Plugin URI: http://wordpress.org/extend/plugins/wp-jquery-lightbox/
  * Description: Simple and lightweight lightbox for galleries and images. Formerly WP Jquery Lightbox.
- * Version: 2.3.3
+ * Version: 2.3.4
  * Text Domain: wp-jquery-lightbox
  * Author: LightPress
  * Author URI: https://lightpress.io
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Define constants.
  */
-define( 'LIGHTPRESS_VERSION', '2.3.3' );
+define( 'LIGHTPRESS_VERSION', '2.3.4' );
 define( 'LIGHTPRESS_PLUGIN_BASE', plugin_basename( __FILE__ ) );
 define( 'LIGHTPRESS_PLUGIN_DIR', plugin_dir_path( __FILE__ ) ); // Includes ending slash.
 define( 'LIGHTPRESS_PLUGIN_URL', plugin_dir_url( __FILE__ ) ); // Includes ending slash.

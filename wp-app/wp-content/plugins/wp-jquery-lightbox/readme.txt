@@ -2,8 +2,8 @@
 Contributors: pandaboxwp
 Tags: lightbox, photo, image, gallery
 Requires at least: 5.0
-Tested up to: 6.7
-Stable tag: 2.3.3
+Tested up to: 6.8
+Stable tag: 2.3.4
 Requires PHP: 7.0
 License: GPLv2 or later
 
@@ -72,6 +72,11 @@ Special thanks to [Ulf Benjaminsson](http://www.ulfbenjaminsson.com), who create
 1. Check out the jQuery Lightbox-panel in your admin interface for usage details and configuration.
 
 == Changelog ==
+
+= 2.3.4 =
+* Update: Dom purify script version
+* Update: WordPress tested version to 6.8
+* Fix: Issue with download links
 
 = 2.3.3 =
 * Update Pro landing and pricing
