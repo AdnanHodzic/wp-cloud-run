@@ -1,5 +1,7 @@
 <?php // phpcs:ignore WordPress.Files.FileName
 
+use AdvancedAds\Utilities\Conditional;
+
 /**
  * Class Advanced_Ads_AdSense_Public.
  */
@@ -54,7 +56,7 @@ class Advanced_Ads_AdSense_Public {
 			echo '<style>ins.adsbygoogle { background-color: transparent; padding: 0; }</style>';
 		}
 
-		if ( defined( 'ADVADS_ADS_DISABLED' ) || advads_is_amp() ) {
+		if ( Conditional::is_ad_disabled() || Conditional::is_amp() ) {
 			return;
 		}
 
@@ -148,10 +150,9 @@ class Advanced_Ads_AdSense_Public {
 		wp_advads()->frontend->run_checks();
 
 		if (
-			// check if ads are disabled.
-			( defined( 'ADVADS_ADS_DISABLED' ) && ADVADS_ADS_DISABLED )
+			Conditional::is_ad_disabled()
 			// check if this an AMP page, we're inside `wp` action so it's safe to use.
-			|| ( ! function_exists( 'advads_is_amp' ) || ! advads_is_amp() )
+			|| ! Conditional::is_amp()
 		) {
 			return;
 		}

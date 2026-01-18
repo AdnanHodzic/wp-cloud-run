@@ -396,7 +396,7 @@ class Advanced_Ads {
 		// Check if admin allows injection in all places.
 		$injection_enabled = $options['content-injection-enabled'] ?? 'off';
 
-		if ( ( $injection_enabled === 'off' || 0 === $archive_injection_count ) && ( ! is_singular( $public_post_types ) || ( ! advads_is_amp() && ! $this->in_the_loop() && ! $this->was_in_the_loop ) ) ) {
+		if ( ( $injection_enabled === 'off' || 0 === $archive_injection_count ) && ( ! is_singular( $public_post_types ) || ( ! Conditional::is_amp() && ! $this->in_the_loop() && ! $this->was_in_the_loop ) ) ) {
 			return false;
 		}
 
@@ -424,7 +424,7 @@ class Advanced_Ads {
 		 *
 		 * @return bool `true` if ads are disabled
 		 */
-		$ads_disabled = apply_filters( 'advanced-ads-disabled-ads', defined( 'ADVADS_ADS_DISABLED' ), $options );
+		$ads_disabled = apply_filters( 'advanced-ads-disabled-ads', Conditional::is_ad_disabled(), $options );
 
 		if ( $ads_disabled ) {
 			return false;

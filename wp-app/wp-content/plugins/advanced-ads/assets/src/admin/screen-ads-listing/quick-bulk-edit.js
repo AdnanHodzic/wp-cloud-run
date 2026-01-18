@@ -1,5 +1,4 @@
 import jQuery from 'jquery';
-import apiFetch from '@wordpress/api-fetch';
 
 /**
  * Retrieves ad data for a given ID using AJAX.
@@ -9,15 +8,9 @@ import apiFetch from '@wordpress/api-fetch';
  * @return {void}
  */
 function getAdData(id) {
-	apiFetch({
-		path: '/advanced-ads/v1/quick_edit_data',
-		method: 'POST',
-		data: {
-			id,
-		},
-	}).then(function (response) {
-		fillInputs(id, response);
-	});
+	const adVar = `ad_json_${id}`;
+	const adData = window[adVar];
+	fillInputs(id, adData);
 }
 
 /**

@@ -34,6 +34,10 @@ function sendAjaxRequest(placementType, placementId, postId, options) {
 			jQuery(
 				'#advads-ad-injection-message-placement-created, #advads-ad-injection-message-placement-created *'
 			).show();
+
+			if ('server' === placementType) {
+				jQuery('.hide-server-placement').hide();
+			}
 		},
 		error(MLHttpRequest, textStatus, errorThrown) {
 			advadsBox.html(errorThrown);

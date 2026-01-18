@@ -5,7 +5,6 @@ export default function () {
 		const select = jQuery(this);
 		const wrap = select.parent();
 		const spinner = wrap.find('.advads-loader');
-		const errorMessage = wrap.find('.advads-error');
 
 		select.prop('disabled', true);
 		spinner.removeClass('hidden');
@@ -18,6 +17,7 @@ export default function () {
 					action: 'advads-placement-update-item',
 					placement_id: select.data('placement-id'),
 					item_id: select.val(),
+					nonce: advadsglobal.ajax_nonce,
 				},
 			})
 			.always(function () {
@@ -31,7 +31,6 @@ export default function () {
 			})
 			.done(function (response) {
 				const { data } = response;
-				const success = wrap.find('.advads-success-message');
 				const modalForm = jQuery(
 					'#advanced-ads-placement-form-' + data.placement_id
 				);

@@ -7,6 +7,7 @@
  * @since   1.x.x
  */
 
+use AdvancedAds\Constants;
 use AdvancedAds\Utilities\Data;
 
 defined( 'ABSPATH' ) || exit;
@@ -15,28 +16,6 @@ defined( 'ABSPATH' ) || exit;
  * Handle add-on licenses
  */
 class Advanced_Ads_Admin_Licenses {
-	/**
-	 * License API endpoint URL
-	 *
-	 * @const string
-	 */
-	const API_ENDPOINT = 'https://wpadvancedads.com/license-api/';
-
-	/**
-	 * Add-on slugs and their EDD ID
-	 *
-	 * @const array
-	 */
-	const ADDON_SLUGS_ID = [
-		'advanced-ads-gam'        => 215545,
-		'advanced-ads-layer'      => 686,
-		'advanced-ads-pro'        => 1742,
-		'advanced-ads-responsive' => 678,
-		'advanced-ads-selling'    => 35300,
-		'advanced-ads-sticky'     => 683,
-		'advanced-ads-tracking'   => 638,
-	];
-
 	/**
 	 * Advanced_Ads_Admin_Licenses constructor.
 	 */
@@ -105,7 +84,7 @@ class Advanced_Ads_Admin_Licenses {
 		$api_params = [
 			'edd_action' => 'activate_license',
 			'license'    => $license_key,
-			'item_id'    => self::ADDON_SLUGS_ID[ $options_slug ] ?? false,
+			'item_id'    => Constants::ADDON_SLUGS_ID[ $options_slug ] ?? false,
 			'item_name'  => rawurlencode( $plugin_name ),
 			'url'        => home_url(),
 		];
@@ -119,7 +98,7 @@ class Advanced_Ads_Admin_Licenses {
 
 		// Call the custom API.
 		$response = wp_remote_post(
-			self::API_ENDPOINT,
+			Constants::API_ENDPOINT,
 			[
 				'timeout'   => 15,
 				'sslverify' => false,
@@ -258,7 +237,7 @@ class Advanced_Ads_Admin_Licenses {
 		$api_params = [
 			'edd_action' => 'check_license',
 			'license'    => $license_key,
-			'item_id'    => self::ADDON_SLUGS_ID[ $options_slug ] ?? false,
+			'item_id'    => Constants::ADDON_SLUGS_ID[ $options_slug ] ?? false,
 			'item_name'  => rawurlencode( $plugin_name ),
 		];
 		$response   = wp_remote_get(
@@ -314,13 +293,13 @@ class Advanced_Ads_Admin_Licenses {
 		$api_params = [
 			'edd_action' => 'deactivate_license',
 			'license'    => $license_key,
-			'item_id'    => self::ADDON_SLUGS_ID[ $options_slug ] ?? false,
+			'item_id'    => Constants::ADDON_SLUGS_ID[ $options_slug ] ?? false,
 			'item_name'  => rawurlencode( $plugin_name ),
 		];
 
 		// Send the remote request.
 		$response = wp_remote_post(
-			self::API_ENDPOINT,
+			Constants::API_ENDPOINT,
 			[
 				'body'      => $api_params,
 				'timeout'   => 15,
@@ -483,26 +462,30 @@ class Advanced_Ads_Admin_Licenses {
 	 * @todo check if this is still working.
 	 */
 	public function addon_upgrade_filter( $reply, $package, $updater ) {
+		$key   = null;
+		$value = null;
+
 		if ( isset( $updater->skin->plugin ) ) {
-			$plugin_file = $updater->skin->plugin;
+			$key   = 'path';
+			$value = $updater->skin->plugin;
 		} elseif ( isset( $updater->skin->plugin_info['Name'] ) ) {
-			$add_on = $this->get_installed_add_on_by_name( $updater->skin->plugin_info['Name'] );
-			// $add_on['path'] should always be set with out official plugins but might be missing for some local and custom made.
-			if ( isset( $add_on['path'] ) ) {
-				$plugin_file = plugin_basename( $add_on['path'] );
-			}
+			$key   = 'name';
+			$value = $updater->skin->plugin_info['Name'];
 		}
 
-		if ( isset( $plugin_file ) && $plugin_file ) {
-			// if AJAX; show direct update link as first possible solution.
-			if ( wp_doing_ajax() ) {
-				$update_link = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $plugin_file, 'upgrade-plugin_' . $plugin_file );
-				/* translators: %s plugin update link */
-				$updater->strings['download_failed'] = sprintf( __( 'Download failed. <a href="%s">Click here to try another method</a>.', 'advanced-ads' ), $update_link );
-			} else {
-				/* translators: %s download failed knowledgebase link */
-				$updater->strings['download_failed'] = sprintf( __( 'Download failed. <a href="%s" target="_blank">Click here to learn why</a>.', 'advanced-ads' ), 'https://wpadvancedads.com/manual/download-failed-updating-add-ons/#utm_source=advanced-ads&utm_medium=link&utm_campaign=download-failed' );
-			}
+		$add_on = $this->get_installed_add_on_by_key( $key, $value );
+		if ( ! $add_on || ! isset( $add_on['path'] ) ) {
+			return $reply;
+		}
+
+		$plugin_file = plugin_basename( $add_on['path'] );
+		if ( wp_doing_ajax() ) {
+			$update_link = wp_nonce_url( self_admin_url( 'update.php?action=upgrade-plugin&plugin=' ) . $plugin_file, 'upgrade-plugin_' . $plugin_file );
+			/* translators: %s plugin update link */
+			$updater->strings['download_failed'] = sprintf( __( 'Download failed. <a href="%s">Click here to try another method</a>.', 'advanced-ads' ), $update_link );
+		} else {
+			/* translators: %s download failed knowledgebase link */
+			$updater->strings['download_failed'] = sprintf( __( 'Download failed. <a href="%s" target="_blank">Click here to learn why</a>.', 'advanced-ads' ), 'https://wpadvancedads.com/manual/download-failed-updating-add-ons/#utm_source=advanced-ads&utm_medium=link&utm_campaign=download-failed' );
 		}
 
 		return $reply;
@@ -511,17 +494,22 @@ class Advanced_Ads_Admin_Licenses {
 	/**
 	 * Search if a name is in the add-on array and return the add-on data of it
 	 *
-	 * @param string $name name of an add-on.
+	 * @param string $key   key to search for.
+	 * @param string $value value to search for.
 	 *
 	 * @return  array    array with the add-on data
 	 */
-	private function get_installed_add_on_by_name( $name = '' ) {
-		$add_ons = Data::get_addons();
+	private function get_installed_add_on_by_key( $key, $value ) {
+		// Early bail!!
+		if ( empty( $key ) || empty( $value ) ) {
+			return null;
+		}
 
+		$add_ons = Data::get_addons();
 		if ( is_array( $add_ons ) ) {
-			foreach ( $add_ons as $key => $_add_on ) {
-				if ( $_add_on['name'] === $name ) {
-					return $_add_on;
+			foreach ( $add_ons as $add_on ) {
+				if ( $add_on[ $key ] === $value ) {
+					return $add_on;
 				}
 			}
 		}
@@ -569,7 +557,7 @@ class Advanced_Ads_Admin_Licenses {
 	public function update_license_after_version_info( $response, $context, $http, $parsed_args, $url ) {
 		// Early bail!!
 		if (
-			self::API_ENDPOINT !== $url
+			Constants::API_ENDPOINT !== $url
 			|| (
 				empty( $parsed_args['body']['edd_action'] )
 				|| 'get_version' !== $parsed_args['body']['edd_action']

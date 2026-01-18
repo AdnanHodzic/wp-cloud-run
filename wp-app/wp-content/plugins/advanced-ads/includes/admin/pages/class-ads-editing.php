@@ -9,10 +9,10 @@
 
 namespace AdvancedAds\Admin\Pages;
 
+use DateTimeImmutable;
 use AdvancedAds\Constants;
-use AdvancedAds\Framework\Utilities\Params;
 use AdvancedAds\Utilities\WordPress;
-use DateTime;
+use AdvancedAds\Framework\Utilities\Params;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -148,7 +148,7 @@ class Ads_Editing extends Ads {
 	 */
 	public function add_submit_box_meta( $post ): void {
 		global $wp_locale;
-
+		// Early bail!!
 		if ( Constants::POST_TYPE_AD !== $post->post_type ) {
 			return;
 		}
@@ -156,11 +156,11 @@ class Ads_Editing extends Ads {
 		$ad = wp_advads_get_ad( $post->ID );
 
 		// Get time set for ad or current timestamp (both GMT).
-		$utc_ts   = $ad->get_expiry_date() ?: current_time( 'timestamp', true ); // phpcs:ignore
-		$utc_time = new DateTime( '@' . $utc_ts );
-		$utc_time->setTimezone( \Advanced_Ads_Utils::get_wp_timezone() );
-		[ $curr_year, $curr_month, $curr_day, $curr_hour, $curr_minute ] = explode( '-', $utc_time->format( 'Y-m-d-H-i' ) );
-		$enabled = 1 - empty( $ad->get_expiry_date() );
+		$utc_ts     = $ad->get_expiry_date() ?: current_time( 'timestamp', true ); // phpcs:ignore
+		$local_time = ( new \DateTimeImmutable( '@' . $utc_ts ) )->setTimezone( WordPress::get_timezone() );
+
+		[ $curr_year, $curr_month, $curr_day, $curr_hour, $curr_minute ] = explode( '-', $local_time->format( 'Y-m-d-H-i' ) );
+		$enabled = (int) ! empty( $ad->get_expiry_date() );
 
 		include ADVADS_ABSPATH . 'views/admin/ads/submitbox-meta.php';
 	}

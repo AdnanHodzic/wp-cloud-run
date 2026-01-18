@@ -187,8 +187,8 @@ class Widget extends \WP_Widget {
 			}
 		}
 
-		if ( ! empty( $select ) ) {
-			sort( $select );
+		if ( ! empty( $select['placements'] ) ) {
+			asort( $select['placements'] );
 		}
 
 		return $select;
@@ -213,10 +213,6 @@ class Widget extends \WP_Widget {
 
 		if ( empty( $item_id ) ) {
 			return;
-		}
-
-		if ( 'placement' === $item[0] ) {
-			return get_the_placement( $item_id );
 		}
 
 		$func = 'get_the_' . $item[0];

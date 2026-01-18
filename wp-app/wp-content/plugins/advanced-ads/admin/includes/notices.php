@@ -96,6 +96,18 @@ $advanced_ads_admin_notices = [
 		),
 		'global' => true,
 	],
+	// Black Friday 2025 promotion.
+	'bfcm25'          => [
+		'type'   => NOTICE_TYPES['promo'],
+		'text'   => sprintf(
+		/* translators: %1$s is the markup for the discount value, %2$s starts a button link, %3$s closes the button link. */
+			__( 'Save %1$s on all products with our Black Friday / Cyber Monday offer! %2$sGet this deal%3$s', 'advanced-ads' ),
+			'<span style="font-weight: bold; font-size: 1.6em; vertical-align: sub;">30%</span>',
+			'<a class="button button-primary" target="_blank" href="https://wpadvancedads.com/pricing/?utm_source=advanced-ads&utm_medium=link&utm_campaign=bfcm-2025">',
+			'</a>'
+		),
+		'global' => true,
+	],
 	'monetize_wizard' => [
 		'type' => NOTICE_TYPES['info'],
 		'text' => sprintf(
@@ -127,7 +139,7 @@ foreach ( \AdvancedAds\Constants::ADDONS_NON_COMPATIBLE_VERSIONS as $version => 
 				),
 				$manual_addons[ $addon ]['title'],
 				$manual_addons[ $addon ]['zip'],
-				$manual_addons[ $addon ]['link'],
+				$manual_addons[ $addon ]['link']
 			),
 			'global' => true,
 		];
@@ -143,7 +155,7 @@ foreach ( \AdvancedAds\Constants::ADDONS_NON_COMPATIBLE_VERSIONS as $version => 
 					]
 				),
 				ucwords( str_replace( '-', ' ', $addon ) ),
-				ADVADS_VERSION,
+				ADVADS_VERSION
 			),
 			'global' => true,
 		];

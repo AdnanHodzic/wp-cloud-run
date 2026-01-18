@@ -66,6 +66,7 @@ class Ad_Repository {
 			$ad->set_id( $id );
 
 			$this->update_post_meta( $ad );
+			$this->update_post_term( $ad );
 			$this->update_version( $ad );
 
 			$ad->apply_changes();
@@ -118,19 +119,16 @@ class Ad_Repository {
 
 		// Only update the post when the post data changes.
 		if ( array_intersect( [ 'title', 'status', 'content' ], array_keys( $changes ) ) ) {
-			$post_data = [
+			$is_text_ad = $ad->is_type( [ 'plain', 'content' ] );
+			$post_data  = [
 				'post_title'   => $ad->get_title( 'edit' ),
 				'post_status'  => $ad->get_status( 'edit' ) ? $ad->get_status( 'edit' ) : 'publish',
 				'post_type'    => Constants::POST_TYPE_AD,
 				'post_content' => apply_filters(
-					// TODO: useless filter.
 					'advanced-ads-pre-ad-save-' . $ad->get_type(),
-					wp_unslash(
-						apply_filters(
-							'content_save_pre',
-							$ad->get_content( 'edit' )
-						)
-					)
+					$is_text_ad
+						? wp_unslash( $ad->get_content( 'edit' ) )
+						: apply_filters( 'content_save_pre', wp_unslash( $ad->get_content( 'edit' ) ) )
 				),
 			];
 
@@ -139,10 +137,12 @@ class Ad_Repository {
 			 * to update data, since wp_update_post spawns more calls to the
 			 * save_post action.
 			 *
-			 * This ensures hooks are fired by either WP itself (admin screen save),
-			 * or an update purely from CRUD.
+			 * This ensures hooks are fired by either WP itself (admin screen save), or an update purely from CRUD.
+			 *
+			 * Use direct DB update for user-input ads to preserve literal content.
+			 * Use wp_update_post for other ad types to maintain WordPress security standards.
 			 */
-			if ( doing_action( 'save_post' ) ) {
+			if ( doing_action( 'save_post' ) || $is_text_ad ) {
 				$GLOBALS['wpdb']->update( $GLOBALS['wpdb']->posts, $post_data, [ 'ID' => $ad->get_id() ] );
 				clean_post_cache( $ad->get_id() );
 			} else {
@@ -163,6 +163,7 @@ class Ad_Repository {
 		}
 
 		$this->update_post_meta( $ad );
+		$this->update_post_term( $ad );
 
 		$ad->apply_changes();
 	}
@@ -394,6 +395,7 @@ class Ad_Repository {
 					break;
 				case 'display_conditions':
 				case 'visitor_conditions':
+				case 'visitors':
 					$value = WordPress::sanitize_conditions( $value );
 					if (
 						'editpost' === Params::post( 'originalaction' ) &&
@@ -415,6 +417,17 @@ class Ad_Repository {
 		unset( $meta_values['has_weekdays'] );
 
 		update_post_meta( $ad->get_id(), self::OPTION_METAKEY, $meta_values );
+	}
+
+	/**
+	 * Update ad groups.
+	 *
+	 * @param Ad $ad Ad object.
+	 *
+	 * @return void
+	 */
+	private function update_post_term( &$ad ): void {
+		( new Ad_Group_Relation() )->relate( $ad );
 	}
 
 	/**

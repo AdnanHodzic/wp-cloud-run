@@ -229,10 +229,12 @@ class Admin_Menu implements Integration_Interface {
 	 * @return void
 	 */
 	public function highlight_menu_item(): void {
-		global $parent_file, $submenu_file, $post_type;
+		global $parent_file, $submenu_file;
+
+		$wp_screen = get_current_screen();
 
 		// phpcs:disable WordPress.WP.GlobalVariablesOverride.Prohibited
-		if ( Constants::POST_TYPE_AD === $post_type ) {
+		if ( 'post' === $wp_screen->base && Constants::POST_TYPE_AD === $wp_screen->post_type ) {
 			$parent_file  = ADVADS_SLUG;
 			$submenu_file = 'edit.php?post_type=' . Constants::POST_TYPE_AD;
 		}
@@ -246,7 +248,9 @@ class Admin_Menu implements Integration_Interface {
 	 *
 	 * @return string
 	 */
-	public function add_body_class( string $classes ): string {
+	public function add_body_class( $classes ): string {
+		// Ensure $classes is always a string due to 3rd party plugins interfering with the filter.
+		$classes    = is_string( $classes ) ? $classes : '';
 		$screen_ids = $this->get_screen_ids();
 		$wp_screen  = get_current_screen();
 

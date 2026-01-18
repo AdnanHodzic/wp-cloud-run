@@ -1,8 +1,9 @@
 <?php // phpcs:ignore WordPress.Files.FileName
 
 use AdvancedAds\Abstracts\Ad;
-use AdvancedAds\Framework\Utilities\Params;
+use AdvancedAds\Utilities\Conditional;
 use AdvancedAds\Framework\Utilities\Str;
+use AdvancedAds\Framework\Utilities\Params;
 
 /**
  * Handles Advanced Ads privacy settings.
@@ -56,7 +57,7 @@ class Advanced_Ads_Privacy {
 	 */
 	public function final_ad_output( $output, Ad $ad ) {
 		if (
-			advads_is_amp() ||
+			Conditional::is_amp() ||
 			! $this->ad_type_needs_consent( $ad->get_type() ) ||
 			( ! $ad->is_type( 'adsense' ) && $ad->get_prop( 'privacy.ignore-consent' ) )
 		) {
@@ -238,7 +239,7 @@ class Advanced_Ads_Privacy {
 	 *     'unknown' - consent was not given yet.
 	 */
 	private function parse_state() {
-		if ( empty( $this->options['enabled'] ) || advads_is_amp() ) {
+		if ( empty( $this->options['enabled'] ) || Conditional::is_amp() ) {
 			return 'not_needed';
 		}
 

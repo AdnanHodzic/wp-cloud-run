@@ -131,7 +131,9 @@ function submitNewPlacement(form) {
 		},
 	}).then(function (response) {
 		disable(form, false);
-		if (response.reload) {
+		if (response.redirectUrl) {
+			window.location.href = response.redirectUrl;
+		} else if (response.reload) {
 			// Reload the page if needed.
 			// eslint-disable-next-line no-undef
 			localStorage.setItem(

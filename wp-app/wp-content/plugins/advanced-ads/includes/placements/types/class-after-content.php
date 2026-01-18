@@ -80,7 +80,7 @@ class After_Content extends Base implements Placement_Type {
 	 * @return int The order number.
 	 */
 	public function get_order(): int {
-		return 35;
+		return 15;
 	}
 
 	/**

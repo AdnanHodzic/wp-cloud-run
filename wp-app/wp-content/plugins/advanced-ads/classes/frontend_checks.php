@@ -85,7 +85,7 @@ class Advanced_Ads_Frontend_Checks {
 	 * needs to add ajaxurl in case no other plugin is doing that
 	 */
 	public function enqueue_scripts() {
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return;
 		}
 
@@ -457,7 +457,7 @@ class Advanced_Ads_Frontend_Checks {
 		// load number of already detected notices.
 		$notices = Advanced_Ads_Ad_Health_Notices::get_number_of_notices();
 
-		if ( ! advads_is_amp() ) {
+		if ( ! Conditional::is_amp() ) {
 			$warnings = 0; // Will be updated using JS.
 		} else {
 			$warnings = $this->count_visible_warnings( $nodes, [ 1 ] );
@@ -678,7 +678,7 @@ class Advanced_Ads_Frontend_Checks {
 			// phpcs:ignore
 			echo ob_get_clean();
 
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return;
 		}
 
@@ -1067,7 +1067,7 @@ class Advanced_Ads_Frontend_Checks {
 			return $content;
 		}
 
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return $content;
 		}
 

@@ -116,7 +116,6 @@ class Plugin extends Framework\Loader {
 			Advanced_Ads_Admin_Licenses::get_instance();
 		}
 
-		add_action( 'init', [ $this, 'load_textdomain' ] );
 		add_action( 'plugins_loaded', [ $this, 'on_plugins_loaded' ], -1 );
 		add_action( 'widgets_init', [ $this, 'register_widgets' ] );
 
@@ -151,22 +150,6 @@ class Plugin extends Framework\Loader {
 		 * @since 1.47.0
 		 */
 		do_action( 'advanced-ads-loaded' );
-	}
-
-	/**
-	 * Load the plugin text domain for translation.
-	 *
-	 * @return void
-	 */
-	public function load_textdomain(): void {
-		$locale = apply_filters( 'plugin_locale', determine_locale(), 'advanced-ads' );
-
-		unload_textdomain( 'advanced-ads' );
-		if ( false === load_textdomain( 'advanced-ads', WP_LANG_DIR . '/plugins/advanced-ads-' . $locale . '.mo' ) ) {
-			load_textdomain( 'advanced-ads', WP_LANG_DIR . '/advanced-ads/advanced-ads-' . $locale . '.mo' );
-		}
-
-		load_plugin_textdomain( 'advanced-ads', false, dirname( ADVADS_PLUGIN_BASENAME ) . '/languages' );
 	}
 
 	/**
@@ -305,7 +288,6 @@ class Plugin extends Framework\Loader {
 	 */
 	private function includes_rest(): void {
 		$this->register_route( Rest\Groups::class );
-		$this->register_route( Rest\Quick_Edit::class );
 		$this->register_route( Rest\Page_Quick_Edit::class );
 		$this->register_route( Rest\Placements::class );
 		$this->register_route( Rest\OnBoarding::class );

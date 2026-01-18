@@ -107,3 +107,9 @@
 		}
 	}
 }
+
+#wpbody-content > .#{$namespace}-admin-notice {
+	margin: 5px 0 15px;
+}
+
+.taxonomy-advanced_ads_groups #adv-settings .submit button {margin-left: .625rem;}

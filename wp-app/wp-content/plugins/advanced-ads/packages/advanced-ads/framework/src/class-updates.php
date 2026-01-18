@@ -145,6 +145,6 @@ abstract class Updates {
 			$version = $this->get_version();
 		}
 
-		update_option( $this->get_option_name(), $this->get_version() );
+		update_option( $this->get_option_name(), $version );
 	}
 }

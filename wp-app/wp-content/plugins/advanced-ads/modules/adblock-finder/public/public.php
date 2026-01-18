@@ -6,8 +6,9 @@
  * @author  Advanced Ads <info@wpadvancedads.com>
  */
 
-use AdvancedAds\Framework\Utilities\Arr;
 use AdvancedAds\Options;
+use AdvancedAds\Utilities\Conditional;
+use AdvancedAds\Framework\Utilities\Arr;
 
 /**
  * Class Advanced_Ads_Adblock_Finder
@@ -28,7 +29,7 @@ class Advanced_Ads_Adblock_Finder {
 	 * Print minimal script if Advanced Ads Pro module "Ads for ad blockers" is active.
 	 */
 	public function print_adblock_check_js() {
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return;
 		}
 

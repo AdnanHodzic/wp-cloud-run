@@ -59,7 +59,7 @@
 		left: 44px;
 		width: 120px;
 		height: 164px;
-		background: url(<?php echo esc_url( trailingslashit( plugin_dir_url( \AdvancedAds\Modules\ProductExperimentationFramework\FILE ) ) ) . '/assets/aa-pef-deco.svg'; ?>) center/contain no-repeat;
+		background: url(<?php echo esc_url( trailingslashit( plugin_dir_url( \AdvancedAds\Modules\ProductExperimentationFramework\FILE ) ) ) . '/assets/aa-pef-amazon-deco.svg'; ?>) center/contain no-repeat;
 	}
 
 	#advads_overview_pef h3.aa_overview_pef_head {

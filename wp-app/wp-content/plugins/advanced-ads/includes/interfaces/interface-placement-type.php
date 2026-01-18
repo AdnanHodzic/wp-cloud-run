@@ -60,6 +60,7 @@ interface Placement_Type {
 
 	/**
 	 * Get order number for this placement type.
+	 * order set in multiple of 5 to allow adding new placements in between.
 	 *
 	 * @return int The order number.
 	 */

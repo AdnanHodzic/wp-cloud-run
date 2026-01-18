@@ -106,12 +106,12 @@ class Content implements Ad_Type {
 		 *
 		 * @link http://codex.wordpress.org/Function_Reference/wp_editor
 		 *
-		 * Don’t build it when ajax is used; display message and buttons instead
+		 * Don't build it when ajax is used; display message and buttons instead
 		 */
-		if ( wp_doing_ajax() ) : ?>
-			<textarea id="advads-ad-content-plain" style="display:none;" cols="40" rows="10" name="advanced_ad[content]">
-				<?php echo esc_textarea( $content ); ?>
-			</textarea>
+		if ( wp_doing_ajax() ) :
+			// IMPORTANT: Keep textarea on a single line to prevent whitespace from being added to the content.
+			?>
+			<textarea id="advads-ad-content-plain" style="display:none;" cols="40" rows="10" name="advanced_ad[content]"><?php echo esc_textarea( $content ); ?></textarea>
 			<?php
 		else :
 			if ( ! user_can_richedit() ) {

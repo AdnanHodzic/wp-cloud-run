@@ -49,7 +49,9 @@ export default function () {
 			return;
 		}
 
-		if ('plain' !== jQuery('input[name="advanced_ad[type]"]').val()) {
+		if (
+			'plain' !== jQuery('input[name="advanced_ad[type]"]:checked').val()
+		) {
 			editor = null;
 			return;
 		}

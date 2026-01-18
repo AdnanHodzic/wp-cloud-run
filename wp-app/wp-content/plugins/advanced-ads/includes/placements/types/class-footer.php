@@ -80,7 +80,7 @@ class Footer extends Base implements Placement_Type {
 	 * @return int The order number.
 	 */
 	public function get_order(): int {
-		return 95;
+		return 35;
 	}
 
 	/**

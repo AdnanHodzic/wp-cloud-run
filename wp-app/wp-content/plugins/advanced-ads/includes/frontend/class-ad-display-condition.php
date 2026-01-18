@@ -35,15 +35,6 @@ class Ad_Display_Condition {
 	public $disabled_reason = '';
 
 	/**
-	 * Check if ads are disabled.
-	 *
-	 * @return bool
-	 */
-	public function is_ad_disabled(): bool {
-		return defined( 'ADVADS_ADS_DISABLED' ) && ADVADS_ADS_DISABLED;
-	}
-
-	/**
 	 * Get the disabled id.
 	 *
 	 * @return int|string
@@ -70,7 +61,7 @@ class Ad_Display_Condition {
 		global $wp_the_query;
 
 		// Early bail!!
-		if ( $this->is_ad_disabled() ) {
+		if ( Conditional::is_ad_disabled() ) {
 			return;
 		}
 

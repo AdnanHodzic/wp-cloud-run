@@ -8,7 +8,6 @@
  */
 
 use AdvancedAds\Constants;
-use AdvancedAds\Admin\Groups_List_Table;
 use AdvancedAds\Framework\Utilities\Params;
 
 $group_type = Params::request( 'group_type' );

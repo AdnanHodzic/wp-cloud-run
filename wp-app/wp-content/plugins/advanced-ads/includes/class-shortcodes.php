@@ -177,5 +177,8 @@ class Shortcodes implements Integration_Interface {
 		foreach ( $atts as $key => $value ) {
 			$entity->set_prop_temp( $key, $value );
 		}
+
+		// WP Security: disable PHP for shortcode renders. prevents unauthorized PHP execution.
+		$entity->set_prop_temp( 'allow_php', false );
 	}
 }

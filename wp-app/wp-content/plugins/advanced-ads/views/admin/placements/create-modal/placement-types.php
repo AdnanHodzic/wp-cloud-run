@@ -11,39 +11,12 @@ if ( empty( $placement_types ) ) {
 	return '';
 }
 
-// Placement icons display order.
-$icons_order = [
-	'post_top',
-	'post_content',
-	'post_bottom',
-	'sidebar_widget',
-	'default',
-	'header',
-	'footer',
-	'genesis',
-	'sticky_header',
-	'sticky_footer',
-	'sticky_left_sidebar',
-	'sticky_right_sidebar',
-	'sticky_left_window',
-	'sticky_right_window',
-	'layer',
-	'background',
-	'post_content_random',
-	'post_above_headline',
-	'post_content_middle',
-	'custom_position',
-	'archive_pages',
-	'adsense_in_feed',
-];
-
-uksort(
+usort(
 	$placement_types,
-	function ( $a, $b ) use ( $icons_order ) {
-		return array_search( $a, $icons_order, true ) > array_search( $b, $icons_order, true ) ? 1 : - 1;
+	function ( $a, $b ) {
+		return $a->get_order() - $b->get_order();
 	}
 );
-
 ?>
 
 <div class="advads-form-types advads-buttonset">

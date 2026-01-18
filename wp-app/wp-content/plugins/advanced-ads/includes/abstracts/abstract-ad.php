@@ -13,18 +13,16 @@ use Advanced_Ads;
 use Advanced_Ads_Inline_Css;
 use Advanced_Ads_Utils;
 use Advanced_Ads_Visitor_Conditions;
-use AdvancedAds\Compatibility\Compatibility;
+use AdvancedAds\Traits;
 use AdvancedAds\Constants;
-use AdvancedAds\Framework\Utilities\Arr;
-use AdvancedAds\Framework\Utilities\Formatting;
-use AdvancedAds\Framework\Utilities\Str;
 use AdvancedAds\Frontend\Stats;
 use AdvancedAds\Interfaces\Ad_Type;
-use AdvancedAds\Traits;
-use AdvancedAds\Utilities\Conditional;
 use AdvancedAds\Utilities\WordPress;
-use DateInterval;
-use DateTime;
+use AdvancedAds\Utilities\Conditional;
+use AdvancedAds\Framework\Utilities\Arr;
+use AdvancedAds\Framework\Utilities\Str;
+use AdvancedAds\Compatibility\Compatibility;
+use AdvancedAds\Framework\Utilities\Formatting;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -618,7 +616,16 @@ abstract class Ad extends Data {
 	 * @return bool
 	 */
 	public function is_head_placement(): bool {
-		return null !== $this->get_parent() && $this->get_parent()->is_type( 'header' );
+		if ( null !== $this->get_parent() && $this->get_parent()->is_type( 'header' ) ) {
+			return true;
+		}
+
+		// group as head placement.
+		if ( 'header' === $this->get_prop( 'group_placement_context' ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -788,13 +795,13 @@ abstract class Ad extends Data {
 	 * @return array
 	 */
 	public function get_ad_schedule_details(): array {
-		$expiry_date_format = get_option( 'date_format' ) . ', ' . get_option( 'time_format' );
 		$status_strings     = [];
-		$post_start         = get_post_time( 'U', true, $this->get_id() );
 		$html_classes       = 'advads-filter-timing';
+		$post_start         = get_post_time( 'U', true, $this->get_id() );
+		$expiry_date_format = get_option( 'date_format' ) . ', ' . get_option( 'time_format' );
 
-		$status_type = get_post_status( $this->get_id() ) ?? 'published';
-		if ( 'publish' === $status_type ) {
+		$status_type = get_post_status( $this->get_id() );
+		if ( empty( $status_type ) || 'publish' === $status_type ) {
 			$status_type = 'published';
 		}
 
@@ -806,19 +813,17 @@ abstract class Ad extends Data {
 			$status_strings[] = sprintf( __( 'starts %s', 'advanced-ads' ), get_date_from_gmt( gmdate( 'Y-m-d H:i:s', $post_start ), $expiry_date_format ) );
 		}
 
-		if ( $this->get_expiry_date() ) {
-			$expiry      = $this->get_expiry_date();
-			$expiry_date = date_create( '@' . $expiry );
-			$expiry_date->setTimezone( WordPress::get_timezone() );
+		$expiry = $this->get_expiry_date();
+		if ( ! empty( $expiry ) ) {
 			$html_classes .= ' advads-filter-any-exp-date';
-
-			$tz = ' ( ' . WordPress::get_timezone_name() . ' )';
+			$expiry_date   = ( new \DateTimeImmutable( '@' . $expiry ) )->setTimezone( WordPress::get_timezone() );
+			$tz            = ' (' . WordPress::get_timezone_name() . ')';
 
 			if ( $expiry > time() ) {
 				$status_type = 'expiring';
 				/* translators: %s is a date. */
 				$status_strings[] = sprintf( __( 'expires %s', 'advanced-ads' ), $expiry_date->format( $expiry_date_format ) ) . $tz;
-			} elseif ( $expiry <= time() ) {
+			} else {
 				$status_type   = 'expired';
 				$html_classes .= ' advads-filter-expired';
 
@@ -827,16 +832,14 @@ abstract class Ad extends Data {
 			}
 		}
 
-		switch ( $status_type ) {
-			case 'published':
-				$status_strings[] = __( 'Published', 'advanced-ads' );
-				break;
-			case 'draft':
-				$status_strings[] = __( 'Draft', 'advanced-ads' );
-				break;
-			case 'trash':
-				$status_strings[] = __( 'Trashed', 'advanced-ads' );
-				break;
+		$labels = [
+			'published' => __( 'Published', 'advanced-ads' ),
+			'draft'     => __( 'Draft', 'advanced-ads' ),
+			'trash'     => __( 'Trashed', 'advanced-ads' ),
+		];
+
+		if ( isset( $labels[ $status_type ] ) ) {
+			$status_strings[] = $labels[ $status_type ];
 		}
 
 		return compact( 'post_start', 'status_type', 'status_strings', 'html_classes' );
@@ -881,31 +884,23 @@ abstract class Ad extends Data {
 	 * @return int
 	 */
 	private function normalize_expiry_date( $expiry_date ): int {
-		$is_enabled = boolval( $expiry_date['enabled'] ?? false );
 		// Early bail!!
-		if ( ! $is_enabled ) {
+		if ( empty( $expiry_date['enabled'] ) ) {
 			return 0;
 		}
 
-		$year   = absint( $expiry_date['year'] );
-		$month  = absint( $expiry_date['month'] );
-		$day    = absint( $expiry_date['day'] );
-		$hour   = absint( $expiry_date['hour'] );
-		$minute = absint( $expiry_date['minute'] );
+		$local_string = sprintf(
+			'%04d-%02d-%02d %02d:%02d:00',
+			absint( $expiry_date['year'] ),
+			absint( $expiry_date['month'] ),
+			absint( $expiry_date['day'] ),
+			absint( $expiry_date['hour'] ),
+			absint( $expiry_date['minute'] )
+		);
 
-		$expiration_date = date_create( sprintf( '%04d-%02d-%02d %02d:%02d:%02d', $year, $month, $day, $hour, $minute, '00' ) );
+		$local_dt = \DateTimeImmutable::createFromFormat( 'Y-m-d H:i:s', $local_string, WordPress::get_timezone() );
 
-		if ( ! $expiration_date ) {
-			return 0;
-		}
-
-		$wp_time = new DateTime( 'now', wp_timezone() );
-		$expiration_date->sub( new DateInterval( 'PT' . $wp_time->getOffset() . 'S' ) );
-		$gm_date = $expiration_date->format( 'Y-m-d-H-i' );
-
-		[ $year, $month, $day, $hour, $minute ] = explode( '-', $gm_date );
-
-		return gmmktime( $hour, $minute, 0, $month, $day, $year );
+		return $local_dt ? $local_dt->getTimestamp() : 0;
 	}
 
 	/**

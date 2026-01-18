@@ -10,6 +10,7 @@
  */
 
 use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Utilities\Conditional;
 use AdvancedAds\Interfaces\Ad_Interface;
 
 /**
@@ -262,7 +263,7 @@ class Advanced_Ads_Ad_Type_Adsense extends Ad implements Ad_Interface {
 		}
 
 		// Prevent output on AMP pages.
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return '';
 		}
 

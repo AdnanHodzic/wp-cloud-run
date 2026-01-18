@@ -117,6 +117,13 @@ class Constants {
 	 */
 	const AD_META_EXPIRATION_TIME = 'advanced_ads_expiration_time';
 
+	/**
+	 * Ad metakey for group ids.
+	 *
+	 * @var string
+	 */
+	const AD_META_GROUP_IDS = 'advanced_ads_ad_group_ids';
+
 	/* User Meta Keys ------------------- */
 
 	/**
@@ -166,5 +173,28 @@ class Constants {
 		'2.8.1'  => 'advanced-ads-tracking',           // Tracking.
 		'1.0.7'  => 'ads-for-visual-composer',         // Visual Composer.
 		'1.1.0'  => 'advanced-ads-browser-language',   // Browser Language.
+	];
+
+	/**
+	 * License API endpoint URL
+	 *
+	 * @const string
+	 */
+	const API_ENDPOINT = 'https://wpadvancedads.com/license-api/';
+
+	/**
+	 * Add-on slugs and their EDD ID
+	 *
+	 * @const array
+	 */
+	const ADDON_SLUGS_ID = [
+		'advanced-ads-gam'        => 215545,
+		'advanced-ads-layer'      => 686,
+		'advanced-ads-pro'        => 1742,
+		'advanced-ads-responsive' => 678,
+		'advanced-ads-selling'    => 35300,
+		'advanced-ads-sticky'     => 683,
+		'advanced-ads-tracking'   => 638,
+		'slider-ads'              => 1168,
 	];
 }

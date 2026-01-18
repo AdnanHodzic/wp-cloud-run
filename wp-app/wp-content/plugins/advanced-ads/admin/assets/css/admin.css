@@ -335,7 +335,6 @@ body.rtl .aa-select-list .aa-select-list-update { left: 47px; right: auto;}
 /**
  * AD GROUP LIST
  */
-.advanced-ads_page_advanced-ads-groups #wpbody-content > .wrap { margin-top: 20px; }
 .advanced-ads_page_advanced-ads-groups .tablenav.top { margin: 0px; padding-top: 0px; }
 #advads-ad-group-list ul, #advads-ad-group-list ol { margin: 0; list-style-position: inside; }
 #advads-ad-group-list .advads-group-ads tr:nth-child(odd) { background: #f9f9f9; }

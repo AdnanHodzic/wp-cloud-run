@@ -6,7 +6,13 @@
  * @author  Advanced Ads <info@wpadvancedads.com>
  * @since   1.48.2
  *
- * @var int $curr_month current month index;
+ * @var int    $curr_year   Current year.
+ * @var int    $curr_month  Current month index.
+ * @var int    $curr_day    Current day.
+ * @var int    $curr_hour   Current hour.
+ * @var int    $curr_minute Current minute.
+ * @var int    $enabled     Whether expiry date is enabled (1) or not (0).
+ * @var WP_Locale $wp_locale WordPress locale object for month names.
  */
 
 ?>

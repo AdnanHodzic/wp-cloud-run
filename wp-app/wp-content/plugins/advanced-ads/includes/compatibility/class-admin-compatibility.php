@@ -9,6 +9,7 @@
 
 namespace AdvancedAds\Compatibility;
 
+use AdvancedAds\Constants;
 use AdvancedAds\Utilities\Conditional;
 use AdvancedAds\Framework\Interfaces\Integration_Interface;
 
@@ -28,6 +29,11 @@ class Admin_Compatibility implements Integration_Interface {
 		add_action( 'admin_enqueue_scripts', [ $this, 'dequeue_jnews_style' ], 100 );
 		add_action( 'quads_meta_box_post_types', [ $this, 'fix_wpquadspro_issue' ], 11 );
 		add_filter( 'wpml_admin_language_switcher_active_languages', [ $this, 'wpml_language_switcher' ] );
+
+		// Hide from WPML translation settings.
+		if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+			add_filter( 'get_translatable_documents', [ $this, 'wpml_hide_from_translation' ], 10, 1 );
+		}
 	}
 
 	/**
@@ -87,5 +93,19 @@ class Admin_Compatibility implements Integration_Interface {
 		}
 
 		return $active_languages;
+	}
+
+	/**
+	 * Hide post type from WPML translatable documents.
+	 *
+	 * @param array $documents Array of translatable documents.
+	 *
+	 * @return array Modified array.
+	 */
+	public function wpml_hide_from_translation( $documents ): array {
+		if ( isset( $documents[ Constants::POST_TYPE_PLACEMENT ] ) ) {
+			unset( $documents[ Constants::POST_TYPE_PLACEMENT ] );
+		}
+		return $documents;
 	}
 }

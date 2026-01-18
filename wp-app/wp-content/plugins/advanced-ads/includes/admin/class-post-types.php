@@ -82,9 +82,9 @@ class Post_Types implements Integration_Interface {
 	public function post_updated_messages( $messages = [] ): array {
 		global $post;
 
-		// Added to hide error message caused by third party code that uses post_updated_messages filter wrong.
+		// Added to fix error message array caused by third party code that uses post_updated_messages filter wrong.
 		if ( ! is_array( $messages ) ) {
-			return $messages;
+			$messages = [];
 		}
 
 		$revision = Params::get( 'revision', 0, FILTER_VALIDATE_INT );

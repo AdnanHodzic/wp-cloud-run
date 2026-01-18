@@ -53,7 +53,8 @@ class Groups extends Screen {
 		);
 
 		$this->set_hook( $hook );
-		add_action( 'in_admin_header', [ $this, 'get_list_table' ] );
+		add_action( 'current_screen', [ $this, 'add_screen_options' ], 5 );
+		add_action( 'current_screen', [ $this, 'get_list_table' ] );
 	}
 
 	/**
@@ -92,5 +93,20 @@ class Groups extends Screen {
 		}
 
 		return $this->list_table;
+	}
+
+	/**
+	 * Add screen options.
+	 *
+	 * @return void
+	 */
+	public function add_screen_options(): void {
+		add_screen_option(
+			'per_page',
+			[
+				'default' => 20,
+				'option'  => 'edit_' . Constants::TAXONOMY_GROUP . '_per_page',
+			]
+		);
 	}
 }

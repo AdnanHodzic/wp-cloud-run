@@ -338,7 +338,7 @@ class Advanced_Ads_Ad_Health_Notices {
 			$id = absint( $atts['ad_id'] );
 			$ad = wp_advads_get_ad( $id );
 			if ( $id && '' !== $ad->get_title() ) {
-				$edit_link                             = ' <a href="' . get_edit_post_link( $id ) . '">' . $ad->get_title() . '</a>';
+				$edit_link                             = ' <a href="' . admin_url( 'post.php?post=' . $id . '&action=edit' ) . '">' . $ad->get_title() . '</a>';
 				$notices[ $notice_key ]['append_text'] = isset( $notices[ $notice_key ]['append_text'] ) ? $notices[ $notice_key ]['append_text'] . $edit_link : $edit_link;
 			}
 		}

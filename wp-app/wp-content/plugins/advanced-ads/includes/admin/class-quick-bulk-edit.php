@@ -14,6 +14,7 @@ use Exception;
 use Advanced_Ads_Privacy;
 use AdvancedAds\Constants;
 use AdvancedAds\Abstracts\Ad;
+use AdvancedAds\Utilities\WordPress;
 use AdvancedAds\Framework\Utilities\Params;
 
 /**
@@ -31,6 +32,22 @@ class Quick_Bulk_Edit {
 		add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
 		add_action( 'save_post', [ $this, 'save_quick_edits' ], 100 );
 		add_action( 'save_post', [ $this, 'save_bulk_edit' ], 100 );
+		add_action( 'advanced-ads-ad-render-column-ad_type', [ $this, 'print_ad_json' ] );
+	}
+
+	/**
+	 * Print ad JSON for debugging
+	 *
+	 * @param Ad $ad the ad being saved.
+	 *
+	 * @return void
+	 */
+	public function print_ad_json( $ad ): void {
+		?>
+		<script type="text/javascript">
+			var ad_json_<?php echo esc_attr( $ad->get_id() ); ?> = <?php echo wp_json_encode( $this->get_json_data( $ad ) ); ?>;
+		</script>
+		<?php
 	}
 
 	/**
@@ -165,9 +182,9 @@ class Quick_Bulk_Edit {
 	}
 
 	/**
-	 * Get UNIx timestamp from the date time inputs values
+	 * Get Unix timestamp from the date time inputs values
 	 *
-	 * @param string $method method used for the form - `post` og `get`.
+	 * @param string $method method used for the form - `post` or `get`.
 	 *
 	 * @return int
 	 */
@@ -179,11 +196,10 @@ class Quick_Bulk_Edit {
 		$minutes = absint( 'get' === $method ? Params::get( 'minute' ) : Params::post( 'minute' ) );
 
 		try {
-			$date = new DateTime( 'now', wp_timezone() );
-			$date->setDate( $year, $month, $day );
-			$date->setTime( $hours, $minutes );
+			$local_dt = new \DateTimeImmutable( 'now', WordPress::get_timezone() );
+			$local_dt = $local_dt->setDate( $year, $month, $day )->setTime( $hours, $minutes );
 
-			return (int) $date->format( 'U' );
+			return $local_dt->getTimestamp();
 		} catch ( Exception $e ) {
 			return 0;
 		}
@@ -259,7 +275,7 @@ class Quick_Bulk_Edit {
 	 */
 	public static function print_date_time_inputs( $timestamp = 0, $prefix = '', $seconds = false ) {
 		try {
-			$initial_date = (bool) $timestamp ? new \DateTimeImmutable( "@$timestamp", wp_timezone() ) : current_datetime();
+			$initial_date = (bool) $timestamp ? new \DateTimeImmutable( "@$timestamp", new \DateTimeZone( 'UTC' ) ) : current_datetime();
 		} catch ( Exception $e ) {
 			$initial_date = current_datetime();
 		}
@@ -294,7 +310,7 @@ class Quick_Bulk_Edit {
 		@
 		<label>
 			<span class="screen-reader-text"><?php esc_html_e( 'Hour', 'advanced-ads' ); ?></span>
-			<input type="number" name="<?php echo esc_attr( $prefix ); ?>hour" min="0" max="23" value="<?php echo esc_attr( $initial_date->format( 'h' ) ); ?>"/>
+			<input type="number" name="<?php echo esc_attr( $prefix ); ?>hour" min="0" max="23" value="<?php echo esc_attr( $initial_date->format( 'H' ) ); ?>"/>
 		</label>:
 		<label>
 			<span class="screen-reader-text"><?php esc_html_e( 'Minute', 'advanced-ads' ); ?></span>
@@ -310,5 +326,50 @@ class Quick_Bulk_Edit {
 		<?php $timezone = wp_timezone_string(); ?>
 		<span><?php echo esc_html( strlen( $timezone ) !== strlen( str_replace( [ '+', '-' ], '', $timezone ) ) ? "UTC$timezone" : $timezone ); ?></span>
 		<?php
+	}
+
+	/**
+	 * Get ad data for json output
+	 *
+	 * @param Ad $ad Ad instance.
+	 *
+	 * @return array
+	 */
+	private function get_json_data( $ad ): array {
+		$expiry = $ad->get_expiry_date();
+
+		if ( $expiry ) {
+			$expiry_date = array_combine(
+				[ 'year', 'month', 'day', 'hour', 'minute' ],
+				explode( '-', wp_date( 'Y-m-d-H-i', $expiry ) )
+			);
+		}
+
+		$ad_data = [
+			'debug_mode' => $ad->is_debug_mode(),
+			'expiry'     => $expiry
+				? [
+					'expires'     => true,
+					'expiry_date' => $expiry_date,
+				]
+				: [
+					'expires' => false,
+				],
+			'ad_label'   => $ad->get_prop( 'ad_label' ),
+		];
+
+		if ( isset( Advanced_Ads_Privacy::get_instance()->options()['enabled'] ) ) {
+			$ad_data['ignore_privacy'] = isset( $ad->get_data()['privacy']['ignore-consent'] );
+		}
+
+		/**
+		 * Allow add-ons to add more ad data fields.
+		 *
+		 * @param array $ad_data the fields to be sent back to the browser.
+		 * @param       $ad      Ad the ad being currently edited.
+		 */
+		$ad_data = apply_filters( 'advanced-ads-quick-edit-ad-data', $ad_data, $ad );
+
+		return $ad_data;
 	}
 }

@@ -43,6 +43,7 @@ class Data {
 				'advanced-ads-selling',
 				'advanced-ads-sticky',
 				'advanced-ads-tracking',
+				'slider-ads',
 			];
 
 			foreach ( $plugins as $plugin_file => $plugin_data ) {

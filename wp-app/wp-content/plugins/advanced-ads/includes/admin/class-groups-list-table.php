@@ -9,7 +9,6 @@
 
 namespace AdvancedAds\Admin;
 
-use WP_Meta_Query;
 use WP_Term_Query;
 use AdvancedAds\Modal;
 use WP_Terms_List_Table;
@@ -37,27 +36,16 @@ class Groups_List_Table extends WP_Terms_List_Table {
 	private $all_ads = [];
 
 	/**
-	 * Array of group ads info.
-	 *
-	 * @var array
-	 */
-	private $group_ads_info = [];
-
-	/**
-	 * Hints html.
-	 *
-	 * @var string
-	 */
-	private $hints_html = null;
-
-	/**
-	 * Construct the current list
+	 * Construct the current list table.
 	 */
 	public function __construct() {
 		parent::__construct();
-		$this->prepare_items();
-		add_action( 'pre_get_terms', [ $this, 'sorting_query' ] );
+		add_action( 'pre_get_terms', [ $this, 'pre_get_terms' ] );
 		add_filter( 'default_hidden_columns', [ $this, 'default_hidden_columns' ] );
+
+		$this->prepare_items();
+		$this->_actions = [];
+		$this->all_ads  = wp_advads_get_ads_dropdown();
 	}
 
 	/**
@@ -67,11 +55,25 @@ class Groups_List_Table extends WP_Terms_List_Table {
 	 *
 	 * @return WP_Term_Query
 	 */
-	public function sorting_query( $query ) {
-		switch ( $query->query_vars['orderby'] ) {
+	public function pre_get_terms( $query ) {
+		if ( empty( $query->query_vars['meta_query'] ) ) {
+			$query->query_vars['meta_query'] = []; // phpcs:ignore
+		}
+
+		// Filter terms by group type.
+		$group_type = Params::get( 'group_type' );
+		if ( $group_type ) {
+			$query->query_vars['meta_query'][] = [
+				'key'     => '_advads_group_type',
+				'value'   => $group_type,
+				'compare' => '=',
+			];
+		}
+
+		// Handle sorting.
+		switch ( $query->query_vars['orderby'] ?? '' ) {
 			case 'date':
-				// phpcs:ignore Generic.Formatting.MultipleStatementAlignment.NotSameWarning
-				$meta_query_args = [
+				$query->query_vars['meta_query'][] = [
 					'relation' => 'OR',
 					[
 						'key'     => 'modified_date',
@@ -81,76 +83,18 @@ class Groups_List_Table extends WP_Terms_List_Table {
 						'key'     => 'modified_date',
 						'compare' => 'NOT EXISTS',
 					],
-				]; // include all groups with and without a modified date so empty date groups are shown.
-				$meta_query                   = new WP_Meta_Query( $meta_query_args );
-				$query->meta_query            = $meta_query;
+				];
+
 				$query->query_vars['orderby'] = 'meta_value';
 				break;
+
 			case 'details':
+				// Sort by term ID.
 				$query->query_vars['orderby'] = 'term_id';
 				break;
 		}
 
 		return $query;
-	}
-
-	/**
-	 * Load groups
-	 *
-	 * @return void
-	 */
-	public function prepare_items(): void {
-		parent::prepare_items();
-
-		$args               = $this->callback_args;
-		$args['taxonomy']   = $this->screen->taxonomy;
-		$args['hide_empty'] = 0;
-		$args['offset']     = ( $args['page'] - 1 ) * $args['number'];
-
-		// Save the values because 'number' and 'offset' can be subsequently overridden.
-		$this->callback_args = $args;
-
-		if ( is_taxonomy_hierarchical( $args['taxonomy'] ) && ! isset( $args['orderby'] ) ) {
-			// We'll need the full set of terms then.
-			$args['number'] = 0;
-			$args['offset'] = $args['number'];
-		}
-
-		$args = $this->query_filters( $args );
-
-		$this->items = get_terms( $args );
-
-		$this->set_pagination_args(
-			[
-				'total_items' => wp_count_terms(
-					[
-						'taxonomy' => $args['taxonomy'],
-						'search'   => $args['search'],
-					]
-				),
-				'per_page'    => $args['number'],
-			]
-		);
-
-		$this->all_ads = wp_advads_get_ads_dropdown();
-		$this->items   = array_map(
-			function ( $term_id ) {
-				return wp_advads_get_group( $term_id );
-			},
-			$this->items ?? []
-		);
-	}
-
-	/**
-	 * Gets the number of items to display on a single page.
-	 *
-	 * @param string $option        User option name.
-	 * @param int    $default_value The number of items to display.
-	 *
-	 * @return int
-	 */
-	protected function get_items_per_page( $option, $default_value = 20 ): int {
-		return 10000;
 	}
 
 	/**
@@ -220,64 +164,17 @@ class Groups_List_Table extends WP_Terms_List_Table {
 		];
 	}
 
-	/**
-	 * Displays the table.
-	 *
-	 * @return void
-	 */
-	public function display(): void {
-		$singular = $this->_args['singular'];
-
-		$this->screen->render_screen_reader_content( 'heading_list' );
-		?>
-		<table class="<?php echo esc_attr( implode( ' ', $this->get_table_classes() ) ); ?>">
-			<?php $this->print_table_description(); ?>
-			<thead>
-				<tr>
-					<?php $this->print_column_headers(); ?>
-				</tr>
-			</thead>
-
-			<tbody id="the-list"
-				<?php
-				if ( $singular ) {
-					echo " data-wp-lists='list:$singular'"; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				}
-				?>
-				>
-				<?php $this->display_rows_or_placeholder(); ?>
-			</tbody>
-		</table>
-		<?php
-	}
-
-	/**
-	 * Display rows or placeholder
-	 *
-	 * @return void
-	 */
-	public function display_rows_or_placeholder(): void {
-		if ( empty( $this->items ) || ! is_array( $this->items ) ) {
-			echo '<tr class="no-items"><td class="colspanchange" colspan="' . $this->get_column_count() . '">'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-			$this->no_items();
-			echo '</td></tr>';
-			return;
-		}
-
-		foreach ( $this->items as $term ) {
-			$this->single_row( $term );
-		}
-	}
 
 	/**
 	 * Render single row.
 	 *
-	 * @param Group $group Term object.
-	 * @param int   $level Depth level.
+	 * @param \WP_Term|object $term  Term object.
+	 * @param int             $level Depth level.
 	 *
 	 * @return void
 	 */
-	public function single_row( $group, $level = 0 ): void {
+	public function single_row( $term, $level = 0 ): void {
+		$group = wp_advads_get_group( $term->term_id );
 		$this->type_error = '';
 
 		// Set the group to behave as default, if the original type is not available.
@@ -381,9 +278,9 @@ class Groups_List_Table extends WP_Terms_List_Table {
 			return '';
 		}
 
-		$actions = [];
+		$actions  = [];
+
 		if ( ! $this->type_error && current_user_can( $tax->cap->edit_terms ) ) {
-			// edit group link.
 			$actions['edit'] = '<a href="#modal-group-edit-' . $group->get_id() . '"
 								class="edits">' . esc_html__( 'Edit', 'advanced-ads' ) . '</a>';
 
@@ -396,14 +293,22 @@ class Groups_List_Table extends WP_Terms_List_Table {
 		$actions['usage'] = '<a href="#modal-group-usage-' . $group->get_id() . '" class="edits">' . esc_html__( 'Show Usage', 'advanced-ads' ) . '</a>';
 
 		if ( current_user_can( $tax->cap->delete_terms ) ) {
-			$args              = [
-				'action'   => 'group',
-				'action2'  => 'delete',
-				'group_id' => $group->get_id(),
-				'page'     => 'advanced-ads-groups',
-			];
-			$delete_link       = add_query_arg( $args, admin_url( 'admin.php' ) );
-			$actions['delete'] = "<a class='delete-tag' href='" . wp_nonce_url( $delete_link, 'delete-tag_' . $group->get_id() ) . "'>" . __( 'Delete', 'advanced-ads' ) . '</a>';
+			$actions['delete'] = sprintf(
+				'<a class="delete-tag" href="%s">%s</a>',
+				wp_nonce_url(
+					add_query_arg(
+						[
+							'action'   => 'group',
+							'action2'  => 'delete',
+							'group_id' => $group->get_id(),
+							'page'     => 'advanced-ads-groups',
+						],
+						admin_url( 'admin.php' )
+					),
+					'delete-tag_' . $group->get_id()
+				),
+				esc_html__( 'Delete', 'advanced-ads' )
+			);
 		}
 
 		$actions = apply_filters( Constants::TAXONOMY_GROUP . '_row_actions', $actions, $group );
@@ -453,28 +358,5 @@ class Groups_List_Table extends WP_Terms_List_Table {
 				'close_action'  => __( 'Close', 'advanced-ads' ),
 			]
 		);
-	}
-
-	/**
-	 * Check filters before loading group.
-	 *
-	 * @param array $args The arguments array for the groups list table.
-	 *
-	 * @return array The modified arguments array with the added meta query.
-	 */
-	private function query_filters( $args ): array {
-		$group_type = Params::get( 'group_type' );
-
-		if ( $group_type ) {
-			$args['meta_query'] = [ // phpcs:ignore
-				[
-					'key'     => '_advads_group_type',
-					'value'   => $group_type,
-					'compare' => '=',
-				],
-			];
-		}
-
-		return $args;
 	}
 }

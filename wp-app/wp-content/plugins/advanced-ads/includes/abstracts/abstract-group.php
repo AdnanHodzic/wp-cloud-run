@@ -263,7 +263,7 @@ class Group extends Data {
 	/* Conditional ------------------- */
 
 	/**
-	 * Checks if the group is placed in the header.
+	 * Checks if the group is placed in head.
 	 *
 	 * @return bool
 	 */
@@ -566,11 +566,11 @@ class Group extends Data {
 	}
 
 	/**
-	 * Prepare the output for the ads.
+	 * Prepare the output for the ads in the group.
 	 *
 	 * @param array $ordered_ad_ids Ordered ad IDs.
 	 *
-	 * @return array
+	 * @return array Output for each ad.
 	 */
 	private function prepare_ad_output( $ordered_ad_ids ): array {
 		$output        = [];
@@ -586,6 +586,8 @@ class Group extends Data {
 
 				$ad->set_prop_temp( 'ad_args', $this->get_prop( 'ad_args' ) );
 				$ad->set_parent( $this );
+				// group as head placement.
+				$ad->set_prop_temp( 'group_placement_context', $this->is_head_placement() ? 'header' : 'content' );
 				$ad->set_prop_temp( 'ad_label', 'disabled' );
 				$ad_output = $ad->can_display() ? $ad->output() : '';
 

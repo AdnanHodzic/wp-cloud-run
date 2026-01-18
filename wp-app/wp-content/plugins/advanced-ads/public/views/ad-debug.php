@@ -11,7 +11,9 @@
  * @var array  $content    Debug content.
  */
 
-if ( ! advads_is_amp() ) :
+use AdvancedAds\Utilities\Conditional;
+
+if ( ! Conditional::is_amp() ) :
 	ob_start();
 		echo Advanced_Ads_Utils::get_inline_asset( ob_get_clean() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 endif;

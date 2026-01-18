@@ -118,11 +118,16 @@ class Misc implements Integration_Interface {
 			add_action( 'advanced-ads-admin-notices', [ $this, 'starter_setup_success_message' ] );
 		}
 
-		// Register our own notices on Advanced Ads pages, except from the overview page where they should appear in the notices section.
+		/*
+		Register our own notices on Advanced Ads pages, except
+		-> the overview page where they should appear in the notices section,
+		-> revision page to prevent duplicate revision controls.
+		*/
 		$screen = get_current_screen();
 		if (
 			Conditional::user_can( 'advanced_ads_edit_ads' )
 			&& ( ! isset( $screen->id ) || 'toplevel_page_advanced-ads' !== $screen->id )
+			&& 'revision' !== $screen->id
 		) {
 
 			echo '<div class="wrap">';

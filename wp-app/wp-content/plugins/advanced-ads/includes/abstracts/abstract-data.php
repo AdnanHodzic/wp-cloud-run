@@ -323,7 +323,7 @@ abstract class Data implements \ArrayAccess {
 				if ( ! $errors ) {
 					$errors = new WP_Error();
 				}
-				$errors->add( $e->getErrorCode(), $e->getMessage(), [ 'property_name' => $prop ] );
+				$errors->add( $e->getCode(), $e->getMessage(), [ 'property_name' => $prop ] );
 			}
 		}
 

@@ -119,6 +119,7 @@ class Placements implements Routes_Interface {
 				'action'         => 'create',
 				'placement_data' => $placement->get_data(),
 				'reload'         => true,
+				'redirectUrl'    => admin_url( 'edit.php?post_type=' . Constants::POST_TYPE_PLACEMENT ),
 			],
 			$placement
 		);

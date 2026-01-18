@@ -1,4 +1,4 @@
-<?php // phpcs:ignoreFile
+<?php
 /**
  * Render placements after publishing an ad.
  *
@@ -10,40 +10,41 @@
 
 // show quick injection options.
 // check if the ad code contains the AdSense verification and Auto ads code.
-$is_page_level_ad_in_code_field = $ad->is_type( 'plain' ) && strpos( $ad->get_content(), 'enable_page_level_ads' ) || preg_match( '/script[^>]+data-ad-client=/', $ad->get_content() ); ?>
+$is_page_level_ad_in_code_field = $ad->is_type( 'plain' ) && strpos( $ad->get_content(), 'enable_page_level_ads' ) || preg_match( '/script[^>]+data-ad-client=/', $ad->get_content() ); // phpcs:ignore
+?>
 <div id="advads-ad-injection-box" class="advads-ad-metabox postbox">
 <span class="advads-loader" style="display: none;"></span>
 	<div id="advads-ad-injection-message-placement-created" class="hidden">
 	<p><?php esc_html_e( 'Congratulations! Your ad is now visible in the frontend.', 'advanced-ads' ); ?></p>
-	<?php if ( empty( $ad->get_display_conditions() ) && ! empty( $latest_post ) ): ?>
+	<?php if ( empty( $ad->get_display_conditions() ) && ! empty( $latest_post ) ) : ?>
 		<a class="button button-primary" target="_blank" href="<?php echo esc_url( get_permalink( $latest_post['ID'] ) ); ?>"><?php esc_html_e( 'Take a look at your ad', 'advanced-ads' ); ?></a>
 	<?php endif; ?>
-	<p>
-	<?php
-	printf(
-		wp_kses(
-			/* translators: %s is a URL. */
-			__( 'Ad not showing up? Take a look <a href="%s" target="_blank">here</a>', 'advanced-ads' ),
-			[
-				'a' => [
-					'href'   => [],
-					'target' => [],
-				],
-			]
-		),
-		'https://wpadvancedads.com/manual/ads-not-showing-up/?utm_source=advanced-ads&utm_medium=link&utm_campaign=edit-ad-not-visible'
-	);
-	?>
+	<p class="hide-server-placement">
+		<?php
+		printf(
+			wp_kses(
+				/* translators: %s is a URL. */
+				__( 'Ad not showing up? Take a look <a href="%s" target="_blank">here</a>', 'advanced-ads' ),
+				[
+					'a' => [
+						'href'   => [],
+						'target' => [],
+					],
+				]
+			),
+			'https://wpadvancedads.com/manual/ads-not-showing-up/?utm_source=advanced-ads&utm_medium=link&utm_campaign=edit-ad-not-visible'
+		);
+		?>
 	</p>
-	<p>
-	<?php
-	printf(
-		/* translators: %1$s is the opening link tag, %2$s is closing link tag. */
-		esc_html__( 'Adjust the placement options? Take a look  %1$shere.%2$s', 'advanced-ads' ),
-		'<a href="' . esc_url( admin_url( 'admin.php?page=advanced-ads-placements#single-placement-' ) ) . '" target="_blank">',
-		'</a>'
-	);
-	?>
+	<p class="hide-server-placement">
+		<?php
+		printf(
+			/* translators: %1$s is the opening link tag, %2$s is closing link tag. */
+			esc_html__( 'Adjust the placement options? Take a look  %1$shere.%2$s', 'advanced-ads' ),
+			'<a href="' . esc_url( admin_url( 'admin.php?page=advanced-ads-placements#single-placement-' ) ) . '" target="_blank">',
+			'</a>'
+		);
+		?>
 	</p>
 	</div>
 	<div id="advads-ad-injection-box-placements">
@@ -76,6 +77,7 @@ $is_page_level_ad_in_code_field = $ad->is_type( 'plain' ) && strpos( $ad->get_co
 			<p><?php esc_attr_e( 'Click on the button below to add the Auto ads code to the header of your site.', 'advanced-ads' ); ?></p>
 			<div class="advads-ad-injection-box-button-wrap"><button type="button" class="advads-ad-injection-button button-primary" data-placement-type="header" style="background-image: url(
 							<?php
+								// phpcs:ignore
 								echo ADVADS_BASE_URL . 'admin/assets/img/placements/header.png';
 							?>
 							)">
@@ -147,11 +149,11 @@ $is_page_level_ad_in_code_field = $ad->is_type( 'plain' ) && strpos( $ad->get_co
 								?>
 				<div class="advads-ad-injection-box-button-wrap">
 								<?php
-								$placement_img = 'style="background-image: url(' . $placement->get_type_object()->get_image() . ');"';
 								printf(
-									'<button type="button" class="advads-ad-injection-button button-primary" data-placement-id="%1$s" %2$s title="%3$s">%4$s</button>',
+									'<button type="button" class="advads-ad-injection-button button-primary" data-placement-id="%1$s" data-placement-type="%2$s" %3$s title="%4$s">%5$s</button>',
 									esc_attr( $placement_id ),
-									$placement_img, // phpcs:ignore
+									esc_attr( $placement->get_type() ),
+									'style="background-image: url(' . $placement->get_type_object()->get_image() . ');"', // phpcs:ignore
 									esc_html( $placement->get_title() ),
 									esc_html( $placement->get_type_object()->get_title() )
 								);

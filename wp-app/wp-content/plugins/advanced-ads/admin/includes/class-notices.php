@@ -357,14 +357,14 @@ class Advanced_Ads_Admin_Notices {
 			return;
 		}
 
-		// register Black Friday 2023 deals.
-		if ( time() > 1700654400 &&
-			time() <= 1701172800 && Conditional::is_screen_advanced_ads() ) {
+		// register Black Friday 2025 deals.
+		if ( time() > 1764025200 &&
+			time() <= 1764630000 ) {
 			$options = $this->options();
 			$closed  = isset( $options['closed'] ) ? $options['closed'] : [];
 
-			if ( ! isset( $closed['bfcm23'] ) ) {
-				$this->notices[] = 'bfcm23';
+			if ( ! isset( $closed['bfcm25'] ) ) {
+				$this->notices[] = 'bfcm25';
 			}
 		}
 

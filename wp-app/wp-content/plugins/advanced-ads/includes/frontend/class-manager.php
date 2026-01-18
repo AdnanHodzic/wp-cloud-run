@@ -9,6 +9,7 @@
 
 namespace AdvancedAds\Frontend;
 
+use AdvancedAds\Utilities\Conditional;
 use AdvancedAds\Framework\Interfaces\Integration_Interface;
 
 defined( 'ABSPATH' ) || exit;
@@ -59,7 +60,7 @@ class Manager implements Integration_Interface {
 	public function run_checks(): void {
 		$this->page_display->run_checks();
 
-		if ( ! $this->page_display->is_ad_disabled() ) {
+		if ( ! Conditional::is_ad_disabled() ) {
 			do_action( 'advanced-ads-frontend' );
 		}
 	}

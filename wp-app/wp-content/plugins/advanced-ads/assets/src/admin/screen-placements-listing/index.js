@@ -11,7 +11,18 @@ jQuery(function () {
 	itemSelect();
 	formSubmission();
 	QuickEdit();
+	newPlacement();
 });
+
+function newPlacement() {
+	// open modal if no placements are available.
+	if (jQuery('#posts-filter tr.no-items').length) {
+		const modal = document.querySelector('#modal-placement-new');
+		if (modal && typeof modal.showModal === 'function') {
+			modal.showModal();
+		}
+	}
+}
 
 jQuery(document).on(
 	'click',

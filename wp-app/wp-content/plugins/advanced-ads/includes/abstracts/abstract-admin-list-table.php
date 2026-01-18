@@ -95,7 +95,7 @@ abstract class Admin_List_Table implements Integration_Interface {
 		// show label before the search form if this is a search.
 		if ( Params::get( 's' ) ) {
 			wp_advads()->registry->inline_style(
-				'common',
+				'admin',
 				"
 				.post-type-{$this->list_table_type} .search-box:before { content: '" . esc_html__( 'Showing search results for', 'advanced-ads' ) . "'; float: left; margin-right: 8px; line-height: 30px; font-weight: 700; }
 				.post-type-{$this->list_table_type} .subtitle { display: none; }
@@ -105,13 +105,13 @@ abstract class Admin_List_Table implements Integration_Interface {
 
 		// Adjust search form when there are no results.
 		if ( Conditional::has_filter_or_search() && 0 === $wp_query->found_posts ) {
-			wp_advads()->registry->inline_style( 'common', ".post-type-{$this->list_table_type} .search-box { display: block; margin-top: 10px; }" );
+			wp_advads()->registry->inline_style( 'admin', ".post-type-{$this->list_table_type} .search-box { display: block !important; }" );
 			return;
 		}
 
 		// Show filters, if the option to show them is enabled or a search is running.
 		if ( get_current_screen()->get_option( 'show-filters' ) || Conditional::has_filter_or_search() ) {
-			wp_advads()->registry->inline_style( 'common', ".post-type-{$this->list_table_type} .search-box { display: block !important; }" );
+			wp_advads()->registry->inline_style( 'admin', ".post-type-{$this->list_table_type} .search-box { display: block !important; }" );
 			if ( isset( $wp_query->found_posts ) && $wp_query->found_posts > 0 ) {
 				wp_advads()->registry->inline_style( 'admin', ".post-type-{$this->list_table_type} .tablenav.top .alignleft.actions:not(.bulkactions) { display: block; }" );
 			}

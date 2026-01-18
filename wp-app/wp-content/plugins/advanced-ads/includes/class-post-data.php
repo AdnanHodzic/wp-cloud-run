@@ -36,15 +36,15 @@ class Post_Data implements Integration_Interface {
 	 * @param int    $post_id         The ID of the post being restored.
 	 * @param string $previous_status The status of the post at the point where it was trashed.
 	 *
-	 * @return string
+	 * @return null|string
 	 */
-	public function untrash_post_status( $new_status, $post_id, $previous_status ): string {
-		if ( Constants::AD_STATUS_EXPIRED === $previous_status ) {
-			return $previous_status;
+	public function untrash_post_status( $new_status, $post_id, $previous_status ) {
+		$is_ours = in_array( get_post_type( $post_id ), [ Constants::POST_TYPE_AD, Constants::POST_TYPE_PLACEMENT ], true );
+		if ( ! $is_ours ) {
+			return $new_status;
 		}
 
-		$is_ours = in_array( get_post_type( $post_id ), [ Constants::POST_TYPE_AD, Constants::POST_TYPE_PLACEMENT ], true );
-		if ( $is_ours && 'draft' === $new_status ) {
+		if ( Constants::AD_STATUS_EXPIRED === $previous_status || 'draft' === $new_status ) {
 			return $previous_status;
 		}
 

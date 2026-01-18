@@ -197,7 +197,7 @@
 				args.push({
 					value: props.attributes.itemID,
 					onChange: setID,
-					key: 'select',
+					key: 'advads-select-item',
 				});
 				args.push(el('option', { key: 'empty' }, i18n['--empty--']));
 
@@ -283,7 +283,7 @@
 						'div',
 						{
 							className: 'components-placeholder__label',
-							key: 'components-placeholder__label',
+							key: 'advads-block-title',
 						},
 						advadsIconEl,
 						el(
@@ -312,7 +312,7 @@
 							'div',
 							{
 								className: 'components-placeholder__fieldset',
-								key: 'components-placeholder__fieldset',
+								key: 'advads-select-wrap',
 							},
 							// then add the <select /> input with its own children
 							el.apply(null, args),
@@ -323,6 +323,7 @@
 								},
 								href: url,
 								target: '_blank',
+								key: 'advads-item-link',
 							})
 						)
 					);
@@ -350,18 +351,18 @@
 							'div',
 							{
 								className: 'components-placeholder__label',
-								key: 'components-placeholder__label',
+								key: 'advads-first-ad',
 							},
 							'',
 							el(
 								'a',
 								{
 									href: window.advadsglobal.create_ad_url,
-									class: 'button',
+									className: 'button',
 									target: '_blank',
 									style: {
 										display: 'block',
-										'margin-top': '10px',
+										marginTop: '10px',
 									},
 								},
 								window.advadsglobal.create_your_first_ad

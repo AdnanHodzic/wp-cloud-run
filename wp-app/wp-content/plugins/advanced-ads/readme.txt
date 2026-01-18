@@ -2,9 +2,9 @@
 Contributors: webzunft, advancedads
 Tags: ads, adsense, amazon, affiliate, ad manager
 Requires at least: 5.7
-Tested up to: 6.7
+Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 2.0.5
+Stable tag: 2.0.16
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -360,6 +360,83 @@ Yes. You can use plenty of [hooks](https://wpadvancedads.com/codex/) to customiz
 
 == Changelog ==
 
+= 2.0.16 (December 30, 2025) =
+
+- Improvement: PHP 8+ compatibility for the ad expiration cron event
+- Improvement: security by allowing only valid sorting options when loading placements
+
+= 2.0.15 (December 25, 2025) =
+
+- Improvement: prevent any PHP execution in shortcode rendered ads to enhance security
+- Improvement: handle IP visitor condition by removing extra spaces and line breaks
+- Improvement: enhance security by permission check when updating placement item
+- Fix: show hierarchical groups metabox in edit ad page
+
+= 2.0.14 (November 18, 2025) =
+
+- Feature: pagination for Groups and Rotations
+- Fix: Groups page screen options spacing
+
+= 2.0.13 (October 20, 2025) =
+
+- Fix: Enhance protection against potential unauthorized access in certain frontend requests
+
+= 2.0.12 (September 23, 2025) =
+
+- Improvement: prevent quotation marks in ad codes being escaped with ACF enabled
+- Fix: groups now correctly inject ads in header placements
+- Fix: remove placements from WPML translation options
+
+= 2.0.11 (August 27, 2025) =
+
+- Fix: backslash disappears in ad code editor
+- Fix: deprecated parameters warning
+- Fix: avoid crash when restoring posts from other post types
+- Fix: extra whitespace being added before headings in rich-content editor
+- Fix: ads expiry date works as expected
+
+= 2.0.10 (July 28, 2025) =
+
+- Fix: add null check in display conditions
+- Fix: optimize ad handling and performance for MailPoet
+- Fix: restore placement in widget dropdown
+- Fix: resolve issue with ad blocker detection
+- Fix: save pagination display condition in placements
+- Fix: duplicate ad labels when using group as ad type
+- Fix: append ad to existing group when selecting placement from ad edit screen
+
+= 2.0.9 (May 21, 2025) =
+
+- Improvement: improve amp conditions
+- Improvement: Test plugin compatibility with WordPress 6.8.
+- Improvement: add capability check in importer
+- Improvement: standardize `ADVADS_ADS_DISABLED` check
+- Improvement: null checks before accessing ad properties
+- Fix: update failure help link only for Advanced Ads add-ons
+
+= 2.0.8 (April 28, 2025) =
+
+- Improvement: type safety in `add_body_class` to prevent issues from third-party filters
+- Improvement: improve the ad and group relation both way
+- Fix: expiry date not updating for ads that already had one set
+
+= 2.0.7 (April 9, 2025) =
+- Improvement: optimize MailPoet compatibility
+- Fix: force array return in post_updated_messages
+- Fix: quick edit for ads ignores tracking options and overwrites content
+
+= 2.0.6 (April 1, 2025) =
+- Improvement: redirect to placement list after creating a new placement
+- Improvement: remove ad creation message for server type placement
+- Improvement: unify admin notifications
+- Fix: prevent duplicate revision controls
+- Fix: correct order of placement icons
+- Fix: open create placement modal when no placements found
+- Fix: show the search field when "Show filters permanently" is checked
+- Fix: prevent CodeMirror to run on Rich Content ad edit page
+- Fix: prevent 'undefined key' warning in XML feed
+- Fix: use native php get error message function
+
 = 2.0.5 (March 20, 2025) =
 
 - Fix: prevent false unsaved changes notifications for ads
@@ -385,35 +462,3 @@ Yes. You can use plenty of [hooks](https://wpadvancedads.com/codex/) to customiz
 - Improvement: prevent plugin upgrade notice reappearing if already dismissed
 - Fix: ensure ad centers when selected
 - Fix: restore pagination functionality on ad list page
-
-= 2.0.2 (March 11, 2025) =
-
-- Fix: restore the classic Advanced Ads widget
-- Fix: resolve placement page issue with PHP > 8.0
-
-= 2.0.1 (March 11, 2025) =
-
-- Improvement: reduce high CPU usage in the frontend
-- Fix: correct a fatal error from a function declared multiple times during activation
-- Fix: correct the version numbers in the rollback function dropdown
-- Fix: resolve a PHP warning in the backend when file_get_contents is disabled
-
-= 2.0.0 (March 10, 2025) =
-
-- Feature: introduce onboarding wizard
-- Feature: implement plugin importer
-- Feature: overhaul placement structure
-- Feature: add pause, duplicate, and rename functions for placements
-- Feature: enable quick & bulk edit for ads and placements
-- Feature: option to hide ads for specific IP addresses
-- Feature: allow saving of custom filter sets
-- Feature: introduce rollback feature for version control
-- Improvement: expand ad filtering options
-- Improvement: add group type filter
-- Improvement: introduce ‘used by’ column in ad overview
-- Improvement: enable ad label overrides at ad level with basic HTML support
-- Improvement: enhance UI for clarity, better labels, more sortable columns, and reactive screens
-- Improvement: update Advanced Ads Dashboard
-- Improvement: display hints for dependent settings like cache busting or ad blocker disguise
-- Improvement: add quick & bulk edit for disabling ads on posts/pages
-- Improvement: optimize backend performance, load files only as needed

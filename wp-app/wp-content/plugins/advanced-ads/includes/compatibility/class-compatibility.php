@@ -77,24 +77,30 @@ class Compatibility implements Integration_Interface {
 	 * @return string
 	 */
 	public function mailpoet_ad_shortcode( $shortcode ): string {
-		preg_match( '/\d+/', $shortcode, $matches );
-		$entity_id = empty( $matches[0] ) ? false : $matches[0];
-
 		// Display an ad group.
-		if ( Str::starts_with( '[custom:ad_group:', $shortcode ) && $entity_id ) {
-			$ad_group = wp_advads_get_group( $entity_id );
-			if ( $ad_group->is_type( 'default', 'ordered' ) ) {
-				return get_the_group( $ad_group );
-			}
+		if ( sscanf( $shortcode, '[custom:ad_group:%d]', $id ) === 1 ) {
+			$ad_group = wp_advads_get_group( $id );
 
-			return '';
+			return ( $ad_group && $ad_group->is_type( [ 'default', 'ordered' ] ) )
+				? get_the_group( $ad_group )
+				: '';
 		}
 
 		// Display individual ad.
-		if ( Str::starts_with( '[custom:ad:', $shortcode ) && $entity_id ) {
-			$ad = wp_advads_get_ad( $entity_id );
-			if ( $ad->is_type( 'plain', 'image' ) ) {
-				return get_the_ad( $ad );
+		if ( sscanf( $shortcode, '[custom:ad:%d]', $id ) === 1 ) {
+			$ad = wp_advads_get_ad( $id );
+
+			if ( $ad && $ad->is_type( [ 'plain', 'image' ] ) ) {
+				$ad_content = get_the_ad( $ad );
+				// Add responsive styles for email compatibility.
+				if ( $ad->is_type( 'image' ) ) {
+					return str_replace(
+						'<img',
+						'<img style="max-width: 100%; height: auto; display: block;"',
+						$ad_content
+					);
+				}
+				return $ad_content;
 			}
 
 			return '';

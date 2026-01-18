@@ -1,11 +1,13 @@
 @import "../bootstrap/variables";
-@import "../partials/post-type-list.scss";
+@import "../partials/post-type-list.scss"; // stylelint-disable-line scss/at-import-partial-extension
 
 .#{$namespace}-page {
 	background-color: #f8f9fa;
 }
+/* stylelint-disable selector-class-pattern */
 
 .column-ad_type {
+	/* stylelint-enable selector-class-pattern */
 	width: 50px;
 }
 
@@ -14,6 +16,7 @@
 	select {
 		@apply leading-6 text-sm;
 	}
+
 	@media screen and (min-width: 783px) {
 		select {
 			margin-top: -4px;
@@ -28,9 +31,34 @@
 ##{$namespace}-ad-filter-customize {
 	@apply float-left mr-1 leading-7;
 }
+/* stylelint-disable selector-class-pattern */
 
-.#{$namespace}-quick-edit, .#{$namespace}-bulk-edit {
+.bulk-edit-advanced_ads .inline-edit-categories {
+	/* stylelint-enable selector-class-pattern */
+	min-height: 23em;
+}
+
+.#{$namespace}-quick-edit,
+.#{$namespace}-bulk-edit {
 	.#{$namespace}-help::before {
 		@apply align-middle;
+	}
+}
+
+.inline-edit-status,
+.inline-edit-author,
+.#{$namespace}-bulk-edit-grid > label {
+	@apply grid gap-3 float-none #{!important};
+	grid-template-columns: 10em auto 30px;
+}
+
+.inline-edit-status {
+	@apply max-w-full #{!important};
+}
+
+.#{$namespace}-bulk-edit-grid {
+	input[type="text"] {
+		@apply w-full;
+		max-width: 25rem;
 	}
 }

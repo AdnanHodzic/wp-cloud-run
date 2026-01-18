@@ -9,8 +9,9 @@
 
 namespace AdvancedAds\Admin;
 
-use Advanced_Ads_Admin_Licenses;
+use AdvancedAds\Constants;
 use AdvancedAds\Utilities\Data;
+use Advanced_Ads_Admin_Licenses;
 use AdvancedAds\Framework\Interfaces\Integration_Interface;
 
 defined( 'ABSPATH' ) || exit;
@@ -72,12 +73,12 @@ class Addon_Updater implements Integration_Interface {
 			$license_key = $licenses[ $_add_on_key ] ?? '';
 
 			( new EDD_Updater(
-				Advanced_Ads_Admin_Licenses::API_ENDPOINT,
+				Constants::API_ENDPOINT,
 				$_add_on['path'],
 				[
 					'version' => $_add_on['version'],
 					'license' => $license_key,
-					'item_id' => Advanced_Ads_Admin_Licenses::ADDON_SLUGS_ID[ $options_slug ] ?? false,
+					'item_id' => Constants::ADDON_SLUGS_ID[ $options_slug ] ?? false,
 					'author'  => 'Advanced Ads',
 				]
 			) );

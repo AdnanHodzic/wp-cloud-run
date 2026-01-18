@@ -13,6 +13,7 @@ use Advanced_Ads;
 use Advanced_Ads_Utils;
 use Advanced_Ads_Privacy;
 use AdvancedAds\Utilities\WordPress;
+use AdvancedAds\Utilities\Conditional;
 use AdvancedAds\Framework\Utilities\Params;
 use AdvancedAds\Framework\Interfaces\Integration_Interface;
 
@@ -40,7 +41,7 @@ class Scripts implements Integration_Interface {
 	 * @return void
 	 */
 	public function enqueue_scripts(): void {
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return;
 		}
 
@@ -84,6 +85,8 @@ class Scripts implements Integration_Interface {
 		if ( ! empty( $frontend_picker ) ) {
 			wp_enqueue_script( ADVADS_SLUG . '-frontend-picker' );
 		}
+
+		wp_advads()->registry->enqueue_script( 'find-adblocker' );
 	}
 
 	/**
@@ -98,7 +101,7 @@ class Scripts implements Integration_Interface {
 			esc_html( ADVADS_VERSION )
 		);
 
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return;
 		}
 
@@ -135,7 +138,7 @@ class Scripts implements Integration_Interface {
 	 * @return void
 	 */
 	public function print_footer_scripts(): void {
-		if ( advads_is_amp() ) {
+		if ( Conditional::is_amp() ) {
 			return;
 		}
 

@@ -3,7 +3,7 @@
         'name' => 'advanced-ads/advanced-ads',
         'pretty_version' => '1.48.2',
         'version' => '1.48.2.0',
-        'reference' => NULL,
+        'reference' => null,
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'advanced-ads/advanced-ads' => array(
             'pretty_version' => '1.48.2',
             'version' => '1.48.2.0',
-            'reference' => NULL,
+            'reference' => null,
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'advanced-ads/framework' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'bafe2c32b1530cfb18d8b738adb9524f8406b9aa',
+            'reference' => 'c6c2bfaab794daa34ddd218016328e09f8531f6e',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../advanced-ads/framework',
             'aliases' => array(
@@ -36,6 +36,15 @@
             'reference' => '39582ab62f86b40e4edb698159f895929a29c346',
             'type' => 'library',
             'install_path' => __DIR__ . '/../mobiledetect/mobiledetectlib',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'woocommerce/action-scheduler' => array(
+            'pretty_version' => '3.9.3',
+            'version' => '3.9.3.0',
+            'reference' => 'c58cdbab17651303d406cd3b22cf9d75c71c986c',
+            'type' => 'wordpress-plugin',
+            'install_path' => __DIR__ . '/../woocommerce/action-scheduler',
             'aliases' => array(),
             'dev_requirement' => false,
         ),

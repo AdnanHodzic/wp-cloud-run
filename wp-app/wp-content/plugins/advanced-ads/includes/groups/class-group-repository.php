@@ -112,7 +112,7 @@ class Group_Repository {
 
 		// Only update weights when there is a change.
 		if ( in_array( 'ad_weights', $changed, true ) ) {
-			$this->update_ads_terms( $group );
+			( new Group_Ad_Relation() )->relate( $group );
 		}
 
 		$this->update_term_meta( $group );
@@ -221,7 +221,7 @@ class Group_Repository {
 
 		if ( empty( $meta_values ) ) {
 			$meta_values = $this->migrate_values( $group );
-			$type        = $type !== $meta_values['type'] ? $meta_values['type'] : $type;
+			$type        = $meta_values['type'] ?? $type;
 		}
 
 		if ( 'ordered' === $type || 'default' === $type ) {
@@ -269,61 +269,6 @@ class Group_Repository {
 		if ( empty( $group->get_publish_date() ) ) {
 			update_term_meta( $group->get_id(), 'publish_date', $current_date );
 		}
-	}
-
-	/**
-	 * Update group ad terms.
-	 *
-	 * @param Group $group Group object.
-	 *
-	 * @return void
-	 */
-	private function update_ads_terms( &$group ): void {
-		// Early bail!!
-		if ( empty( $group->get_ad_weights() ) ) {
-			return;
-		}
-
-		$data    = $group->get_data();
-		$changes = $group->get_changes();
-		$old_ads = $data['ad_weights'] ? array_keys( $data['ad_weights'] ) : [];
-		$new_ads = $changes['ad_weights'] ? array_keys( $changes['ad_weights'] ) : [];
-		$removed = array_diff( $old_ads, $new_ads );
-
-		foreach ( $removed as $ad_id ) {
-			$terms = wp_get_object_terms( $ad_id, Constants::TAXONOMY_GROUP );
-
-			if ( ! empty( $terms ) && ! is_wp_error( $terms ) ) {
-				$term_ids = wp_list_pluck( $terms, 'term_id' );
-				$term_ids = array_diff( $term_ids, [ $group->get_id() ] );
-				wp_set_object_terms( $ad_id, $term_ids, Constants::TAXONOMY_GROUP );
-			}
-		}
-
-		$new_ads_final = $changes['ad_weights'] ?? [];
-
-		foreach ( $new_ads as $ad_id ) {
-			/**
-			 * Check if this ad is representing the current group and remove it in this case
-			 * could cause an infinite loop otherwise
-			 */
-			$ad = wp_advads_get_ad( $ad_id );
-			if ( $ad && $ad->is_type( 'group' ) && $ad->get_group_id() === $group->get_id() ) {
-				unset( $new_ads_final[ $ad_id ] );
-				continue;
-			}
-
-			$terms = wp_get_object_terms( $ad_id, Constants::TAXONOMY_GROUP );
-
-			if ( ! is_wp_error( $terms ) ) {
-				$term_ids   = wp_list_pluck( $terms, 'term_id' );
-				$term_ids[] = $group->get_id();
-				$term_ids   = array_unique( $term_ids );
-				wp_set_object_terms( $ad_id, $term_ids, Constants::TAXONOMY_GROUP );
-			}
-		}
-
-		$group->set_ad_weights( $new_ads_final );
 	}
 
 	/**

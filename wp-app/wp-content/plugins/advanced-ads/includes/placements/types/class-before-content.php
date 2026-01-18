@@ -80,7 +80,7 @@ class Before_Content extends Base implements Placement_Type {
 	 * @return int The order number.
 	 */
 	public function get_order(): int {
-		return 20;
+		return 5;
 	}
 
 	/**

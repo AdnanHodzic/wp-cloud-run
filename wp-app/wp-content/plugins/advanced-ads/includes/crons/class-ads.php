@@ -39,7 +39,8 @@ class Ads implements Integration_Interface {
 	 * @return void
 	 */
 	public function save_expiration_date( Ad $ad ): void {
-		$args = [ 'post_id' => $ad->get_id() ];
+		// use a simple array to prevent issues in PHP 8+.
+		$args = [ $ad->get_id() ];
 		$next = wp_next_scheduled( Constants::CRON_JOB_AD_EXPIRATION, $args );
 
 		if ( 0 === $ad->get_expiry_date() ) {

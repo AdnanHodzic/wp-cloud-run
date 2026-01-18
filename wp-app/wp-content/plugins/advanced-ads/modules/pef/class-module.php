@@ -69,8 +69,9 @@ class Module {
 	 */
 	public function admin_init(): void {
 		$meta = get_user_meta( get_current_user_id(), self::USER_META, true );
-		if ( $this->get_minor_version( ADVADS_VERSION ) === $this->get_minor_version( $meta ) ) {
+		if ( $meta && $this->get_minor_version( ADVADS_VERSION ) === $this->get_minor_version( $meta ) ) {
 			$this->can_display = false;
+
 			return;
 		}
 
@@ -179,19 +180,11 @@ class Module {
 	 */
 	public function get_features(): array {
 		return [
-			'labs-campaign-manager-ay' => [
+			'labs-amazon-integration' => [
 				'subheading' => __( 'FROM THE ADVANCED ADS LABS:', 'advanced-ads' ),
-				'heading'    => __( 'The Campaign Manager', 'advanced-ads' ),
+				'heading'    => __( 'The Amazon Integration', 'advanced-ads' ),
 				'weight'     => 1,
-				'text'       => __( 'Advanced Ads’ upcoming new product, the Campaign Manager, will shake up how you sell ad space to clients directly. It bundles a decade of users’ requests and ideas into one standalone product. The core feature set includes a brilliant advertisement schedule screen, grouping ads and reports by client, brushed-up email notifications for timed ads, and more.<br><br>Our team is in the early stages of development, and we would like to see if this product resonates with you.', 'advanced-ads' ),
-				'cta'        => __( 'Are you interested in this product concept?', 'advanced-ads' ),
-				'cta_button' => __( 'Yes, I want to know more!', 'advanced-ads' ),
-			],
-			'labs-campaign-manager-be' => [
-				'subheading' => __( 'FROM THE ADVANCED ADS LABS:', 'advanced-ads' ),
-				'heading'    => __( 'The Campaign Manager', 'advanced-ads' ),
-				'weight'     => 1,
-				'text'       => __( 'Advanced Ads’ upcoming new product, the Campaign Manager, will shake up how you sell ad space to clients directly. It bundles a decade of users’ requests and ideas into one standalone product. The core feature set includes a brilliant advertisement schedule screen, grouping ads and reports by client, brushed-up email notifications for timed ads, and more.<br><br>Our team is in the early stages of development, and we would like to see if this product resonates with you.', 'advanced-ads' ),
+				'text'       => __( 'Our latest product concept puts Amazon affiliate marketing at your fingertips—right within Advanced Ads. It offers features like direct product import via Amazon API, multiple product display formats, and efficient ad tracking. We aim to create a one-stop solution for featuring Amazon products on your site without resorting to expensive third-party plugins.', 'advanced-ads' ),
 				'cta'        => __( 'Are you interested in this product concept?', 'advanced-ads' ),
 				'cta_button' => __( 'Yes, I want to know more!', 'advanced-ads' ),
 			],

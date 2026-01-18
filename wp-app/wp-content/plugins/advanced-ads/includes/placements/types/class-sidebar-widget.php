@@ -80,7 +80,7 @@ class Sidebar_Widget extends Base implements Placement_Type {
 	 * @return int The order number.
 	 */
 	public function get_order(): int {
-		return 50;
+		return 20;
 	}
 
 	/**

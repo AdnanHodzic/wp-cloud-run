@@ -1,0 +1,43 @@
+{
+  "wp": {
+    "name": "Advanced Ads",
+    "description": "Manage and optimize your ads in WordPress",
+    "version": "2.0.16",
+    "requireWP": "5.7",
+    "requirePHP": "7.4",
+    "textDomain": "advanced-ads",
+    "glotpress": ""
+  },
+  "paths": {
+    "php": "includes",
+    "views": "views",
+    "updates": "updates",
+    "javascript": "assets/src",
+    "css": "assets/css"
+  },
+  "misc": {
+    "package": "AdvancedAds",
+    "prefix": "wp_advads",
+    "constprefix": "ADVADS"
+  },
+  "year": 2025,
+  "company": {
+    "name": "Advanced Ads",
+    "url": "https://wpadvancedads.com/"
+  },
+  "author": {
+    "name": "Advanced Ads",
+    "email": "info@wpadvancedads.com",
+    "url": "https://wpadvancedads.com/"
+  },
+  "package": {
+    "vendor": "advanced-ads",
+    "name": "advanced-ads"
+  },
+  "glotpress": false,
+  "wpPot": {
+    "output": "/languages/",
+    "file": "advanced-ads.pot",
+    "domain": "advanced-ads"
+  }
+}
