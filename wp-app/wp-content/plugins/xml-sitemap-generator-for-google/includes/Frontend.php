@@ -117,7 +117,7 @@ class Frontend extends Controller {
 	public static function add_rewrite_rules( $wp_rules ) {
 		$settings       = get_option( self::$slug, new Settings() );
 		$stylesheet_url = str_replace( '.', '\.', apply_filters( 'sitemap_xsl_template_path', 'sitemap-stylesheet.xsl' ) ) . '$';
-		$sitemap_types  = array( 'page', 'post', 'category', 'author', 'archive', 'additional', 'image', 'video' );
+		$sitemap_types  = array( 'page', 'post', 'category', 'author', 'archive', 'media', 'additional', 'image', 'video' );
 		$custom_posts   = ( new Controller() )->get_cpt();
 
 		$grim_sg_rules = array(

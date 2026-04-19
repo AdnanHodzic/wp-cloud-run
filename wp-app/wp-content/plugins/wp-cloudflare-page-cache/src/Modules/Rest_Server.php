@@ -78,7 +78,9 @@ class Rest_Server implements Module_Interface {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'get_logs' ],
-				'permission_callback' => 'is_user_logged_in',
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
 			]
 		);
 
@@ -299,7 +301,9 @@ class Rest_Server implements Module_Interface {
 			[
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => [ $this, 'cloudflare_analytics' ],
-				'permission_callback' => 'is_user_logged_in',
+				'permission_callback' => function () {
+					return current_user_can( 'manage_options' );
+				},
 			]
 		);
 
@@ -826,14 +830,29 @@ class Rest_Server implements Module_Interface {
 
 		$response = apply_filters( 'themeisle_sdk_license_process_spc', $fields['key'], $fields['action'] );
 
+		$license_option_key = ( new SDK_Integrations() )->get_license_option_key();
+		wp_cache_delete( $license_option_key, 'options' );
+		$license        = get_option( $license_option_key, (object) [] );
+		$license_status = ( (array) $license )['license'] ?? '';
+
 		if ( is_wp_error( $response ) ) {
+			// If activating and the license is already valid in the DB (e.g. already activated
+			// on this domain), treat it the same as a fresh activation so the UI updates correctly.
+			if ( $fields['action'] === 'activate' && $license_status === 'valid' ) {
+				return $this->data_response(
+					[
+						'message' => __( 'Activated.', 'wp-cloudflare-page-cache' ),
+						'success' => true,
+						'license' => $license,
+					]
+				);
+			}
+
 			return $this->message_response(
 				$response->get_error_message(),
 				500
 			);
 		}
-
-		$license = get_option( ( new SDK_Integrations() )->get_license_option_key(), (object) [] );
 
 		return $this->data_response(
 			[

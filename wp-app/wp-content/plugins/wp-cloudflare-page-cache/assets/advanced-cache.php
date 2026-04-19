@@ -189,6 +189,14 @@ function swcfpc_fallback_cache_end( $html ) {
 
 		if ( ! file_exists( $cache_path . $cache_key ) || $swcfpc_objects['fallback_cache']->fallback_cache_is_expired_page( $cache_key ) ) {
 
+			// Bypass 4xx or 5xx HTTP status codes (security blocks, errors, etc.)
+			if ( SPC\Services\Settings_Store::get_instance()->get( SPC\Constants::SETTING_FALLBACK_CACHE_HTTP_RESPONSE_CODE ) ) {
+				$http_status = http_response_code();
+				if ( $http_status !== false && $http_status >= 400 && $http_status < 600 ) {
+					return $html;
+				}
+			}
+
 			if ( $sw_cloudflare_pagecache->get_single_config( 'cf_fallback_cache_ttl', 0 ) == 0 ) {
 				$ttl = 0;
 			} else {

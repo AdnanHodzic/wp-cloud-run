@@ -150,7 +150,7 @@ class SWCFPC_Logs {
 		}
 
 		if ( $_GET['swcfpc_download_log'] === 'view' ) {
-			echo '<pre>' . file_get_contents( $this->log_file_path ) . '</pre>';
+			echo '<pre>' . esc_html( file_get_contents( $this->log_file_path ) ) . '</pre>';
 
 			exit;
 		}

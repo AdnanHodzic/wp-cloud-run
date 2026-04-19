@@ -62,38 +62,38 @@
 				$optionTemplates = $rpSettings['rp_field_templates'];
 				if ( isset($optionTemplates['home']) && (is_home() && is_front_page() || is_front_page()) ) {
 					echo '<progress class="readingProgressbar" 
-						data-height="' . $rpHeight . '" 
-						data-position="'. $rpPosition .'" 
-						data-custom-position="'. $rpCustomPosition .'" 
-						data-foreground="' . $rpForegroundColor . '" 
-						data-background="' . $rpBackgroundColor . '" 
+						data-height="' . esc_attr( $rpHeight ) . '" 
+						data-position="'. esc_attr( $rpPosition ) .'" 
+						data-custom-position="'. esc_attr( $rpCustomPosition ) .'" 
+						data-foreground="' . esc_attr( $rpForegroundColor ) . '" 
+						data-background="' . esc_attr( $rpBackgroundColor ) . '" 
 						value="0"></progress>';
 				} elseif ( isset($optionTemplates['blog']) && (is_home() && !is_front_page()) ) {
 					echo '<progress class="readingProgressbar" 
-						data-height="' . $rpHeight . '" 
-						data-position="'. $rpPosition .'" 
-						data-custom-position="'. $rpCustomPosition .'" 
-						data-foreground="' . $rpForegroundColor . '" 
-						data-background="' . $rpBackgroundColor . '" 
+						data-height="' . esc_attr( $rpHeight ) . '" 
+						data-position="'. esc_attr( $rpPosition ) .'" 
+						data-custom-position="'. esc_attr( $rpCustomPosition ) .'" 
+						data-foreground="' . esc_attr( $rpForegroundColor ) . '" 
+						data-background="' . esc_attr( $rpBackgroundColor ) . '" 
 						value="0"></progress>';
 				} elseif ( isset($optionTemplates['archive']) && (is_archive()) ) {
 					echo '<progress class="readingProgressbar" 
-						data-height="' . $rpHeight . '" 
-						data-position="'. $rpPosition .'" 
-						data-custom-position="'. $rpCustomPosition .'" 
-						data-foreground="' . $rpForegroundColor . '" 
-						data-background="' . $rpBackgroundColor . '" 
+						data-height="' . esc_attr( $rpHeight ) . '" 
+						data-position="'. esc_attr( $rpPosition ) .'" 
+						data-custom-position="'. esc_attr( $rpCustomPosition ) .'" 
+						data-foreground="' . esc_attr( $rpForegroundColor ) . '" 
+						data-background="' . esc_attr( $rpBackgroundColor ) . '" 
 						value="0"></progress>';
 				} elseif ( isset($optionTemplates['single']) && (is_singular() && !is_front_page()) ) {
 					$optionPostTypes = $rpSettings['rp_field_posttypes'];
 					$currentPostType = get_post_type();
 					if (isset($optionPostTypes[$currentPostType])) {
 						echo '<progress class="readingProgressbar" 
-							data-height="' . $rpHeight . '" 
-							data-position="'. $rpPosition .'" 
-							data-custom-position="'. $rpCustomPosition .'" 
-							data-foreground="' . $rpForegroundColor . '" 
-							data-background="' . $rpBackgroundColor . '" 
+							data-height="' . esc_attr( $rpHeight ) . '" 
+							data-position="'. esc_attr( $rpPosition ) .'" 
+							data-custom-position="'. esc_attr( $rpCustomPosition ) .'" 
+							data-foreground="' . esc_attr( $rpForegroundColor ) . '" 
+							data-background="' . esc_attr( $rpBackgroundColor ) . '" 
 							value="0"></progress>';
 					} 
 				} 

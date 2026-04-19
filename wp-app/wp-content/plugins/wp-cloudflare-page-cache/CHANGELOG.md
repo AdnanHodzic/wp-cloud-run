@@ -1,3 +1,16 @@
+#####   Version 5.2.4 (2026-03-19)
+
+* Improved error handling in `fallback_cache_add_define_cache_wp_config` by logging and safely aborting if the `wp-config` file cannot be parsed.
+* Enhanced cache URL logic to handle missing `HTTP_HOST` or `REQUEST_URI`, logging issues and preventing invalid cache entries.
+* Hardening Security 
+* Fixed usage of `parse_url` in `get_plugin_wp_content_directory` for more reliable directory path generation.
+* Adjusted module loading order for `fallback_cache` in `bootstrap.php` to ensure proper initialization.  
+* Updated cache purge logic to handle post status transitions both to and from publish/private, improving cache consistency.
+
+#####   Version 5.2.3 (2026-02-05)
+
+- Enhanced security
+
 #####   Version 5.2.2 (2026-01-12)
 
 - Fixed translation updates no longer reappear after being successfully updated when using Super Page Cache.

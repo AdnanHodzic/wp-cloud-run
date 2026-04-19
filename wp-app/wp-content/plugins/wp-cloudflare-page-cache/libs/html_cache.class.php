@@ -58,11 +58,20 @@ class SWCFPC_Html_Cache {
 			return;
 		}
 
+		$host        = isset( $_SERVER['HTTP_HOST'] ) ? trim( (string) $_SERVER['HTTP_HOST'] ) : '';
+		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? trim( (string) $_SERVER['REQUEST_URI'] ) : '';
+
+		if ( empty( $host ) || empty( $request_uri ) ) {
+			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', 'The URL cannot be cached due to missing HTTP_HOST or REQUEST_URI.', true );
+
+			return;
+		}
+
 		$parts       = parse_url( home_url() );
-		$current_url = "{$parts['scheme']}://{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}";
+		$current_url = "{$parts['scheme']}://{$host}{$request_uri}";
 
 		if ( isset( $wp_query ) && function_exists( 'is_404' ) && is_404() ) {
-			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', "The URL {$current_url} cannot be cached because it returns 404.", true );
+			$this->main_instance->get_logger()->add_log( 'html_cache::add_current_url_to_cache', 'The URL ' . esc_url_raw( $current_url ) . ' cannot be cached because it returns 404.', true );
 
 			return;
 		}
@@ -188,7 +197,7 @@ class SWCFPC_Html_Cache {
 				continue;
 			}
 
-			list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+			list( $single_url, $single_timestamp ) = $this->parse_cache_file( $single_file );
 
 			if ( strlen( $single_url ) > 1 ) {
 				$urls[] = [
@@ -210,7 +219,7 @@ class SWCFPC_Html_Cache {
 		foreach ( $files as $single_file ) {
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				list( $single_url, $single_timestamp ) = $this->parse_cache_file( $single_file );
 
 				if ( $single_timestamp <= $timestamp && strlen( $single_url ) > 1 ) {
 					$urls[] = $single_url;
@@ -231,7 +240,8 @@ class SWCFPC_Html_Cache {
 
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				$file_parts       = $this->parse_cache_file( $single_file );
+				$single_timestamp = isset( $file_parts[1] ) ? $file_parts[1] : '';
 
 				if ( $single_timestamp <= $timestamp ) {
 					unlink( $single_file );
@@ -252,12 +262,32 @@ class SWCFPC_Html_Cache {
 		foreach ( $files as $single_file ) {
 			if ( is_file( $single_file ) ) {
 
-				list($single_url, $single_timestamp) = explode( '|', file_get_contents( $single_file ) );
+				$file_parts = $this->parse_cache_file( $single_file );
+				$single_url = isset( $file_parts[0] ) ? $file_parts[0] : '';
 
 				if ( in_array( $single_url, $urls, true ) ) {
 					unlink( $single_file );
 				}
 			}
 		}
+	}
+
+	/**
+	 * Safely parse a cache file's contents into URL and timestamp.
+	 *
+	 * @param string $single_file Path to the cache file.
+	 *
+	 * @return array Array with two elements: [ string $single_url, string $single_timestamp ].
+	 */
+	private function parse_cache_file( $single_file ) {
+		$contents = @file_get_contents( $single_file );
+		if ( false === $contents ) {
+			return array( '', '' );
+		}
+
+		$file_parts       = explode( '|', $contents );
+		$single_url       = isset( $file_parts[0] ) ? $file_parts[0] : '';
+		$single_timestamp = isset( $file_parts[1] ) ? $file_parts[1] : '';
+		return array( $single_url, $single_timestamp );
 	}
 }

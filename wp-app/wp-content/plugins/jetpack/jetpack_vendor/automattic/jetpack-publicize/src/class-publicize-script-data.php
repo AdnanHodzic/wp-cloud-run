@@ -13,7 +13,6 @@ use Automattic\Jetpack\Publicize\Jetpack_Social_Settings\Settings;
 use Automattic\Jetpack\Publicize\Publicize_Utils as Utils;
 use Automattic\Jetpack\Publicize\Services as Publicize_Services;
 use Automattic\Jetpack\Status\Host;
-use Jetpack_Options;
 
 /**
  * Publicize_Script_Data class.
@@ -116,10 +115,10 @@ class Publicize_Script_Data {
 			'assets_url'           => plugins_url( '/build/', __DIR__ ),
 			'is_publicize_enabled' => Utils::is_publicize_active(),
 			'supported_services'   => array(),
-			'shares_data'          => array(),
 			'urls'                 => array(),
 			'settings'             => self::get_social_settings(),
 			'plugin_info'          => self::get_plugin_info(),
+			'nonces'               => self::get_nonces(),
 		);
 
 		if ( ! Utils::is_publicize_active() ) {
@@ -137,7 +136,6 @@ class Publicize_Script_Data {
 			$basic_data,
 			array(
 				'supported_services'  => self::get_supported_services(),
-				'shares_data'         => self::get_shares_data(),
 				'urls'                => self::get_urls(),
 				'store_initial_state' => self::get_store_initial_state(),
 			)
@@ -234,15 +232,6 @@ class Publicize_Script_Data {
 	}
 
 	/**
-	 * Get the shares data.
-	 *
-	 * @return ?array
-	 */
-	public static function get_shares_data() {
-		return self::publicize()->get_publicize_shares_info( Jetpack_Options::get_option( 'id' ) ) ?? array();
-	}
-
-	/**
 	 * Get the list of supported Publicize services.
 	 *
 	 * @return array List of external services and their settings.
@@ -281,5 +270,16 @@ class Publicize_Script_Data {
 		array_walk( $urls, 'esc_url_raw' );
 
 		return $urls;
+	}
+
+	/**
+	 * Get nonces required by the Social admin UI.
+	 *
+	 * @return array
+	 */
+	private static function get_nonces() {
+		return array(
+			'refresh_plan' => wp_create_nonce( Social_Admin_Page::REFRESH_PLAN_NONCE_ACTION ),
+		);
 	}
 }

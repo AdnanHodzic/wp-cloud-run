@@ -87,7 +87,16 @@ class Universal {
 				wcAnalytics.assets_url = '<?php echo esc_url( plugins_url( '../build/', __DIR__ . '/class-woocommerce-analytics.php' ) ); ?>';
 
 				// Set the REST API tracking endpoint URL.
-				wcAnalytics.trackEndpoint = '<?php echo esc_url( rest_url( 'woocommerce-analytics/v1/track' ) ); ?>';
+				<?php
+				$track_endpoint = rest_url( 'woocommerce-analytics/v1/track' );
+				// Include the WP REST nonce for logged-in users so WordPress can identify
+				// the current user via cookie auth. This is needed for the store_admin
+				// property detection, not for endpoint authorization.
+				if ( is_user_logged_in() ) {
+					$track_endpoint = add_query_arg( '_wpnonce', wp_create_nonce( 'wp_rest' ), $track_endpoint );
+				}
+				?>
+				wcAnalytics.trackEndpoint = <?php echo wp_json_encode( esc_url_raw( $track_endpoint ), JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>;
 
 				// Set common properties for all events.
 				wcAnalytics.commonProps = <?php echo wp_json_encode( $common_properties, JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP ); ?>;
@@ -289,19 +298,12 @@ class Universal {
 	/**
 	 * After the order processed, fire an event for each item in the order
 	 *
-	 * @param string|WC_Order $order_id_or_order Order Id or Order object.
+	 * @param int|string|WC_Order $order_id_or_order Order Id or Order object.
 	 */
 	public function order_process( $order_id_or_order ) {
-		if ( is_string( $order_id_or_order ) ) {
-			$order = wc_get_order( $order_id_or_order );
-		} else {
-			$order = $order_id_or_order;
-		}
+		$order = wc_get_order( $order_id_or_order );
 
-		if (
-			! $order
-			|| ! $order instanceof WC_Order
-		) {
+		if ( ! $order ) {
 			return;
 		}
 

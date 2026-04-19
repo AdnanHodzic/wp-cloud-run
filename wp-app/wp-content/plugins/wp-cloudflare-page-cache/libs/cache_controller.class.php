@@ -964,7 +964,16 @@ class SWCFPC_Cache_Controller {
 
 		if ( ( Settings_Manager::is_on( Constants::SETTING_AUTO_PURGE ) || Settings_Manager::is_on( Constants::SETTING_AUTO_PURGE_WHOLE ) ) && $this->is_cache_enabled() ) {
 
-			if ( in_array( $old_status, [ 'future', 'draft', 'pending' ] ) && in_array( $new_status, [ 'publish', 'private' ] ) ) {
+			if (
+				(
+					in_array( $old_status, [ 'future', 'draft', 'pending' ] ) &&
+					in_array( $new_status, [ 'publish', 'private' ] ) 
+				) || 
+				( 
+					'publish' === $old_status &&
+					in_array( $new_status, [ 'future', 'draft', 'pending' ], true )
+				)
+			) {
 
 				$current_action = function_exists( 'current_action' ) ? current_action() : '';
 
@@ -1723,6 +1732,16 @@ class SWCFPC_Cache_Controller {
 			Helpers::bypass_reason_header( 'Admin' );
 
 			return true;
+		}
+
+		// Bypass 4xx or 5xx HTTP status codes (security blocks, errors, etc.)
+		if ( Settings_Store::get_instance()->get( Constants::SETTING_FALLBACK_CACHE_HTTP_RESPONSE_CODE ) ) {
+			$http_status = http_response_code();
+
+			if ( $http_status !== false && $http_status >= 400 && $http_status < 600 ) {
+				Helpers::bypass_reason_header( sprintf( 'HTTP Status %d', $http_status ) );
+				return true;
+			}
 		}
 
 		return false;

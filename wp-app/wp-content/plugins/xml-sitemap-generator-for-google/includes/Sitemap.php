@@ -186,6 +186,7 @@ class Sitemap extends Controller {
 				$this->add_categories( $current_page, true );
 				$this->add_authors( $current_page, true );
 				$this->add_archives( true );
+				$this->add_media( $current_page, true );
 				$this->add_additional_pages( true );
 			} else {
 				switch ( $inner_sitemap ) {
@@ -197,6 +198,9 @@ class Sitemap extends Controller {
 						break;
 					case 'archive':
 						$this->add_archives();
+						break;
+					case 'media':
+						$this->add_media( $current_page );
 						break;
 					case 'additional':
 						$this->add_additional_pages();
@@ -212,6 +216,7 @@ class Sitemap extends Controller {
 			$this->add_categories();
 			$this->add_authors();
 			$this->add_archives();
+			$this->add_media();
 			$this->add_additional_pages();
 		}
 	}
@@ -610,6 +615,92 @@ class Sitemap extends Controller {
 					gmdate( DATE_W3C, strtotime( $archive->post_date ) ),
 					'archive'
 				);
+			}
+		}
+	}
+
+	/**
+	 * Add Media Pages (Attachments)
+	 */
+	public function add_media( $current_page = null, $is_sitemap_index = false ) {
+		if ( ! $this->settings->media->include ) {
+			return;
+		}
+
+		if ( ! get_option( 'wp_attachment_pages_enabled' ) ) {
+			return;
+		}
+
+		global $wpdb;
+
+		$per_page         = intval( $this->settings->links_per_page ?? 1000 );
+		$multilingual_sql = $this->multilingual_sql( array( 'attachment' ) );
+		$where_clause     = ! empty( $multilingual_sql ) ? 'AND ' : 'WHERE ';
+
+		$sql = "SELECT
+				posts.ID,
+				posts.post_name,
+				posts.post_parent,
+				posts.post_type,
+				posts.post_date,
+				posts.post_modified
+				FROM $wpdb->posts as posts
+				$multilingual_sql
+				$where_clause posts.post_status = 'inherit' AND posts.post_type = 'attachment' AND posts.post_password = ''
+				GROUP BY posts.ID
+				ORDER BY posts.post_modified DESC";
+
+		if ( is_null( $current_page ) && ! $is_sitemap_index ) {
+			$this->add_media_urls( $sql, false );
+
+			return;
+		}
+
+		if ( $is_sitemap_index ) {
+			// Calculate total number of attachments
+			$total_media_sql = "SELECT COUNT(*) FROM $wpdb->posts as posts
+			$multilingual_sql
+			$where_clause posts.post_status = 'inherit' AND posts.post_type = 'attachment' AND posts.post_password = ''
+			ORDER BY posts.post_modified DESC";
+			$total_media     = $wpdb->get_var( $total_media_sql ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared
+
+			// Calculate the number of chunks
+			$num_chunks = ceil( $total_media / $per_page );
+
+			for ( $chunk_index = 0; $chunk_index < $num_chunks; $chunk_index++ ) {
+				$offset    = $chunk_index * $per_page;
+				$chunk_sql = $sql . " LIMIT $offset, 1";
+
+				$this->add_media_urls( $chunk_sql, true );
+			}
+		} else {
+			$offset = $current_page * $per_page;
+			$sql   .= " LIMIT $offset, $per_page";
+
+			$this->add_media_urls( $sql, false );
+		}
+	}
+
+	/**
+	 * Add Media URLs to Sitemap
+	 */
+	public function add_media_urls( $sql, $is_sitemap_index ) {
+		$attachments = QueryBuilder::run_query( $sql );
+
+		foreach ( $attachments as $attachment ) {
+			if ( $is_sitemap_index || apply_filters( 'xml_sitemap_include_post', true, $attachment->ID ) ) {
+				$attachment_link = get_attachment_link( $attachment->ID );
+
+				// Only add if attachment link is valid (attachment pages are enabled)
+				if ( $attachment_link ) {
+					$this->add_url(
+						$attachment_link,
+						apply_filters( 'sitemap_media_priority', apply_filters( 'sitemap_post_priority', $this->settings->media->priority, $attachment->ID ), $attachment->ID ),
+						apply_filters( 'sitemap_media_frequency', apply_filters( 'sitemap_post_frequency', $this->settings->media->frequency, $attachment->ID ), $attachment->ID ),
+						gmdate( DATE_W3C, strtotime( $attachment->post_modified ) ),
+						'media'
+					);
+				}
 			}
 		}
 	}

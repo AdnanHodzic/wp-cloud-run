@@ -212,6 +212,11 @@ class Settings_Manager implements Module_Interface {
 			'type'    => self::SETTING_TYPE_BOOLEAN,
 			'default' => 0,
 		],
+		Constants::SETTING_FALLBACK_CACHE_HTTP_RESPONSE_CODE => [
+			'type'       => self::SETTING_TYPE_BOOLEAN,
+			'bust_cache' => true,
+			'default'    => 1,
+		],
 		Constants::SETTING_BYPASS_404                   => [
 			'type'    => self::SETTING_TYPE_BOOLEAN,
 			'default' => 1,

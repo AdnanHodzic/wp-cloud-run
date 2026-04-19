@@ -155,7 +155,7 @@ abstract class MediaSitemap extends Sitemap {
 
 			if ( $cache_enabled ) {
 				// Cache the collected URLs.
-				$cache->set( $this->urls, true );
+				$cache->set( $this->urls );
 
 				// Save the new markers for the latest post processed.
 				update_option( $this->get_option_name( $template, 'latest_mod_time' ), $last_mod_time );

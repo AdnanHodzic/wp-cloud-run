@@ -132,7 +132,7 @@ function rp_field_height_render(  ) {
 		$optionHeight = '';		
 	}
 	?>
-	<input type='number' name='rp_settings[rp_field_height]' value='<?php echo $optionHeight; ?>'>
+	<input type='number' name='rp_settings[rp_field_height]' value='<?php echo esc_attr( $optionHeight ); ?>'>
 	<?php
 }
 
@@ -145,7 +145,7 @@ function rp_field_fg_color_render(  ) {
 		$optionForegroundColor = '';		
 	}
 	?>
-	<input type='text' class='rp-colorpicker' name='rp_settings[rp_field_fg_color]' value='<?php echo $optionForegroundColor; ?>'>
+	<input type='text' class='rp-colorpicker' name='rp_settings[rp_field_fg_color]' value='<?php echo esc_attr( $optionForegroundColor ); ?>'>
 	<?php
 }
 
@@ -157,7 +157,7 @@ function rp_field_bg_color_render(  ) {
 		$optionBackgroundColor = '';		
 	}
 	?>
-	<input type='text' class='rp-colorpicker' name='rp_settings[rp_field_bg_color]' value='<?php echo $optionBackgroundColor; ?>'>
+	<input type='text' class='rp-colorpicker' name='rp_settings[rp_field_bg_color]' value='<?php echo esc_attr( $optionBackgroundColor ); ?>'>
 	<?php
 }
 
@@ -186,7 +186,7 @@ function rp_field_custom_position_render(  ) {
 		$optionCustomPosition = '';		
 	}
 	?>
-	<input type='text' name='rp_settings[rp_field_custom_position]' value='<?php echo $optionCustomPosition; ?>'>
+	<input type='text' name='rp_settings[rp_field_custom_position]' value='<?php echo esc_attr( $optionCustomPosition ); ?>'>
 	<p class="description"><?php echo __('Note: use it only if you have selected <b>custom</b> position before, instead of <b>top</b> or <b>bottom</b>', 'reading-progress-bar'); ?></p>
 	<?php
 }

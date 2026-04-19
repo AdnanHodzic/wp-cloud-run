@@ -1,9 +1,9 @@
-﻿=== LightPress Lightbox ===
+=== LightPress Lightbox ===
 Contributors: pandaboxwp
 Tags: lightbox, photo, image, gallery
 Requires at least: 5.0
-Tested up to: 6.8
-Stable tag: 2.3.4
+Tested up to: 6.9.4
+Stable tag: 2.3.5
 Requires PHP: 7.0
 License: GPLv2 or later
 
@@ -72,6 +72,10 @@ Special thanks to [Ulf Benjaminsson](http://www.ulfbenjaminsson.com), who create
 1. Check out the jQuery Lightbox-panel in your admin interface for usage details and configuration.
 
 == Changelog ==
+
+= 2.3.5 =
+* Fix: Improve gallery grouping attribute handling
+* Update: WordPress tested version to 6.9.4
 
 = 2.3.4 =
 * Update: Dom purify script version

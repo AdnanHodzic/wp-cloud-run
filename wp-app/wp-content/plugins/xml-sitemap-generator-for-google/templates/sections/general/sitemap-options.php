@@ -28,6 +28,7 @@ $settings = $args['settings'] ?? new stdClass();
 			Dashboard::render_post_row( 'Recent Archive', 'archive', $settings->archive );
 			Dashboard::render_post_row( 'Older Archives', 'archive_older', $settings->archive_older );
 			Dashboard::render_post_row( 'Author Pages', 'authors', $settings->authors );
+			Dashboard::render_post_row( 'Media Pages', 'media', $settings->media ?? new stdClass() );
 
 			if ( ! empty( $args['taxonomies'] ) ) {
 				foreach ( $args['taxonomies'] as $taxonomy ) {
@@ -37,6 +38,20 @@ $settings = $args['settings'] ?? new stdClass();
 			?>
 			</tbody>
 		</table>
+		<div class="grim-notice grim-mb-20 grim-mt-20">
+			<i class="grim-icon-information"></i>
+			<p>
+				<?php
+				$attachment_pages_url = 'https://make.wordpress.org/core/2023/10/16/changes-to-attachment-pages/';
+				echo sprintf(
+					/* translators: %s: Note about enabling attachment pages with link */
+					esc_html__( 'Media Pages: %s', 'xml-sitemap-generator-for-google' ),
+					'<span>' . esc_html__( 'Enable WordPress attachment pages on the frontend for this option to work - ', 'xml-sitemap-generator-for-google' )
+					. ' <a href="' . esc_url( $attachment_pages_url ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Learn more', 'xml-sitemap-generator-for-google' ) . '</a>.</span>'
+				);
+				?>
+			</p>
+		</div>
 	</div>
 </div>
 

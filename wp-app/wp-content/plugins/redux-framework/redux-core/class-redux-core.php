@@ -348,6 +348,31 @@ if ( ! class_exists( 'Redux_Core', false ) ) {
 			self::$welcome = new Redux_Welcome();
 
 			add_filter( 'debug_information', array( $this, 'add_debug_info' ) );
+			add_filter( 'admin_body_class', array( $this, 'add_flag_to_body_class' ) );
+		}
+
+		/**
+		 * Adds a flag to the body class letting Redux know WP 7 or higher is loaded.
+		 * This is because of version specific CSS changes.
+		 *
+		 * @param string $classes Body classes.
+		 *
+		 * @return string
+		 */
+		public function add_flag_to_body_class( string $classes ): string {
+			global $wp_version;
+
+			$version = $wp_version;
+
+			if ( preg_match( '/^(\d+\.\d+(\.\d+)?)/', $wp_version, $matches ) ) {
+				$version = $matches[1];
+			}
+
+			if ( version_compare( $version, '7.0', '>=' ) ) {
+				return $classes . ' redux-wp-7';
+			}
+
+			return $classes;
 		}
 
 		/**

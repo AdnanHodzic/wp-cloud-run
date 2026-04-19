@@ -392,7 +392,7 @@ class WP_JQuery_Lightbox {
 		}
 
 		// Grouping.
-		return str_replace( '<a', '<a rel="lightbox[' . $this->lightbox_group . ']"', $html );
+		return str_replace( '<a', '<a rel="lightbox[' . esc_attr( $this->lightbox_group ) . ']"', $html );
 	}
 
 	/**

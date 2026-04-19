@@ -30,12 +30,12 @@ msgid "Andrei Baicus <andrei@themeisle.com>"
 msgstr ""
 
 #. translators: %s: Name of deactivated plugin
-#: bootstrap.php:487
+#: bootstrap.php:488
 #, php-format
 msgid "%s plugin deactivated."
 msgstr ""
 
-#: bootstrap.php:490
+#: bootstrap.php:491
 msgid "Using the Premium version of Super Page Cache for Cloudflare is not requiring using the Free version."
 msgstr ""
 
@@ -81,33 +81,33 @@ msgid "Yes"
 msgstr ""
 
 #. translators: %s is the path to the .htaccess file
-#: libs/cache_controller.class.php:2162
+#: libs/cache_controller.class.php:2181
 #, php-format
 msgid "The .htaccess file (%s) could not be edited. Check if the file has write permissions."
 msgstr ""
 
-#: libs/cache_controller.class.php:2212
-#: libs/cache_controller.class.php:2232
-#: libs/cache_controller.class.php:2255
+#: libs/cache_controller.class.php:2231
+#: libs/cache_controller.class.php:2251
+#: libs/cache_controller.class.php:2274
 msgid "Permission denied"
 msgstr ""
 
-#: libs/cache_controller.class.php:2219
-#: libs/cache_controller.class.php:2239
-#: libs/cache_controller.class.php:2271
+#: libs/cache_controller.class.php:2238
+#: libs/cache_controller.class.php:2258
+#: libs/cache_controller.class.php:2290
 msgid "Cache purged successfully! It may take up to 30 seconds for the cache to be permanently cleaned."
 msgstr ""
 
-#: libs/cache_controller.class.php:2265
+#: libs/cache_controller.class.php:2284
 msgid "An error occurred while cleaning the cache. Please check log file for further details."
 msgstr ""
 
-#: libs/cache_controller.class.php:2391
+#: libs/cache_controller.class.php:2410
 msgid "Super Page Cache - Purge Cache Cron Interval"
 msgstr ""
 
 #. translators: %1$s is the name of the sitemap, %2$s is the error message
-#: libs/cache_controller.class.php:2584
+#: libs/cache_controller.class.php:2603
 #, php-format
 msgid "Connection error while retriving the sitemap %1$s: %2$s"
 msgstr ""
@@ -685,184 +685,185 @@ msgstr ""
 msgid "There is an error while optimizing table. Error: %s"
 msgstr ""
 
-#: src/Modules/Rest_Server.php:543
+#: src/Modules/Rest_Server.php:547
 msgid "Failed to purge cache. Please try again later."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:548
-#: src/Modules/Rest_Server.php:578
+#: src/Modules/Rest_Server.php:552
+#: src/Modules/Rest_Server.php:582
 msgid "Cache purge initiated successfully. Please wait for the process to complete."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:565
+#: src/Modules/Rest_Server.php:569
 msgid "Failed to purge Varnish cache. Please try again later."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:573
+#: src/Modules/Rest_Server.php:577
 msgid "An unknown error occurred while purging Varnish cache."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:594
+#: src/Modules/Rest_Server.php:598
 msgid "An error occurred while testing the cache: "
 msgstr ""
 
-#: src/Modules/Rest_Server.php:615
+#: src/Modules/Rest_Server.php:619
 msgid "Logs cleared successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:618
+#: src/Modules/Rest_Server.php:622
 msgid "An error occurred while clearing logs: "
 msgstr ""
 
-#: src/Modules/Rest_Server.php:642
+#: src/Modules/Rest_Server.php:646
 msgid "Preloader is not enabled"
 msgstr ""
 
-#: src/Modules/Rest_Server.php:651
+#: src/Modules/Rest_Server.php:655
 msgid "Unable to start the preloader. Another preloading process is currently running."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:658
+#: src/Modules/Rest_Server.php:662
 msgid "Unable to start background processes: SWCFPC_Preloader_Process does not exists."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:665
+#: src/Modules/Rest_Server.php:669
 msgid "You cannot start the preloader while the page cache is disabled."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:672
+#: src/Modules/Rest_Server.php:676
 msgid "Preloader started successfully"
 msgstr ""
 
-#: src/Modules/Rest_Server.php:756
+#: src/Modules/Rest_Server.php:760
 msgid "Settings reset completed with some errors: "
 msgstr ""
 
-#: src/Modules/Rest_Server.php:762
+#: src/Modules/Rest_Server.php:766
 msgid "Settings reset completed successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:789
+#: src/Modules/Rest_Server.php:793
 msgid "Page cache enabled successfully"
 msgstr ""
 
-#: src/Modules/Rest_Server.php:801
+#: src/Modules/Rest_Server.php:805
 msgid "Page cache enabled successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:820
+#: src/Modules/Rest_Server.php:824
 msgid "Please refresh the page and try again."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:840
+#: src/Modules/Rest_Server.php:844
+#: src/Modules/Rest_Server.php:859
 msgid "Activated."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:840
+#: src/Modules/Rest_Server.php:859
 msgid "Deactivated"
 msgstr ""
 
-#: src/Modules/Rest_Server.php:859
-#: src/Modules/Rest_Server.php:868
-#: src/Modules/Rest_Server.php:904
+#: src/Modules/Rest_Server.php:878
+#: src/Modules/Rest_Server.php:887
+#: src/Modules/Rest_Server.php:923
 msgid "Invalid settings format provided."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:879
+#: src/Modules/Rest_Server.php:898
 msgid "Settings updated successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:885
+#: src/Modules/Rest_Server.php:904
 msgid "An error occurred while updating settings: "
 msgstr ""
 
-#: src/Modules/Rest_Server.php:910
+#: src/Modules/Rest_Server.php:929
 msgid "Failed to import settings."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:913
+#: src/Modules/Rest_Server.php:932
 msgid "Settings imported successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:930
-#: src/Modules/Rest_Server.php:1068
-#: src/Modules/Rest_Server.php:1235
-#: src/Modules/Rest_Server.php:1260
+#: src/Modules/Rest_Server.php:949
+#: src/Modules/Rest_Server.php:1087
+#: src/Modules/Rest_Server.php:1254
+#: src/Modules/Rest_Server.php:1279
 msgid "Invalid data format provided."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:945
+#: src/Modules/Rest_Server.php:964
 msgid "Email and API Key are required for API Key authentication."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:962
+#: src/Modules/Rest_Server.php:981
 msgid "API Token is required for API Token authentication."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:979
+#: src/Modules/Rest_Server.php:998
 msgid "Invalid authentication mode provided."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:992
+#: src/Modules/Rest_Server.php:1011
 msgid "Failed to connect to Cloudflare: "
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1007
+#: src/Modules/Rest_Server.php:1026
 msgid "Cloudflare connected successfully via API Key."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1008
+#: src/Modules/Rest_Server.php:1027
 msgid "Cloudflare connected successfully via API Token."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1014
+#: src/Modules/Rest_Server.php:1033
 msgid "An error occurred while connecting to Cloudflare: "
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1050
+#: src/Modules/Rest_Server.php:1069
 msgid "Disconnected from Cloudflare."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1091
+#: src/Modules/Rest_Server.php:1110
 msgid "Invalid response from Cloudflare."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1108
+#: src/Modules/Rest_Server.php:1127
 msgid "Successfully connected to Cloudflare."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1160
+#: src/Modules/Rest_Server.php:1179
 msgid "An error occurred while optimizing the database:"
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1215
+#: src/Modules/Rest_Server.php:1234
 msgid "Failed to repair the Cloudflare rule."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1220
+#: src/Modules/Rest_Server.php:1239
 msgid "Cloudflare rule repaired successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1241
+#: src/Modules/Rest_Server.php:1260
 msgid "Failed to dismiss notice."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1244
+#: src/Modules/Rest_Server.php:1263
 msgid "Notice dismissed successfully."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1266
-#: src/Modules/Rest_Server.php:1286
+#: src/Modules/Rest_Server.php:1285
+#: src/Modules/Rest_Server.php:1305
 msgid "No changes to save."
 msgstr ""
 
 #. translators: %d is the number of assets with saved rules.
-#: src/Modules/Rest_Server.php:1291
+#: src/Modules/Rest_Server.php:1310
 #, php-format
 msgid "Saved rules for %d assets."
 msgstr ""
 
-#: src/Modules/Rest_Server.php:1294
+#: src/Modules/Rest_Server.php:1313
 msgid "Saved rules for one asset."
 msgstr ""
 

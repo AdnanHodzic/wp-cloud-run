@@ -49,6 +49,7 @@ class Constants {
 	public const SETTING_OVERWRITE_WITH_HTACCESS                   = 'cf_cache_control_htaccess';
 	public const SETTING_PURGE_ONLY_HTML                           = 'cf_purge_only_html';
 	public const SETTING_DISABLE_PURGING_QUEUE                     = 'cf_disable_cache_purging_queue';
+	public const SETTING_FALLBACK_CACHE_HTTP_RESPONSE_CODE         = 'cf_fallback_cache_http_response_code';
 
 	// Bypass Settings.
 	public const SETTING_BYPASS_404          = 'cf_bypass_404';

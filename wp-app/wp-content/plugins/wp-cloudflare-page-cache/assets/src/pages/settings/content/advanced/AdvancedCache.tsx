@@ -36,6 +36,13 @@ const AdvancedCache = () => {
       children: <pre className="text-xs mt-1">cache-control, set-cookie, X-WP-CF-Super-Cache*</pre>
     },
     {
+      id: 'cf_fallback_cache_http_response_code',
+      type: 'toggle',
+      label: __('Don\'t cache 4xx / 5xx responses', 'wp-cloudflare-page-cache'),
+      description: __('Exclude 4xx and 5xx HTTP error responses from being cached.', 'wp-cloudflare-page-cache'),
+      hide: !isToggleOn('cf_fallback_cache'),
+    },
+    {
       id: 'cf_fallback_cache_prevent_cache_urls_without_trailing_slash',
       type: 'toggle',
       label: __('Prevent to cache URLs without trailing slash', 'wp-cloudflare-page-cache'),

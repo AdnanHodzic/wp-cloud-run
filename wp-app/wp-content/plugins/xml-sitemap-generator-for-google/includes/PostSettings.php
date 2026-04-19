@@ -8,6 +8,7 @@ class PostSettings {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'register_plugin_sidebar_block' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_meta_box' ) );
 		add_action( 'save_post', array( $this, 'save_meta_box' ) );
+		add_action( 'edit_attachment', array( $this, 'save_meta_box' ) );
 		add_filter( 'user_has_cap', array( $this, 'allow_edit_post_meta' ), 10, 3 );
 	}
 
@@ -20,8 +21,8 @@ class PostSettings {
 			'_sitemap_exclude',
 			array(
 				'show_in_rest' => true,
-				'single'       => true,
-				'type'         => 'boolean',
+				'single' => true,
+				'type' => 'boolean',
 			)
 		);
 		register_post_meta(
@@ -29,8 +30,8 @@ class PostSettings {
 			'_sitemap_priority',
 			array(
 				'show_in_rest' => true,
-				'single'       => true,
-				'type'         => 'string',
+				'single' => true,
+				'type' => 'string',
 			)
 		);
 		register_post_meta(
@@ -38,8 +39,8 @@ class PostSettings {
 			'_sitemap_frequency',
 			array(
 				'show_in_rest' => true,
-				'single'       => true,
-				'type'         => 'string',
+				'single' => true,
+				'type' => 'string',
 			)
 		);
 	}
@@ -64,9 +65,9 @@ class PostSettings {
 				'sitemap-settings',
 				'sitemapSettings',
 				array(
-					'isProEnabled'       => sgg_pro_enabled(),
-					'isExcludeEnabled'   => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__exclude_sitemap', false ) ),
-					'isPriorityEnabled'  => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__sitemap_priority', false ) ),
+					'isProEnabled' => sgg_pro_enabled(),
+					'isExcludeEnabled' => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__exclude_sitemap', false ) ),
+					'isPriorityEnabled' => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__sitemap_priority', false ) ),
 					'isFrequencyEnabled' => intval( ! apply_filters( 'xml_sitemap_disable_post_meta__sitemap_frequency', false ) ),
 				)
 			);

@@ -221,7 +221,13 @@ class SWCFPC_Fallback_Cache {
 			$this->modules['logs']->add_log( 'fallback_cache::fallback_cache_add_define_cache_wp_config', 'wp-config.php is empty' );
 			return false;
 		}
-		$config_file       = preg_split( '/\R/u', $config_contents );
+		$config_file = preg_split( '/\R/u', $config_contents );
+
+		if ( ! $config_file || ! is_array( $config_file ) ) {
+			$this->modules['logs']->add_log( 'fallback_cache::fallback_cache_add_define_cache_wp_config', 'Unable to parse wp-config file.' );
+			return false;
+		}
+
 		$config_file_count = count( $config_file );
 
 		// Get the value of WP_CACHE constant.

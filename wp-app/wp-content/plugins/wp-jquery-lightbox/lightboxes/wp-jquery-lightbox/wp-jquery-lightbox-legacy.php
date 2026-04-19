@@ -326,7 +326,7 @@ function jqlb_filter_groups($html, $attr) {//runs on the post_gallery filter.
 function jqlb_lightbox_gallery_links($html){ //honors our custom group-attribute of the gallery shortcode.
 	global $jqlb_group;
 	if(!isset($jqlb_group) || $jqlb_group == -1){return $html;}
-    return str_replace('<a','<a rel="lightbox['.$jqlb_group.']"', $html);
+    return str_replace('<a','<a rel="lightbox['.esc_attr($jqlb_group).']"', $html);
 }
 
 function jqlb_bool_intval($v){

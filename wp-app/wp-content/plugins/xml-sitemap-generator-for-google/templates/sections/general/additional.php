@@ -65,6 +65,9 @@ $settings = $args['settings'] ?? new stdClass();
 					<?php esc_html_e( 'Add Bulk URLs', 'xml-sitemap-generator-for-google' ); ?>
 				</span>
 			</a>
+			<a href="#" class="grim-button grim-mt-10 secondary grim-additional-urls-toggle">
+				<span>Show More</span>
+			</a>
 		</div>
 
 		<div class="add-bulk-urls-section hidden">

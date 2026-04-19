@@ -5,7 +5,7 @@ Author URI: https://wpbrigade.com/?utm_source=wphf-org&utm_medium=author-url-lin
 Tags: header, footer, Google Analytics, custom css, Facebook Pixel
 Requires at least: 5.0
 Tested up to: 6.9
-Stable tag: 3.1.3
+Stable tag: 3.1.4
 License: GPLv3 or later
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -76,6 +76,9 @@ You can insert code in Header, Body and Footer areas of any WordPress site.
 
 
 == Changelog ==
+
+= 3.1.4 – 2026-03-17 =
+* Security: Added nonce verification and capability checks to prevent CSRF attacks.
 
 = 3.1.3 – 2025-08-06 =
 * Bugfix: Fixed download log file functionality issue.
@@ -179,5 +182,5 @@ You can insert code in Header, Body and Footer areas of any WordPress site.
 
 == Upgrade Notice ==
 
-= 3.1.3 =
+= 3.1.4 =
 * Upgrade Immediately.

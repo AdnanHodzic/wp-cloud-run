@@ -1,11 +1,11 @@
 === Reading progressbar ===
 Contributors: audrasjb,whodunitagency,maxpertici
 Donate link: https://www.paypal.me/audrasjb
-Tags: reading, progressbar, progress, scroll, read, bar, position, indicator, template, lecture, barre, suivi
+Tags: reading, progressbar, progress, scroll, indicator
 Requires at least: 4.9
-Tested up to: 6.4
+Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 1.3
+Stable tag: 1.3.1
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,6 +49,9 @@ It will be fixed on version 2.0. Contact me if you want to help or ask for more 
 2. Reading Progressbar in custom fixed position on Twenty Seventeen Theme.
 
 == Changelog ==
+
+= 1.3.1 = 
+* Security enhancements: escape values.
 
 = 1.3 = 
 * Performance enhancement for better support for Google Core Web Vitals: enqueue stylesheets and scripts only when necessary.

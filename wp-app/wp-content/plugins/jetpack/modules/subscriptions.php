@@ -138,6 +138,7 @@ class Jetpack_Subscriptions {
 		// Set "social_notifications_subscribe" option during the first-time activation.
 		add_action( 'jetpack_activate_module_subscriptions', array( $this, 'set_social_notifications_subscribe' ) );
 		add_action( 'jetpack_activate_module_subscriptions', array( $this, 'set_featured_image_in_email_default' ) );
+		add_action( 'jetpack_activate_module_subscriptions', array( $this, 'set_newsletter_send_default' ) );
 
 		// Hide subscription messaging in Publish panel for posts that were published in the past
 		add_action( 'init', array( $this, 'register_post_meta' ), 20 );
@@ -813,6 +814,17 @@ class Jetpack_Subscriptions {
 	 * @param string     $approved Comment status.
 	 */
 	public function comment_subscribe_submit( $comment_id, $approved ) {
+		/**
+		 * Filters whether to skip comment subscription processing.
+		 *
+		 * @since 15.5
+		 *
+		 * @param bool $skip Whether to skip comment subscription. Default false.
+		 */
+		if ( apply_filters( 'jetpack_subscription_comment_subscribe_skip', false ) ) {
+			return;
+		}
+
 		if ( 'spam' === $approved ) {
 			return;
 		}
@@ -937,6 +949,15 @@ class Jetpack_Subscriptions {
 	}
 
 	/**
+	 * Set the email post to subscribers default option to `1` when the Subscriptions module is activated for the first time.
+	 *
+	 * @return void
+	 */
+	public function set_newsletter_send_default() {
+		add_option( 'wpcom_newsletter_send_default', 1 );
+	}
+
+	/**
 	 * Save a flag when a post was ever published.
 	 *
 	 * It saves the post meta when the post was published and becomes a draft.
@@ -1043,11 +1064,11 @@ class Jetpack_Subscriptions {
 
 		Admin_Menu::add_menu(
 			__( 'Subscribers', 'jetpack' ),
-			__( 'Subscribers', 'jetpack' ) . ' <span class="dashicons dashicons-external"></span>',
+			__( 'Subscribers', 'jetpack' ) . ' <span aria-hidden="true">↗</span>',
 			'manage_options',
 			esc_url( $link ),
 			null,
-			11
+			15
 		);
 	}
 

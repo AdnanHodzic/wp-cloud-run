@@ -72,12 +72,18 @@ jQuery(document).ready(function ($) {
             '<td><input type="datetime-local" name="additional_lastmods[]" class="grim-input"></td>' +
             '<td><a href="#" class="remove_url"><i class="grim-icon-trash"></i></a></td>' +
             '</tr>');
+
+        let $rows = $('#additional_urls').find('tr');
+
+        showAdditionalUrls();
+        normalizeVisibleRows($rows, 5);
     });
 
     /** Add Bulk URLs */
     $('#add_bulk_urls').on('click', function(e) {
         e.preventDefault();
         $('.add-bulk-urls-section').removeClass('hidden');
+        showAdditionalUrls();
     });
 
     $('#run_add_bulk_urls').on('click', function(e) {
@@ -101,6 +107,9 @@ jQuery(document).ready(function ($) {
         $bulk_urls.val('');
 
         $('.add-bulk-urls-section').addClass('hidden');
+        let $rows = $('#additional_urls').find('tr')
+
+        normalizeVisibleRows($rows, 5);
     });
 
     $('#cancel_add_bulk_urls').on('click', function(e) {
@@ -112,8 +121,98 @@ jQuery(document).ready(function ($) {
     /** Remove Field */
     $(document).on('click', '.remove_url', function(e) {
         e.preventDefault();
-        $(this).closest('tr').remove();
-    })
+
+        const $row = $(this).closest('tr');
+        const $tbody = $row.closest('tbody');
+
+        $row.remove();
+
+        const $rows = $tbody.find('tr').not('.no_urls');
+
+        if ($tbody.find('tr').length === 0) {
+            $tbody.prepend(`
+              <tr class="no_urls">
+                <td colspan="5" align="center">${grimData.NoUrls}</td>
+              </tr>
+            `);
+        }
+
+        normalizeVisibleRows($rows, 5);
+    });
+
+    function normalizeVisibleRows($rows, limit = 5) {
+        let visibleCount = 0;
+        let $btn = $rows.closest('.grim-section').find('.grim-additional-urls-toggle');
+
+        if ( $btn && !$btn.hasClass('active')) {
+            $rows.each(function () {
+                const $row = $(this);
+
+                if (!$row.hasClass('grim-term-hidden') && visibleCount < limit) {
+                    visibleCount++;
+                    return;
+                }
+
+                if (visibleCount < limit) {
+                    $row.removeClass('grim-term-hidden');
+                    visibleCount++;
+                } else {
+                    $row.addClass('grim-term-hidden');
+                }
+            });
+        }
+
+        toggleExpandButton($rows, $btn);
+    }
+
+    function showAdditionalUrls() {
+        let $rows = $('#additional_urls').find('tr')
+        let $btn = $rows.closest('.grim-section').find('.grim-additional-urls-toggle');
+
+        if ($btn.length && !$btn.hasClass('active')) {
+            $btn.addClass('active');
+            $rows.removeClass('grim-term-hidden');
+            $btn.find('span').text('Show Less');
+        }
+    }
+
+    function toggleExpandButton($rows, $toggle, limit = 5) {
+        $toggle.toggle($rows.length > limit);
+    }
+
+    /** Expand Additional URLs table */
+    $('.grim-additional-urls-toggle').on('click', function (e) {
+        e.preventDefault();
+        const $btn = $(this);
+        const $table = $btn.closest('.grim-section').find('.grim-additional-urls');
+        const $rows = $table.find('tbody tr').not('.no_urls');
+
+        $btn.toggleClass('active');
+
+        if ($btn.hasClass('active')) {
+            $rows.removeClass('grim-term-hidden');
+            $btn.find('span').text('Show Less');
+        } else {
+            $rows.each(function (index) {
+                if (index >= 5) {
+                    $(this).addClass('grim-term-hidden');
+                }
+            });
+            $btn.find('span').text('Show More');
+        }
+    });
+
+    $('.grim-additional-urls tbody tr')
+      .not('.no_urls')
+      .each(function (index) {
+          let $btn = $(this).closest('.grim-section').find('.grim-additional-urls-toggle');
+          if (index >= 5) {
+              $btn.toggle(true);
+              $(this).addClass('grim-term-hidden');
+          } else {
+              $btn.toggle(false);
+          }
+      });
 
     /** Expand */
     $('.grim-expand-toggle').click(function (e) {

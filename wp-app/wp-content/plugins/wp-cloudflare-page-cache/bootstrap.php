@@ -21,7 +21,7 @@ if ( ! class_exists( 'SW_CLOUDFLARE_PAGECACHE' ) ) {
 	define( 'SWCFPC_AUTH_MODE_API_TOKEN', 1 );
 	define( 'SWCFPC_LOGS_STANDARD_VERBOSITY', 1 );
 	define( 'SWCFPC_LOGS_HIGH_VERBOSITY', 2 );
-	define( 'SWCFPC_VERSION', '5.2.2' );
+	define( 'SWCFPC_VERSION', '5.2.4' );
 	if ( ! defined( 'SPC_METRICS_DIR' ) ) {
 		$home_url_parts = parse_url( home_url() );
 		define( 'SPC_METRICS_DIR', WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$home_url_parts['host']}/metrics" );
@@ -147,7 +147,6 @@ if ( ! class_exists( 'SW_CLOUDFLARE_PAGECACHE' ) ) {
 
 			$this->modules['logs']             = new SWCFPC_Logs( $this );
 			$this->modules['cloudflare']       = new SWCFPC_Cloudflare( $this );
-			$this->modules['fallback_cache']   = new SWCFPC_Fallback_Cache( $this );
 			$this->modules['html_cache']       = new SWCFPC_Html_Cache( $this );
 			$this->modules['cache_controller'] = new SWCFPC_Cache_Controller( SWCFPC_CACHE_BUSTER, $this );
 			$this->modules['varnish']          = new SWCFPC_Varnish( $this );
@@ -155,6 +154,8 @@ if ( ! class_exists( 'SW_CLOUDFLARE_PAGECACHE' ) ) {
 
 			$this->maybe_load_pro_modules();
 			$this->core_loader->load_modules();
+
+			$this->modules['fallback_cache'] = new SWCFPC_Fallback_Cache( $this );
 
 			if ( ( ! defined( 'WP_CLI' ) || ( defined( 'WP_CLI' ) && WP_CLI === false ) ) && isset( $_SERVER['REQUEST_METHOD'] ) && strcasecmp( $_SERVER['REQUEST_METHOD'], 'GET' ) == 0 && ! is_admin() && ! $this->is_login_page() && $settings_store->get( Constants::SETTING_ENABLE_FALLBACK_CACHE ) && $this->modules['cache_controller']->is_cache_enabled() && ( ! defined( 'DOING_CRON' ) || ( defined( 'DOING_CRON' ) && DOING_CRON === false ) ) ) {
 				$this->modules['fallback_cache']->fallback_cache_retrive_current_page();
@@ -615,9 +616,9 @@ if ( ! class_exists( 'SW_CLOUDFLARE_PAGECACHE' ) ) {
 		 * @deprecated Use \SPC\Utils\Helpers::get_plugin_content_dir() instead.
 		 */
 		public function get_plugin_wp_content_directory() {
-			$parts = parse_url( home_url() );
+			$host = parse_url( home_url(), PHP_URL_HOST );
 
-			return WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$parts['host']}";
+			return WP_CONTENT_DIR . "/wp-cloudflare-super-page-cache/{$host}";
 		}
 
 		/**
