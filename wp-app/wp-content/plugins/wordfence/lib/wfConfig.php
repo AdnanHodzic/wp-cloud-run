@@ -579,6 +579,21 @@ class wfConfig {
 		return (int) self::get($key, $default, $allowCached);
 	}
 	
+	/**
+	 * Alternate version of `getInt` that returns an int if the value is numeric, otherwise returns the raw value.
+	 *
+	 * @param string $key
+	 * @param mixed $default
+	 * @return int|mixed
+	 */
+	public static function getMaybeInt($key, $default = 0, $allowCached = true) {
+		$raw = self::get($key, $default, $allowCached);
+		if (is_numeric($raw)) {
+			return (int) $raw;
+		}
+		return $raw;
+	}
+	
 	public static function getJSON($key, $default = false, $allowCached = true) {
 		$json = self::get($key, $default, $allowCached, $isDefault);
 		if ($isDefault)
@@ -999,12 +1014,12 @@ class wfConfig {
 		}
 		return 0;
 	}
-	public static function liveTrafficEnabled(&$overriden = null){
-		$enabled = self::get('liveTrafficEnabled');
+	public static function liveTrafficEnabled(&$overridden = null) {
+		$enabled = self::getBool('liveTrafficEnabled');
 		if (WORDFENCE_DISABLE_LIVE_TRAFFIC || WF_IS_WP_ENGINE) {
 			$enabled = false;
-			if ($overriden !== null) {
-				$overriden = true;
+			if ($overridden !== null) {
+				$overridden = true;
 			}
 		}
 		return $enabled;
@@ -1262,6 +1277,69 @@ Options -ExecCGI
 	}
 	
 	/**
+	 * Preprocesses the $changes array to apply actions like conversion from browser time zone to server.
+	 *
+	 * @param array $changes
+	 * @param string|null $timeZone
+	 * @return void
+	 */
+	public static function preprocess(&$changes, $timeZone = null) {
+		$wpTimeZone = null;
+		if (function_exists('wp_timezone') /* WP 5.3+ */) {
+			$wpTimeZone = wp_timezone();
+		}
+		else {
+			//Polyfill
+			try {
+				$timezone_string = get_option( 'timezone_string' );
+				
+				if ( $timezone_string ) {
+					$wpTimeZone = new DateTimeZone($timezone_string);
+				}
+				else {
+					$offset  = (float) get_option( 'gmt_offset' );
+					$hours   = (int) $offset;
+					$minutes = ( $offset - $hours );
+					
+					$sign      = ( $offset < 0 ) ? '-' : '+';
+					$abs_hour  = abs( $hours );
+					$abs_mins  = abs( $minutes * 60 );
+					$tz_offset = sprintf( '%s%02d:%02d', $sign, $abs_hour, $abs_mins );
+					
+					$wpTimeZone = new DateTimeZone($tz_offset);
+				}
+			}
+			catch (Exception $e) {
+				$wpTimeZone = new DateTimeZone('UTC');
+			}
+		}
+		
+		if ($timeZone !== null) {
+			try {
+				$timeZone = new DateTimeZone($timeZone);
+			}
+			catch (Exception $e) {
+				$timeZone = null;
+			}
+		}
+		
+		if ($timeZone === null) {
+			$timeZone = $wpTimeZone;
+		}
+		
+		foreach ($changes as $key => $value) {
+			$checked = false;
+			switch ($key) {
+				//============ WAF
+				case 'learningModeGracePeriod':
+					$dtUtc = (new DateTimeImmutable(substr((string) $value, 0, 10) . ' 00:00:00', $timeZone))->setTimezone(new DateTimeZone('UTC'));
+					$changes[$key] = $dtUtc->format('Y-m-d\TH:i:sP');
+					break;
+			}
+		}
+	}
+	
+	/**
 	 * Validates the array of configuration changes without applying any. All bounds checks must be performed here.
 	 *
 	 * @param array $changes
@@ -1453,7 +1531,7 @@ Options -ExecCGI
 					$value = (int) $value;
 					wfScanMonitor::validateResumeAttempts($value, $valid);
 					if (!$valid)
-						$errors[] = array('option' => $key, 'error' => sprintf(__('Invalid number of scan resume attempts specified: %d', 'wordfence'), $value));
+						$errors[] = array('option' => $key, 'error' => sprintf(/* translators: attempt count */ __('Invalid number of scan resume attempts specified: %d', 'wordfence'), $value));
 					break;
 				}
 			}
@@ -1510,7 +1588,7 @@ Options -ExecCGI
 				{
 					$wafStatus = (isset($changes['wafStatus']) ? $changes['wafStatus'] : $wafConfig->getConfig('wafStatus'));
 					if ($wafStatus == wfFirewall::FIREWALL_MODE_LEARNING) {
-						$dt = wfUtils::parseLocalTime($value);
+						$dt = new DateTimeImmutable($value /* this has previously been normalized to UTC */);
 						$gracePeriodEnd = $dt->format('U');
 						$wafConfig->setConfig($key, $gracePeriodEnd);
 					}
@@ -1990,6 +2068,16 @@ Options -ExecCGI
 					//Letting these fall through to the default save handler
 					break;
 				}
+				
+				//Legacy 2FA
+				case wfCredentialsController::DISABLE_LEGACY_2FA_OPTION:
+					wfAdminNoticeQueue::removeAdminNoticeForCategory('legacy2faDeprecation', wfAdminNoticeQueue::USERS_ALL);
+					wfAdminNoticeQueue::removeAdminNoticeForCategory('legacy2faDeprecationUnprivileged', wfAdminNoticeQueue::USERS_ALL);
+          			//Fall through
+				case wfCredentialsController::ALLOW_LEGACY_2FA_OPTION:
+					wfConfig::set($key, wfUtils::truthyToInt($value));
+					$saved = true;
+					break;
 			}
 			
 			//============ Plugin (default treatment)

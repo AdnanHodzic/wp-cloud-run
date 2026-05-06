@@ -200,6 +200,17 @@ $settings = $args['settings'] ?? new stdClass();
 
 		<p class="grim-section-desc inside sitemap-cache"><?php esc_html_e( 'Clear cache when Page/Post created or updated', 'xml-sitemap-generator-for-google' ); ?></p>
 
+		<?php
+			Dashboard::render(
+				'partials/pro-upgrade-prompt.php',
+				array(
+					'segment'     => 'smart-caching',
+					'utm'         => 'locked-smart-caching',
+					'title'       => __( 'Smart Caching is available in Pro', 'xml-sitemap-generator-for-google' ),
+					'description' => __( 'Automatically clear cache when content changes to keep sitemap updates fast and accurate.', 'xml-sitemap-generator-for-google' ),
+				)
+			);
+		?>
 	</div>
 	<?php sgg_show_pro_overlay(); ?>
 </div>
@@ -227,6 +238,7 @@ $settings = $args['settings'] ?? new stdClass();
 			<p>
 				<?php
 				echo sprintf(
+					/* translators: %s: Note */
 					esc_html__( 'Note: %s', 'xml-sitemap-generator-for-google' ),
 					'<span>' . esc_html__( 'This will affect the performance of Media Sitemap Generation.', 'xml-sitemap-generator-for-google' ) . '</span>'
 				)

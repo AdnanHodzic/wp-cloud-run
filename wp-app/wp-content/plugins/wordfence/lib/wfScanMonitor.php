@@ -75,7 +75,7 @@ class wfScanMonitor {
 			$lastSuccess = wfConfig::get(self::CONFIG_LAST_SUCCESS);
 			self::setRemainingResumeAttempts(--$remainingAttempts);
 			if ($lastSuccess === null || $lastAttempt > $lastSuccess) {
-				wordfence::status(2, 'info', sprintf(__('Attempting to resume scan stage (%d attempt(s) remaining)...', 'wordfence'), $remainingAttempts));
+				wordfence::status(2, 'info', sprintf(/* translators: remaining attempts */ __('Attempting to resume scan stage (%d attempt(s) remaining)...', 'wordfence'), $remainingAttempts));
 				self::resumeScan();
 			}
 		}

@@ -99,7 +99,7 @@ class wordfenceScanner {
 				$logOnly = (isset($signatureRow[5]) && !empty($signatureRow[5])) ? $signatureRow[5] : false;
 				$commonStringIndexes = (isset($signatureRow[8]) && is_array($signatureRow[8])) ? $signatureRow[8] : array(); 
 				if (@preg_match('/' . $pattern . '/iS', '') === false) {
-					wordfence::status(1, 'error', sprintf(__('Regex compilation failed for signature %d', 'wordfence'), (int) $id));
+					wordfence::status(1, 'error', sprintf(/* translators: malware signature ID */ __('Regex compilation failed for signature %d', 'wordfence'), (int) $id));
 					unset($sigData['rules'][$key]);
 				}
 				else if (!$logOnly) {
@@ -398,8 +398,8 @@ class wordfenceScanner {
 										'severity' => wfIssues::SEVERITY_CRITICAL,
 										'ignoreP' => $record->realPath,
 										'ignoreC' => $fileSum,
-										'shortMsg' => sprintf(__('File appears to be malicious or unsafe: %s', 'wordfence'), esc_html($record->getDisplayPath())),
-										'longMsg' => $customMessage . ' ' . sprintf(__('The matched text in this file is: %s', 'wordfence'), '<strong style="color: #F00;" class="wf-split-word">' . wfUtils::potentialBinaryStringToHTML((wfUtils::strlen($matchString) > 200 ? wfUtils::substr($matchString, 0, 200) . '...' : $matchString)) . '</strong>') . ' ' . '<br><br>' . sprintf(/* translators: Scan result type. */ __('The issue type is: %s', 'wordfence'), '<strong>' . esc_html($rule[7]) . '</strong>') . '<br>' . sprintf(/* translators: Scan result description. */ __('Description: %s', 'wordfence'), '<strong>' . esc_html($rule[3]) . '</strong>') . $extraMsg,
+										'shortMsg' => sprintf(/* translators: file path */__('File appears to be malicious or unsafe: %s', 'wordfence'), esc_html($record->getDisplayPath())),
+										'longMsg' => $customMessage . ' ' . sprintf(/* translators: matched text */ __('The matched text in this file is: %s', 'wordfence'), '<strong style="color: #F00;" class="wf-split-word">' . wfUtils::potentialBinaryStringToHTML((wfUtils::strlen($matchString) > 200 ? wfUtils::substr($matchString, 0, 200) . '...' : $matchString)) . '</strong>') . ' ' . '<br><br>' . sprintf(/* translators: Scan result type. */ __('The issue type is: %s', 'wordfence'), '<strong>' . esc_html($rule[7]) . '</strong>') . '<br>' . sprintf(/* translators: Scan result description. */ __('Description: %s', 'wordfence'), '<strong>' . esc_html($rule[3]) . '</strong>') . $extraMsg,
 										'data' => array_merge(array(
 											'file' => $file,
 											'realFile' => $record->realPath,

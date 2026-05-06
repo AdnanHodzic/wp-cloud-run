@@ -894,22 +894,22 @@ class wfCentral {
 	
 	public static function mismatchedCentralUrlNotice() {
 		echo '<div id="wordfenceMismatchedCentralUrlNotice" class="fade notice notice-warning"><p><strong>' .
-			__('Your site is currently linked to Wordfence Central under a different site URL.', 'wordfence')
+			esc_html__('Your site is currently linked to Wordfence Central under a different site URL.', 'wordfence')
 			. '</strong> '
-			. __('This may cause duplicated scan issues if both sites are currently active and reporting and is generally caused by duplicating the database from one site to another (e.g., from a production site to staging). We recommend disconnecting this site only, which will leave the matching site still connected.', 'wordfence')
+			. esc_html__('This may cause duplicated scan issues if both sites are currently active and reporting and is generally caused by duplicating the database from one site to another (e.g., from a production site to staging). We recommend disconnecting this site only, which will leave the matching site still connected.', 'wordfence')
 			. '</p><p>'
-			. __('If this is a single site with multiple domains or subdomains, you can dismiss this message.', 'wordfence')
+			. esc_html__('If this is a single site with multiple domains or subdomains, you can dismiss this message.', 'wordfence')
 			. '</p><p>'
 			. '<a class="wf-btn wf-btn-primary wf-btn-sm wf-dismiss-link" href="#" onclick="wordfenceExt.centralUrlMismatchChoice(\'local\'); return false;" role="button">' .
-			__('Disconnect This Site', 'wordfence')
+			esc_html__('Disconnect This Site', 'wordfence')
 			. '</a> '
 			. '<a class="wf-btn wf-btn-default wf-btn-sm wf-dismiss-link" href="#" onclick="wordfenceExt.centralUrlMismatchChoice(\'global\'); return false;" role="button">' .
-			__('Disconnect All', 'wordfence')
+			esc_html__('Disconnect All', 'wordfence')
 			. '</a> '
 			. '<a class="wf-btn wf-btn-default wf-btn-sm wf-dismiss-link" href="#" onclick="wordfenceExt.centralUrlMismatchChoice(\'dismiss\'); return false;" role="button">' .
-			__('Dismiss', 'wordfence')
+			esc_html__('Dismiss', 'wordfence')
 			. '</a> '
-			. '<a class="wfhelp" target="_blank" rel="noopener noreferrer" href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_DIAGNOSTICS_REMOVE_CENTRAL_DATA) . '"><span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a></p></div>';
+			. '<a class="wfhelp" target="_blank" rel="noopener noreferrer" href="' . wfSupportController::esc_supportURL(wfSupportController::ITEM_DIAGNOSTICS_REMOVE_CENTRAL_DATA) . '"><span class="wfhelpextra">' . esc_html__('Click here to learn more', 'wordfence') . '</span><span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a></p></div>';
 	}
 	
 	/**

@@ -439,15 +439,15 @@ class wfScanner {
 	 * Returns the currently defined custom schedule. This is only applicable when the scheduling mode is 
 	 * SCAN_SCHEDULING_MODE_MANUAL and the manual type is set to MANUAL_SCHEDULING_CUSTOM.
 	 * 
-	 * @return array The array will be of the format array(0 => array(0 => 0, 1 => 0 ... 23 => 0), ... 6 => array(...))
+	 * @return array The array will be of the format array(0 => array(0 => false, 1 => false ... 23 => false), ... 6 => array(...))
 	 */
 	public function customSchedule() {
-		$normalizedSchedule = array_fill(0, 7, array_fill(0, 24, 0));
+		$normalizedSchedule = array_fill(0, 7, array_fill(0, 24, false));
 		$storedSchedule = wfConfig::get_ser('scanSched', array());
 		if (is_array($storedSchedule) && !empty($storedSchedule) && is_array($storedSchedule[0])) {
 			foreach ($storedSchedule as $dayNumber => $day) {
 				foreach ($day as $hourNumber => $enabled) {
-					$normalizedSchedule[$dayNumber][$hourNumber] = wfUtils::truthyToInt($enabled);
+					$normalizedSchedule[$dayNumber][$hourNumber] = wfUtils::truthyToBoolean($enabled);
 				}
 			}
 		}
@@ -499,7 +499,7 @@ class wfScanner {
 					for ($i = 7; $i > 0; $i--) { //Sample sequence for `$currentDayOfWeekUTC == 2` => 2, 1, 0, 6, 5, 4, 3
 						$checkingDayNumber = ($currentDayOfWeekUTC + $i) % 7;
 						$day = $oneWeekSchedule[$checkingDayNumber];
-						$dayHour = array_search(1, $day);
+						$dayHour = array_search(true, $day);
 						if ($dayHour !== false) {
 							$preferredHourUTC = fmod(round(($dayHour * 3600 - $tzOffset) / 3600, 2) + 12, 24);
 							break;
@@ -731,7 +731,7 @@ class wfScanner {
 		
 		$runningStatus = wfConfig::get_ser('scanStageStatuses', array(), false);
 		
-		if ($runningStatus[$stageID]['status'] == self::STATUS_RUNNING && ($status == wfIssues::STATUS_PROBLEM)) {
+		if ($runningStatus[$stageID]['status'] == self::STATUS_RUNNING && ($status == wfIssues::STATE_PROBLEM)) {
 			$runningStatus[$stageID]['status'] = self::STATUS_RUNNING_WARNING;
 		}
 		
@@ -883,7 +883,7 @@ class wfScanner {
 			$subtraction = min($this->_normalizedPercentageToDisplay($percentage), $remainingPercentage);
 			$statusList[] = array(
 				'percentage' => $subtraction,
-				'title' => sprintf(_n('Enable %d scan option.', 'Enable %d scan options.', $disabledOptionCount,'wordfence'), number_format_i18n($disabledOptionCount)),
+				'title' => sprintf(/* translators: option count */ _n('Enable %d scan option.', 'Enable %d scan options.', $disabledOptionCount,'wordfence'), number_format_i18n($disabledOptionCount)),
 			);
 		}
 
@@ -1136,6 +1136,19 @@ class wfScanner {
 	}
 	
 	/**
+	 * Returns an array of all summary items.
+	 *
+	 * @return array
+	 */
+	public function getAllSummaryItems() {
+		$this->_fetchSummaryItems();
+		if (is_array($this->_summary)) {
+			return $this->_summary;
+		}
+		return array();
+	}
+	
+	/**
 	 * Sets the summary item $key as $value.
 	 * 
 	 * @param $key
@@ -1272,16 +1285,16 @@ class wfScanner {
 						$wrappedHour = (int) fmod($effectiveHour + 24, 24);
 						if ($effectiveHour < 0) {
 							if ($dayNumber > 0) {
-								$shiftedSchedule[$dayNumber - 1][$wrappedHour] = 1;
+								$shiftedSchedule[$dayNumber - 1][$wrappedHour] = true;
 							}
 						}
 						else if ($effectiveHour > 23) {
 							if ($dayNumber < count($schedule) - 1) {
-								$shiftedSchedule[$dayNumber + 1][$wrappedHour] = 1;
+								$shiftedSchedule[$dayNumber + 1][$wrappedHour] = true;
 							}
 						}
 						else {
-							$shiftedSchedule[$dayNumber][$effectiveHour] = 1;
+							$shiftedSchedule[$dayNumber][$effectiveHour] = true;
 						}
 					}
 				}
@@ -1309,7 +1322,7 @@ class wfScanner {
 						$scanTime = $periodStart + $dayNumber * 86400 + $hourNumber * 3600 + wfWAFUtils::random_int(0, 3600);
 						wordfence::status(4, 'info', sprintf(
 							/* translators: 1. Day of week. 2. Hour of day. 3. Localized date. */
-							__("Scheduled time for day %s hour %s is: %s", 'wordfence'),
+							__('Scheduled time for day %1$s hour %2$s is: %3$s', 'wordfence'),
 							$dayNumber,
 							$hourNumber,
 							wfUtils::formatLocalTime('l jS \of F Y h:i:s A P', $scanTime)

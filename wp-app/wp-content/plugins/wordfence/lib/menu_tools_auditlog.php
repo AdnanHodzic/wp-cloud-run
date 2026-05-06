@@ -14,37 +14,10 @@ $wpTooOld = version_compare($wp_version, $wfFeatureWPVersionAuditLog, '<');
 	(function($) {
 		$(function() {
 			document.title = "<?php esc_attr_e('Audit Log', 'wordfence'); ?>" + " \u2039 " + WFAD.basePageName;
-
-			//Hash-based option block linking
-			if (window.location.hash) {
-				var hashes = WFAD.parseHashes();
-				var hash = hashes[hashes.length - 1];
-				var block = $('.wf-block[data-persistence-key="' + hash + '"]');
-				if (block.length) {
-					if (!block.hasClass('wf-active')) {
-						block.find('.wf-block-content').slideDown({
-							always: function() {
-								block.addClass('wf-active');
-								$('html, body').animate({
-									scrollTop: block.offset().top - 100
-								}, 1000);
-							}
-						});
-
-						WFAD.ajax('wordfence_saveDisclosureState', {name: block.data('persistenceKey'), state: true}, function() {});
-					}
-					else {
-						$('html, body').animate({
-							scrollTop: block.offset().top - 100
-						}, 1000);
-					}
-
-					history.replaceState('', document.title, window.location.pathname + window.location.search);
-				}
-			}
 		});
 	})(jQuery);
 </script>
+<div class="wordfence-vue-wrapper" data-base-component="OptionsLinkBlock"></div>
 <div class="wf-section-title">
 	<h2><?php esc_html_e('Audit Log', 'wordfence') ?></h2>
 	<span><?php echo wp_kses(sprintf(
@@ -71,13 +44,7 @@ $wpTooOld = version_compare($wp_version, $wfFeatureWPVersionAuditLog, '<');
 
 <div class="wordfenceModeElem" id="wordfenceMode_auditLog"></div>
 
-<?php
-echo wfView::create('tools/options-group-audit-log', array(
-	'stateKey' => 'audit-log-options',
-	'showControls' => true,
-	'wpTooOld' => $wpTooOld,
-))->render();
-?>
+<div class="wordfence-vue-wrapper" data-base-component="OptionsGroupAuditLog" data-prop-state-key="audit-log-options" data-prop-show-controls="true"></div>
 
 <?php if ($wpTooOld): ?>
 <div id="wordfenceAuditLogWPTooOld">
@@ -219,63 +186,5 @@ echo wfView::create('tools/options-group-audit-log', array(
 </div>
 
 <?php if (wfOnboardingController::willShowNewTour(wfOnboardingController::TOUR_AUDIT_LOG)): ?>
-	<script type="application/javascript">
-		(function($) {
-			$(function() {
-				WFAD.tour1 = function() {
-					WFAD.tour('wfNewTour1', 'wf-audit-log', 'bottom', 'bottom', null, WFAD.tourComplete);
-				};
-				WFAD.tourComplete = function() { WFAD.tourFinish('<?php echo esc_attr(wfOnboardingController::TOUR_AUDIT_LOG); ?>'); };
-				
-				<?php if (wfOnboardingController::shouldShowNewTour(wfOnboardingController::TOUR_AUDIT_LOG)): ?>
-				if (!WFAD.isSmallScreen) { WFAD.tour1(); }
-				<?php endif; ?>
-			});
-		})(jQuery);
-	</script>
-
-	<script type="text/x-jquery-template" id="wfNewTour1">
-		<div>
-			<h3><?php esc_html_e('Audit Log', 'wordfence'); ?></h3>
-			<p><?php echo wp_kses(__('The Wordfence Audit Log is a premium feature that records a history of events on your site to assist in monitoring for unauthorized actions or signs of compromise. Events can include everything from user creation and editing to plugin/theme installation and updates. All data captured for relevant events is saved remotely to Wordfence Central to prevent any tampering that may interfere with post-incident analysis and response.', 'wordfence'), array('strong'=>array())); ?></p>
-			<div class="wf-pointer-footer">
-				<ul class="wf-tour-pagination">
-					<li class="wf-active">&bullet;</li>
-				</ul>
-				<div id="wf-tour-continue"><a href="#" class="wf-onboarding-btn wf-onboarding-btn-primary" role="button"><?php esc_html_e('Got it', 'wordfence'); ?></a></div>
-			</div>
-			<div id="wf-tour-close"><a href="#" role="button"><i class="wf-fa wf-fa-times-circle" aria-hidden="true"></i></a></div>
-		</div>
-	</script>
-<?php endif; ?>
-
-<?php if (wfOnboardingController::willShowUpgradeTour(wfOnboardingController::TOUR_AUDIT_LOG)): ?>
-	<script type="application/javascript">
-		(function($) {
-			$(function() {
-				WFAD.tour1 = function() {
-					WFAD.tour('wfUpgradeTour1', 'wf-audit-log', 'bottom', 'bottom', null, WFAD.tourComplete);
-				};
-				WFAD.tourComplete = function() { WFAD.tourFinish('<?php echo esc_attr(wfOnboardingController::TOUR_AUDIT_LOG); ?>'); };
-				
-				<?php if (wfOnboardingController::shouldShowUpgradeTour(wfOnboardingController::TOUR_AUDIT_LOG)): ?>
-				if (!WFAD.isSmallScreen) { WFAD.tour1(); }
-				<?php endif; ?>
-			});
-		})(jQuery);
-	</script>
-
-	<script type="text/x-jquery-template" id="wfUpgradeTour1">
-		<div>
-			<h3><?php esc_html_e('Audit Log', 'wordfence'); ?></h3>
-			<p><?php echo wp_kses(__('The Wordfence Audit Log is a premium feature that records a history of events on your site to assist in monitoring for unauthorized actions or signs of compromise. Events can include everything from user creation and editing to plugin/theme installation and updates. All data captured for relevant events is saved remotely to Wordfence Central to prevent any tampering that may interfere with post-incident analysis and response.', 'wordfence'), array('strong'=>array())); ?></p>
-			<div class="wf-pointer-footer">
-				<ul class="wf-tour-pagination">
-					<li class="wf-active">&bullet;</li>
-				</ul>
-				<div id="wf-tour-continue"><a href="#" role="button" class="wf-onboarding-btn wf-onboarding-btn-primary"><?php esc_html_e('Got it', 'wordfence'); ?></a></div>
-			</div>
-			<div id="wf-tour-close"><a href="#" role="button"><i class="wf-fa wf-fa-times-circle" aria-hidden="true"></i></a></div>
-		</div>
-	</script>
+<div class="wordfence-vue-wrapper" data-base-component="AuditLogNewTour"></div>
 <?php endif; ?>

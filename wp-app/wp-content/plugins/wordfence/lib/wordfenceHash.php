@@ -86,7 +86,7 @@ class wordfenceHash {
 			wfIssues::statusEndErr();
 			throw $e;
 		}
-		wfIssues::statusEnd($fetchCoreHashesStatus, wfIssues::STATUS_SUCCESS);
+		wfIssues::statusEnd($fetchCoreHashesStatus, wfIssues::STATE_SUCCESS);
 		if ($this->malwareEnabled) {
 			$malwarePrefixStatus = wfIssues::statusStart(__("Fetching list of known malware files from Wordfence", 'wordfence'));
 			
@@ -113,7 +113,7 @@ class wordfenceHash {
 			}
 			
 			$this->malwareData = $stored['prefixes'];
-			wfIssues::statusEnd($malwarePrefixStatus, wfIssues::STATUS_SUCCESS);
+			wfIssues::statusEnd($malwarePrefixStatus, wfIssues::STATE_SUCCESS);
 		}
 		
 		if ($this->coreUnknownEnabled) {
@@ -142,15 +142,15 @@ class wordfenceHash {
 			}
 			
 			$this->coreHashesData = $stored['hashes'];
-			wfIssues::statusEnd($coreHashesStatus, wfIssues::STATUS_SUCCESS);
+			wfIssues::statusEnd($coreHashesStatus, wfIssues::STATE_SUCCESS);
 		}
 
 		$this->haveIssues = array(
-			'core' => wfIssues::STATUS_SECURE,
-			'coreUnknown' => wfIssues::STATUS_SECURE,
-			'themes' => wfIssues::STATUS_SECURE,
-			'plugins' => wfIssues::STATUS_SECURE,
-			'malware' => wfIssues::STATUS_SECURE,
+			'core' => wfIssues::STATE_SECURE,
+			'coreUnknown' => wfIssues::STATE_SECURE,
+			'themes' => wfIssues::STATE_SECURE,
+			'plugins' => wfIssues::STATE_SECURE,
+			'malware' => wfIssues::STATE_SECURE,
 			);
 		if($this->coreEnabled){ $this->status['core'] = wfIssues::statusStart(__("Comparing core WordPress files against originals in repository", 'wordfence')); $this->engine->scanController()->startStage(wfScanner::STAGE_FILE_CHANGES); } else { wfIssues::statusDisabled(__("Skipping core scan", 'wordfence')); }
 		if($this->themesEnabled){ $this->status['themes'] = wfIssues::statusStart(__("Comparing open source themes against WordPress.org originals", 'wordfence')); $this->engine->scanController()->startStage(wfScanner::STAGE_FILE_CHANGES); } else { wfIssues::statusDisabled(__("Skipping theme scan", 'wordfence')); }
@@ -174,8 +174,8 @@ class wordfenceHash {
 				array()
 			);
 			
-			if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues['coreUnknown'] = wfIssues::STATUS_PROBLEM; }
-			else if ($this->haveIssues['coreUnknown'] != wfIssues::STATUS_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues['coreUnknown'] = wfIssues::STATUS_IGNORED; }
+			if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues['coreUnknown'] = wfIssues::STATE_PROBLEM; }
+			else if ($this->haveIssues['coreUnknown'] != wfIssues::STATE_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues['coreUnknown'] = wfIssues::STATE_IGNORED; }
 		}
 		$this->initializeProperties();
 	}
@@ -274,8 +274,8 @@ class wordfenceHash {
 							)
 						);
 					
-					if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues['malware'] = wfIssues::STATUS_PROBLEM; }
-					else if ($this->haveIssues['malware'] != wfIssues::STATUS_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues['malware'] = wfIssues::STATUS_IGNORED; }
+					if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues['malware'] = wfIssues::STATE_PROBLEM; }
+					else if ($this->haveIssues['malware'] != wfIssues::STATE_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues['malware'] = wfIssues::STATE_IGNORED; }
 				}
 			}
 		}
@@ -305,7 +305,7 @@ class wordfenceHash {
 						$child = $file->createChild($child);
 					}
 					catch (wfInvalidPathException $e) {
-						wordfence::status(4, 'info', sprintf(__("Ignoring invalid scan file child: %s", 'wordfence'), $e->getPath()));
+						wordfence::status(4, 'info', sprintf(/* translators: file path */ __("Ignoring invalid scan file child: %s", 'wordfence'), $e->getPath()));
 						continue;
 					}
 					if (is_file($child->getRealPath())) {
@@ -537,7 +537,7 @@ class wordfenceHash {
 						sprintf(/* translators: File path. */ __('Modified plugin file: %s', 'wordfence'), $properties->wordpressPath),
 						sprintf(
 							/* translators: 1. Plugin name. 2. Plugin version. 3. Support URL. */
-							__('This file belongs to plugin "%1$s" version "%2$s" and has been modified from the file that is distributed by WordPress.org for this version. Please use the link to see how the file has changed. If you have modified this file yourself, you can safely ignore this warning. If you see a lot of changed files in a plugin that have been made by the author, then try uninstalling and reinstalling the plugin to force an upgrade. Doing this is a workaround for plugin authors who don\'t manage their code correctly. <a href="%3$s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>', 'wordfence'),
+							__('This file belongs to plugin "%1$s" version "%2$s" and has been modified from the file that is distributed by WordPress.org for this version. Please use the link to see how the file has changed. If you have modified this file yourself, you can safely ignore this warning. If you see a lot of changed files in a plugin that have been made by the author, then try uninstalling and reinstalling the plugin to force an upgrade. Doing this is a workaround for plugin authors who don\'t manage their code correctly. <a href="%3$s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'),
 							$itemName,
 							$itemVersion,
 							wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_RESULT_MODIFIED_PLUGIN)
@@ -584,7 +584,7 @@ class wordfenceHash {
 						sprintf(/* translators: File path. */ __('Modified theme file: %s', 'wordfence'), $properties->wordpressPath),
 						sprintf(
 							/* translators: 1. Plugin name. 2. Plugin version. 3. Support URL. */
-							__('This file belongs to theme "%1$s" version "%2$s" and has been modified from the original distribution. It is common for site owners to modify their theme files, so if you have modified this file yourself you can safely ignore this warning. <a href="%3$s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>', 'wordfence'),
+							__('This file belongs to theme "%1$s" version "%2$s" and has been modified from the original distribution. It is common for site owners to modify their theme files, so if you have modified this file yourself you can safely ignore this warning. <a href="%3$s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'),
 							$itemName,
 							$itemVersion,
 							wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_RESULT_MODIFIED_THEME)
@@ -658,7 +658,7 @@ class wordfenceHash {
 						'coreUnknown' . $properties->wordpressPath,
 						'coreUnknown' . $properties->wordpressPath . $properties->md5,
 						sprintf(/* translators: File path. */ __('Unknown file in WordPress core: %s', 'wordfence'), $properties->wordpressPath),
-						sprintf(/* translators: Support URL. */ __('This file is in a WordPress core location but is not distributed with this version of WordPress. This scan often includes files left over from a previous WordPress version, but it may also find files added by another plugin, files added by your host, or malicious files added by an attacker. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>', 'wordfence'), wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_RESULT_UNKNOWN_FILE_CORE)),
+						sprintf(/* translators: Support URL. */ __('This file is in a WordPress core location but is not distributed with this version of WordPress. This scan often includes files left over from a previous WordPress version, but it may also find files added by another plugin, files added by your host, or malicious files added by an attacker. <a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'), wfSupportController::esc_supportURL(wfSupportController::ITEM_SCAN_RESULT_UNKNOWN_FILE_CORE)),
 						array(
 							'file' => $properties->wordpressPath,
 							'realFile' => $properties->realPath,
@@ -672,8 +672,8 @@ class wordfenceHash {
 			}
 		}
 
-		if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues['coreUnknown'] = wfIssues::STATUS_PROBLEM; }
-		else if ($this->haveIssues['coreUnknown'] != wfIssues::STATUS_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues['coreUnknown'] = wfIssues::STATUS_IGNORED; }
+		if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues['coreUnknown'] = wfIssues::STATE_PROBLEM; }
+		else if ($this->haveIssues['coreUnknown'] != wfIssues::STATE_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues['coreUnknown'] = wfIssues::STATE_IGNORED; }
 		return false;
 	}
 	private function checkKnownFile($properties, $type) {
@@ -871,8 +871,8 @@ class wordfenceHash {
 							$i['data'],
 							true //Prevent ignoreP and ignoreC from being hashed again
 						);
-						if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues[$haveIssuesType] = wfIssues::STATUS_PROBLEM; }
-						else if ($this->haveIssues[$haveIssuesType] != wfIssues::STATUS_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues[$haveIssuesType] = wfIssues::STATUS_IGNORED; }
+						if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues[$haveIssuesType] = wfIssues::STATE_PROBLEM; }
+						else if ($this->haveIssues[$haveIssuesType] != wfIssues::STATE_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues[$haveIssuesType] = wfIssues::STATE_IGNORED; }
 					}
 				}
 			}
@@ -892,12 +892,12 @@ class wordfenceHash {
 				$i['ignoreP'],
 				$i['ignoreC'],
 				$i['shortMsg'] . ($count > 1 ? ' ' . sprintf(/* translators: Number of scan results. */ __('(+ %d more)', 'wordfence'), $count - 1) : ''),
-				$i['longMsg'] . ($count > 1 ? ' ' . ($count > 2 ? sprintf(/* translators: Number of files. */ __('%d more similar files were found.', 'wordfence'), $count - 1) : __('1 more similar file was found.', 'wordfence')) : '') . (isset($i['data']['learnMore']) ? ' ' . sprintf(__('<a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (' . esc_html__('opens in new tab', 'wordfence') . ')</span></a>', 'wordfence'), esc_attr($i['data']['learnMore'])) : ''),
+				$i['longMsg'] . ($count > 1 ? ' ' . ($count > 2 ? sprintf(/* translators: Number of files. */ __('%d more similar files were found.', 'wordfence'), $count - 1) : __('1 more similar file was found.', 'wordfence')) : '') . (isset($i['data']['learnMore']) ? ' ' . sprintf(/* translators: Support URL */ __('<a href="%s" target="_blank" rel="noopener noreferrer">Learn More<span class="screen-reader-text"> (opens in new tab)</span></a>', 'wordfence'), esc_attr($i['data']['learnMore'])) : ''),
 				$i['data'],
 				true //Prevent ignoreP and ignoreC from being hashed again
 			);
-			if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues[$haveIssuesType] = wfIssues::STATUS_PROBLEM; }
-			else if ($this->haveIssues[$haveIssuesType] != wfIssues::STATUS_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues[$haveIssuesType] = wfIssues::STATUS_IGNORED; }
+			if ($added == wfIssues::ISSUE_ADDED || $added == wfIssues::ISSUE_UPDATED) { $this->haveIssues[$haveIssuesType] = wfIssues::STATE_PROBLEM; }
+			else if ($this->haveIssues[$haveIssuesType] != wfIssues::STATE_PROBLEM && ($added == wfIssues::ISSUE_IGNOREP || $added == wfIssues::ISSUE_IGNOREC)) { $this->haveIssues[$haveIssuesType] = wfIssues::STATE_IGNORED; }
 		}
 	}
 	public static function hashFile($file, &$properties) {

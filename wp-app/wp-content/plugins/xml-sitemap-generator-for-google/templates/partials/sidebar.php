@@ -1,9 +1,10 @@
 <?php
 
 use GRIM_SG\Dashboard;
-$settings = $args['settings'] ?? new stdClass();
-$previews = array();
-$tools    = array();
+$settings         = $args['settings'] ?? new stdClass();
+$previews         = array();
+$tools            = array();
+$upgrade_segments = sgg_get_upgrade_segments( 'sidebar-segment' );
 
 // XML Sitemap
 if ( $settings->enable_sitemap ) {
@@ -159,7 +160,7 @@ $footer_links = array(
 			<div class="grim-sidebar-list">
 				<?php foreach ( $previews as $item ) : ?>
 					<div class="grim-sidebar-list-item">
-						<a href="<?php echo esc_url( $item['url'] ); ?>" class="grim-button white button-icon-right" target="_blank">
+						<a href="<?php echo esc_url( $item['url'] ); ?>" class="grim-button white button-icon-right" target="_blank" rel="noopener noreferrer">
 							<span>
 								<?php echo wp_kses_post( $item['label'] ); ?>
 								<i class="grim-icon-external-link"></i>
@@ -173,16 +174,17 @@ $footer_links = array(
 
 	<?php
 	if ( ! sgg_pro_enabled() ) {
+		$agency_cta = sgg_get_segment_cta( 'agencies', 'sidebar-agency' );
 		Dashboard::render(
 			'partials/rate-banner.php',
 			array(
 				'description'  => sprintf(
 					/* translators: %s: Pro version */
 					esc_html__( 'If you want to unlock more features, please check out our %s.', 'xml-sitemap-generator-for-google' ),
-					'<a href="' . esc_url( sgg_get_pro_url( 'notice' ) ) . '" target="_blank">' . esc_html__( 'Pro version', 'xml-sitemap-generator-for-google' ) . '</a>'
+					'<a href="' . esc_url( $agency_cta['url'] ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Pro version', 'xml-sitemap-generator-for-google' ) . '</a>'
 				),
-				'button_text'  => esc_html__( 'Read More', 'xml-sitemap-generator-for-google' ),
-				'button_url'   => esc_url( sgg_get_pro_url( 'notice' ) ),
+				'button_text'  => esc_html__( 'See Pro Plans', 'xml-sitemap-generator-for-google' ),
+				'button_url'   => esc_url( sgg_get_segment_pro_url( 'default', 'sidebar-main' ) ),
 				'data_notice'  => 'sgg_buy_pro',
 				'notice_class' => 'grim-pro-notice grim-sidebar-notice',
 			)
@@ -190,11 +192,24 @@ $footer_links = array(
 	}
 	?>
 
+	<?php if ( ! sgg_pro_enabled() ) : ?>
+		<div class="grim-sidebar-section">
+			<h3 class="grim-section-title"><?php esc_html_e( 'Use Case Upgrades', 'xml-sitemap-generator-for-google' ); ?></h3>
+			<div class="grim-sidebar-links">
+				<?php foreach ( $upgrade_segments as $segment ) : ?>
+					<a class="grim-sidebar-links-item" target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $segment['url'] ); ?>">
+						<?php echo esc_html( $segment['label'] ); ?>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
+
 	<div class="grim-sidebar-section grim-sidebar-actions">
 		<h3 class="grim-section-title"><?php esc_html_e( 'Useful', 'xml-sitemap-generator-for-google' ); ?></h3>
 		<?php foreach ( $plugin_links as $plugin_link ) : ?>
 			<div class="grim-sidebar-list-item grim-sidebar-actions-item">
-				<a class="grim-button white <?php echo ! empty( $plugin_link['class'] ) ? esc_attr( $plugin_link['class'] ) : ''; ?>" href="<?php echo esc_url( $plugin_link['link'] ); ?>" target="_blank">
+				<a class="grim-button white <?php echo ! empty( $plugin_link['class'] ) ? esc_attr( $plugin_link['class'] ) : ''; ?>" href="<?php echo esc_url( $plugin_link['link'] ); ?>" target="_blank" rel="noopener noreferrer">
 					<span>
 						<i class="<?php echo esc_attr( $plugin_link['icon'] ); ?>"></i><?php echo wp_kses_post( $plugin_link['title'] ); ?>
 					</span>
@@ -207,7 +222,7 @@ $footer_links = array(
 		<h3 class="grim-section-title"><?php esc_html_e( 'Links', 'xml-sitemap-generator-for-google' ); ?></h3>
 		<div class="grim-sidebar-links">
 			<?php foreach ( $footer_links as $footer_link ) : ?>
-				<a class="grim-sidebar-links-item" target="_blank" href="<?php echo esc_url( $footer_link['link'] ); ?>"><?php echo esc_html( $footer_link['title'] ); ?></a>
+				<a class="grim-sidebar-links-item" target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $footer_link['link'] ); ?>"><?php echo esc_html( $footer_link['title'] ); ?></a>
 			<?php endforeach; ?>
 		</div>
 	</div>
@@ -219,7 +234,7 @@ $footer_links = array(
 			<img src="<?php echo esc_url( plugins_url( 'assets/images/sgg-logo.svg', GRIM_SG_FILE ) ); ?>" alt="logo" width="60" height="60"/>
 		</div>
 		<div class="grim-sidebar-wrapper-info-title">
-			<a href="https://wpgrim.com/dynamic-xml-sitemaps-generator-for-google/?utm_source=sgg-plugin&utm_medium=footer&utm_campaign=xml_sitemap" target="_blank">Dynamic XML Sitemaps Generator For Google Pro</a>
+			<a href="https://wpgrim.com/dynamic-xml-sitemaps-generator-for-google/?utm_source=sgg-plugin&utm_medium=footer&utm_campaign=xml_sitemap" target="_blank" rel="noopener noreferrer">Dynamic XML Sitemaps Generator For Google Pro</a>
 		</div>
 	</div>
 </div>

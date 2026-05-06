@@ -182,7 +182,7 @@ if (!is_array($updates_needed)) {
 			$newVersion = ($plugin['newVersion'] == 'Unknown' ? $plugin['newVersion'] : "v{$plugin['newVersion']}");
 		?>
 			<li>
-				<?php echo esc_html(sprintf(/* translators: Plugin version. */ __('A new version of the plugin "%s" is available.', 'wordfence'), "{$plugin['Name']} ({$newVersion})")); ?>
+				<?php echo esc_html(sprintf(/* translators: Plugin name. */ __('A new version of the plugin "%s" is available.', 'wordfence'), "{$plugin['Name']} ({$newVersion})")); ?>
 			</li>
 		<?php endforeach ?>
 	</ul>
@@ -195,7 +195,7 @@ if (!is_array($updates_needed)) {
 			$newVersion = ($theme['newVersion'] == 'Unknown' ? $theme['newVersion'] : "v{$theme['newVersion']}");
 		?>
 			<li>
-				<?php echo esc_html(sprintf(/* translators: Theme version. */ __('A new version of the theme "%s" is available.', 'wordfence'), "{$theme['name']} ({$newVersion})")); ?>
+				<?php echo esc_html(sprintf(/* translators: Theme name. */ __('A new version of the theme "%s" is available.', 'wordfence'), "{$theme['name']} ({$newVersion})")); ?>
 			</li>
 		<?php endforeach ?>
 	</ul>

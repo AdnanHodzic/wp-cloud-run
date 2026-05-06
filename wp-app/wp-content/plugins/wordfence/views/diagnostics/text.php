@@ -194,7 +194,7 @@ foreach ($plugins as $plugin => $pluginData) {
 
 	$name = strip_tags(sprintf('%s (%s)', $pluginData['Name'], $slug));
 	if (!empty($pluginData['Version'])) {
-		$name .= ' - ' . strip_tags(sprintf(__('Version %s', 'wordfence'), $pluginData['Version']));
+		$name .= ' - ' . strip_tags(sprintf(/* translators: version number */ __('Version %s', 'wordfence'), $pluginData['Version']));
 	}
 
 	if (array_key_exists(trailingslashit(WP_PLUGIN_DIR) . $plugin, $activeNetworkPlugins)) {
@@ -233,7 +233,7 @@ if (!empty($muPlugins)) {
 
 		$name = strip_tags(sprintf('%s (%s)', $pluginData['Name'], $slug));
 		if (!empty($pluginData['Version'])) {
-			$name .= ' - ' . strip_tags(sprintf(__('Version %s', 'wordfence'), $pluginData['Version']));
+			$name .= ' - ' . strip_tags(sprintf(/* translators: version number */ __('Version %s', 'wordfence'), $pluginData['Version']));
 		}
 
 		$table[] = array(
@@ -307,7 +307,7 @@ if (!empty($themes)) {
 
 		$name = strip_tags(sprintf('%s (%s)', $themeData['Name'], $slug));
 		if (!empty($themeData['Version'])) {
-			$name .= ' - ' . strip_tags(sprintf(__('Version %s', 'wordfence'), $themeData['Version']));
+			$name .= ' - ' . strip_tags(sprintf(/* translators: version number */ __('Version %s', 'wordfence'), $themeData['Version']));
 		}
 
 		if ($currentTheme instanceof WP_Theme && $theme === $currentTheme->get_stylesheet()) {
@@ -537,7 +537,7 @@ if (isset($issues['new']) && count($issues['new'])) {
 
 		$viewContent = '';
 		try {
-			$viewContent = wfView::create('scanner/issue-' . $i['type'], array('textOutput' => $i))->render();
+			$viewContent = wfView::create('scanner/text/issue-' . $i['type'], array('textOutput' => $i))->render();
 		}
 		catch (wfViewNotFoundException $e) {
 			//Ignore -- should never happen since we validate the type

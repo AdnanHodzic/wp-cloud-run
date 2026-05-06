@@ -18,17 +18,17 @@ wp_enqueue_style( 'sgg-icons' );
 		</p>
 		<div class="grim-rate-actions">
 
-			<?php if( ! empty( $args['extra_btn_url'] ) ) : ?>
-				<a class="grim-button white <?php echo esc_attr( $args['extra_btn_class'] ); ?>" target="_blank" href="<?php echo esc_url( $args['extra_btn_url'] ); ?>">
+			<?php if ( ! empty( $args['extra_btn_url'] ) ) : ?>
+				<a class="grim-button white <?php echo esc_attr( $args['extra_btn_class'] ); ?>" target="_blank" rel="noopener noreferrer" href="<?php echo esc_url( $args['extra_btn_url'] ); ?>">
 					<span><?php echo wp_kses_post( $args['extra_btn_text'] ); ?></span>
 				</a>
-			<?php else: ?>
+			<?php else : ?>
 				<a class="grim-button white sgg-notice">
 					<span><?php esc_html_e( 'Dismiss', 'xml-sitemap-generator-for-google' ); ?></span>
 				</a>
 			<?php endif; ?>
-			<a href="<?php echo esc_url( $args['button_url'] ); ?>" target="_blank" class="grim-button secondary sgg-notice">
-				<span><?php echo esc_html( $args['button_text'] ) ?><i class="grim-icon-arrow-right"></i></span>
+			<a href="<?php echo esc_url( $args['button_url'] ); ?>" target="_blank" rel="noopener noreferrer" class="grim-button secondary sgg-notice">
+				<span><?php echo esc_html( $args['button_text'] ); ?><i class="grim-icon-arrow-right"></i></span>
 			</a>
 		</div>
 	</div>

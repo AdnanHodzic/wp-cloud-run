@@ -1,6 +1,8 @@
 <?php
 
 class wfAdminNoticeQueue {
+	const USERS_ALL = 'all';
+	
 	protected static function _notices() {
 		return self::_purgeObsoleteNotices(wfConfig::get_ser('adminNoticeQueue', array()));
 	}
@@ -8,7 +10,7 @@ class wfAdminNoticeQueue {
 	private static function _purgeObsoleteNotices($notices) {
 		$altered = false;
 		foreach ($notices as $id => $notice) {
-			if ($notice['category'] === 'php8') {
+			if (!empty($notice['category']) && $notice['category'] === 'php8') {
 				unset($notices[$id]);
 				$altered = true;
 			}
@@ -69,64 +71,133 @@ class wfAdminNoticeQueue {
 	}
 	
 	/**
-	 * Removes an admin notice using one of three possible search methods:
-	 * 
-	 * 	1. If $id matches. $category and $users are ignored
-	 * 	2. If $category matches. $users must be false for this.
-	 * 	3. If $category matches and the notice's user IDs matches $users.
-	 * 
-	 * @param bool|int $id
-	 * @param bool|string $category
-	 * @param bool|int[] $users
+	 * Removes an admin notice by ID. An admin may remove any notice where lower privileged users can only
+	 * remove themselves from the notice.
+	 *
+	 * @param string $id
 	 */
-	public static function removeAdminNotice($id = false, $category = false, $users = false) {
-		if ($id === false && $category === false && $users === false) {
+	public static function removeAdminNoticeForID($id) {
+		$user = wp_get_current_user();
+		if (!$user->exists()) {
 			return;
 		}
-		else if ($id !== false) {
-			$category = false;
-			$users = false;
-		}
-
+		
 		$notices = self::_notices();
 		$found = false;
 		foreach ($notices as $nid => $n) {
 			if ($id == $nid) { //ID match
-				unset($notices[$nid]);
-				$found=true;
+				$currentUserInUsers = !empty($n['users']) && in_array($user->ID, $n['users']);
+				if (wfUtils::isAdmin($user)) {
+					unset($notices[$nid]);
+					$found = true;
+				}
+				else if ($currentUserInUsers) {
+					$notices[$nid]['users'] = array_diff($n['users'], array($user->ID));
+					if (empty($notices[$nid]['users'])) {
+						unset($notices[$nid]);
+					}
+					$found = true;
+				}
 				break;
 			}
-			else if ($id !== false) {
-				continue;
-			}
-			
-			if ($category !== false && isset($n['category']) && $category == $n['category']) {
-				if ($users !== false) {
-					if (isset($n['users']) && wfUtils::sets_equal($users, $n['users'])) {
-						unset($notices[$nid]);
-						$found=true;
-					}
-				}
-				else {
+		}
+		
+		if ($found) {
+			self::_setNotices($notices);
+		}
+	}
+	
+	/**
+	 * Removes any admin notices matching $category that are global (i.e. not specific to a user).
+	 *
+	 * @param string $category
+	 * @return void
+	 */
+	public static function removeGlobalAdminNoticeForCategory($category) {
+		$notices = self::_notices();
+		$found = false;
+		foreach ($notices as $nid => $n) {
+			if (isset($n['category']) && $category == $n['category']) {
+				if (empty($n['users'])) {
 					unset($notices[$nid]);
-					$found=true;
+					$found = true;
 				}
 			}
 		}
-		if($found)
+		
+		if ($found) {
 			self::_setNotices($notices);
+		}
 	}
 	
-	public static function hasNotice($category = false, $users = false) {
+	/**
+	 * Removes any admin notices matching $category that are specific to the user with ID $userID.
+	 *
+	 * @param string $category
+	 * @param null|int|string $userID `null` means the current user, `all` means all users, and an integer means a specific user
+	 * @return void
+	 */
+	public static function removeAdminNoticeForCategory($category, $userID = null) {
+		if ($userID === null) {
+			$user = wp_get_current_user();
+			if (!$user->exists()) { return; }
+			$userID = $user->ID;
+		}
+		
+		$notices = self::_notices();
+		$found = false;
+		foreach ($notices as $nid => $n) {
+			if (isset($n['category']) && $category == $n['category']) {
+				if ($userID === 'all') {
+					unset($notices[$nid]);
+					$found = true;
+				}
+				else {
+					$currentUserInUsers = !empty($n['users']) && in_array($userID, $n['users']);
+					if ($currentUserInUsers) {
+						$notices[$nid]['users'] = array_diff($n['users'], array($userID));
+						if (empty($notices[$nid]['users'])) {
+							unset($notices[$nid]);
+						}
+						$found = true;
+					}
+				}
+			}
+		}
+		
+		if ($found) {
+			self::_setNotices($notices);
+		}
+	}
+	
+	/**
+	 * Returns whether at least one queued admin notice matches the provided filters.
+	 *
+	 * Matching behavior:
+	 * - `$category === null` matches notices with no `category` field.
+	 * - `$category === false` matches notices with any `category` field.
+	 * - `$category === {string}` matches notices whose `category` equals `$category`.
+	 * - `$users === null` matches notices with no `users` field (global notices).
+	 * - `$users === false` matches notices with any `users` field
+	 * - `$users === {array}` matches notices with a `users` field where the notice's
+	 *   user IDs contain the IDs in `$users` (`wfUtils::is_subset($noticeUsers, $users)`).
+	 *
+	 * A notice is considered a match only when both category and user checks pass.
+	 *
+	 * @param string|null|false $category Category to match, `false` for any category, or `null` for uncategorized notices.
+	 * @param int[]|null|false $users User IDs to match against, `false` for any user, or `null` for global notices.
+	 * @return bool True if a matching notice exists; otherwise false.
+	 */
+	public static function hasNotice($category = null, $users = null) {
 		$notices = self::_notices();
 		foreach ($notices as $nid => $n) {
 			$categoryMatches = false;
-			if (($category === false && !isset($n['category'])) || ($category !== false && isset($n['category']) && $category == $n['category'])) {
+			if ($category === false || ($category === null && !isset($n['category'])) || ($category !== false && $category !== null && isset($n['category']) && $category == $n['category'])) {
 				$categoryMatches = true;
 			}
 			
-			$usersMatches = false;
-			if (($users === false && !isset($n['users'])) || ($users !== false && isset($n['users']) && wfUtils::sets_equal($users, $n['users']))) {
+			$usersMatches = null;
+			if ($users === false || ($users === null && !isset($n['users'])) || ($users !== false && $users !== null && isset($n['users']) && wfUtils::is_subset($n['users'], $users))) {
 				$usersMatches = true;
 			}
 			
@@ -137,7 +208,32 @@ class wfAdminNoticeQueue {
 		return false;
 	}
 	
-	public static function enqueueAdminNotices() {
+	/**
+	 * Returns whether the provided user has any admin notices that will show.
+	 *
+	 * @param WP_User $user
+	 * @return bool
+	 */
+	public static function hasAnyNotice($user) {
+		if (!$user->exists()) {
+			return false;
+		}
+		
+		$notices = self::_notices();
+		foreach ($notices as $nid => $n) {
+			if ((wfUtils::isAdmin($user) && !isset($n['users'])) || (isset($n['users']) && wfUtils::is_subset($n['users'], array($user->ID)))) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Enqueues any admin notices that are applicable to the current user.
+	 *
+	 * @param bool $userSpecificOnly If true, only notices that are specific to the current user will be enqueued.
+	 */
+	public static function enqueueAdminNotices($userSpecificOnly = false) {
 		$user = wp_get_current_user();
 		if ($user->ID == 0) {
 			return false;
@@ -147,8 +243,11 @@ class wfAdminNoticeQueue {
 		$notices = self::_notices();
 		$added = false;
 		foreach ($notices as $nid => $n) {
-			if (isset($n['users']) && array_search($user->ID, $n['users']) === false) {
-				continue;
+			if (isset($n['users'])) {
+				if (!in_array($user->ID, $n['users'])) { continue; }
+			}
+			else {
+				if ($userSpecificOnly) { continue; }
 			}
 			
 			$notice = new wfAdminNotice($nid, $n['severity'], $n['messageHTML']);

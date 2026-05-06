@@ -116,7 +116,7 @@ $settings = $args['settings'] ?? new stdClass();
 						'class'      => 'image-sitemap-depended',
 						'value'      => isset( $settings->image_mime_types ) ? $settings->image_mime_types['image/jpeg'] ?? false : true,
 						'label'      => esc_html__( 'JPEG', 'xml-sitemap-generator-for-google' ),
-						'is_default' => true,				'is_default'
+						'is_default' => true,
 					)
 				);
 				?>
@@ -243,6 +243,17 @@ $settings = $args['settings'] ?? new stdClass();
 		</p>
 		<div class="inside pro-wrapper">
 			<p class="grim-section-desc image-sitemap-depended"><?php esc_html_e( 'Enabling this option includes Featured Images from Pages, Posts, and Custom Posts to your Image Sitemap.', 'xml-sitemap-generator-for-google' ); ?></p>
+			<?php
+				Dashboard::render(
+					'partials/pro-upgrade-prompt.php',
+					array(
+						'segment'     => 'image-sitemap',
+						'utm'         => 'locked-image-sitemap',
+						'title'       => __( 'Featured images are available in Pro', 'xml-sitemap-generator-for-google' ),
+						'description' => __( 'Include Featured Images from Pages, Posts, and Custom Posts to your Image Sitemap.', 'xml-sitemap-generator-for-google' ),
+					)
+				);
+			?>
 		</div>
 	</div>
 	<?php sgg_show_pro_overlay(); ?>
@@ -268,6 +279,17 @@ $settings = $args['settings'] ?? new stdClass();
 
 			<div class="inside">
 				<p class="grim-section-desc image-sitemap-depended"><?php esc_html_e( 'Enabling this option includes WooCommerce Gallery Images from Products to your Image Sitemap.', 'xml-sitemap-generator-for-google' ); ?></p>
+				<?php
+				Dashboard::render(
+					'partials/pro-upgrade-prompt.php',
+					array(
+						'segment'     => 'woocommerce',
+						'utm'         => 'locked-woo',
+						'title'       => __( 'WooCommerce gallery images are available in Pro', 'xml-sitemap-generator-for-google' ),
+						'description' => __( 'Capture product gallery media automatically to improve product indexing and image visibility.', 'xml-sitemap-generator-for-google' ),
+					)
+				);
+				?>
 			</div>
 		</div>
 		<?php sgg_show_pro_overlay(); ?>

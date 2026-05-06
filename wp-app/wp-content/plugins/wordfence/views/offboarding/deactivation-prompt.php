@@ -31,7 +31,7 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 		</div>
 	</div>
 	<?php if ($wafOptimized): ?>
-		<div class="wf-modal" id="wf-offboarding-waf-optimized-template">
+		<div class="wf-modal wf-deactivate-modal" id="wf-offboarding-waf-optimized-template">
 			<div class="wf-modal-header">
 				<div class="wf-modal-header-content">
 					<div class="wf-modal-title"><strong><?php esc_html_e('Extended Protection Still Enabled', 'wordfence') ?></strong></div>
@@ -43,11 +43,11 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 			</div>
 			<div class="wf-modal-footer">
 				<a class="wf-btn wf-btn-danger" href="<?php echo esc_attr(network_admin_url('admin.php?page=WordfenceWAF&subpage=waf_options&wf_deactivate=true#removeAutoPrepend')) ?>"><?php esc_html_e('Remove Extended Protection', 'wordfence') ?></a>
-				<button onclick="jQuery.wfcolorbox.close(); return false;" class="wf-btn wf-btn-default"><?php esc_html_e('Cancel', 'wordfence') ?></a>
+				<button onclick="wordfenceExt.currentDeactivationDialog.dialog('close'); return false;" class="wf-btn wf-btn-default"><?php esc_html_e('Cancel', 'wordfence') ?></a>
 			</div>
 		</div>
 	<?php endif ?>
-	<div class="wf-modal" id="wf-offboarding-delete-confirm-template">
+	<div class="wf-modal wf-deactivate-modal" id="wf-offboarding-delete-confirm-template">
 		<div class="wf-modal-header">
 			<div class="wf-modal-header-content">
 				<div class="wf-modal-title"><strong><?php esc_html_e('Delete Wordfence Data?', 'wordfence') ?></strong></div>
@@ -59,7 +59,7 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 			<button class="wf-btn wf-btn-default wf-deactivate-delete-cancel"><?php esc_html_e('Cancel', 'wordfence') ?></a>
 		</div>
 	</div>
-	<div class="wf-modal" id="wf-offboarding-delete-error-template">
+	<div class="wf-modal wf-deactivate-modal" id="wf-offboarding-delete-error-template">
 		<div class="wf-modal-header">
 			<div class="wf-modal-header-content">
 				<div class="wf-modal-title"><strong><?php esc_html_e('Error', 'wordfence') ?></strong></div>
@@ -67,7 +67,7 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 		</div>
 		<div class="wf-modal-content"><span class="message"><?php esc_html_e('An unexpected error occurred while attempting to configure Wordfence to delete its data on deactivation.', 'wordfence') ?></span></div>
 		<div class="wf-modal-footer wf-modal-footer-center">
-			<button onclick="jQuery.wfcolorbox.close(); return false;" class="wf-btn wf-btn-primary"><?php esc_html_e('Close', 'wordfence') ?></a>
+			<button onclick="wordfenceExt.currentDeactivationDialog.dialog('close'); return false;" class="wf-btn wf-btn-primary"><?php esc_html_e('Close', 'wordfence') ?></a>
 		</div>
 	</div>
 </div>
@@ -81,7 +81,7 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 			var processing = false;
 
 			function applyState() {
-				var modal = $("#wfcolorbox .wf-deactivate-modal");
+				var modal = $("#wf-deactivation-prompt .wf-deactivate-modal");
 				buttons = modal.find('button');
 				options = modal.find('input[type=radio]');
 				[buttons, options].forEach(function(element) {
@@ -133,21 +133,37 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 					replaceTemplatedAttribute(element, key);
 				});
 			});
-			$.wfcolorbox({
-				width: (wordfenceExt.isSmallScreen ? '300px' : '500px'),
-				html: content[0].outerHTML,
-				overlayClose: false,
-				closeButton: false,
-				className: 'wf-modal',
-				onComplete: function() {
+
+			if (wordfenceExt.currentDeactivationDialog) {
+				wordfenceExt.currentDeactivationDialog.dialog('close');
+			}
+
+			wordfenceExt.currentDeactivationDialog = $('<div>', { html: content }).dialog({
+				modal: true,
+				width: (wordfenceExt.isSmallScreen ? 300 : 500),
+				resizable: false,
+				draggable: false,
+				zIndex: 9998,
+				close: function() {
+					$(this).dialog('destroy').remove();
+					wordfenceExt.currentDeactivationDialog = false;
+				},
+				open: function() {
+					$('.ui-widget-overlay').last().css('z-index', 9998);
+					$('#wf-deactivation-prompt').css('z-index', 9999);
 					updateButtons();
 					stateController.refresh();
-				}
+				},
 			});
+
+			wordfenceExt.currentDeactivationDialog.dialog('widget').attr('id', 'wf-deactivation-prompt');
 		}
 
 		function deactivate() {
-			$.wfcolorbox.close();
+			if (wordfenceExt.currentDeactivationDialog) {
+				wordfenceExt.currentDeactivationDialog.dialog('close');
+			}
+
 			$(document).off('click.wf-deactivate');
 			$('#deactivate-wordfence').get(0).click();
 		}
@@ -198,7 +214,9 @@ $selectedOptionKey = $deactivationOption === null ? null : $deactivationOption->
 				showDeletionPrompt();
 			})
 			.on('click', '#wf-deactivate-cancel', function (event) {
-				$.wfcolorbox.close();
+				if (wordfenceExt.currentDeactivationDialog) {
+					wordfenceExt.currentDeactivationDialog.dialog('close');
+				}
 			})
 			.on('click.wf-deactivate', '#deactivate-wordfence', function (event) {
 				event.preventDefault();

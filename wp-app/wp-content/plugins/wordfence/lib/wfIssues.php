@@ -9,18 +9,18 @@ class wfIssues {
 	const ISSUE_IGNOREC = 'ic';
 	
 	//Possible status message states
-	const STATUS_NONE = 'n'; //Default state before running
+	const STATE_NONE = 'n'; //Default state before running
 	
-	const STATUS_SKIPPED = 's'; //The scan job was skipped because it didn't need to run
-	const STATUS_IGNORED = 'i'; //The scan job found an issue, but it matched an entry in the ignore list
+	const STATE_SKIPPED = 's'; //The scan job was skipped because it didn't need to run
+	const STATE_IGNORED = 'i'; //The scan job found an issue, but it matched an entry in the ignore list
 	
-	const STATUS_PROBLEM = 'p'; //The scan job found an issue
-	const STATUS_SECURE = 'r'; //The scan job found no issues
+	const STATE_PROBLEM = 'p'; //The scan job found an issue
+	const STATE_SECURE = 'r'; //The scan job found no issues
 	
-	const STATUS_FAILED = 'f'; //The scan job failed
-	const STATUS_SUCCESS = 'c'; //The scan job succeeded
+	const STATE_FAILED = 'f'; //The scan job failed
+	const STATE_SUCCESS = 'c'; //The scan job succeeded
 	
-	const STATUS_PAIDONLY = 'x';
+	const STATE_PAIDONLY = 'x';
 	
 	//Possible scan failure types
 	const SCAN_FAILED_GENERAL = 'general';
@@ -36,11 +36,17 @@ class wfIssues {
 	const SCAN_FAILED_API_INVALID_RESPONSE = 'apiinvalid';
 	const SCAN_FAILED_API_ERROR_RESPONSE = 'apierror';
 
+	//Severity thresholds
 	const SEVERITY_NONE = 0;
 	const SEVERITY_LOW = 25;
 	const SEVERITY_MEDIUM = 50;
 	const SEVERITY_HIGH = 75;
 	const SEVERITY_CRITICAL = 100;
+	
+	//Issue status states
+	const STATUS_NEW = 'new';
+	const STATUS_IGNOREC = 'ignoreC';
+	const STATUS_IGNOREP = 'ignoreP';
 
 	const SCAN_STATUS_UPDATE_INTERVAL = 10; //Seconds
 
@@ -107,22 +113,22 @@ class wfIssues {
 	
 	public static function statusEnd($index, $state) {
 		$statusStartMsgs = wfConfig::get_ser('wfStatusStartMsgs', array());
-		if ($state == self::STATUS_SKIPPED) {
+		if ($state == self::STATE_SKIPPED) {
 			wordfence::status(10, 'info', 'SUM_ENDSKIPPED:' . $statusStartMsgs[$index]);
 		}
-		else if ($state == self::STATUS_IGNORED) {
+		else if ($state == self::STATE_IGNORED) {
 			wordfence::status(10, 'info', 'SUM_ENDIGNORED:' . $statusStartMsgs[$index]);
 		}
-		else if ($state == self::STATUS_PROBLEM) {
+		else if ($state == self::STATE_PROBLEM) {
 			wordfence::status(10, 'info', 'SUM_ENDBAD:' . $statusStartMsgs[$index]);
 		}
-		else if ($state == self::STATUS_SECURE) {
+		else if ($state == self::STATE_SECURE) {
 			wordfence::status(10, 'info', 'SUM_ENDOK:' . $statusStartMsgs[$index]);
 		}
-		else if ($state == self::STATUS_FAILED) {
+		else if ($state == self::STATE_FAILED) {
 			wordfence::status(10, 'info', 'SUM_ENDFAILED:' . $statusStartMsgs[$index]);
 		}
-		else if ($state == self::STATUS_SUCCESS) {
+		else if ($state == self::STATE_SUCCESS) {
 			wordfence::status(10, 'info', 'SUM_ENDSUCCESS:' . $statusStartMsgs[$index]);
 		}
 		wfIssues::updateScanStillRunning();
@@ -171,10 +177,9 @@ class wfIssues {
 	 * @return bool|string
 	 */
 	public static function hasScanFailed() {
-		$lastStatusUpdate = self::lastScanStatusUpdate();
-		if ($lastStatusUpdate !== false && wfScanner::shared()->isRunning()) {
+		if (wfScanner::shared()->isRunning()) {
 			$threshold = WORDFENCE_SCAN_FAILURE_THRESHOLD;
-			if (time() - $lastStatusUpdate > $threshold) {
+			if (time() - wfConfig::get('wf_scanLastStatusTime', 0) > $threshold) {
 				return self::SCAN_FAILED_TIMEOUT;
 			}
 		}
@@ -202,17 +207,12 @@ class wfIssues {
 	}
 	
 	/**
-	 * Returns false if the scan has not been detected as timed out. If it has, it returns the timestamp of the last status update.
+	 * Returns the timestamp of the last status update.
 	 *
-	 * @return bool|int
+	 * @return int
 	 */
 	public static function lastScanStatusUpdate() {
-		if (wfConfig::get('wf_scanLastStatusTime', 0) === 0) {
-			return false;
-		}
-		
-		$threshold = WORDFENCE_SCAN_FAILURE_THRESHOLD;
-		return (time() > wfConfig::get('wf_scanLastStatusTime', 0) + $threshold) ? wfConfig::get('wf_scanLastStatusTime', 0) : false;
+		return wfConfig::get('wf_scanLastStatusTime', 0);
 	}
 	
 	/**
@@ -493,7 +493,7 @@ class wfIssues {
 			));
 		
 		foreach ($emails as $email) {
-			$uniqueContent = str_replace('<!-- ##UNSUBSCRIBE## -->', wp_kses(sprintf(__('No longer an administrator for this site? <a href="%s" target="_blank">Click here</a> to stop receiving security alerts.', 'wordfence'), wfUtils::getSiteBaseURL() . '?_wfsf=removeAlertEmail&jwt=' . wfUtils::generateJWT(array('email' => $email))), array('a'=>array('href'=>array(), 'target'=>array()))), $content);
+			$uniqueContent = str_replace('<!-- ##UNSUBSCRIBE## -->', wp_kses(sprintf(/* translators: URL to the WordPress admin panel. */ __('No longer an administrator for this site? <a href="%s" target="_blank">Click here</a> to stop receiving security alerts.', 'wordfence'), wfUtils::getSiteBaseURL() . '?_wfsf=removeAlertEmail&jwt=' . wfUtils::generateJWT(array('email' => $email))), array('a'=>array('href'=>array(), 'target'=>array()))), $content);
 			wp_mail($email, $subject, $uniqueContent, 'Content-type: text/html');
 		}
 	}
@@ -592,7 +592,7 @@ class wfIssues {
 		$counts = $wpdb->get_results('SELECT COUNT(*) AS c, status FROM ' . $this->issuesTable . ' WHERE status = "new" OR status = "ignoreP" OR status = "ignoreC" GROUP BY status', ARRAY_A);
 		$result = array();
 		foreach ($counts as $row) {
-			$result[$row['status']] = $row['c']; 
+			$result[$row['status']] = (int) $row['c']; 
 		}
 		return $result;
 	}
@@ -615,54 +615,15 @@ class wfIssues {
 		$q1 = $this->getDB()->querySelect("SELECT *, {$sortTagging} AS sortTag FROM " . $this->issuesTable . " WHERE status = 'new' ORDER BY severity DESC, sortTag ASC, type ASC, time DESC LIMIT %d,%d", $offset, $limit);
 		$q2 = $this->getDB()->querySelect("SELECT *, {$sortTagging} AS sortTag FROM " . $this->issuesTable . " WHERE status = 'ignoreP' OR status = 'ignoreC' ORDER BY severity DESC, sortTag ASC, type ASC, time DESC LIMIT %d,%d", $ignoredOffset, $ignoredLimit);
 		$q = array_merge($q1, $q2);
-		foreach($q as $i){
-			$i['data'] = unserialize($i['data']);
-			$i['timeAgo'] = wfUtils::makeTimeAgo(time() - $i['time']);
-			$i['displayTime'] = wfUtils::formatLocalTime(get_option('date_format') . ' ' . get_option('time_format'), $i['time']);
-			$i['longMsg'] = wp_kses($i['longMsg'], 'post');
-			if($i['status'] == 'new'){
-				$ret['new'][] = $i;
-			} else if($i['status'] == 'ignoreP' || $i['status'] == 'ignoreC'){
-				$ret['ignored'][] = $i;
-			} else {
-				error_log("Issue has bad status: " . $i['status']);
-				continue;
+		foreach ($q as $i) {
+			if ($i['status'] == 'new') {
+				$ret['new'][] = $this->_hydrateIssue($i, count($ret['new']));
 			}
-		}
-		foreach($ret as $status => &$issueList){
-			for($i = 0; $i < sizeof($issueList); $i++){
-				if ($issueList[$i]['type'] == 'file' || $issueList[$i]['type'] == 'knownfile') {
-					if (array_key_exists('realFile', $issueList[$i]['data'])) {
-						$localFile = $issueList[$i]['data']['realFile'];
-						$issueList[$i]['data']['realFileToken'] = self::generateRealFileToken($localFile);
-					}
-					else {
-						$localFile = $issueList[$i]['data']['file'];
-						if ($localFile != '.htaccess' && $localFile != $userIni) {
-							$localFile = ABSPATH . '/' . preg_replace('/^[\.\/]+/', '', $localFile);
-						}
-						else {
-							$localFile = ABSPATH . '/' . $localFile;
-						}
-					}
-					
-					if(file_exists($localFile)){
-						$issueList[$i]['data']['fileExists'] = true;
-					} else {
-						$issueList[$i]['data']['fileExists'] = '';
-					}
-				}
-				if ($issueList[$i]['type'] == 'database') {
-					$issueList[$i]['data']['optionExists'] = false;
-					if (!empty($issueList[$i]['data']['site_id'])) {
-						$table_options = wfDB::blogTable('options', $issueList[$i]['data']['site_id']);
-						$issueList[$i]['data']['optionExists'] = $wpdb->get_var($wpdb->prepare("SELECT count(*) FROM {$table_options} WHERE option_name = %s", $issueList[$i]['data']['option_name'])) > 0;
-					}
-				}
-				$issueList[$i]['issueIDX'] = $i;
-				if (isset($issueList[$i]['data']['cType'])) {
-					$issueList[$i]['data']['ucType'] = ucwords($issueList[$i]['data']['cType']);
-				}
+			else if ($i['status'] == 'ignoreP' || $i['status'] == 'ignoreC') {
+				$ret['ignored'][] = $this->_hydrateIssue($i, count($ret['ignored']));
+			}
+			else {
+				error_log("Issue has bad status: " . $i['status']);
 			}
 		}
 		return $ret; //array of lists of issues by status
@@ -795,5 +756,76 @@ class wfIssues {
 	public static function verifyRealFileToken($token, $realFile) {
 		$key = self::getRealFileTokenKey($realFile);
 		return wp_verify_nonce($token, $key);
+	}
+	
+	/**
+	 * Modifies the stored issue data to update any values that may have diverged from the initial state like edit links,
+	 * file existence, temporary tokens, etc. It also normalizes values to their correct type instead of the DB
+	 * representation.
+	 *
+	 * @param array $issue The issue data to hydrate
+	 * @param int $index The index of the issue in the list to be returned
+	 * @return array
+	 */
+	private function _hydrateIssue($issue, $index) {
+		global $wpdb;
+		
+		$issue['id'] = (int) $issue['id'];
+		$issue['time'] = (int) $issue['time'];
+		$issue['lastUpdated'] = (int) $issue['lastUpdated'];
+		$issue['severity'] = (int) $issue['severity'];
+		$issue['sortTag'] = (int) $issue['sortTag'];
+		$issue['data'] = unserialize($issue['data']);
+		$issue['timeAgo'] = wfUtils::makeTimeAgo(time() - $issue['time']);
+		$issue['displayTime'] = wfUtils::formatLocalTime(get_option('date_format') . ' ' . get_option('time_format'), $issue['time']);
+		$issue['longMsg'] = wp_kses($issue['longMsg'], 'post');
+		$issue['issueIDX'] = $index;
+		if (isset($issue['data']['cType'])) {
+			$issue['data']['ucType'] = ucwords($issue['data']['cType']);
+		}
+		
+		$userIni = ini_get('user_ini.filename');
+		if ($issue['type'] == 'file' || $issue['type'] == 'knownfile') {
+			if (array_key_exists('realFile', $issue['data'])) {
+				$localFile = $issue['data']['realFile'];
+				$issue['data']['realFileToken'] = self::generateRealFileToken($localFile);
+			}
+			else {
+				$localFile = $issue['data']['file'];
+				if ($localFile != '.htaccess' && $localFile != $userIni) {
+					$localFile = ABSPATH . '/' . preg_replace('/^[\.\/]+/', '', $localFile);
+				}
+				else {
+					$localFile = ABSPATH . '/' . $localFile;
+				}
+			}
+			
+			$issue['data']['fileExists'] = '';
+			if (file_exists($localFile)) {
+				$issue['data']['fileExists'] = true;
+			}
+		}
+		else if ($issue['type'] == 'database') {
+			$issue['data']['optionExists'] = false;
+			if (!empty($issue['data']['site_id'])) {
+				$table_options = wfDB::blogTable('options', $issue['data']['site_id']);
+				$issue['data']['optionExists'] = $wpdb->get_var($wpdb->prepare("SELECT count(*) FROM {$table_options} WHERE option_name = %s", $issue['data']['option_name'])) > 0;
+			}
+		}
+		else if ($issue['type'] == 'postBadURL' || $issue['type'] == 'postBadTitle') {
+			$postID = $issue['data']['postID'];
+			$issue['data']['permalink'] = get_permalink($postID);
+			$issue['data']['editPostLink'] = get_edit_post_link($postID, 'raw');
+		}
+		else if ($issue['type'] == 'commentBadURL') {
+			$commentID = $issue['data']['commentID'];
+			$comment = get_comment($commentID); //Not using `get_edit_comment_link` directly because it wants to HTML-encode the URL rather than being the real URL, no $context parameter like edit posts has
+			
+			if ($comment && current_user_can('edit_comment', $comment->comment_ID)) {
+				$issue['data']['editCommentLink'] = admin_url( 'comment.php?action=editcomment&c=' ) . $comment->comment_ID;
+			}
+		}
+		
+		return $issue;
 	}
 }

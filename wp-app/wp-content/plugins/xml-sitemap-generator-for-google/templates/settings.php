@@ -113,6 +113,9 @@ use GRIM_SG\Dashboard;
 
 								<!-- Import & Export -->
 								<?php Dashboard::render( 'sections/advanced/import-export.php', $args ); ?>
+
+								<!-- Upgrade Comparison -->
+								<?php Dashboard::render( 'partials/pro-comparison.php', $args ); ?>
 							</div>
 						</div>
 						<div class="tools-sidebar">

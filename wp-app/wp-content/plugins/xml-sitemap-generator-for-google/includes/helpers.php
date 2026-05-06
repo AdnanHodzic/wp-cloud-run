@@ -8,7 +8,73 @@ function sgg_pro_enabled() {
 }
 
 function sgg_get_pro_url( $utm = 'buy-now' ) {
-	return "https://wpgrim.com/google-xml-sitemaps-generator-pro/?utm_source=sgg-plugin&utm_medium={$utm}&utm_campaign=xml_sitemap";
+	$base_url = apply_filters( 'sgg_pro_url_base', 'https://wpgrim.com/google-xml-sitemaps-generator-pro/' );
+
+	return add_query_arg(
+		array(
+			'utm_source'   => 'sgg-plugin',
+			'utm_medium'   => sanitize_key( $utm ),
+			'utm_campaign' => 'xml_sitemap',
+		),
+		$base_url
+	);
+}
+
+function sgg_get_segment_pro_url( $segment = 'default', $utm = 'buy-now' ) {
+	$segment = sanitize_key( $segment );
+	$map     = array(
+		'default'      => sgg_get_pro_url( $utm ),
+		'woocommerce'  => sgg_get_pro_url( $utm ),
+		'google-news'  => sgg_get_pro_url( $utm ),
+		'agencies'     => sgg_get_pro_url( $utm ),
+		'multilingual' => sgg_get_pro_url( $utm ),
+	);
+
+	$segment_url = $map[ $segment ] ?? $map['default'];
+
+	return apply_filters(
+		'sgg_segment_pro_url',
+		add_query_arg( 'utm_content', $segment, $segment_url ),
+		$segment,
+		$utm
+	);
+}
+
+function sgg_get_segment_cta( $segment = 'default', $utm = 'buy-now' ) {
+	$segment = sanitize_key( $segment );
+	$cta_map = array(
+		'woocommerce'  => array(
+			'label' => __( 'Boost WooCommerce SEO', 'xml-sitemap-generator-for-google' ),
+			'url'   => sgg_get_segment_pro_url( 'woocommerce', $utm ),
+		),
+		'google-news'  => array(
+			'label' => __( 'Scale Google News Visibility', 'xml-sitemap-generator-for-google' ),
+			'url'   => sgg_get_segment_pro_url( 'google-news', $utm ),
+		),
+		'agencies'     => array(
+			'label' => __( 'Upgrade for Agency Workflows', 'xml-sitemap-generator-for-google' ),
+			'url'   => sgg_get_segment_pro_url( 'agencies', $utm ),
+		),
+		'multilingual' => array(
+			'label' => __( 'Unlock Multilingual SEO Control', 'xml-sitemap-generator-for-google' ),
+			'url'   => sgg_get_segment_pro_url( 'multilingual', $utm ),
+		),
+		'default'      => array(
+			'label' => __( 'Unlock More Sitemap Features', 'xml-sitemap-generator-for-google' ),
+			'url'   => sgg_get_segment_pro_url( 'default', $utm ),
+		),
+	);
+
+	return apply_filters( 'sgg_segment_cta', $cta_map[ $segment ] ?? $cta_map['default'], $segment, $utm );
+}
+
+function sgg_get_upgrade_segments( $utm = 'buy-now' ) {
+	return array(
+		'woocommerce'  => sgg_get_segment_cta( 'woocommerce', $utm ),
+		'google-news'  => sgg_get_segment_cta( 'google-news', $utm ),
+		'agencies'     => sgg_get_segment_cta( 'agencies', $utm ),
+		'multilingual' => sgg_get_segment_cta( 'multilingual', $utm ),
+	);
 }
 
 function sgg_get_support_url() {

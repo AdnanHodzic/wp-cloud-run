@@ -1,5 +1,15 @@
 <?php
 if (!defined('WORDFENCE_VERSION')) { exit; }
+/**
+ * Already defined:
+ *
+ * @var $shouldShowOnboarding
+ * @var $email
+ * @var $license
+ * @var $invalidLink
+ * @var $payloadException
+ */
+
 $errorMessage = null;
 if (!$shouldShowOnboarding) {
 	$errorMessage = __('Wordfence is already installed on this site. If you need to replace the current license, you may do so by visiting the "All Options" page of the Wordfence menu.', 'wordfence');
@@ -29,15 +39,8 @@ elseif ($invalidLink) {
 				?>
 			</div>
 		</div>
-		<div class="wf-row">
-			<div class="wf-col-xs-12">
-				<?php if ($errorMessage): ?>
-					<p class="wf-onboarding-error"><?php echo esc_html($errorMessage) ?></p>
-				<?php endif ?>
-				<?php if ($shouldShowOnboarding): ?>
-					<?php echo wfView::create('onboarding/registration-prompt', array('attempt' => 1, 'existing' => true, 'email' => $email, 'license' => $license)) ?>
-				<?php endif ?>
-			</div>
-		</div>
+		<div class="wf-row wordfence-vue-wrapper" data-base-component="StandaloneInstall" data-prop-error-message="<?php echo esc_attr($errorMessage) ?>" data-prop-should-show-onboarding="<?php echo $shouldShowOnboarding ? 'true' : 'false' ?>" data-prop-initial-state="<?php echo esc_attr(json_encode(array('email' => $email, 'license' => $license))); ?>"></div>
 	</div>
 </div>
+<div class="wordfence-vue-wrapper" data-base-component="CommonModals"></div>
+<div class="wordfence-vue-wrapper" data-base-component="OnboardingModals" data-prop-allow-onboarding-auto-open="<?php echo (!$email && !$license ? 'true' : 'false') ?>"></div>

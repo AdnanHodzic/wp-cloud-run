@@ -2,15 +2,17 @@
 
 jQuery(document).ready(function ($) {
     $( document ).on( 'click', '.notice.is-dismissible .notice-dismiss, .sgg-notice', function(e) {
-        if ($(this).attr('href') === '#') {
+        const $trigger = $(this);
+
+        if ($trigger.attr('href') === '#') {
             e.preventDefault();
         }
 
-        let $notice = $(this).closest('.notice');
+        let $notice = $trigger.closest('.notice');
         let noticeId = $notice.attr('data-notice');
 
         if(!noticeId) {
-            $notice = $(this).closest('.grim-notice-data');
+            $notice = $trigger.closest('.grim-notice-data');
             noticeId = $notice.attr('data-notice');
         }
 

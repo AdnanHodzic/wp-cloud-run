@@ -214,6 +214,7 @@ class wfScan {
 			wfUtils::clearScanLock();
 			$peakMemory = self::logPeakMemory();
 			self::status(2, 'info', sprintf(
+				/* translators: 1. Bytes of memory. 2. Bytes of memory. */
 				__('Wordfence used %1$s of memory for scan. Server peak memory usage was: %2$s', 'wordfence'),
 				wfUtils::formatBytes($peakMemory - self::$peakMemAtStart),
 				wfUtils::formatBytes($peakMemory)

@@ -64,6 +64,18 @@ $settings = $args['settings'] ?? new stdClass();
 				?>
 				</tbody>
 			</table>
+
+			<?php
+			Dashboard::render(
+				'partials/pro-upgrade-prompt.php',
+				array(
+					'segment'     => 'google-news',
+					'utm'         => 'locked-google-news',
+					'title'       => __( 'Advanced Google News controls are available in Pro', 'xml-sitemap-generator-for-google' ),
+					'description' => __( 'Include custom post types, refine exclusions, and optimize what Google News crawls first.', 'xml-sitemap-generator-for-google' ),
+				)
+			);
+			?>
 		</div>
 		<?php sgg_show_pro_overlay(); ?>
 	</div>

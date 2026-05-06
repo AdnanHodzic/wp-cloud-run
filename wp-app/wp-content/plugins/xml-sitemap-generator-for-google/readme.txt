@@ -5,7 +5,7 @@ Tags: sitemap, xml sitemap, google news, image sitemap, video sitemap, google si
 Requires at least: 5.0
 Requires PHP: 5.6
 Tested up to: 6.9.4
-Stable tag: 2.2.10
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -298,6 +298,11 @@ This section describes how to install the plugin and get it working.
 4. Set Up Page in **Settings -> XML Sitemaps**.
 
 == Changelog ==
+
+= 2.3.0 - 2026-05-01 =
+* Dashboard Search Settings feature added
+* Dashboard Settings page UI/UX improved
+* Admin Notices improved
 
 = 2.2.10 - 2026-03-23 =
 * WordPress 6.9.4 compatible

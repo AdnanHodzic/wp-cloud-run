@@ -9,7 +9,7 @@ function sgg_activation() {
 
 	( new \GRIM_SG\IndexNow() )->set_api_key();
 
-	update_option( 'sgg_installation_time', time(), false );
+	update_option( 'xml_sitemap_installation_time', time(), false );
 
 	// Set the activation redirect transient.
 	set_transient( 'sgg_activation_redirect', true, MINUTE_IN_SECONDS );
@@ -21,7 +21,7 @@ function sgg_activation() {
 function sgg_deactivation() {
 	\GRIM_SG\IndexNow::delete_api_key();
 
-	delete_option( 'sgg_installation_time' );
+	delete_option( 'xml_sitemap_installation_time' );
 }
 
 /**

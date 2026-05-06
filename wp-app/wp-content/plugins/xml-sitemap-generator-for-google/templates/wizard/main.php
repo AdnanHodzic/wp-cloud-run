@@ -123,15 +123,17 @@ Dashboard::render( 'wizard/header.php' );
 					</select>
 				</div>
 
-				<div class="pro-version-banner">
-					<img src="<?php echo esc_url( plugins_url( 'assets/images/pro-banner.png', GRIM_SG_FILE ) ); ?>" alt="<?php esc_attr_e( 'Pro Version', 'xml-sitemap-generator-for-google' ); ?>" class="pro-version-image">
-					<div class="pro-version-content">
-						<h3><?php esc_html_e( 'Upgrade to Pro', 'xml-sitemap-generator-for-google' ); ?></h3>
-						<p><?php esc_html_e( 'Unlock advanced features and enhance your sitemap with the Pro version.', 'xml-sitemap-generator-for-google' ); ?></p>
-						<a href="https://wpgrim.com/docs/google-xml-sitemaps-generator/general/settings/?utm_source=sgg-plugin&utm_medium=documentation&utm_campaign=wizard" class="pro-version-link" target="_blank"><?php esc_html_e( 'Documentation', 'xml-sitemap-generator-for-google' ); ?></a>
-						<a href="https://wpgrim.com/google-xml-sitemaps-generator-pro/?utm_source=sgg-plugin&utm_medium=get-now&utm_campaign=wizard" class="pro-version-btn" target="_blank"><?php esc_html_e( 'Get Pro Now', 'xml-sitemap-generator-for-google' ); ?></a>
+				<?php if ( ! sgg_pro_enabled() ) : ?>
+					<div class="pro-version-banner">
+						<img src="<?php echo esc_url( plugins_url( 'assets/images/pro-banner.png', GRIM_SG_FILE ) ); ?>" alt="<?php esc_attr_e( 'Pro Version', 'xml-sitemap-generator-for-google' ); ?>" class="pro-version-image">
+						<div class="pro-version-content">
+							<h3><?php esc_html_e( 'Upgrade to Pro', 'xml-sitemap-generator-for-google' ); ?></h3>
+							<p><?php esc_html_e( 'Unlock advanced sitemap controls built for stores, publishers, agencies, and multilingual websites.', 'xml-sitemap-generator-for-google' ); ?></p>
+							<a href="https://wpgrim.com/docs/google-xml-sitemaps-generator/general/settings/?utm_source=sgg-plugin&utm_medium=documentation&utm_campaign=wizard" class="pro-version-link" target="_blank"><?php esc_html_e( 'Documentation', 'xml-sitemap-generator-for-google' ); ?></a>
+							<a href="https://wpgrim.com/google-xml-sitemaps-generator-pro/?utm_source=sgg-plugin&utm_medium=get-now&utm_campaign=wizard" class="pro-version-btn" target="_blank"><?php esc_html_e( 'Compare Plans', 'xml-sitemap-generator-for-google' ); ?></a>
+						</div>
 					</div>
-				</div>
+				<?php endif; ?>
 			</div>
 
 			<div class="wizard-form-btn-wrapper">

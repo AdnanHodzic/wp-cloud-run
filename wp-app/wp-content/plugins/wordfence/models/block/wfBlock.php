@@ -1632,8 +1632,8 @@ END AS `detailSort`
 		switch ($this->type) {
 			case self::TYPE_COUNTRY:
 				return array(
-					'blockLogin' => wfUtils::truthyToInt($this->blockLogin),
-					'blockSite' => wfUtils::truthyToInt($this->blockSite),
+					'blockLogin' => wfUtils::truthyToBoolean($this->blockLogin),
+					'blockSite' => wfUtils::truthyToBoolean($this->blockSite),
 					'countries' => $this->countries,
 					'reason' => $this->reason,
 					'expiration' => $this->expiration,

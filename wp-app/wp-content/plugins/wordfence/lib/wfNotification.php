@@ -1,5 +1,5 @@
 <?php
-class wfNotification {
+class wfNotification implements JsonSerializable {
 	const PRIORITY_LOW = 1500;
 	const PRIORITY_DEFAULT = 1000;
 	const PRIORITY_HIGH = 500;
@@ -158,5 +158,17 @@ class wfNotification {
 		global $wpdb;
 		$table_wfNotifications = wfDB::networkTable('wfNotifications');
 		$wpdb->query($wpdb->prepare("UPDATE {$table_wfNotifications} SET `new` = 0 WHERE `id` = %s", $this->_id));
+	}
+	
+	#[\ReturnTypeWillChange]
+	public function jsonSerialize() {
+		return array(
+			'id' => $this->_id,
+			'category' => $this->_category,
+			'priority' => $this->_priority,
+			'ctime' => $this->_ctime,
+			'html' => $this->_html,
+			'links' => $this->_links,
+		);
 	}
 }

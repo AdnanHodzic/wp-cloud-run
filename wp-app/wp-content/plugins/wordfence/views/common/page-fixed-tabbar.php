@@ -4,7 +4,7 @@ if (!defined('WORDFENCE_VERSION')) { exit; }
  * Expects $tabs to be defined as an array of wfTab instances
  */
 ?>
-<div class="wf-row">
+<div class="wf-tab-container">
 	<div class="wf-col-xs-12">
 		<div class="wp-header-end"></div>
 		<ul class="wf-hidden-xs wf-page-fixed-tabs" role="tablist">

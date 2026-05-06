@@ -153,16 +153,19 @@ class wfDashboard {
 		$this->ips24h = (array) $activityReport->getTopIPsBlocked(100, 1);
 		foreach ($this->ips24h as &$r24h) {
 			$r24h = (array) $r24h;
+			$r24h['IP'] = wfUtils::inet_ntop($r24h['IP']);
 			if (empty($r24h['countryName'])) { $r24h['countryName'] = 'Unknown'; }
 		}
 		$this->ips7d = (array) $activityReport->getTopIPsBlocked(100, 7);
 		foreach ($this->ips7d as &$r7d) {
 			$r7d = (array) $r7d;
+			$r7d['IP'] = wfUtils::inet_ntop($r7d['IP']);
 			if (empty($r7d['countryName'])) { $r7d['countryName'] = 'Unknown'; }
 		}
 		$this->ips30d = (array) $activityReport->getTopIPsBlocked(100, 30);
 		foreach ($this->ips30d as &$r30d) {
 			$r30d = (array) $r30d;
+			$r30d['IP'] = wfUtils::inet_ntop($r30d['IP']);
 			if (empty($r30d['countryName'])) { $r30d['countryName'] = 'Unknown'; }
 		}
 		
@@ -230,5 +233,57 @@ class wfDashboard {
 		$this->wordfenceCentralDisconnected = wfConfig::get('wordfenceCentralDisconnected');
 		$this->wordfenceCentralDisconnectTime = wfConfig::get('wordfenceCentralDisconnectTime');
 		$this->wordfenceCentralDisconnectEmail = wfConfig::get('wordfenceCentralDisconnectEmail');
+	}
+	
+	public function toJson($fields = null) {
+		$available = array(
+			'scanLastCompletion',
+			'scanLastStatusMessage',
+			'scanLastStatus',
+			
+			'notifications',
+			
+			'features',
+			
+			'lastGenerated',
+			
+			'tdfCommunity',
+			'tdfPremium',
+			
+			'ips24h',
+			'ips7d',
+			'ips30d',
+			
+			'loginsSuccess',
+			'loginsFail',
+			
+			'localBlocks',
+			
+			'networkBlock24h',
+			'networkBlock7d',
+			'networkBlock30d',
+			
+			'countriesLocal',
+			'countriesNetwork',
+			'wordfenceCentralConnected',
+			'wordfenceCentralConnectTime',
+			'wordfenceCentralConnectEmail',
+			'wordfenceCentralDisconnected',
+			'wordfenceCentralDisconnectTime',
+			'wordfenceCentralDisconnectEmail',
+		);
+		
+		if ($fields !== null) {
+			$fields = array_intersect($available, $fields);
+		}
+		else {
+			$fields = $available;
+		}
+		
+		$result = array();
+		foreach ($fields as $f) {
+			$result[$f] = $this->$f;
+		}
+		return json_encode($result);
 	}
 }

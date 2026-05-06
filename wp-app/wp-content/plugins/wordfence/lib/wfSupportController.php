@@ -141,6 +141,7 @@ class wfSupportController {
 	const ITEM_SCAN_OPTION_CUSTOM_MALWARE_SIGNATURES = 'scan-option-custom-malware-signatures';
 	const ITEM_SCAN_OPTION_MAX_RESUME_ATTEMPTS = 'scan-option-max-resume-attempts';
 	const ITEM_SCAN_OPTION_USE_ONLY_IPV4 = 'scan-option-use-only-ipv4';
+	const ITEM_SCAN_OPTION_ALERT_THRESHOLD = 'dashboard/alerts/';
 	const ITEM_SCAN_TIME_LIMIT = 'scan-time-limit';
 	const ITEM_SCAN_FAILS = 'scan-fails';
 	const ITEM_SCAN_FAILED_START = 'scan-failed-start';
@@ -187,6 +188,27 @@ class wfSupportController {
 	const ITEM_MODULE_LOGIN_SECURITY = 'module-login-security';
 	const ITEM_MODULE_LOGIN_SECURITY_2FA = 'module-login-security-2fa';
 	const ITEM_MODULE_LOGIN_SECURITY_CAPTCHA = 'module-login-security-captcha';
+
+	/**
+	 * Returns an array of all defined support URLs. The keys are the constants adjusted to be JavaScript-friendly,
+	 * and the values are the corresponding support URLs.
+	 *
+	 * @return array
+	 */
+	public static function supportURLs(): array {
+		$ref = new \ReflectionClass(static::class);
+		$constants = $ref->getConstants();
+
+		$items = [];
+		foreach ($constants as $name => $value) {
+			if (strpos($name, 'ITEM_') === 0) {
+				$name = strtolower(substr($name, 5));
+				$items[$name] = static::supportURL($value);
+			}
+		}
+
+		return $items;
+	}
 	
 	public static function esc_supportURL($item = self::ITEM_INDEX) {
 		return esc_url(self::supportURL($item));
@@ -201,6 +223,11 @@ class wfSupportController {
 				return 'https://wordpress.org/support/plugin/wordfence/';
 			case self::ITEM_PREMIUM:
 				return 'https://support.wordfence.com/';
+
+			//These are a suffix on the base help URL
+
+			case self::ITEM_SCAN_OPTION_ALERT_THRESHOLD:
+				return $base . self::ITEM_SCAN_OPTION_ALERT_THRESHOLD;
 			
 			//These all fall through to the query format
 				
@@ -397,11 +424,11 @@ class wfSupportController {
 		}
 		
 		//Only show on our pages
-		if (!isset($_REQUEST['page'])) {
+		if (!isset($_GET['page']) || !is_string($_GET['page'])) {
 			return false;
 		}
 		
-		if (!preg_match('/^Wordfence/', $_REQUEST['page'])) {
+		if (!preg_match('/^Wordfence/', $_GET['page'])) {
 			return false;
 		}
 		

@@ -323,7 +323,7 @@ h6 a:visited { color: purple !important; }
 				<?php
 				if ($omitted_firewall_activity > 10):
 				?>
-				<div style="font-size: 14px; vertical-align: baseline; clear: both; color: #f00 !important; margin: 8px 0 4px; padding: 0; border: 0;"><?php printf(esc_html__('and %d additional attacks', 'wordfence'), $omitted_firewall_activity); ?></div>
+				<div style="font-size: 14px; vertical-align: baseline; clear: both; color: #f00 !important; margin: 8px 0 4px; padding: 0; border: 0;"><?php printf(/* translators: number of requests */ esc_html__('and %d additional attacks', 'wordfence'), $omitted_firewall_activity); ?></div>
 				<?php endif ?> 
 				
 				<p style="font-size: 100%; vertical-align: baseline; margin: 1em 0; padding: 0; border: 0;">
@@ -383,7 +383,11 @@ h6 a:visited { color: purple !important; }
 							$newVersion = ($plugin['newVersion'] == 'Unknown' ? $plugin['newVersion'] : "v{$plugin['newVersion']}");
 						?>
 							<li style="font-size: 100%; vertical-align: baseline; margin: 0; padding: 0; border: 0;">
-								<?php echo esc_html(sprintf(/* translators: Plugin name. */ __('A new version of the plugin "%s" is available.', 'wordfence'), "{$plugin['Name']} ({$newVersion})")); ?> <?php if (isset($plugin['vulnerable']) && $plugin['vulnerable']) { echo wp_kses(__('<strong>This update includes security-related fixes.</strong>', 'wordfence'), array('strong'=>array())); } ?>
+								<?php
+								echo esc_html(sprintf(/* translators: Plugin name. */ __('A new version of the plugin "%s" is available.', 'wordfence'), "{$plugin['Name']} ({$newVersion})"));
+								echo ' ';
+								if (isset($plugin['vulnerable']) && $plugin['vulnerable']) { echo wp_kses(__('<strong>This update includes security-related fixes.</strong>', 'wordfence'), array('strong'=>array())); }
+								?>
 							</li>
 						<?php endforeach ?>
 					</ul>
@@ -396,7 +400,11 @@ h6 a:visited { color: purple !important; }
 							$newVersion = ($theme['newVersion'] == 'Unknown' ? $theme['newVersion'] : "v{$theme['newVersion']}");
 						?>
 							<li style="font-size: 100%; vertical-align: baseline; margin: 0; padding: 0; border: 0;">
-								<?php echo esc_html(sprintf(/* translators: Theme name. */ __('A new version of the theme "%s" is available.', 'wordfence'), "{$theme['name']} ({$newVersion})")); ?> <?php if (isset($theme['vulnerable']) && $theme['vulnerable']) { echo wp_kses(__('<strong>This update includes security-related fixes.</strong>', 'wordfence'), array('strong'=>array())); } ?>
+								<?php
+								echo esc_html(sprintf(/* translators: Theme name. */ __('A new version of the theme "%s" is available.', 'wordfence'), "{$theme['name']} ({$newVersion})"));
+								echo ' ';
+								if (isset($theme['vulnerable']) && $theme['vulnerable']) { echo wp_kses(__('<strong>This update includes security-related fixes.</strong>', 'wordfence'), array('strong'=>array())); }
+								?>
 							</li>
 						<?php endforeach ?>
 					</ul>
