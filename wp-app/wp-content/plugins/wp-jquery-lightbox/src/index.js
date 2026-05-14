@@ -1,1 +1,0 @@
-import './lightbox-panel.jsx';
