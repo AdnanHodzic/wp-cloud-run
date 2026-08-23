@@ -3,6 +3,7 @@ backup/*
 # Ignore custom paid plugins
 # default WordPress plugins copied as part of container image, e.g:
 # ../wp-content/plugins/akismet
+wp-app/wp-content/plugins/*
 wp-app/wp-content/plugins/all-in-one-wp-migration-unlimited-extension/*
 # Ignore custom WordPress themes
 # Default WordPress themes copied as part of container image, e.g:
