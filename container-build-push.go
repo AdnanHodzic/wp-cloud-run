@@ -53,9 +53,9 @@ func main() {
 		return
 	}
 
-	// Get the GCP_PROJECT from the environment variables
+	// Get the GAR_REGION from the environment variables
 	repo_region := os.Getenv("GAR_REGION")
-	if project == "" {
+	if repo_region == "" {
 		fmt.Println("GAR_REGION not set in .env file")
 		return
 	}
