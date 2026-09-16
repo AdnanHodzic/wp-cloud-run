@@ -9,3 +9,4 @@ wp-app/wp-content/plugins/all-in-one-wp-migration-unlimited-extension/*
 # Default WordPress themes copied as part of container image, e.g:
 # ../wp-content/themes/twentytwentyfive, twentytwentyfour, twentytwentythree
 wp-app/wp-content/themes/*
+wp-app/wp-content/archived-plugins/
