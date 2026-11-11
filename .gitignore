@@ -1,4 +1,6 @@
 .env
+.cloud-run-salts.env
+*.swp
 backup/*
 # Ignore custom paid plugins
 # default WordPress plugins copied as part of container image, e.g:

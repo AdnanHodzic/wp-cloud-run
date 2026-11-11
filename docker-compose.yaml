@@ -22,6 +22,8 @@ services:
     restart: always
     env_file:
       - .env
+      - path: .cloud-run-salts.env
+        required: false
     ports:
       - "8080:80"
     environment:

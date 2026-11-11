@@ -8,18 +8,60 @@
 package main
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
 
+const saltsEnvFile = ".cloud-run-salts.env"
+
+var wpSaltKeys = []string{
+	"WORDPRESS_AUTH_KEY",
+	"WORDPRESS_SECURE_AUTH_KEY",
+	"WORDPRESS_LOGGED_IN_KEY",
+	"WORDPRESS_NONCE_KEY",
+	"WORDPRESS_AUTH_SALT",
+	"WORDPRESS_SECURE_AUTH_SALT",
+	"WORDPRESS_LOGGED_IN_SALT",
+	"WORDPRESS_NONCE_SALT",
+}
+
+func ensureSaltsFile(path string) error {
+	if _, err := os.Stat(path); err == nil {
+		fmt.Printf("Using existing WordPress secret keys and salts from %s\n", path)
+		return nil
+	}
+
+	var lines []string
+	for _, key := range wpSaltKeys {
+		buf := make([]byte, 32)
+		if _, err := rand.Read(buf); err != nil {
+			return fmt.Errorf("generating random value for %s: %w", key, err)
+		}
+		lines = append(lines, fmt.Sprintf("%s=%s", key, hex.EncodeToString(buf)))
+	}
+
+	content := strings.Join(lines, "\n") + "\n"
+	if err := os.WriteFile(path, []byte(content), 0600); err != nil {
+		return fmt.Errorf("writing %s: %w", path, err)
+	}
+
+	fmt.Printf("Generated WordPress secret keys and salts in %s\n", path)
+	return nil
+}
+
 func main() {
-	// Define flags for build and push
+	// Define flags for build, push, and WordPress salts
 	build := flag.Bool("build", true, "Build the wp-cloud-run Docker (container) image")
 	push := flag.Bool("push", true, "Push the wp-cloud-run Docker (container) image to the registry")
+	salts := flag.Bool("salts", true, "Automatically generate .cloud-run-salts.env (if missing) and apply WordPress keys/salts to the image")
 	flag.Parse()
 
 	// Please note:
@@ -71,8 +113,21 @@ func main() {
 
 	// Build the Docker image if the build flag is true
 	if *build {
+		if *salts {
+			if err := ensureSaltsFile(saltsEnvFile); err != nil {
+				fmt.Println("\nError preparing salts file:", err)
+				return
+			}
+		}
+
 		fmt.Println("\nBuilding the container image ...\n")
-		cmd := exec.Command("docker", "build", "--no-cache", "--build-arg", "WP_CLOUD_RUN_IMG="+ver, "--build-arg", "WP_VERSION="+wpVersion, "-t", image_name, ".")
+		cmd := exec.Command(
+			"docker", "build", "--no-cache",
+			"--build-arg", "WP_CLOUD_RUN_IMG="+ver,
+			"--build-arg", "WP_VERSION="+wpVersion,
+			"--build-arg", "APPLY_SALTS="+strconv.FormatBool(*salts),
+			"-t", image_name, ".",
+		)
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		err = cmd.Run()
