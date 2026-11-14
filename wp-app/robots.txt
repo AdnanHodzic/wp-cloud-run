@@ -7,3 +7,5 @@ Allow: /wp-includes/images/
 Disallow: /trackback/
 Disallow: /wp-login.php
 Disallow: /wp-register.php
+
+Sitemap: https://foolcontrol.org/sitemap.xml
